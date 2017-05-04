@@ -1,0 +1,3371 @@
+@ -*- mode: org; -*-
+..title   > El lenguaje de programacion Go
+..author  > Alan A. A. Donovan
+..author  > Brian W. Kernighan
+..date    > 29/09/2015
+..id      > isbn-13 978-0-13-419044-0
+..id      > isbn-10 0-13-419044-0
+..style   > worg-data/worg.css
+..options > toc pygments
+
+@ revision 3b600c, date 29 Sep 2015
+
+..center >
+  Para Leila y Meg
+< center..
+
+* Prefacio
+
+  ..quote >
+    @"(Go es un lenguaje de programacion de codigo abierto, que facilita la
+    creacion de software simple, confiable y eficiente.)
+
+    --(Desde el sitio web de Go en  @l(https://golang.org/<>golang.org))
+  < quote..
+
+  Go fue concebido en septiembre de 2007 por Robert Griesemer, Rob Pike y Ken
+  Thompson, todos de Google, y fue anunciado en noviembre de 2009. La meta del
+  lenguaje y sus herramientas acompañantes es ser expresivos, eficientes en la
+  compilacion y ejecucion, y eficaz en la escritura de programas fiables y
+  robustos.
+
+  Go tiene una similitud superficial con C y, como C, es una herramienta para
+  programadores profesionales, logrando el maximo efecto con un minimo de
+  medios. Pero es mucho mas que una version actualizada de C. Obtiene y adapta
+  buenas ideas de muchos otros idiomas, evitando caracteristicas que han llevado
+  a la complejidad y a un codigo poco confiable. Sus comodidades para la
+  concurrencia son nuevas y eficientes, y su enfoque hacia la abstraccion de
+  datos y la programacion orientada a objetos es inusualmente flexible. Tambien
+  cuenta con gestion automatica de memoria o @e(recoleccion de basura).
+
+  Go es especialmente adecuado para la construccion de infraestructura como
+  servidores en red, y herramientas y sistemas para programadores, pero es
+  realmente un lenguaje de uso general y se utiliza en dominios tan diversos
+  como graficos, aplicaciones moviles y aprendizaje automatico. Se ha vuelto
+  popular como un reemplazo para los lenguajes de scripting no tipados porque
+  equilibra la expresividad con la seguridad: Los programas Go suelen funcionar
+  mas rapido que los programas escritos en lenguajes dinamicos y sufren muchos
+  menos accidentes debido a errores de tipado.
+
+  Go es un proyecto de codigo abierto, por lo que el codigo fuente de su
+  compilador, librerias y herramientas esta disponible gratuitamente para
+  cualquiera. Las contribuciones al proyecto provienen de una activa comunidad
+  mundial. Go se ejecuta en sistemas tipo Unix –GNU/Linux, FreeBSD, OpenBSD,
+  Mac OS X– y en Plan 9 y Microsoft Windows. Los programas escritos en uno de
+  estos entornos generalmente funcionan sin modificacion en los otros.
+
+  Este libro esta diseñado para ayudarle a comenzar a usar Go efectivamente, de
+  inmediato y utilizarlo bien, aprovechando al maximo las caracteristicas
+  lingüisticas de Go y las librerias estandar para escribir programas claros,
+  idiomaticos y eficientes.
+
+** Los origenes de Go
+
+   Como las especies biologicas, las lenguas exitosas engendran hijos que
+   incorporan las ventajas de sus antepasados; El entrecruzamiento a veces
+   conduce a fortalezas sorprendentes; Y, muy ocasionalmente, surge un nuevo
+   rasgo radical sin precedentes. Podemos aprender mucho sobre por que un
+   lenguaje es como es y a que entorno se ha adaptado para ver estas
+   influencias.
+
+   La siguiente figura muestra las influencias mas importantes de los lenguajes
+   de programacion anteriores en el diseño de Go.
+
+   ..img > img/go-influences.jpg
+
+
+   En ocaciones Go se describe como un @"(lenguaje de tipo C,) o como @"(C para
+   el siglo 21.) De C, Go heredo su sintaxis de expresiones, instrucciones de
+   flujo de control, tipos de datos basicos, paso parametros por valor, punteros
+   y, sobre todo, el enfasis de C en programas que compilan codigo maquina
+   eficiente y cooperan naturalmente con las abstracciones de los sistemas
+   operativos actuales.
+
+   Pero hay otros antepasados ​​en el arbol genealogico de Go. Una importante
+   corriente de influencia proviene de lenguajes de Niklaus Wirth, comenzando
+   con Pascal. Modula-2 inspiro el concepto de paquete. Oberon elimino la
+   distincion entre los archivos de interfaz del modulo y los archivos de
+   implementacion del modulo. Oberon-2 influyo en la sintaxis de paquetes,
+   importaciones y declaraciones, y Object Oberon proporciono la sintaxis para
+   la declararcion de metodos.
+
+   Otro linaje entre los antepasados de Go, y uno que hace a Go distinto entre
+   los lenguajes de programacion mas recientes, es una secuencia de lenguajes de
+   investigacion poco conocidos desarrollados en los Laboratorios Bell, todos
+   ellos inspiradas en el concepto de comunicacion de procesos secuenciales
+   (CSP) del seminal articulo de 1978 de Tony Hoare en los cimientos de la
+   concurrencia. En CSP, un programa es una composicion paralela de procesos que
+   no tienen estado compartido; Los procesos se comunican y sincronizan
+   utilizando canales. Pero el CSP de Hoare era un lenguaje formal para
+   describir los conceptos fundamentales de la concurrencia, no un lenguaje de
+   programacion para escribir programas ejecutables.
+
+   Rob Pike y otros comenzaron a experimentar con implementaciones CSP como
+   lenguajes reales. El primero fue llamado Squeak (@"(Un Lenguaje para
+   comunicarce con ratones)), que proporcionaron un lenguaje para el manejo de
+   eventos de raton y teclado, con canales estaticamente creados. Esto fue
+   seguido por Newsqueak, que ofrecia declaraciones y sintaxis de expresion como
+   C y la notacion de tipo Pascal. Se trataba de un lenguaje puramente funcional
+   con recoleccion de basura, dirigido nuevamente a administrar eventos de
+   teclado, raton y ventanas. Los canales se convirtieron en valores de primera
+   clase, creados dinamicamente y almacenados en variables.
+
+   El sistema operativo Plan 9 llevo adelante estas ideas en un lenguaje llamado
+   Alef. Alef trato de hacer de Newsqueak un lenguaje viable para la
+   programacion de sistemas, pero su omision de un recoleccion de basura hizo
+   que la concurrencia fuera demasiado dolorosa.
+
+   Otras construcciones en Go muestran la influencia de genes no ancestrales
+   aqui y alla; Por ejemplo @c(iota) es tomado libremente de APL, y el ambito
+   lexico con funciones anidadas es de Scheme (y la mayoria de lenguajes desde
+   entonces). Aqui tambien encontramos mutaciones novedosas. Go innova
+   proporcionando slices (arreglos dinamicos) con acceso aleatorio eficiente,
+   pero tambien permite sofisticados arreglos compartidos que recuerdan a las
+   listas enlazadas. Y la declaracion @c(defer) es con Go.
+
+** El proyecto Go
+
+   Todos los lenguajes de programacion reflejan la filosofia de programacion de
+   sus creadores, que a menudo incluye un componente significativo de la
+   reaccion a las deficiencias percibidas de los idiomas anteriores. El proyecto
+   Go fue frustrado con varios sistemas de software de Google que estaban
+   sufriendo una explosion de complejidad. (Este problema no es exclusivo de
+   Google.)
+
+   Como Rob Pike dijo, @"(la complejidad es multiplicativa): solucionar un
+   problema al hacer una parte del sistema mas compleja, lenta pero seguramente
+   añade complejidad a otras partes. Con la presion constante para agregar
+   caracteristicas y opciones y configuraciones, y para enviar codigo
+   rapidamente, es facil olvidar la sencillez, aunque a la larga la simplicidad
+   es la clave para un buen software.
+
+   La simplicidad requiere mas trabajo al comienzo de un proyecto para reducir
+   una idea a su esencia y mas disciplina durante la vida de un proyecto para
+   distinguir los buenos cambios, de los malos o perniciosos. Con un esfuerzo
+   suficiente, un buen cambio se puede acomodar sin comprometer lo que Fred
+   Brooks llamo la @"(integridad conceptual) del diseño, pero un mal cambio no
+   puede, un cambio pernicioso negocia la sencillez por uno conveniencia
+   superficial. Solo a traves de la simplicidad del diseño un sistema puede
+   permanecer estable, seguro y coherente a medida que crece.
+
+   El proyecto Go incluye el lenguaje mismo, sus herramientas y librerias
+   estandar, y por ultimo, pero no menos importante, una agenda cultural de
+   simplicidad radical. Como un lenguaje reciente de alto nivel, Go tiene el
+   beneficio de la retrospectiva, y los fundamentos se hacen bien: tiene
+   recoleccion de basura, un sistema de paquetes, funciones de primera clase,
+   alcance lexico, una interfaz de llamadas de sistema y cadenas inmutables en
+   las que el texto es generalmente codificado en UTF-8. Pero tiene
+   comparativamente pocas caracteristicas y es poco probable que agregue
+   mas. Por ejemplo, no tiene conversiones numericas implicitas, no hay
+   constructores o destructores, no hay sobrecarga de operadores, no hay valores
+   de parametros predeterminados, no hay herencia, no hay genericos, no hay
+   excepciones, no hay macros, no hay anotaciones de funcion y no hay
+   almacenamiento local de subprocesos. El lenguaje es maduro y estable y
+   garantiza la compatibilidad con versiones anteriores: los programas Go mas
+   antiguos se pueden compilar y ejecutar con versiones mas recientes de
+   compiladores y librerias estandar.
+
+   Go tiene un sistema de tipado para evitar la mayoria de los errores
+   descuidados que afectan a los programadores en lenguajes dinamicos, pero
+   tiene un sistema de tipado mas simple que los lenguajes tipados
+   comparables. Este enfoque puede conducir en ocaciones a baches de
+   programacion @"(sin tipo) dentro de un marco mas amplio de tipos, y los
+   programadores Go no van a las longitudes que hacen a los programadores C++ o
+   Haskell expresar propiedades de seguridad como pruebas basadas en tipo. Pero
+   en la practica, Go da a los programadores gran parte de los beneficios de
+   seguridad y rendimiento en tiempo de ejecucion de un sistema de tipado
+   relativamente fuerte sin la carga de complejidad.
+
+   Go fomenta una conciencia del diseño de sistemas informaticos contemporaneos,
+   particularmente la importancia de la localidad. Sus tipos de datos
+   incorporados y la mayoria de las estructuras de datos de la libreria estan
+   diseñados para funcionar naturalmente sin inicializacion explicita o
+   constructores implicitos, por lo que relativamente pocas asignaciones de
+   memoria y escrituras de memoria estan ocultas en el codigo. Los tipos
+   agregados de Go (estructuras y matrices) mantienen sus elementos
+   directamente, requiriendo menos almacenamiento y menos asignaciones e
+   indireccion de punteros, que los idiomas que utilizan campos indirectos. Y
+   como la computadora moderna es una maquina paralela, Go tiene caracteristicas
+   de concurrencia basadas en CSP, como se menciono anteriormente. Los stacs de
+   tamaño variable de los hilos ligeros de Go o @e(goroutines) son inicialmente
+   lo suficientemente pequeñas como para que crear una goroutine sea barato y
+   crear un millon sea practico.
+
+   La libreria estandar de Go, a menudo descrita como con @"(baterias
+   incluidas,) proporciona bloques de construccion limpios y APIs de E/S,
+   procesamiento de texto, graficos, criptografia, redes y aplicaciones
+   distribuidas, con soporte para muchos formatos de archivos y protocolos
+   estandar. Las librerias y las herramientas hacen uso extensivo de la
+   convencion para reducir la necesidad de configuracion y explicaciones,
+   simplificando asi la logica del programa y haciendo que diversos programas Go
+   sean mas similares entre si y, por lo tanto, mas faciles de aprender. Los
+   proyectos creados con la herramienta @$(go) solo utilizan nombres de archivos
+   e identificadores y un comentario especial ocasional para determinar todas
+   las librerias, ejecutables, pruebas, referencias, ejemplos, variantes
+   especificas de la plataforma y documentacion para un proyecto; El codigo
+   fuente de Go en si contiene la especificacion de compilacion.
+
+** Organizacion del Libro
+
+   Asumimos que usted ha programado en uno o mas lenguajes, compilados como C,
+   C++ y Java, o interpretados como Python, Ruby y JavaScript, por lo que no
+   solemos explicar todo como si fuera un completo principiante. La sintaxis
+   superficial sera familiar, al igual que variables y constantes, expresiones,
+   flujo de control y funciones.
+
+   El capitulo 1 es un tutorial sobre las construcciones basicas de Go,
+   introducido a traves de una docena de programas para tareas cotidianas como
+   leer y escribir archivos, formatear texto, crear imagenes y comunicarse con
+   clientes y servidores de Internet.
+
+   El capitulo 2 describe los elementos estructurales de un programa
+   Go–declaraciones, variables, nuevos tipos, paquetes y archivos, y alcance. El
+   capitulo 3 analiza numeros, booleanos, cadenas y constantes, y explica como
+   procesar Unicode. El capitulo 4 describe los tipos compuestos, es decir, los
+   tipos construidos a partir de los mas sencillos utilizando arreglos, mapas,
+   estructuras y slices, la aproximacion de Go para listas dinamicas. El
+   capitulo 5 cubre las funciones y discute el manejo de errores,
+   @c(panic) y @c(recover), y la sentencia @c(defer).
+
+   Los capitulos 1 a 5 son, son por lo tanto, lo basico, las cosas que forman
+   parte de cualquier lenguaje imperativo popular. La sintaxis y el estilo de Go
+   a veces difieren de otros lenguajes, pero la mayoria de los programadores los
+   recogeran rapidamente. Los capitulos restantes se centran en temas en los que
+   el enfoque de Go es menos convencional: metodos, interfaces, concurrencia,
+   paquetes, pruebas y reflexion.
+
+   Go tiene un acercamiento inusual a la programacion orientada a objetos. No
+   hay jerarquias de clase, o de hecho ninguna clase; Los comportamientos de
+   objetos complejos se crean a partir de los mas simples por composicion, no
+   por herencia. Los metodos pueden ser asociados con cualquier tipo definido
+   por el usuario, no solo las estructuras, y la relacion entre tipos concretos
+   y tipos abstractos (@e(interfaces)) es implicita, por lo que un tipo concreto
+   puede satisfacer una interfaz que el diseñador del tipo desconocia. Los
+   metodos estan cubiertos en el capitulo 6, las interfaces en el capitulo 7.
+
+   El capitulo 8 presenta el enfoque de Go a la concurrencia, que se basa en la
+   idea de comunicar procesos secuenciales (CSP), incorporados por goroutines y
+   canales. El Capitulo 9 explica los aspectos mas tradicionales de la
+   concurrencia basados ​​en variables compartidas.
+
+   El capitulo 10 describe los paquetes, el mecanismo para organizar las
+   librerias. Este capitulo tambien muestra como hacer un uso efectivo de la
+   herramienta @$(go), provista para la compilacion, pruebas, benchmarking,
+   formateo del programa, documentacion y muchas otras tareas, todo dentro de un
+   solo comando.
+
+   El capitulo 11 trata de las pruebas, donde Go adopta un enfoque notablemente
+   ligero, evitando framewoks cargados de abstraccion en favor de librerias y
+   herramientas simples. Las librerias de pruebas proporcionan una base sobre
+   la que se pueden construir abstracciones mas complejas si es necesario.
+
+   El capitulo 12 discute la reflexion, la capacidad de un programa para
+   examinar su propia representacion durante la ejecucion. La reflexion es una
+   herramienta poderosa, aunque debe ser usada con cuidado; Este capitulo
+   explica como encontrar el equilibrio correcto, mostrando como se utiliza para
+   implementar algunas librerias importantes en Go. El capitulo 13 explica los
+   detalles morbosos de programacion a bajo nivel que utiliza el paquete
+   @c(unsafe) para dar un paso alrededor del sistema de tipado de Go, y cuando
+   es apropiada eso.
+
+   Cada capitulo tiene una serie de ejercicios que puedes usar para probar tu
+   comprension de Go, y para explorar extensiones y alternativas a los ejemplos
+   del libro.
+
+   Todos menos los ejemplos de codigo mas triviales en el libro estan
+   disponibles para su descarga desde un repositorio Git publico en
+   @l(http://www.gopl.io/<>gopl.io). Cada ejemplo se identifica por su ruta de
+   importacion paquete y puede ser convenientemente localizado, construido e
+   instalado utilizando el comando @$(go get). tendra que elegir un directorio
+   para ser su espacio de trabajo y establecer la variable de entorno @c(GOPATH)
+   apuntando a este. La herramienta @$(go) creara el directorio si es necesario.
+   Por ejemplo:
+
+   ..src > sh
+     $ export GOPATH=$HOME/gobook        # Elegir el directorio de trabajo
+     $ go get gopl.io/ch1/helloworld     # buscar, construir, instalar
+     $ $GOPATH/bin/helloworld            # ejecutar
+     Hello, 世界
+   < src..
+
+   Para ejecutar los ejemplos, necesitara al menos la version 1.5 de Go.
+
+   ..src > sh
+     $ go version
+     go version go1.5 linux/amd64
+   < src..
+
+   Siga las instrucciones en @l(https://golang.org/doc/install) si en su equipo
+   la herramienta @$(go) esta ausente o es anterior.
+
+** Donde encontrar mas informacion
+
+   La mejor fuente para obtener mas informacion sobre Go es el sitio web
+   oficial, @l(https://golang.org) , que proporciona acceso a la documentacion,
+   incluyendo la @e(Especificacion del Lenguaje de Programacion Go), los
+   paquetes estandar, y similares. Tambien hay tutoriales sobre como escribir Go
+   y como escribirlo bien, y una amplia variedad de recursos de texto y video en
+   linea que seran complementos valiosos para este libro. El Blog de Go se
+   encuentra en @l(https://blog.golang.org<>blog.golang.org) donde se publican
+   algunos de los mejores escritos en Go, con articulos sobre el estado del
+   lenguaje, los planes a futuro, los informes sobre conferencias y
+   explicaciones en profundidad de una amplia variedad de temas relacionados.
+
+   Uno de los aspectos mas utiles del acceso en linea a Go (y una limitacion
+   lamentable de un libro de papel) es la capacidad de ejecutar programas de Go
+   desde las paginas web que los describen. Esta funcionalidad es proporcionada
+   por Go Playground en @l(https://play.golang.org<>play.golang.org), y puede
+   ser embebido dentro de otras paginas, como la pagina de inicio en
+   @l(https://golang.org<>golang.org) o las paginas de documentacion provistas
+   por la herramienta @$(godoc).
+
+   Playground hace que sea conveniente llevar a cabo experimentos sencillos para
+   comprobar la propia comprension de la sintaxis, la semantica, o paquetes de
+   librerias con programas cortos, y en muchos sentidos toma el lugar de un
+   @e(bucle leer-evaluar-imprimir) (@e(read-eval-print loop) o REPL) en otros
+   lenguajes. Sus URLs persistentes son ideales para compartir fragmentos de
+   codigo con otros, para informar sobre errores o hacer sugerencias.
+
+   Construido sobre Playground, el Tour Go en @l(https://tour.golang.org<>tour.golang.org)
+   es una secuencia de breves lecciones interactivas sobre las ideas basicas y
+   construcciones de Go, un paseo ordenado por atraves del lenguaje.
+
+   El principal inconveniente del Playground y del Tour es que permiten que solo
+   se importen librerias estandar, y muchas funciones de la libreria–por
+   ejemplo, redes–estan restringidas por razones practicas o de
+   seguridad. Tambien requiere de acceso a Internet para compilar y ejecutar
+   cada programa. Asi que para experimentos mas elaborados, tendra que ejecutar
+   programas Go en su propia computadora. Afortunadamente, el proceso de
+   descarga es sencillo, por lo que no debe tomar mas de unos minutos para
+   buscar la Go distribucion desde @l(https://golang.org<>golang.org) y empezar
+   a escribir y ejecutar programas por su cuenta.
+
+   Ya que Go es un proyecto de codigo abierto, se puede leer el codigo fuente de
+   cualquier tipo o funcion en la libreria estandar en
+   @l(https://golang.org/pkg); el mismo codigo forma parte de la distribucion
+   descargada. Utilice esto para averiguar como funciona algo, o para responder
+   a preguntas sobre los detalles, o simplemente para ver como los expertos
+   escriben bueno Go.
+
+** Agradecimientos
+
+   Rob Pike y Russ Cox, miembros centrales del equipo de Go, leyeron el
+   manuscrito varias veces con mucho cuidado; Sus comentarios sobre todo, desde
+   la eleccion de palabras hasta la estructura general y la organizacion han
+   sido invaluables. Mientras preparaba la traduccion japonesa, Yoshiki Shibata
+   iba mucho mas alla del llamado del deber; Su ojo meticuloso observo numerosas
+   inconsistencias en el texto ingles y errores en el codigo. Apreciamos
+   grandemente revisiones completas y comentarios criticos en el manuscrito
+   entero de Brian Goetz, Corey Kosak, Arnold Robbins, Josh Bleecher Snyder, y
+   Peter Weinberger.
+
+   Agradecemos a Sameer Ajmani, Ittai Balaban, David Crawshaw, Billy Donohue,
+   Jonathan Feinberg, Andrew Gerrand, Roberto Griesemer, John Linderman, Minux
+   Ma, Bryan Mills, Bala Natarajan, Cosmos Nicolaou, Paul Staniforth, Nigel Tao,
+   y a Howard Trickey para muchas sugerencias utiles. Tambien damos las gracias
+   a David Brailsford y Raph Levien por los consejos sobre composicion
+   tipografica.
+
+   Nuestro redactor Greg Doench de Addison-Wesley consiguio hacer rodar la bola
+   originalmente y ha estado ayunando continuamente desde entonces. El equipo de
+   produccion de AW–John Fuller, Dayna Isley, Julie Nahil, Chuti Prasertsith y
+   Barbara Wood–ha sido excepcional; Los autores no podrian esperar un mejor
+   apoyo.
+
+   Alan Donovan desea agradecer a: Sameer Ajmani, Chris Demetriou, Walt
+   Drummond, y Reid Tatge en Google por permitirle tiempo para escribir; Stephen
+   Donovan, por su consejo y oportuno estimulo; Y sobre todo a su esposa Leila
+   Kazemi, por su entusiasmo y apoyo inquebrantable a este proyecto, a pesar de
+   las largas horas de distraccion y ausentismo de la vida familiar que ello
+   conllevaba.
+
+   Brian Kernighan esta profundamente agradecido a sus amigos y colegas por su
+   paciencia y autodominio mientras avanzaba lentamente por el camino hacia la
+   comprension, y especialmente a su esposa Meg, que ha sido infaliblemente
+   favorable a la escritura de libros y mucho mas.
+
+   ..quote >
+     --Nueva York
+     --Octubre 2015
+   < quote..
+
+* Capitulo 1 <> Tutorial
+
+  Este capitulo es un recorrido por los componentes basicos de Go. Esperamos
+  proporcionar suficiente informacion y ejemplos para sacarle del barro y hacer
+  cosas utiles lo mas rapido posible. Los ejemplos aqui, y de hecho en todo el
+  libro, estan dirigidos a tareas que usted podria tener que hacer en el mundo
+  real. En este capitulo intentaremos darle una muestra de la diversidad de
+  programas que uno podria escribir en Go, que van desde el simple procesamiento
+  de archivos y un poco de graficos, a clientes y servidores de Internet
+  concurrentes. Ciertamente no vamos a explicar todo en el primer capitulo, pero
+  el estudio de estos programas en un nuevo lenguaje puede ser una manera eficaz
+  de empezar.
+
+  Cuando estas aprendiendo un nuevo lenguaje, hay una tendencia natural a
+  escribir codigo como lo habrias escrito en un idioma que ya conoces. Este
+  consciente de este sesgo a medida que aprende Go y trate de evitarlo. Hemos
+  tratado de ilustrar y explicar como escribir buen Go, asi que utilice el
+  codigo aqui como guia cuando este escribiendo el suyo propio.
+
+** Seccion 1.1 <> Hola, Mundo
+
+   Vamos a empezar con la ya tradicional ejemplo del @"(hola, mundo), que
+   aparece al comienzo de @e(El lenguaje de programacion C), publicado
+   en 1978. C es una de las influencias mas directas sobre el Go, y @"(hola,
+   mundo) ilustra una serie de ideas centrales.
+
+   ..figure > @l(gopl.io/ch1/helloworld/main.go<>gopl.io/ch1/helloworld)
+
+     ..src > go
+       package main
+
+       import "fmt"
+
+       func main() {
+         fmt.Println("Hello, 世界")
+       }
+     < src..
+
+   Go es un lenguaje compilado. El conjunto de herramienta de Go convierte un el
+   codigo fuente de un programa y las cosas de las que depende, en instrucciones
+   en el lenguaje maquina nativo de una computadora. Se puede acceder a estas
+   herramientas a traves de un unico comando llamado @$(go) que tiene una serie
+   de subcomandos. El mas simple de estos subcomandos es @$(run) , que compila
+   el codigo fuente de uno o mas archivos de origen cuyos nombres terminan en
+   @f(.go), lo vincula con las librerias, y a continuacion, ejecuta el archivo
+   ejecutable resultante. (Utilizaremos @$($) como el simbolo del sistema en
+   todo el libro.)
+
+   ..src > sh
+     $ go run helloworld.go
+   < src..
+
+   No es sorprendente que esto imprima
+
+   ..src > sh
+     Hello, 世界
+   < src..
+
+
+   Go maneja Unicode de forma nativa, por lo que puede procesar texto en todos
+   los idiomas del mundo.
+
+   Si el programa es mas que un experimento de un solo disparo, es probable que
+   quiera compilarlo una vez y guardar el resultado compilado para su uso
+   posterior. Esto se hace con @$(go build):
+
+   ..src > sh
+     $ go build helloworld.go
+   < src..
+
+   Esto crea un archivo binario ejecutable llamado @$(helloworld) que se pueden
+   ejecutar en cualquier momento sin procesamiento adicional:
+
+   ..src > sh
+     $ ./helloworld
+     Hello, 世界
+   < src..
+
+   Hemos etiquetado cada ejemplo significativo como un recordatorio de que
+   puede obtener el codigo fuente del libro desde el repositorio en
+   @l(http://www.gopl.io/<>(gopl.io): @l(http://www.gopl.io/ch1/helloworld<>gopl.io/ch1/helloworld)
+
+   Si ejecuta @$(go get gopl.io/ch1/helloworld), se obtendra el codigo fuente y
+   lo coloca en el directorio correspondiente. Hay mas informacion sobre este
+   tema en la @l(#Seccion 2.6) y la @l(#Seccion 10.7).
+
+   Hablemos ahora del programa en si. El codigo Go esta organizado en paquetes,
+   que son similares a librerias o modulos en otros lenguajes. Un paquete se
+   compone de uno o mas archivos de codigo @f(.go) en un unico directorio que
+   definen lo que hace el paquete. Cada archivo de codigo inicia con una
+   declaracion del paquete, aqui es @c(package main), que declara a que paquete
+   pertenece el archivo, seguido de una lista de otros paquetes que importa, y
+   luego las declaraciones del programa que se almacena en el archivo.
+
+   La libreria estandar de Go tiene mas de 100 paquetes para tareas comunes como
+   entrada y salida, clasificacion y manipulacion de texto. Por ejemplo, el
+   paquete @c(fmt) contiene funciones para la impresion y entrada de datos con
+   formato. @c(Println) es una de las funciones de basicas de salida en @c(fmt);
+   esta imprime uno o mas valores, separados por espacios, con un caracter de
+   nueva linea al final para que los valores aparezcan como una sola linea de
+   salida.
+
+   El paquete @c(main) es especial. Define un programa ejecutable independiente,
+   no una libreria. Dentro del paquete @c(main) la @e(funcion) @c(main) tambien
+   es especial–es donde comienza la ejecucion del programa. Cualquier cosa que
+   haga @c(main) es lo que hara el programa. Por supuesto, @c(main) sera
+   normalmente un llamado a las funciones de otros paquetes que hacen gran parte
+   del trabajo, tales como la funcion @c(fmt.Println).
+
+   Debemos decirle al compilador que paquetes son necesarios por este archivo de
+   codigo fuente; ese es el papel de la declaracion @c(import) seguida por la
+   declaracion del @c(paquete). El programa @"(hola, mundial) utiliza solo una
+   funcion de otro paquete, pero en la mayoria de los programas se importaran
+   mas paquetes.
+
+   Debe importar exactamente los paquetes que necesita. Un programa no compilara
+   si hay importaciones que faltan o si son innecesarias. Este estricto
+   requisito impide que las referencias a paquetes no utilizados se acumulen a
+   medida que los programas evolucionan.
+
+   Las declaraciones @c(import) deben ir luego de la declaracion
+   @c(package). Despues de eso, un programa consiste en la declaracion de
+   funciones, variables, constantes y tipos (introducidos por las palabras clave
+   @c(func), @c(var), @c(const), y @c(type)); En su mayor parte, el orden de las
+   declaraciones no importa. Este programa es lo mas corto posible, ya que
+   declara solo una funcion, que a su vez solo llama a otra funcion. Para
+   ahorrar espacio en la presentacion de ejemplos, a veces no mostramos las
+   declaraciones @c(package) e @c(import), pero estaran en el codigo del archivo
+   y debemos estar alli para compilar el codigo.
+
+   Una declaracion de funcion consiste en la palabra clave @c(func), el nombre
+   de la funcion, una lista de parametros (vacia para @c(main)), una lista de
+   resultados (aqui tambien vacia), y el cuerpo de la funcion–las declaraciones
+   que definen lo que hace–encerradas entre llaves. Vamos a echar un vistazo mas
+   de cerca a las funciones en el @l(#Capitulo 5).
+
+   Go no requiere punto y coma al final de las sentencias o declaraciones,
+   excepto donde aparecen dos o mas en la misma linea. En efecto, las nuevas
+   lineas que siguen ciertas palabras se convierten en punto y coma, por lo que
+   cuando se colocan nuevas lineas se colocan en funcion del correcto analisis
+   del codigo Go. Por ejemplo, la llave de apertura @c({) de la funcion, debe
+   estar en la misma linea, que el final de la declaracion @c(func), no en una
+   linea distinta, y en la expresion @c(x + y), se permite un salto de linea
+   despues, pero no antes del operador @c(+).
+
+   Go toma una fuerte postura en el formato del codigo. La herramienta @$(gofmt)
+   reescribe el codigo en el formato estandar, y el subcomando @$(fmt) de la
+   herramienta @$(go) aplica @$(gofmt) a todos los archivos en el paquete
+   especificado, o por defecto, a los que estan en el directorio actual.  Se ha
+   ejecutado @$(gofmt) sobre todos los archivos de codigo fuente en el libro, y
+   usted debe optener el habito de hacer lo mismo con su propio codigo. Declarar
+   un formato estandar por mandato elimina un monton de debate inutil sobre
+   trivialidades y, lo que es mas importante, permite una variedad de
+   transformaciones automatizadas de codigo fuente que serian imposibles si se
+   permitiera el formato arbitrario.
+
+   Muchos editores de texto pueden ser configurados para ejecutar @$(gofmt) cada
+   vez que se guarda un archivo, por lo que su codigo fuente siempre tendra el
+   formato apropiado. Una herramienta relacionada, @$(goimports) , ademas,
+   gestiona la insercion y extraccion de las declaraciones de importacion, segun
+   sea necesario. No es parte de la distribucion estandar pero se puede obtener
+   con este comando:
+
+   ..src > sh
+     $ go get golang.org/x/tools/cmd/goimports
+   < src..
+
+   Para la mayoria de los usuarios, la forma habitual de descargar y construir
+   paquetes, ejecutar pruebas, mostrar su documentacion, y asi sucesivamente, es
+   con la herramienta @$(go), que vamos a ver en la @l(#Seccion 10.7).
+
+** Seccion 1.2 <> Argumentos de la linea de comandos
+
+   La mayoria de los programas procesan alguna entrada para producir alguna
+   salida; Que es mas o menos la definicion de la computacion. Pero, ¿como un
+   programa obtiene datos de entrada para operar? Algunos programas generan sus
+   propios datos, pero mas a menudo, la entrada proviene de una fuente externa:
+   un archivo, una conexion de red, la salida de otro programa, un usuario en un
+   teclado, argumentos de linea de comandos o similares. Los siguientes ejemplos
+   discutiran algunas de estas alternativas, comenzando con argumentos de linea
+   de comandos.
+
+   El paquete @c(os) proporciona funciones y otros valores para relacionarse con
+   el sistema operativo de una manera independiente de la plataforma. Los
+   argumentos de linea de comandos estan disponibles para un programa en una
+   variable denominada @c(Args) que forma parte del paquete @c(os); por lo tanto
+   su nombre en cualquier lugar fuera del paquete @c(os) es @c(os.Args).
+
+   Las variables @c(os.Args) es una @e(slice) de strings. Los slices son una
+   nocion fundamental en Go, y hablaremos mucho mas sobre ellos pronto. Por
+   ahora, piensa en un slice como una secuencia @c(s) de elementos de un arreglo
+   de tamaño dinamico, donde los elementos individuales pueden accederse como
+   @c(s[i]) y una subsecuencia contigua como @c(s[m:n]). El numero de elementos esta
+   dado por @c[len(s)]. Como en la la mayoria de los otros lenguajes de
+   programacion, toda  indexacion en Go utiliza intervalos @e(semiabiertos)
+   que incluyen el primer indice, pero no incluyen el ultimo, ya que simplifica
+   la logica. Por ejemplo, el slice  @c(s[m:n]), donde @c[0 ≤ m ≤ n ≤ len(s)],
+   contiene @c(n-m) elementos.
+
+   El primer elemento de @c(os.Args), @c(os.Args[0]), es el nombre del comando
+   en si; Los otros elementos son los argumentos que se ofresieron al programa
+   cuando se inicio la ejecucion. Una expresion de la forma @c(s[m:n]) produce
+   un slice que hace referencia a los elementos entre @c(m) y @c(n-1), por lo
+   que los elementos que necesitamos para nuestro siguiente ejemplo corresponden
+   al slice @c{os.Args[1:len(os.Args)]}. Si @c(m) o @c(n) se omite, el valor
+   predeterminado es 0 o @c[len(s)], respectivamente, por lo que se puede
+   abreviar el slice deseado como @c(os.Args[1:]).
+
+   Aqui esta una implementacion del comando @$(echo) de Unix, que imprime sus
+   argumentos de linea de comandos en una sola linea. Importa dos paquetes, que
+   se dan como una lista entre parentesis en lugar de como declaraciones de
+   importacion individuales. Cualquiera de las formas es legal, pero
+   convencionalmente se utiliza el formato de lista. El orden de las
+   importaciones no importa; la herramienta @$(gofmt) ordena los nombres de los
+   paquetes en orden alfabetico. (Cuando hay varias versiones de un ejemplo, a
+   menudo las numeraremos para que pueda estar seguro de cual estamos hablando.)
+
+   ..figure > @l(gopl.io/ch1/echo1/main.go<>gopl.io/ch1/echo1)
+
+     ..src > go
+       // Echo1 imprime sus argumentos de linea de comandos
+       package main
+
+       import (
+         "fmt"
+         "os"
+       )
+
+       func main() {
+         var s, sep string
+         for i := 1; i < len(os.Args); i++ {
+           s += sep + os.Args[i]
+           sep = " "
+         }
+         fmt.Println(s)
+       }
+     < src..
+
+
+   Los comentarios comienzan con @c(//). Todo el texto desde @c(//) hasta el
+   final de la linea es el comentario para los programadores y es ignorado por
+   el compilador. Por convencion, describimos cada paquete en un comentario
+   inmediatamente anterior a su declaracion del paquete; para un paquete
+   @c(main), este comentario es una o varias frases completas que describen el
+   programa en su conjunto.
+
+   La declaracion @c(var) declara dos variables @c(s) y @c(sep), de tipo
+   @c(string). Una variable se puede inicializar como parte de su
+   declaracion. Si no se inicia de forma explicita, se inicializa de forma
+   implicita al @e(valor cero) para su tipo, que es 0 para los tipos numericos y
+   la cadena vacia "" para strings. Asi, en este ejemplo, la declaracion
+   implicita inicializa @c(s) y @c(sep) como cadenas vacias. Tendremos mas que
+   decir acerca de las variables y las declaraciones en el @l(#Capitulo 2).
+
+   Para los numeros, Go proporciona los operadores aritmeticos y logicos
+   habituales. Cuando se aplica a las cadenas, sin embargo, el operador @c(+)
+   @e(concatena) los valores, por lo que la expresion
+
+   ..src > go
+     sep + os.Args[i]
+   < src..
+
+   representa la concatenacion de las cadenas @c(sep) y @c(os.Args[i]) . La
+   declaracion que usamos en el programa,
+
+   ..src > go
+     s += sep + os.Args[i]
+   < src..
+
+   es una @e(sencencia de asignacion) que concatena el antiguo valor de @c(s) con @c(sep)
+   y @c(os.Args[i]) y lo asigna de nuevo a @c(s); Es equivalente a
+
+   ..src > go
+     s = s + sep + os.Args[i]
+   < src..
+
+   El operador @c(+=) es un operador de asignacion. Cada operador aritmetico y
+   logico como @c(+) o @c(*) tiene un operador de asignacion correspondiente.
+
+   El programa @$(echo) podria haber impreso su salida en un bucle de una sola
+   pieza a la vez, pero en esta version, en su lugar se acumula una cadena
+   añadiendo repetidamente nuevo texto hasta el final. La cadena de @c(s)
+   comienza su vida vacia, es decir, con el valor "", y cada ciclo a traves del
+   bucle añade un poco de texto a ella; Despues de la primera iteracion, tambien
+   se inserta un espacio para que cuando el bucle este terminado, haya un
+   espacio entre cada argumento. Este es un proceso cuadratico que podria ser
+   costoso si el numero de argumentos es grande, pero para @$(echo), eso es poco
+   probable. Vamos a mostrar una serie de versiones mejoradas de @$(echo) en
+   este capitulo y el siguiente para hacer frente a cualquier ineficiencia real.
+
+   El indice variable @c(i) de bucle se declara en la primera parte del bucle
+   @c(for). El @c(:=) simbolo es parte de una @e(declaracion de variables
+   compacta), una sentencia que declara una o mas variables y les da los tipos
+   apropiados basados en los valores del inicializador; Hay mas informacion al
+   respecto en el proximo capitulo.
+
+   La declaracion de incremento @c(i++) añade 1 a @c(i); que es equivalente a
+   @c(i += 1), que es a su vez equivalente a @c(i = i + 1). Hay una declaracion
+   de decremento correspondiente @c(i--) que resta 1. Estas son declaraciones,
+   no expresiones como lo son en la mayoria de los lenguajes en la familia C,
+   por lo que @c(j = i++) es ilegal, y solamente son de sufijo, asi @c(--i)
+   tampoco es legal.
+
+   El bucle @c(for) es la unica sentencia de bucle en Go. Tiene una serie de formas,
+   una de las cuales se ilustra aqui:
+
+   ..src > go
+     for inicializacion; condicion; incremento {
+         // zero or more statements
+     }
+   < src..
+
+   Los parentesis no se utilizan nunca alrededor de los tres componentes de un
+   bucle @c(for). Las llaves son obligatorios, sin embargo, y la llave de apertura
+   deben estar en la misma linea que la declaracion @c(incremento).
+
+   La declaracion opcional @c(inicializacion) se ejecuta antes de que comience
+   el bucle. Si esta presente, debe ser una simple declaracion, es decir, una
+   declaracion de variables compacta, una declaracion de incremento o asignacion, o
+   una llamada a funcion. La @c(condition) es una expresion booleana que se
+   evalua en al inicio de cada iteracion del bucle; si se evalua como @c(true),
+   las declaraciones controladas por el bucle se ejecutan. La declaracion
+   @c(incremento) se ejecuta despues del cuerpo del bucle, luego la
+   @c(condicion) se evalua de nuevo. El bucle termina cuando la condicion se
+   convierte en falsa.
+
+   Cualquiera de estas partes puede omitirse. Si no hay @c(inicializacion) y
+   ningun @c(incremento), el punto y coma tambien pueden omitirse:
+
+   ..src > go
+     // un tradicional bucle "while"
+     for condicion {
+         // ...
+     }
+   < src..
+
+   Si la condicion se omite totalmente en cualquiera de estas formas, por
+   ejemplo en
+
+   ..src > go
+     // un tradicional bucle infinito
+     for {
+         // ...
+     }
+   < src..
+
+   el bucle es infinito, aunque los bucles de esta forma se pueden terminar de
+   alguna otra forma, como una declaracion @c(break) o @c(return).
+
+   Otra forma en que el bucle @c(for) itera, es sobre un @e(rango) de valores de
+   un tipo de datos como un string o un slice. Para ilustrar esto, he aqui una
+   segunda version de @$(echo):
+
+   ..figure > @l(gopl.io/ch1/echo2/main.go<>gopl.io/ch1/echo2)
+
+     ..src > go
+       // Echo2 imprime sus argumentos de linea de comandos
+       package main
+
+       import (
+         "fmt"
+         "os"
+       )
+
+       func main() {
+         s, sep := "", ""
+         for _, arg := range os.Args[1:] {
+           s += sep + arg
+           sep = " "
+         }
+         fmt.Println(s)
+       }
+     < src..
+
+
+   En cada iteracion del bucle, @c(range) produce un par de valores: el indice y
+   el valor del elemento en ese indice. En este ejemplo, no necesitamos el
+   indice, pero la sintaxis de un bucle @c(range) requiere que si tratamos con
+   el elemento, debemos tratar tambien con el indice. Una idea seria asignar el
+   indice a una variable temporal, como @c(temp) y pasar por alto su valor, pero
+   Go no permite tener variables locales sin utilizar, por lo que esto daria
+   lugar a un error de compilacion.
+
+   La solucion es utilizar el @e(identificador en blanco), cuyo nombre es @c(_)
+   (esto es, un guion bajo). El identificador en blanco puede utilizarse siempre
+   que la sintaxis requiera un nombre de variable, pero la logica del programa
+   no lo haga, por ejemplo para descartar un indice no deseado del bucle cuando
+   solo necesitamos el valor del elemento. La mayoria de los programadores Go
+   probablemente usarian @c(range) y @c(_) para escribir el programa @$(echo)
+   anterior, ya que la indexacion sobre @c(os.Args) es implicita, no explicita,
+   y por lo tanto mas facil de hacerlo bien.
+
+   Esta version del programa utiliza una breve declaracion de variables para
+   declarar e inicializar @c(s) y @c(sep), pero podria igualmente haber declarado las
+   variables por separado. Hay varias maneras de declarar una variable de
+   cadena; Todas estas son equivalentes:
+
+   ..src > go
+     s := ""
+     var s string
+     var s = ""
+     var s string = ""
+   < src..
+
+   Por que usted deberia preferir una forma sobre otra? El primer formato, una
+   declaracion de variable compacta, es el mas compacto, pero puede ser utilizado
+   solo dentro de una funcion, no para variables de nivel de paquete. La segunda
+   forma se basa en la inicializacion por defecto al valor cero para strings,
+   que es @c("") . La tercera forma se utiliza raramente excepto cuando se
+   declaran multiples variables. La cuarta forma es explicita sobre el tipo de
+   la variable, que es redundante cuando es el mismo que el del valor inicial
+   pero necesario en otros casos donde no son del mismo tipo. En la practica,
+   generalmente debe utilizar una de las dos primeras formas, con inicializacion
+   explicita para decir que el valor inicial es importante e implicita para
+   decir que el valor inicial no importa.
+
+   Como se señalo anteriormente, cada iteracion alrededor del bucle, la cadena
+   @c(s) obtiene contenidos completamente nuevos. La declaracion @c(+=) crea una
+   nueva cadena mediante la concatenacion de la cadena antigua, un caracter de
+   espacio, y el siguiente argumento, a continuacion, asigna la nueva cadena a
+   @c(s). El contenido antiguo del @c(s) ya no estan en uso, por lo que sera
+   recolectado por el recolector de basura en su debido momento.
+
+   Si la cantidad de datos involucrados es grande, esto podria ser costoso. Una
+   solucion mas simple y mas eficiente seria utilizar la funcion @c(Join) del
+   paquete @c(strings):
+
+   ..figure > @l(gopl.io/ch1/echo3/main.go<>gopl.io/ch1/echo3)
+
+     ..src > go
+       func main() {
+         fmt.Println(strings.Join(os.Args[1:], " "))
+       }
+     < src..
+
+
+   Por ultimo, si no nos interesa el formato, pero solo queremos ver los
+   valores, tal vez para depurar, podemos dejar que @c(Println) formatee el
+   resultado por nosotros:
+
+   ..src > go
+     fmt.Println(os.Args[1:])
+   < src..
+
+   El resultado de esta sentencia es como la que se pueden conseguir mediante
+   @c(strings.Join), pero con corchetes al rededor. Cualquier slice se puede
+   imprimir de esta manera.
+
+   @b(Ejercicio 1.1): Modificar el programa @$(echo) para imprimir tambien
+   @c(os.Args[0]), el nombre del comando que lo invoco.
+
+   @b(Ejercicio 1.2): Modificar el programa @$(echo) para imprimir el indice y el
+   valor de cada uno de sus argumentos, uno por linea.
+
+   @b(Ejercicio 1.3): Experimento para medir la diferencia en el tiempo de
+   funcionamiento entre nuestras versiones potencialmente ineficientes y el que
+   utiliza @c(strings.Join). ( La @l(#Seccion 1.6) ilustra parte del paquete
+   @c(time), y la @l(#Seccion 11.4) muestra como escribir pruebas de referencia
+   para la evaluacion sistematica del rendimiento.)
+
+** Seccion 1.3 <> Encontrar lineas duplicadas
+
+   Los programas para copiar archivos, imprimir, buscar, clasificar, contar y
+   similares tienen una estructura similar: un bucle sobre la entrada, algun
+   calculo sobre cada elemento y generacion de salida al vuelo o al
+   final. Mostraremos tres variantes de un programa llamado @$(dup); se inspira
+   en parte por el comando Unix @$(uniq), que mira las lineas duplicadas
+   adyacentes. Las estructuras y paquetes utilizados son modelos que se pueden
+   adaptar facilmente.
+
+   La primer version del @$(dup) imprime cada linea que aparece mas de una vez en
+   la entrada estandar, precedido por su recuento. Este programa presenta la declaracion
+   @c(if), el  tipo de datos @c(map) y el paquete @c(bufio).
+
+   ..figure > @l(gopl.io/ch1/dup1/main.go<>gopl.io/ch1/dup1)
+
+     ..src > go
+       // Dup1 imprime el texto de cada linea que aparece mas de
+       // una vez en la entrada estandar, precedida por su recuento.
+       package main
+
+       import (
+         "bufio"
+         "fmt"
+         "os"
+       )
+
+       func main() {
+         counts := make(map[string]int)
+         input := bufio.NewScanner(os.Stdin)
+         for input.Scan() {
+           counts[input.Text()]++
+         }
+         // NOTA: ignorando posibles errores de input.Err ()
+         for line, n := range counts {
+           if n > 1 {
+             fmt.Printf("%d\t%s\n", n, line)
+           }
+         }
+       }
+     < src..
+
+
+   Al igual que con @c(for), nunca se usan parentesis alrededor de la
+   declaracion de la condicion @c(if), pero se requieren llaves para el
+   cuerpo. Puede haber una parte @c(else) opcional que se ejecute si la
+   condicion es falsa.
+
+   Un @e(mapa) contiene un conjunto de pares clave/valor y proporciona
+   operaciones de tiempo constante para almacenar, recuperar, o comprobar un
+   elemento en el conjunto. La clave puede ser de cualquier tipo cuyos valores
+   puedan compararse con @c(==), siendo strings el ejemplo mas comun; El valor
+   puede ser de cualquier tipo en absoluto. En este ejemplo, las claves son
+   @c(string)s, y los valores son @c(int)s. La funcion incorporada @c(make) crea
+   un nuevo mapa vacio; Tiene otros usos tambien. Los mapas se discuten
+   extensamente en la @l(#Seccion 4.3).
+
+   Cada vez @$(dup) lee una linea de entrada, la linea se utiliza como una clave
+   en el mapa y se incrementa el valor correspondiente. La declaracion
+   @c{counts[input.Text()]++} es equivalente a estas dos afirmaciones:
+
+   ..src > go
+     line := input.Text()
+     counts[line] = counts[line] + 1
+   < src..
+
+   No es un problema, si el mapa aun no contiene esa clave. La primera vez que
+   se ve una nueva linea, la expresion @c(counts[line]) en el lado derecho se
+   evalua al valor cero para su tipo, que es 0 para @c(int).
+
+   Para imprimir los resultados, utilizamos otro bucle de repeticion @c(for)
+   basado en @c(range), esta vez sobre el mapa @c(counts). Como antes, cada
+   iteracion produce dos resultados, una clave y el valor del elemento del mapa
+   para esa clave. El orden de la iteracion del mapa no es especifico, en la
+   practica es aleatorio, variando de una ejecucion a otra. Este diseño es
+   intencional, ya que impide que los programas se basen en cualquier orden
+   particular donde no se garantiza ninguno.
+
+   El paquete @c(bufio), ayuda a que la entrada y salida sea eficiente y
+   conveniente. Una de sus caracteristicas mas utiles es un tipo llamado
+   @c(Scanner) que lee la entrada y la rompe en lineas o palabras; A menudo es
+   la manera mas facil de procesar la entrada que llega naturalmente en lineas.
+
+   El programa utiliza una breve declaracion de variables para crear una nueva
+   variable de entrada que hace referencia a @c(bufio.Scanner):
+
+   ..src > go
+     input := bufio.NewScanner(os.Stdin)
+   < src..
+
+   El escaner lee de la entrada estandar del programa. Cada llamada a
+   @c[input.Scan()] lee la siguiente linea y elimina el caracter de nueva linea
+   al final; el resultado puede ser recuperado llamando a @c[input.Text()]. La
+   funcion @c(Scan) devuelve @c(true) si hay una linea y @c(false) cuando no hay
+   mas entrada.
+
+   La funcion @c(fmt.Printf), como @c(printf) en C y otros lenguajes, produce
+   una salida con formato de una lista de expresiones. Su primer argumento es
+   una cadena de formato que especifica como deben formatearse los argumentos
+   posteriores. El formato de cada argumento esta determinado por un caracter de
+   conversion, una letra siguiendo un signo de porcentaje. Por ejemplo, @c(%d)
+   formatea un operando entero usando la notacion decimal, y @c(%s) se expande
+   para el valor de un operando de cadena.
+
+   @c(Printf) tiene mas de una docena de estas conversiones, que los
+   programadores de Go llaman @e(verbos). Esta tabla esta lejos de ser una
+   especificacion completa, pero ilustra muchas de las caracteristicas que estan
+   disponibles:
+
+   | @c(%d)                 | entero decimal                                                     |
+   |------------------------|--------------------------------------------------------------------|
+   | @c(%x), @c(%o), @c(%b) | entero en hexadecimal, octal, binario                              |
+   |------------------------|--------------------------------------------------------------------|
+   | @c(%f), @c(%g), @c(%e) | numero de coma flotante: 3.141593 3.141592653589793 3.141593e + 00 |
+   |------------------------|--------------------------------------------------------------------|
+   | @c(%t)                 | booleano: @c(true) o @c(false)                                     |
+   |------------------------|--------------------------------------------------------------------|
+   | @c(%c)                 | runa (punto de codigo Unicode)                                     |
+   |------------------------|--------------------------------------------------------------------|
+   | @c(%s)                 | string                                                             |
+   |------------------------|--------------------------------------------------------------------|
+   | @c(%q)                 | citar string @c("abc") o runa @c('c')                              |
+   |------------------------|--------------------------------------------------------------------|
+   | @c(%v)                 | cualquier valor en un formato natural                              |
+   |------------------------|--------------------------------------------------------------------|
+   | @c(%T)                 | cualquier tipo de valor                                            |
+   |------------------------|--------------------------------------------------------------------|
+   | @c(%%)                 | signo literal de porcentaje (sin operando)                         |
+
+   El formato de cadena en @c(dup1) tambien contiene una tabulacion @c(\t) y un
+   salto de linea @c(\n). Los literales de cadena pueden contener tales
+   @e(secuencias de escape) para la representacion de caracteres de otra manera
+   invisibles. @c(Printf) no escribe una nueva linea por defecto. Por
+   convencion, las funciones de formato cuyos nombres terminan en f, tales como
+   @c(log.Printf) y @c(fmt.Errorf), utilizan las reglas de formato de
+   @c(fmt.Printf), mientras que aquellas cuyos nombres terminan en @c(ln) como
+   @c(Println), formatean sus argumentos con %v, seguido por una nueva linea.
+
+   Muchos programas leen ya sea a partir de su entrada estandar, como
+   anteriormente, o de una secuencia de archivos con nombre. La proxima version
+   de @$(dup) puede leer desde la entrada estandar o manejar una lista de
+   nombres de archivos, utilizando @c(os.Open) para abrir cada uno de ellos:
+
+   ..figure > @l(gopl.io/ch1/dup2/main.go<>gopl.io/ch1/dup2)
+
+     ..src > go
+       // Dup2 imprime el recuento y el texto de las lineas que aparecen mas de una vez
+       // en la entrada.  Se lee desde stdin o desde una lista de archivos con nombre.
+       package main
+
+       import (
+         "bufio"
+         "fmt"
+         "os"
+       )
+
+       func main() {
+         counts := make(map[string]int)
+         files := os.Args[1:]
+         if len(files) == 0 {
+           countLines(os.Stdin, counts)
+         } else {
+           for _, arg := range files {
+             f, err := os.Open(arg)
+             if err != nil {
+               fmt.Fprintf(os.Stderr, "dup2: %v\n", err)
+               continue
+             }
+             countLines(f, counts)
+             f.Close()
+           }
+         }
+         for line, n := range counts {
+           if n > 1 {
+             fmt.Printf("%d\t%s\n", n, line)
+           }
+         }
+       }
+
+       func countLines(f *os.File, counts map[string]int) {
+         input := bufio.NewScanner(f)
+         for input.Scan() {
+           counts[input.Text()]++
+         }
+         // NOTE: Ignora errores potenciales de input.Err()
+       }
+     < src..
+
+
+   La funcion @c(os.Open) devuelve dos valores. El primero es un archivo abierto
+   (@c(*os.File)) que se utiliza en lecturas posteriores por @c(Scanner).
+
+   El segundo resultado de @c(os.Open) es un valor nativo de tipo @c(error). Si
+   @c(err) es igual al valor especial nativo @c(nil), el archivo fue abierto
+   correctamente. El archivo se lee, y cuando se llega al final de la entrada,
+   @c(Close) cierra el archivo y libera cualquier recurso. Por otro lado, si
+   @c(err) no es @c(nil), algo salio mal. En ese caso, el valor de error
+   describe el problema. Nuestra sencillo manejo de errores imprime un mensaje
+   en el flujo de error estandar utilizando @c(Fprintf) y el verbo @c(%v), que
+   muestra un valor de cualquier tipo en un formato predeterminado, y luego
+   @c(dup) continua con el siguiente archivo; la instruccion @c(continue) va a
+   la siguiente iteracion del bucle @c(for).
+
+   Con el fin de mantener los ejemplos de codigo de un tamaño razonable,
+   nuestros primeros ejemplos son intencionalmente un tanto descuidados en el
+   manejo de errores. Es evidente que hay que comprobar si hay un error de parte
+   de @c(os.Open); Sin embargo, estamos ignorando la menos probable posibilidad
+   de que pueda producirse un error al leer el archivo con @c(input.Scan).
+   Anotaremos los lugares donde hemos omitido la comprobacion de errores,
+   entraremos en detalles sobre el manejo de errores en la @l(#Seccion 5.4).
+
+   Observe que la llamada a @c(countLines) precede a su declaracion. Las
+   funciones y otras entidades a nivel de paquete se pueden declarar en
+   cualquier orden.
+
+   Un mapa es una referencia a la estructura de datos creada por @c(make).
+   Cuando un mapa se pasa a una funcion, la funcion recibe una copia de la
+   referencia, De modo que cualquier cambio que haga la funcion llamada en la
+   estructura de datos subyacente, sera tambien visible a traves de la
+   referencia del mapa del llamador. En nuestro ejemplo, los valores insertados
+   en el mapa @c(counts) por @c(countLines) son vistos por @c(main).
+
+   Las versiones anteriores de @$(dup) operan en un modo @"(streaming) en el que
+   la entrada se lee y divide en lineas segun sea necesario, por lo que, en
+   principio, estos programas pueden manejar una cantidad arbitraria de
+   entrada. Un enfoque alternativo es leer la entrada entera en la memoria de un
+   solo trago, dividirlo en lineas a la vez, y luego procesar las lineas. La
+   siguiente version, @$(dup3), funciona de esa manera. Se introduce la funcion
+   @c(ReadFile) (del paquete @c(io/ioutil)), que lee todo el contenido de un
+   archivo, y @c(strings.Split), que divide una cadena en una slice de
+   subcadenas. ( @c(Split) es lo contrario de @c(strings.Join), que vimos
+   anteriormente.)
+
+   Hemos simplificado un poco @$(dup3). En primer lugar, solo lee archivos por
+   su nombre, no la entrada estandar, ya que @c(ReadFile) requiere como
+   argumento un nombre de archivo. En segundo lugar, se paso el conteo de las
+   lineas de nuevo a @c(main), ya que ahora solo es necesario un solo lugar.
+
+   ..figure > @l(gopl.io/ch1/dup3/main.go<>gopl.io/ch1/dup3)
+
+     ..src > go
+       package main
+
+       import (
+         "fmt"
+         "io/ioutil"
+         "os"
+         "strings"
+       )
+
+       func main() {
+         counts := make(map[string]int)
+         for _, filename := range os.Args[1:] {
+           data, err := ioutil.ReadFile(filename)
+           if err != nil {
+             fmt.Fprintf(os.Stderr, "dup3: %v\n", err)
+             continue
+           }
+           for _, line := range strings.Split(string(data), "\n") {
+             counts[line]++
+           }
+         }
+         for line, n := range counts {
+           if n > 1 {
+             fmt.Printf("%d\t%s\n", n, line)
+           }
+         }
+       }
+     < src..
+
+
+   @c(ReadFile) devuelve un slice de @c(byte)s que se debe convertirse en un
+   @c(string) para que pueda ser dividido por @c(strings.Split). Vamos a
+   discutir los strings y slices de bytes en detalle en la @l(#Seccion 3.5.4).
+
+   Bajo la cubierta, @c(bufio.Scanner), @c(ioutil.ReadFile) y
+   @c(ioutil.WriteFile) utilizan los metodos @c(Read) y @c(Write) de
+   @c(*os.File), pero es raro que la mayoria de los programadores necesiten
+   acceder directamente a las rutinas de bajo nivel. Las funciones de nivel
+   superior como @c(bufio) y @c(io/ioutil) son mas faciles de usar.
+
+   @b(Ejercicio 1.4): Modificar @$(dup2) para imprimir los nombres de todos los
+   archivos en los que se produce cada linea duplicada.
+
+** Seccion 1.4 <> GIF animados
+
+   El siguiente programa demuestra el uso basico de los paquetes de imagenes
+   estandar en Go, que usaremos para crear una secuencia de imagenes de mapa de
+   bits y luego codificar la secuencia como una animacion GIF. Las imagenes,
+   llamadas @e(figuras de Lissajous), eran un efecto visual basico en peliculas
+   de ciencia ficcion de la decada de 1960. Son las curvas parametricas
+   producidas por oscilacion armonica en dos dimensiones, tales como dos ondas
+   sinusoidales alimentados en el entradas @m(x) e @m(y) de un osciloscopio. La
+   Figura 1.1 muestra algunos ejemplos.
+
+   ..figure > Figura 1.1. Cuatro figuras de Lissajous.
+
+     ..img > img/Figure-1.1.jpg
+
+
+     Hay varias nuevas construcciones en este codigo, incluyendo declaraciones
+     const, tipos de estructura, y literales compuestos. A diferencia de la
+     mayoria de nuestros ejemplos, este tambien implica calculos de punto
+     flotante.  Aqui vamos a discutir estos temas solo brevemente, desplazando
+     la mayoria de los detalles a los capitulos posteriores, ya que el objetivo
+     principal en este momento es darle una idea de como se ve Go y el tipo de
+     cosas que se pueden hacer facilmente con el lenguaje y sus librerias.
+
+   ..figure > @l(gopl.io/ch1/lissajous/main.go<>gopl.io/ch1/lissajous)
+
+     ..src > go
+       // Lissajous genera GIF animados de figuras Lissajous aleatorias.
+       package main
+
+       import (
+         "image"
+         "image/color"
+         "image/gif"
+         "io"
+         "math"
+         "math/rand"
+         "os"
+       )
+
+       var palette = []color.Color{color.White, color.Black}
+
+       const (
+         whiteIndex = 0 // primer color en la paleta
+         blackIndex = 1 // siguiente color en la paleta
+       )
+
+       func main() {
+         lissajous(os.Stdout)
+       }
+
+       func lissajous(out io.Writer) {
+         const (
+           cycles  = 5     // numero de revoluciones completas del oscilador x
+           res     = 0.001 // resolucion angular
+           size    = 100   // dimencion de la imagen [-size..+size]
+           nframes = 64    // numero de cuadros de animacion
+           delay   = 8     // retardo entre fotogramas en unidades de 10ms
+         )
+         freq := rand.Float64() * 3.0 // frecuencia relativa del oscilador y
+         anim := gif.GIF{LoopCount: nframes}
+         phase := 0.0 // diferencia de fase
+         for i := 0; i < nframes; i++ {
+           rect := image.Rect(0, 0, 2*size+1, 2*size+1)
+           img := image.NewPaletted(rect, palette)
+           for t := 0.0; t < cycles*2*math.Pi; t += res {
+             x := math.Sin(t)
+             y := math.Sin(t*freq + phase)
+             img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5),
+               blackIndex)
+           }
+           phase += 0.1
+           anim.Delay = append(anim.Delay, delay)
+           anim.Image = append(anim.Image, img)
+         }
+         gif.EncodeAll(out, &anim) // NOTA: Ignorados errores de codificacion
+       }
+     < src..
+
+
+   Despues de importar un paquete cuya ruta tiene multiples componentes, como
+   @c(image/color), nos referimos al paquete con el nombre que procede del
+   ultimo componente. Por lo tanto la variable @c(color.White) pertenece al
+   paquete @c(image/color) y @c(gif.GIF) pertenece a @c(image/gif).
+
+   Una declaracion @c(const) (@l(#Seccion 3.6<>§3.6)) da nombres a las
+   constantes, es decir, valores que se establecen en tiempo de compilacion,
+   tales como los parametros numericos para ciclos, cuadros, y el retardo. Igual
+   a las declaraciones @c(var), las declaraciones @c(const) pueden aparecer a
+   nivel de paquete (por lo que los nombres son visibles en todo el paquete) o
+   dentro de una funcion (por lo que los nombres son visibles solo dentro de esa
+   funcion). El valor de una constante debe ser un numero, una cadena o un
+   booleano.
+
+   Las expresiones @c([]color.Color{...}) y @c(gif.GIF{...}) son @e(literales
+   compuestos) (@l(#Seccion 4.2<>§4.2), @l(#Seccion 4.4.1<>§4.4.1)), una
+   notacion compacta de Go para instanciar cualquiera de los tipos compuestos de
+   una secuencia de valores de los elementos. Aqui, la primera es un slice y
+   la segunda es una @e(estructura).
+
+   El tipo @c(gif.GIF) es de tipo struct (@l(#Seccion 4.4<>§4.4)). Una
+   estructura es un grupo de valores denominados @e(campos), a menudo de
+   diferentes tipos, que se recogen juntos en un unico objeto que puede tratarse
+   como una unidad. La variable @c(anim) es una estructura de tipo
+   @c(gif.GIF). La estructura literal crea un valor estructura cuyo campo
+   @c(LoopCount) se establece en @c(nframes); Todos los demas campos tienen el
+   valor cero para su tipo. Los campos individuales de una estructura se puede
+   acceder usando la notacion punto, al igual que en las dos ultimas
+   asignaciones que actualizan de forma explicita los campos @c(Delay) e
+   @c(Image) de @c(anim).
+
+   La funcion @c(lissajous) tiene dos bucles anidados. El bucle exterior se
+   ejecuta 64 iteraciones, cada una produciendo un solo fotograma de la
+   animacion. Crea una nueva imagen de 201x201 con una paleta de dos colores,
+   blanco y negro. Todos los pixeles se ajustan inicialmente al valor cero de la
+   paleta (el color cero de la paleta), que se establece en blanco. Cada paso a
+   traves del bucle interno genera una nueva imagen estableciendo algunos
+   pixeles en negro. El resultado se añade a una lista de cuadros en @c(anim)
+   utilizando la funcion incorporada @c(append) (@l(#Seccion 4.2.1<>§4.2.1)),
+   junto con un retardo especificado de 80 ms. Por ultimo, la secuencia de
+   cuadros y los retrasos se codifica en formato GIF y se escribe en la salida
+   de fluje @c(out). El tipo de @c(out) es @c(io.Writer), lo que nos permite
+   escribir a una amplia gama de posibles destinos, como vamos a mostrar pronto.
+
+   El bucle interior ejecuta los dos osciladores. El oscilador @c(x) es
+   simplemente la funcion sinusoidal. El oscilador @c(y) es tambien una
+   sinusoide, pero su frecuencia es relativa a la del oscilador @c(x) un numero
+   aleatorio entre 0 y 3, y su fase relativa al oscilador @c(x) es inicialmente
+   cero, pero aumenta con cada fotograma de la animacion. El bucle se ejecuta
+   hasta que el oscilador @c(x) ha completado cinco ciclos completos. En cada
+   paso, que llaman a @c(SetColorIndex) para colorear el pixel correspondiente
+   en (@c(x), @c(y)) negro, que es en la posicion 1 de la paleta.
+
+   La funcion @c(main) llama a la funcion @c(lissajous), dirigiendola a escribir en la
+   salida estandar, por lo que este comando produce un GIF animado con marcos
+   como los de la Figura 1.1:
+
+   ..src > sh
+     $ go build gopl.io/ch1/lissajous
+     $ ./lissajous >out.gif
+   < src..
+
+   @b(Ejercicio 1.5): Cambiar la paleta de colores del programa Lissajous a
+   verde sobre negro, para mayor autenticidad. Para crear el color web
+   @c(#RRGGBB), utilice @c(color.RGBA{0xRR, 0xGG, 0xBB, 0xff}), donde cada par
+   de digitos hexadecimales representa la intensidad del componente de color
+   rojo, verde o azul del pixel.
+
+   @b(Ejercicio 1.6): Modificar el programa Lissajous para producir imagenes de
+   multiples colores mediante la adicion de mas valores a la paleta y luego
+   mostrarlos cambiando el tercer argumento de @c(SetColorIndex) de alguna
+   manera interesante.
+
+** Seccion 1.5 <>  Obtener una URL
+
+   Para muchas aplicaciones, el acceso a la informacion de Internet es tan
+   importante como el acceso al sistema de archivos local. Go ofrece una
+   coleccion de paquetes, agrupados bajo @c(net), que hacen que sea facil de
+   enviar y recibir informacion a traves de Internet, realizar conexiones de red
+   de bajo nivel, y configurar servidores, por lo que las caracteristicas de
+   concurrencia de Go (introducidas en el @l(#Capitulo 8)) son particularmente
+   utiles.
+
+   Para ilustrar el minimo necesario para recuperar la informacion a traves de
+   HTTP, aqui esta un programa simple llamado @$(fetch) que recupera el
+   contenido de cada URL y lo imprime como texto sin interpretar; esta inspirado
+   en la invaluable utilidad @$(curl) . Obviamente uno normalmente haria mas con
+   tales datos, pero esto muestra la idea basica. Usaremos este programa con
+   frecuencia en el libro.
+
+   ..figure > @l(gopl.io/ch1/fetch/main.go<>gopl.io/ch1/fetch)
+
+     ..src > go
+       // Fetch imprime el contenido encontrado en cada URL especificada.
+       package main
+
+       import (
+         "fmt"
+         "io/ioutil"
+         "net/http"
+         "os"
+       )
+
+       func main() {
+         for _, url := range os.Args[1:] {
+           resp, err := http.Get(url)
+           if err != nil {
+             fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
+             os.Exit(1)
+           }
+           b, err := ioutil.ReadAll(resp.Body)
+           resp.Body.Close()
+           if err != nil {
+             fmt.Fprintf(os.Stderr, "fetch: reading %s: %v\n", url, err)
+             os.Exit(1)
+           }
+           fmt.Printf("%s", b)
+         }
+       }
+     < src..
+
+
+   Este programa introduce funciones a partir de dos paquetes, @c(net/http) y
+   @c(io/ioutil). La funcion @c(http.Get) realiza una peticion HTTP y, si no hay
+   error, devuelve el resultado en la estructura @c(resp) . El campo @c(Body) de
+   @c(resp) contiene la respuesta del servidor como un flujo legible. A
+   continuacion, @c(ioutil.ReadAll) lee toda la respuesta; el resultado se
+   almacena en @c(b). El flujo @c(Body) es cerrado para evitar fuga de recursos
+   y @c(Printf) escribe la respuesta a la salida estandar.
+
+   ..src > sh
+     $ go build gopl.io/ch1/fetch
+     $ ./fetch http://gopl.io
+     <html>
+     <head>
+     <title>The Go Programming Language</title>
+     ...
+   < src..
+
+   Si la solicitud HTTP falla, en su lugar, @$(fetch) reportara el error:
+
+   ..src > sh
+     $ ./fetch http://bad.gopl.io
+     fetch: Get http://bad.gopl.io: dial tcp: lookup bad.gopl.io: no such host
+   < src..
+
+   En cualquiera de los casos de error, @c[os.Exit(1)] hace que el proceso
+   termine con un codigo de estado de valor 1.
+
+   @b(Ejercicio 1.7): La funcion @c[io.Copy(dst, src)] lee desde @c(src) y
+   escribe en @c(dst). Utilicelo en lugar de @c(ioutil.ReadAll) para copiar el
+   cuerpo de la respuesta a @c(os.Stdout) sin requerir un buffer lo
+   suficientemente grande como para contener todo el fluje de datos. Asegurese
+   de comprobar el resultado del error de @c(io.Copy).
+
+   @b(Ejercicio 1.8): Modificar @$(fetch) para agregar el prefijo @c(http://) a
+   cada argumento URL si este so se proporciona. Es posible que desee utilizar
+   @c(strings.HasPrefix).
+
+   @b(Ejercicio 1.9): Modificar @$(fetch) para imprimir tambien el codigo de
+   estado HTTP, que se encuentra en @c(resp.Status).
+
+** Seccion 1.6 <> Obteniendo URL Concurrentemente
+
+   Uno de los aspectos mas interesantes y novedosos de Go es su soporte para la
+   programacion concurrente. Este es un tema muy amplio, al que se dedican el
+   @l(#Capitulo 8) y el @l(#Capitulo 9), asi que por ahora le daremos solo una
+   muestra de los principales mecanismos de la concurrencia en Go, @e(gorutinas)
+   y @e(canales).
+
+   El siguiente programa, @$(fetchall), realiza la misma busqueda del contenido
+   de una URL como en el ejemplo anterior, pero obtiene muchas URL, todas al
+   mismo tiempo, de modo que el proceso no tardara mas que la busqueda mas
+   prolongada en lugar de la suma de todos los tiempos de busqueda. Esta version
+   de @$(fetchall) descarta las respuestas, pero indica el tamaño y el tiempo
+   transcurrido de cada una:
+
+   ..figure > @l(gopl.io/ch1/fetchall/main.go<>gopl.io/ch1/fetchall)
+
+     ..src > go
+       // Fetchall busca URLs en paralelo e informa de sus tiempos y tamaños.
+       package main
+
+       import (
+         "fmt"
+         "io"
+         "io/ioutil"
+         "net/http"
+         "os"
+         "time"
+       )
+
+       func main() {
+         start := time.Now()
+         ch := make(chan string)
+         for _, url := range os.Args[1:] {
+           go fetch(url, ch) // inicia una gorutina
+         }
+         for range os.Args[1:] {
+           fmt.Println(<-ch) // recibir desde el canal ch
+         }
+         fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
+       }
+
+       func fetch(url string, ch chan<- string) {
+         start := time.Now()
+         resp, err := http.Get(url)
+         if err != nil {
+           ch <- fmt.Sprint(err) // enviar al canal ch
+           return
+         }
+
+         nbytes, err := io.Copy(ioutil.Discard, resp.Body)
+         resp.Body.Close() // no pierdas recursos
+         if err != nil {
+           ch <- fmt.Sprintf("while reading %s: %v", url, err)
+           return
+         }
+         secs := time.Since(start).Seconds()
+         ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, nbytes, url)
+       }
+     < src..
+
+
+   He aqui un ejemplo:
+
+   ..src > sh
+     $ go build gopl.io/ch1/fetchall
+     $ ./fetchall https://golang.org http://gopl.io https://godoc.org
+     0.14s     6852 https://godoc.org
+     0.16s     7261 https://golang.org
+     0.48s     2475 http://gopl.io
+     0.48s elapsed
+   < src..
+
+   Una @e(gorutina) es una funcion de ejecucion concurrente. Un @e(canal) es un
+   mecanismo de comunicacion que permite a una @e(gorutina) para pasar valores
+   de un tipo especificado a otra @e(gorutina). La funcion @e(main) se ejecuta
+   en una gorutina y la sentencia @c(go) crea gorutinas adicionales.
+
+   La funcion @c(main) crea un canal de strings utilizando @c(make) . Para cada
+   argumento de linea de comandos, la sentencia @c(go) en el primer bucle inicia
+   una nueva gorutina que llama a @c(fetch) asincronamente para buscar la URL
+   usando @c(http.Get). La funcion @c(io.Copy) lee el cuerpo de la respuesta y
+   la descarta escribiendo en el flujo de salida @c(ioutil.Discard). @c(Copy)
+   devuelve el numero de bytes, junto con cualquier error que prodicido. A
+   medida que llega cada resultado, @c(fetch) envia una linea de resumen en el
+   canal @c(ch). El segundo bucle en @c(main) recibe e imprime esas lineas.
+
+   Cuando una gorutina intenta enviar o recibir en un canal, se bloquea hasta
+   que otra gorutina intente la operacion correspondiente de recepcion o envio,
+   momento en el cual se transfiere el valor y ambas gorutinas continuan. En
+   este ejemplo, cada @c(fetch) envia un valor (@e(expresion) @c(ch <-)) en el
+   canal @c(ch), y @c(main) recibe todos ellos (@c(<-ch)). Tener a @c(main)
+   haciendo toda la impresion, asegura que la salida de cada gorutina se procesa
+   como una unidad, sin el peligro de entrelazado si dos gorutinas terminan al
+   mismo tiempo.
+
+   @b(Ejercicio 1.10): Encontrar un sitio web que produce una gran cantidad de
+   datos. Investiga el almacenamiento en cache mediante la ejecucion de
+   @$(fetchall) dos veces consecutivas para ver si el tiempo reportado cambia
+   mucho. ¿Obtienes el mismo contenido cada vez? Modificar @$(fetchall) para
+   imprimir su salida a un archivo para que pueda ser examinado.
+
+   @b(Ejercicio 1.11): Pruebe @$(fetchall) con listas de argumentos mas
+   extensas, como muestras de los mejores sitios web disponibles en
+   @l(http://www.alexa.com/<>alexa.com). ¿Como se comporta el programa si un
+   sitio web simplemente no responde? (La @l(#Seccion 8.9) describe los
+   mecanismos para hacer frente en estos casos.)
+
+** Seccion 1.7 <> Un servidor Web
+
+   Las Librerias de Go hacen que sea facil escribir un servidor web que responde
+   a las solicitudes de los clientes, como las realizadas por @$(fetch). En esta
+   seccion, mostraremos un servidor minimo que devuelve el componente de ruta de
+   la URL utilizada para acceder al servidor. Es decir, si la solicitud es
+   @c(http://localhost:8000/hello), la respuesta sera @c(URL.Path = "/hello").
+
+   ..figure > @l(gopl.io/ch1/server1/main.go<>gopl.io/ch1/server1)
+
+     ..src > go
+       // Server1 es un servidor de "eco" minimo.
+       package main
+
+       import (
+         "fmt"
+         "log"
+         "net/http"
+       )
+
+       func main() {
+         http.HandleFunc("/", handler) // cada solicitud llama a handler
+         log.Fatal(http.ListenAndServe("localhost:8000", nil))
+       }
+
+       // handler hace eco del componente Path de la URL solicitida.
+       func handler(w http.ResponseWriter, r *http.Request) {
+         fmt.Fprintf(w, "URL.Path = %q\n", r.URL.Path)
+       }
+     < src..
+
+
+   El programa esta formado por solo un puñado de lineas, porque las funciones
+   de la libreria hacen la mayor parte del trabajo. La funcion @c(main) conecta
+   una funcion de manejo a las direcciones URL entrantes que comienzan con
+   @c(/), que son todas las direcciones URL, e inicia un servidor que escucha
+   las peticiones entrantes en el puerto 8000. La solicitud se representa como
+   una estructura de tipo @c(http.Request), que contiene una serie de campos
+   relacionados, uno de los cuales es la URL de la solicitud entrante. Cuando
+   llega una peticion, se le da a la funcion de manejo, que extrae el componente
+   de ruta (@c(/hello)) a partir de la URL de solicitud y la envia de vuelta
+   como la respuesta, utilizando @c(fmt.Fprintf). Los servidores web se
+   explicaran en detalle en la @l(#Seccion 7.7).
+
+   Iniciemos el servidor en segundo plano. En Mac OS X o GNU/Linux, añadir un
+   simbolo ampersand (@c(&)) al comando; En Microsoft Windows, necesitara
+   ejecutar el comando sin el signo ampersand en una ventana de comandos
+   distinta.
+
+   ..src > sh
+     $ go run src/gopl.io/ch1/server1/main.go &
+   < src..
+
+   A continuacion, podemos hacer solicitudes desde la linea de comandos:
+
+   ..src > sh
+     $ go build gopl.io/ch1/fetch
+     $ ./fetch http://localhost:8000
+     URL.Path = "/"
+     $ ./fetch http://localhost:8000/help
+     URL.Path = "/help"
+   < src..
+
+   Como alternativa, podemos acceder al servidor desde un navegador web, como se
+   muestra en la Figura 1.2.
+
+   ..figure > Figura 1.2. Una respuesta del servidor de eco.
+
+     ..img > img/Figure-1.2.jpg
+
+
+   Es facil agregar funciones al servidor. Una adicion util es una URL
+   especifica que devuelve un estado de algun tipo. Por ejemplo, esta version
+   hace eco, pero tambien cuenta el numero de peticiones; una peticion a la URL
+   @c(/count) devuelve el recuento hasta el momento, excluyendo la solicitud
+   @c(/count) a si misma:
+
+   ..figure > @l(gopl.io/ch1/server2/main.go<>gopl.io/ch1/server2)
+
+     ..src > go
+       // Server2 es un servidor de eco y conteo minimo
+       package main
+
+       import (
+         "fmt"
+         "log"
+         "net/http"
+         "sync"
+       )
+
+       var mu sync.Mutex
+       var count int
+
+       func main() {
+         http.HandleFunc("/", handler)
+         http.HandleFunc("/count", counter)
+         log.Fatal(http.ListenAndServe("localhost:8000", nil))
+       }
+
+       // handler hace eco del componente Path de la URL solicitida.
+       func handler(w http.ResponseWriter, r *http.Request) {
+         mu.Lock()
+         count++
+         mu.Unlock()
+         fmt.Fprintf(w, "URL.Path = %q\n", r.URL.Path)
+       }
+
+       // counter hace eco del numero de lamadas hasta ahora.
+       func counter(w http.ResponseWriter, r *http.Request) {
+         mu.Lock()
+         fmt.Fprintf(w, "Count %d\n", count)
+         mu.Unlock()
+       }
+     < src..
+
+
+   El servidor tiene dos manejadores, y la URL de la solicitud determina cual se
+   llama: una solicitud por @c(/count) invoca a @c(counter) y todas los demas
+   invocan a @c(handler). Un patron de manejo que termina con una barra diagonal
+   coincide con cualquier URL que tenga el patron como prefijo. Detras de
+   escena, el servidor ejecuta el controlador para cada solicitud entrante en
+   una gorutina separada para que pueda servir multiples solicitudes
+   simultaneamente. Sin embargo, si dos solicitudes simultaneas intentan
+   actualizar @c(count) al mismo tiempo, es posible que no se incremente
+   consistentemente; El programa tendria un error grave llamado @e(condicion de
+   carrera) (@l(#Seccion 9.1<>§9.1)). Para evitar este problema, debemos
+   asegurarnos de que a lo sumo solo una gorutina accede a la variable a la vez,
+   que es el proposito de las llamadas a @c[mu.Lock()] y @c[mu.Unlock()] que
+   rodean el acceso a @c(count). Examinaremos mas de cerca a la concurrencia con
+   variables compartidas en el @l(#Capitulo 9).
+
+   Como un ejemplo mas rico, la funcion de manejo puede informar sobre los
+   encabezados y datos de formulario que recibe, haciendo que el servidor sea
+   util para inspeccionar y depurar peticiones:
+
+   ..figure > @l(gopl.io/ch1/server3/main.go<>gopl.io/ch1/server3)
+
+     ..src > go
+       // handler responde a la peticion HTTP.
+       func handler(w http.ResponseWriter, r *http.Request) {
+         fmt.Fprintf(w, "%s %s %s\n", r.Method, r.URL, r.Proto)
+         for k, v := range r.Header {
+           fmt.Fprintf(w, "Header[%q] = %q\n", k, v)
+         }
+         fmt.Fprintf(w, "Host = %q\n", r.Host)
+         fmt.Fprintf(w, "RemoteAddr = %q\n", r.RemoteAddr)
+         if err := r.ParseForm(); err != nil {
+           log.Print(err)
+         }
+         for k, v := range r.Form {
+           fmt.Fprintf(w, "Form[%q] = %q\n", k, v)
+         }
+       }
+     < src..
+
+
+   Este utiliza los campos de la estructura @c(http.Request) para producir una
+   salida como esta:
+
+   ..pre >
+     GET /?q=query HTTP/1.1
+     Header["Accept-Encoding"] = ["gzip, deflate, sdch"]
+     Header["Accept-Language"] = ["en-US,en;q=0.8"]
+     Header["Connection"] = ["keep-alive"]
+     Header["Accept"] = ["text/html,application/xhtml+xml,application/xml;..."]
+     Header["User-Agent"] = ["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5)..."]
+     Host = "localhost:8000"
+     RemoteAddr = "127.0.0.1:59911"
+     Form["q"] = ["query"]
+   < pre..
+
+   Observe como la llamada a @c(ParseForm) esta anidada dentro de una sentencia
+   @c(if). Go permite una declaracion simple, como una declaracion de variable
+   local para preceder la sentencia @c(if), lo que es particularmente util para
+   el tratamiento de errores como en este ejemplo. Podriamos haberlo escrito
+   como
+
+   ..src > go
+     err := r.ParseForm()
+     if err != nil {
+       log.Print(err)
+     }
+   < src..
+
+   la combinacion de las sentencias es mas corta y reduce el alcance de la
+   variable @c(err), que es una buena practica. Vamos a definir el alcance en la
+   @l(#Seccion 2.7).
+
+   En estos programas, hemos visto tres tipos muy diferentes utilizados como
+   flujos de salida. El programa @$(fetch) copia datos de la respuesta HTTP a
+   @c(os.Stdout), a un archivo, al igual que el programa @$(lissajous). El
+   programa @$(fetchall) arroja la respuesta copiando el flujo (mientras cuenta
+   su longitud) de forma trivial en @c(ioutil.Discard). Y el anterior servidor
+   web utiliza @c(fmt.Fprintf) para escribir una representacion del navegador
+   @c(http.ResponseWriter).
+
+   Aunque estos tres tipos difieren en los detalles de lo que hacen, todos ellos
+   satisfacen una interfaz comun, permitiendo que cualquiera pueda ser utilizado
+   cuando sea necesario crear un flujo de salida. Esa interfaz, llamada
+   @c(io.Writer), se discute en la @l(#Seccion 7.1).
+
+   El mecanismo de interfaz de Go es el tema del @l(#Capitulo 7), pero para dar
+   una idea de lo que es capaz de hacer, vamos a ver lo facil que es combinar el
+   servidor web con la funcion @c(lissajous) para que los archivos GIF animados
+   se escriben no en la salida estandar, en su lugar en el cliente
+   HTTP. Simplemente agregue estas lineas al servidor web:
+
+   ..src > go
+     handler := func(w http.ResponseWriter, r *http.Request) {
+       lissajous(w)
+     }
+     http.HandleFunc("/", handler)
+   < src..
+
+   o su equivalente:
+
+   ..src > go
+     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+       lissajous(w)
+     })
+   < src..
+
+   El segundo argumento de la funcion @c(HandleFunc) se conoce como una
+   e(funcion literal), es decir, una funcion anonima definida en su punto de
+   uso. Vamos a explicar mas a fondo en la @l(#Seccion 5.6).
+
+   Una vez que haya realizado este cambio, visite @l(http://localhost:8000) en su
+   navegador. Cada vez que cargue la pagina, vera una nueva animacion como la de
+   la Figura 1.3.
+
+   @b(Ejercicio 1.12): Modificar el servidor de Lissajous para leer valores de
+   los parametros de la URL. Por ejemplo, es posible disponer de forma que una
+   URL como @c(http://localhost:8000/?cycles=20) establece el numero de ciclos a
+   20 en lugar del predeterminado 5. Utilice la funcion @c(strconv.Atoi) para
+   convertir el parametro de string a un entero. Puede ver su mediante con @$(go
+   doc strconv.Atoi).
+
+   ..figure > Figura 1.3. Figuras animadas de Lissajous en un navegador.
+
+     ..img > img/Figure-1.3.jpg
+
+** Seccion 1.8 <> Cabos sueltos
+
+   Hay mucho mas de Go de lo que hemos cubierto en esta introduccion rapida.
+   Aqui hay algunos temas que apenas hemos tocado o omitido por completo, con
+   tratamiento suficiente para empezar a familiarizarse con ellos antes de un
+   tratamiento completo.
+
+   - Control flow :: Cubrimos los dos estados de flujos de control fundamentales,
+     @c(if) y @c(for), pero no la sentencia @c(switch), que es una via de
+     multiples ramas. Aqui hay un pequeño ejemplo:
+
+     ..src > go
+       switch coinflip() {
+       case "heads":
+         heads++
+       case "tails":
+         tails++
+       default:
+         fmt.Println("landed on edge!")
+       }
+     < src..
+
+     El resultado de llamar a @c(coinflip) se compara con el valor de cada
+     caso. Los casos se evaluan de arriba a abajo, por lo que se ejecuta la
+     primera coincidencia. El caso opcional @c(default) coincide si ninguno de
+     los otros casos lo hace; Puede colocarse en cualquier lugar. Los casos no
+     caigan uno sobre otro, como en lenguajes tipo C (aunque hay una poco
+     utilizada declaracion @c(fallthrough) que anula este comportamiento).
+
+     Un @c(switch) no necesita un operando; Solo puede enumerar los casos, cada
+     uno de los cuales es una expresion booleana:
+
+     ..src > go
+       func Signum(x int) int {
+         switch {
+         case x > 0:
+           return +1
+         default:
+           return 0
+         case x < 0:
+           return -1
+         }
+       }
+     < src..
+
+     Esta forma se llama @e(switch sin etiquetas); que es equivalente a
+     @c(switch true).
+
+     Al igual que las sentencias @c(for) e @c(if), un @c(switch) puede incluir
+     una declaracion, una unica declaracion de variables compacta opcional, una
+     declaracion de incremento o asignacion, o una funcion de llamada que se
+     puede utilizar para establecer un valor antes de ser puesto a prueba.
+
+     Las declaraciones @c(break) y @c(continue) modifican el flujo de
+     control. Un @c(break) proboca control se reanude la siguiente sentencia
+     despues de la secuenca @c(for), @c(switch), o @c(select) (que veremos mas
+     adelante) mas anidada, y como hemos visto en la @l(#Seccion 1.3), un
+     @c(continue) proboca que el bucle @c(for) mas interno inicie su proxima
+     iteracion. Las declaraciones pueden etiquetarse de forma que un @c(break) y
+     @c(continue) pueden referirse a ellos, por ejemplo, para salir de varios
+     bucles anidados a la vez o para iniciar la siguiente iteracion del bucle
+     mas externo. Hay incluso una sentencia @c(goto), aunque esta destinada para
+     el codigo generado por la maquina, sin el uso regular por los
+     programadores.
+
+   - Tipos con nombre :: Una declaracion @c(type) hace que sea posible dar un
+     nombre a un tipo existente. Puesto que los tipos de la estructura son a
+     menudo largos, se nombran casi siempre. Un ejemplo conocido es la
+     definicion de un tipo para un sistema de graficos 2-D @c(Point):
+
+     ..src > go
+       type Point struct {
+         X, Y int
+       }
+       var p Point
+     < src..
+
+     Las declaracion de tipos y tipos con nombre se trata en el @l(#Capitulo 2).
+
+   - Punteros :: Go proporciona punteros, es decir, los valores que contienen
+     la direccion de una variable. En algunos lenguajes, notablemente C, los
+     punteros son relativamente sin restricciones. En otros lenguajes, los
+     punteros son disfrazados como @"(referencias), y no hay mucho que se
+     pueda hacer con ellos, excepto pasar a su alrededor. Go toma una posicion
+     en algun lugar en el medio. Los punteros son explicitamente
+     visibles. operador @c(&) obtiene la direccion de una variable, y el
+     operador @c(*) recupera la variable a la que se refiere el puntero, pero
+     no hay aritmetica de punteros. Vamos a explicar los punteros en la
+     @l(#Seccion 2.3.2).
+
+   - Metodos e interfaces :: Un metodo es una funcion asociada con un tipo de
+     dato; Go es inusual en el echo que los metodos se pueden vincular a casi
+     cualquier tipo nombrado. Los Metodos son cubiertos en el @l(#Capitulo
+     6). Las interfaces son tipos abstractos que nos permiten manejar tipos
+     concretos diferentes de la misma manera basados ​​en que metodos tienen, no
+     como se representan o implementan. Las interfaces son el tema del
+     @l(#Capitulo 7).
+
+   - Paquetes :: Go llega con una extensa libreria de paquetes utiles estandar,
+     y la comunidad Go ha creado y compartido muchas mas. La programacion es a
+     menudo mas sobre el uso de paquetes existentes que sobre la escritura de
+     codigo propio original. A lo largo del libro, vamos a señalar un par de
+     docenas de los paquetes estandar mas importantes, pero hay muchos mas que
+     no tenemos espacio para mencionar, y no podemos proporcionar nada
+     remotamente cercana a una referencia completa para cualquier paquete.
+
+     Antes de embarcarse en cualquier programa nuevo, es una buena idea ver si
+     ya existen paquetes que podrian ayudarle a hacer su trabajo mas
+     facilmente. Puede encontrar un indice de los paquetes de librerias estandar
+     en @l(https://golang.org/pkg) y los paquetes aportados por la comunidad en
+     @l(https://godoc.org). La herramienta @$(go doc) hace que estos documentos
+     sean facilmente accesibles desde la linea de comandos:
+
+     ..src > sh
+       $ go doc http.ListenAndServe
+       package http // import "net/http"
+
+       func ListenAndServe(addr string, handler Handler) error
+           ListenAndServe listens on the TCP network address addr and then
+           calls Serve with handler to handle requests on incoming connections.
+       ...
+     < src..
+
+   - Comentarios :: Ya hemos mencionado los comentarios de documentacion al
+     inicio de un programa o paquete. Tambien es un buen estilo escribir un
+     comentario antes de la declaracion de cada funcion para especificar su
+     comportamiento. Estas convenciones son importantes, ya que se utilizan por
+     herramientas como @$(go doc) y @$(godoc) para localizar y monstrar la
+     documentacion en pantalla (@l(#Seccion 10.7.4<>§10.7.4)).
+
+     Para los comentarios que abarcan varias lineas o aparecen dentro de una
+     expresion o declaracion, tambien existe la conocida notacion @c(/* ... */)
+     de otros lenguajes. Este tipo de comentarios se utilizan a veces al
+     principio de un archivo en un gran bloque de texto explicativo para evitar
+     un @c(//) en cada linea. Dentro de un comentario, @c(//) y @c(/*) no tienen
+     ningun significado especial, por que los comentarios no se anidan.
+
+* Capitulo 2 <> Estructura del programa
+
+  En Go, como en cualquier otro lenguaje de programacion, se construyen grandes
+  programas a partir de un pequeño conjunto de construcciones basicas. Las
+  variables almacenan los valores. Las expresiones simples se combinan en las
+  mas grandes con operaciones como suma y resta. Los tipos basicos se reunen en
+  agregados como matrices y estructuras. Las expresiones se utilizan en
+  declaraciones cuyo orden de ejecucion es determinado por instrucciones de
+  control de flujo como @c(if) y @c(for). Las declaraciones se agrupan en
+  funciones por aislamiento y reutilizacion. Las funciones se agrupan en
+  archivos de codigo fuente y paquetes.
+
+  Vimos ejemplos de la mayoria de estos en el capitulo anterior. En este
+  capitulo, vamos a entrar en mas detalles sobre los elementos estructurales
+  basicos de un programa Go. Los programas de ejemplo son intencionalmente
+  simples, por lo que podemos centrarnos en el lenguaje sin desviarnos de
+  complicados algoritmos o estructuras de datos.
+
+** Seccion 2.1 <> Nombres
+
+   Los nombres de las funciones Go, variables, constantes, tipos, etiquetas de
+   instrucciones y paquetes siguen una regla simple: un nombre comienza con una
+   letra (es decir, cualquier cosa que Unicode considera una letra) o un guion
+   bajo y puede tener cualquier numero de letras adicionales, Digitos y giones
+   bajos. Las mayusculas importan: @c(heapSort) y @c(Heapsort) son nombres
+   diferentes.
+
+   Go tiene 25 @e(palabras claves) como @c(if) y @c(switch) que solo puede
+   utilizarse cuando la sintaxis lo permita; No pueden usarse como nombres.
+
+   ..pre >
+     break      default       func     interface   select
+     case       defer         go       map         struct
+     chan       else          goto     package     switch
+     const      fallthrough   if       range       type
+     continue   for           import   return      var
+   < pre..
+
+   Ademas, hay cerca de tres docenas de nombres @e(predeclarados) como @c(int) y
+   @c(true) para las constantes, tipos y funciones incorporadas:
+
+   - Constantes ::
+
+     ..pre >
+       true false iota nil
+
+   - Tipos      ::
+
+     ..pre >
+       int int8 int16 int32 int64
+       uint uint8 uint16 uint32 uint64 uintptr
+       float32 float64 complex128 complex64
+       bool byte rune string error
+
+   - Functions  ::
+
+     ..pre >
+       make len cap new append copy close delete
+       complex real imag
+       panic recover
+
+
+   Estos nombres no estan reservados, por lo que puede utilizarlos en
+   declaraciones. Vamos a ver un puñado de lugares donde redeclarar uno de
+   ellos tiene sentido, pero tenga cuidado con la potencial confusion.
+
+   Si una entidad se declara dentro de una funcion, esta es @e(local) a esa
+   funcion. Si se declara fuera de una funcion, sin embargo, es visible en todos
+   los archivos del paquete al que pertenece. La primer letra de un nombre
+   determina su visibilidad a traves de los limites del paquete. Si el nombre
+   comienza con una letra mayuscula, se exporta, lo que significa que es visible
+   y accesible fuera de su propio paquete y puede hacer referencia a otras
+   partes del programa, al igual que con @c(Printf) en el paquete @c(fmt). Los
+   nombres de los paquetes estan siempre en minusculas.
+
+   No hay limite en la longitud del nombre, pero la convencion y el estilo en
+   los programas de Go se inclinan hacia nombres cortos, especialmente para
+   variables locales con ambitos pequeños; es mucho mas probable ver variables
+   con nombre @c(i) que @c(indiceDelBucle). Generalmente, cuanto mayor es el
+   alcance de un nombre, mas largo y mas significativo debe ser.
+
+   Estilisticamente, los programadores Go utilizan la @"(notacion camello)
+   cuando se forma nombres mediante la combinacion de palabras; Es decir, las
+   letras mayusculas internas se prefieren sobre los subrayados interiores. Por
+   lo tanto las librerias estandar tienen funciones con nombres como
+   @c(QuoteRuneToASCII) y @c(parseRequestLine) pero nunca @c(quote_rune_to_ASCII)
+   o @c(parse_request_line). Las letras de acronimos y siglas como @A(ASCII) y
+   @A(HTML) siempre se prestan en el mismo tipo, por lo que una funcion sera
+   llamada @c(htmlEscape), @c(HTMLEscape) o @c(escapeHTML), pero no
+   @c(escapeHtml).
+
+** Seccion 2.2 <> Declaraciones
+
+   Una @e(declaracion) nombra una entidad del programa y especifica todas o
+   algunas de sus propiedades. Hay cuatro tipos principales de declaraciones:
+   @c(var), @c(const), @c(type) y @c(func). Hablaremos sobre variables y tipos
+   en este capitulo, constantes en el @l(#Capitulo 3), y funciones en el
+   @l(#Capitulo 5).
+
+   Un programa Go se almacena en uno o mas archivos cuyos nombres terminan en
+   @f(.go). Cada archivo comienza con una declaracion @c(package) que indica de
+   que paquete forma parte el archivo. La declaracion @c(package) es seguido por
+   cualquier declaraciones @c(import), y luego una secuencia de declaraciones a
+   nivel de paquete de tipos, variables, constantes y funciones, en cualquier
+   orden. Por ejemplo, este programa declara una constante, una funcion y un par
+   de variables:
+
+   ..figure > @l(gopl.io/ch2/boiling/main.go<>gopl.io/ch2/boiling)
+
+     ..src > go
+       // Boiling imprime el punto de ebullicion del agua.
+       package main
+
+       import "fmt"
+
+       const boilingF = 212.0
+
+       func main() {
+         var f = boilingF
+         var c = (f - 32) * 5 / 9
+         fmt.Printf("boiling point = %g°F or %g°C\n", f, c)
+         // Salida:
+         // boiling point = 212°F or 100°C
+       }
+     < src..
+
+
+   La constante @c(boilingF) es una declaracion de nivel de paquete (como es
+   @c(main)), mientras que las variables @c(f) y @c(c) son locales a la funcion
+   @c(main). El nombre de cada entidad de nivel de paquete es visible no solo en
+   todo el archivo de origen que contiene su declaracion, sino en todos los
+   archivos del paquete. Por el contrario, las declaraciones locales son
+   visibles solo dentro de la funcion en la que se declaran y tal vez solo
+   dentro de una pequeña parte de ella.
+
+   Una declaracion de funcion tiene un nombre, una lista de parametros (las
+   variables cuyos valores se proporcionan por quien llama a la funcion), una
+   lista opcional de resultados y el cuerpo de la funcion, que contiene las
+   sentencias que definen lo que hace la funcion. La lista de resultados se
+   omite si la funcion no devuelve nada. La ejecucion de la funcion comienza con
+   la primer instruccion y continua hasta que encuentra una instruccion de
+   retorno o llega al final de una funcion que no tiene resultados. El control y
+   los resultados se devuelven a quien hiso la llamada.
+
+   Hemos visto un buen numero de funciones ya y hay muchas mas por venir,
+   incluyendo una extenso tratamiento en el @l(#Capitulo 5), asi que esto es
+   solo un esbozo. La funcion @c(fToC) a continuacion, encapsula la logica de
+   conversion de temperatura de manera que se define solo una vez, pero puede
+   utilizarse desde multiples lugares. Aqui @c(main) llama dos veces, utilizando
+   los valores de las constantes de dos locales diferentes:
+
+   ..figure > @l(gopl.io/ch2/ftoc/main.go<>gopl.io/ch2/ftoc)
+
+     ..src > go
+       // Ftoc imprime dos conversiones de Fahrenheit a Celsius.
+       package main
+
+       import "fmt"
+
+       func main() {
+         const freezingF, boilingF = 32.0, 212.0
+         fmt.Printf("%g°F = %g°C\n", freezingF, fToC(freezingF)) // "32°F = 0°C"
+         fmt.Printf("%g°F = %g°C\n", boilingF, fToC(boilingF))   // "212°F = 100°C"
+       }
+
+       func fToC(f float64) float64 {
+         return (f - 32) * 5 / 9
+       }
+     < src..
+
+** Seccion 2.3 <> Variables
+
+   Un declaracion @c(var) crea una variable de un tipo particular, vinculando un
+   nombre a la misma, y se define su valor inicial. Cada declaracion tiene la
+   forma general
+
+   ..src > go
+     var nombre tipo = expresion
+   < src..
+
+   O bien el tipo o la parte @c(= expresion) pueden omitirse, pero no ambos. Si
+   se omite el tipo, se determina mediante la expresion del inicializador. Si se
+   omite la expresion, el valor inicial es el @e(valor cero) para el tipo, que
+   es 0 para los numeros, @c(false) para booleanos, @c("") para string, y
+   @c(nil) para interfaces y tipos de referencia (slices, punteros, mapa, canal,
+   funcion). El valor cero de un tipo agregado como una matriz o una estructura
+   tiene el valor cero de todos sus elementos o campos.
+
+   El mecanismo de valor cero asegura que una variable siempre tenga un valor
+   bien definido de su tipo; En Go no hay tal cosa como una variable no
+   inicializada. Esto simplifica el codigo y, a menudo, asegura un
+   comportamiento sensible de las condiciones limite sin trabajo adicional. Por
+   ejemplo,
+
+   ..src > go
+     var s string
+     fmt.Println(s) // ""
+   < src..
+
+   Imprime una cadena vacia, en lugar de causar algun tipo de error o
+   comportamiento impredecible. Los programadores Go, suelen hacer algun
+   esfuerzo por hacer el valor cero de un tipo mas complicado significativo, por
+   lo que las variables comienzan su vida en un estado util.
+
+   Es posible declarar y opcionalmente inicializar un conjunto de variables en
+   una sola declaracion, con una lista de expresiones correspondiente. Omitir el
+   tipo permite la declaracion de multiples variables de diferentes tipos:
+
+   ..src > go
+     var i, j, k int                 // int, int, int
+     var b, f, s = true, 2.3, "four" // bool, float64, string
+   < src..
+
+   Los inicializadores pueden ser valores literales o expresiones
+   arbitrarias. Las variables a nivel de paquete se inicializan antes del inicio
+   de @c(main) (@l(#Section 2.6.2<>§2.6.2)), y las variables locales se
+   inicializan a medida que se encuentran sus declaraciones durante la ejecucion
+   de la funcion.
+
+   Tambien se puede inicializar un conjunto de variables llamando a una funcion
+   que devuelve valores multiples:
+
+   ..src > go
+     var f, err = os.Open(name) // os.Open returns a file and an error
+   < src..
+
+*** Seccion 2.3.1 <> Declaraciones de Variables Compacta
+
+    Dentro de una funcion, una forma alternativa llamada @e(declaracion de
+    variables compacta) se puede usar para declarar e inicializar las variables
+    locales. Toma la forma @c(nombre := expresion), y el tipo de @c(nombre) esta
+    determinada por el tipo de @c(expresion). Aqui estan tres de las muchas
+    declaraciones de variables compacta en la funcion @c(lissajous) (@l(#Seccion
+    1.4<>§1.4)):
+
+    ..src > go
+      anim := gif.GIF{LoopCount: nframes}
+      freq := rand.Float64() * 3.0
+      t := 0.0
+    < src..
+
+    Debido a su brevedad y flexibilidad, la declaracion compacta de variables se
+    utilizan para declarar e inicializar la mayoria de las variables
+    locales. Una sentencia @c(var) tiende a ser reservado para las variables
+    locales que necesitan un tipo explicito que difiere de la de la expresion de
+    inicializacion, o para cuando se le asignara un valor mas adelante la
+    variable y su valor inicial no es importante.
+
+    ..src > go
+      i := 100                  // an int
+      var boiling float64 = 100 // a float64
+
+      var names []string
+      var err error
+      var p Point
+    < src..
+
+    Como con las sentencias @c(var), multiples variables pueden ser declaradas e
+    inicializadas en la misma declaracion compacta de variables,
+
+    ..src > go
+      i, j := 0, 1
+    < src..
+
+    pero las declaraciones con multiples expresiones de inicializador deben
+    utilizarse solo cuando ayudan a la legibilidad, como en agrupaciones cortas
+    y naturales, como la parte de inicializacion de un bucle @c(for).
+
+    Tenga en cuenta que @c(:=) es una declaracion, mientras que @c(=) es una
+    asignacion. Una declaracion de multiples variables no debe confundirse con
+    una asignacion de tuplas (@l(#Seccion 2.4.1<>§2.4.1)), en la que se asigna a
+    cada variable en el lado de la izquierda el valor correspondiente de la
+    parte derecha:
+
+    ..src > go
+      i, j = j, i // swap values of i and j
+    < src..
+
+    Al igual que en declaraciones @c(var) ordinarias, la declaraciones de
+    variables compacta se puede utilizar para las llamadas a funciones como
+    @c(os.Open) que devuelve dos o mas valores:
+
+    ..src > go
+      f, err := os.Open(name)
+      if err != nil {
+        return err
+      }
+      // ...use f...
+      f.Close()
+    < src..
+
+    Un punto sutil pero importante: una declaracion de variables compacta no
+    declara necesariamente todas las variables en su lado izquierdo. Si algunos
+    de ellos ya fueron declarados en el @e(mismo) bloque lexico (@l(#Seccion
+    2.7<>§2.7)), entonces la declaracion de variables compacta se comporta como
+    una asignacion a esas variables.
+
+    En el codigo siguiente, la primera sentencia declara tanto @c(in) como
+    @c(err). El segundo declara @c(out) pero solo asigna un valor a la variable
+    @c(err) existente.
+
+    ..src > go
+      in, err := os.Open(infile)
+      // ...
+      out, err := os.Create(outfile)
+    < src..
+
+    Sin embargo, una declaracion de variable corta debe declarar al menos una
+    variable nueva, por lo que este codigo no compilara:
+
+    ..src > go
+      f, err := os.Open(infile)
+      // ...
+      f, err := os.Create(outfile) // error de compilacion: no hay nuevas variables
+    < src..
+
+
+    La correccion consiste en utilizar una asignacion ordinaria para la segunda
+    instruccion.
+
+    Una declaracion de variable compacta actua como una asignacion solo a
+    variables que ya estaban declaradas en el mismo bloque lexico; Las
+    declaraciones en un bloque externo se ignoran. Veremos ejemplos de esto al
+    final del capitulo.
+
+*** Seccion 2.3.2 <> Punteros
+
+    Una variable es una pieza de almacenamiento que contiene un valor. Las
+    variables creadas por las declaraciones se identifican por un nombre, como
+    @c(x), pero muchas variables se idientifican solo por expresion como
+    @c(x[i]) o @c(x.f). Todas estas expresiones leen el valor de una variable,
+    excepto cuando aparecen en el lado izquierdo de una asignacion, en cuyo caso
+    se asigna un nuevo valor a la variable.
+
+    El valor de un @e(puntero) es la @e(direccion) de una variable. Un puntero
+    es, por tanto, la ubicacion en la que se almacena un valor. No todos los
+    valores tienen una direccion, pero todas las variables si. Con un puntero,
+    podemos leer o actualizar el valor de una variable @e(indirectamente), sin
+    utilizar o incluso saber el nombre de la variable, si es que tiene un
+    nombre.
+
+    Si se declara una variable @c(var x int), la expresion @c(&x) (@"(direccion
+    de @c(x))) produce un puntero a una variable de de tipo entero, es decir, un
+    valor de tipo @c(*int), que se pronuncia @"(puntero a int.) Si este valor se
+    llama @c(p), decimos @"(@c(p) apunta a @c(x),)" o equivalentemente @"(@c(p)
+    contiene la direccion de @c(x).) La variable a la que @c(p) apunta se
+    escribe @c(*p). La expresion @c(*p) produce el valor de dicha variable, un
+    @c(int), pero desde @c(*p) indica una variable, tambien puede aparecer en la
+    parte izquierda de una asignacion, en cuyo caso la asignacion actualiza la
+    variable.
+
+    ..src > go
+      x := 1
+      p := &x         // p, of type *int, points to x
+      fmt.Println(*p) // "1"
+      *p = 2          // equivalent to x = 2
+      fmt.Println(x)  // "2"
+    < src..
+
+    Cada componente de una variable de tipo agregado–un campo de una estructura
+    o un elemento de una matriz– es tambien una variable y por lo tanto tiene
+    una direccion tambien.
+
+    Las variables se describen a veces como valores @e(direccionables).
+    Expresiones que denotan variables son las unicas expresiones a las que el
+    operador de direccion @c(&) se puede aplicar.
+
+    El valor cero de un puntero de cualquier tipo es @c(nil). La prueba de @c(p
+    != nil) es verdadera si @c(p) apunta a una variable. Los punteros son
+    comparables; Dos punteros son iguales si y solo si apuntan a la misma
+    variable o ambos son @c(nil).
+
+    ..src > go
+      var x, y int
+      fmt.Println(&x == &x, &x == &y, &x == nil) // "true false false"
+    < src..
+
+    Es perfectamente seguro para una funcion devolver la direccion de una
+    variable local. Por ejemplo, en el codigo siguiente, la variable local @c(v)
+    creada por la llamada a @c(f) seguira existiendo incluso despues de devolver
+    la llamada, y el puntero @c(p) todavia se referira a ella:
+
+    ..src > go
+      var p = f()
+
+      func f() *int {
+        v := 1
+        return &v
+      }
+    < src..
+
+    Cada llamada a @c(f) devuelve un valor distinto:
+
+    ..src > go
+      fmt.Println(f() == f()) // "false"
+    < src..
+
+    Debido a que un puntero contiene la direccion de una variable, pasar un
+    argumento de puntero a una funcion hace posible que la funcion actualice la
+    variable que se paso indirectamente. Por ejemplo, esta funcion incrementa la
+    variable a la que apunta su argumento y devuelve el nuevo valor de la
+    variable para que pueda ser utilizada en una expresion:
+
+    ..src > go
+      func incr(p *int) int {
+        *p++ // incrementa a lo que apunta p; no cambia p
+        return *p
+      }
+
+      v := 1
+      incr(&v)              // efecto secundario: ahora v es 2
+      fmt.Println(incr(&v)) // "3" (y v es 3)
+    < src..
+
+    Cada vez que se toma la direccion de una variable o se copia un puntero,
+    creamos nuevos @e(alias) o maneras de identificar a la misma variable. Por
+    ejemplo, @c(*p) es un alias para @c(v). Los punteros como alias son utiles
+    porque nos permite acceder a una variable sin usar su nombre, pero esto es
+    una espada de doble filo: para encontrar todas las sentencias que acceden a
+    una variable, tenemos que conocer todos sus alias. No son solo los punteros
+    que crean alias; los alias tambien se crean cuando copiamos valores de otros
+    tipos de referencia como slices, mapas y canales, e incluso estructuras,
+    matrices e interfaces que contienen estos tipos.
+
+    Los punteros son clave para el paquete @c(flag), que utiliza los argumentos
+    de linea de comandos de un programa, para establecer los valores de ciertas
+    variables distribuidas a lo largo del programa. Para ilustrar, esta
+    variacion en el anterior comando @$(echo) tiene dos indicadores opcionales:
+    @c(-n) provaca que @$(echo) omita el salto de linea final que normalmente se
+    imprime, y @c(-s sep) hace que se separe los argumentos de salida por el
+    contenido de la cadena @c(sep) en lugar de El espacio unico
+    predeterminado. Como esta es nuestra cuarta version, el paquete se llama
+    @f(gopl.io/ch2/echo4).
+
+    ..figure > @l(gopl.io/ch2/echo4/main.go<>gopl.io/ch2/echo4)
+
+      ..src > go
+        // Echo4 imprime sus argumentos de linea de comandos.
+        package main
+
+        import (
+          "flag"
+          "fmt"
+          "strings"
+        )
+
+        var n = flag.Bool("n", false, "omit trailing newline")
+        var sep = flag.String("s", " ", "separator")
+
+        func main() {
+          flag.Parse()
+          fmt.Print(strings.Join(flag.Args(), *sep))
+          if !*n {
+            fmt.Println()
+          }
+        }
+      < src..
+
+
+    La funcion @c(flag.Bool) crea una nueva variable bandera de tipo @c(bool).
+    Toma tres argumentos: el nombre de la bandera (@c("n")), el valor por
+    defecto de la variable (@c(false)), y un mensaje que se imprimira si el
+    usuario proporciona un argumento invalido, una bandera invalida, o @c(-h) o
+    @c(-help). Del mismo modo, @c(flag.String) toma un nombre, un valor por
+    defecto, y un mensaje, y crea una variable @c(string). Las variables @c(sep)
+    y @c(n) son punteros a las variables de la bandera, que deben accederse
+    indirectamente como @c(*sep) y @c(*n).
+
+    Cuando se ejecuta el programa, debe llamar a @c(flag.Parse) antes de
+    utilizar las banderas, para actualizar las variables bandera de sus valores
+    por defecto. Los argumentos que no sean banderas estan disponibles mediante
+    @c[flag.Args()] como un slice de strings. Si @c(flag.Parse) encuentra un
+    error, se imprime un mensaje sobre el uso y llama a @c[os.Exit(2)] para terminar
+    el programa.
+
+    Vamos a ejecutar algunos casos de prueba a @$(echo):
+
+    ..src > sh
+      $ go build gopl.io/ch2/echo4
+      $ ./echo4 a bc def
+      a bc def
+      $ ./echo4 -s / a bc def
+      a/bc/def
+      $ ./echo4 -n a bc def
+      a bc def$
+      $ ./echo4 -help
+      Usage of ./echo4:
+        -n    omit trailing newline
+        -s string
+              separator (default " ")
+    < src..
+
+*** Seccion 2.3.3 <> La Funcion @c(new)
+
+    Otra forma de crear una variable es utilizar la funcion nativa de @c(new).
+    La expresion @c[new(T)] crea una @e(variable sin nombre) del tipo @c(T), la
+    inicializa al valor cero de @c(T), y devuelve su direccion, que es un valor
+    de tipo @c(*T).
+
+    ..src > go
+      p := new(int)   //  p, de tipo *int, apunta a una varible int sin nombre
+      fmt.Println(*p) //  "0"
+      *p = 2          //  establece el int sin nombre a 2
+      fmt.Println(*p) //  "2"
+    < src..
+
+    Una variable creada con @c(new) no es diferente de una variable local
+    ordinaria cuya direccion es tomada, excepto que no hay necesidad de inventar
+    (y declarar) un nombre ficticio, y podemos usar @c[new(T)] en una expresion.
+    De este modo @c(new) es solo una conveniencia sintactica, no es una idea
+    fundamental:
+
+    las dos funciones @c(newInt) a continuacion tienen comportamientos
+    identicos.
+
+    ..cols >
+
+      ..src > go
+        func newInt() *int {
+          return new(int)
+        }
+      < src..
+
+      ::
+
+      ..src > go
+        func newInt() *int {
+          var dummy int
+          return &dummy
+        }
+      < src..
+
+    Cada llamada a @c(new) devuelve una variable distinta con una direccion
+    unica:
+
+    ..src > go
+      p := new(int)
+      q := new(int)
+      fmt.Println(p == q) // "false"
+    < src..
+
+    Hay una excepcion a esta regla: dos variables cuyo tipo no lleva ninguna
+    informacion y por lo tanto es de tamaño cero, como @c(struct{}) o
+    @c([0]int), puede, dependiendo de la aplicacion, tener la misma direccion.
+
+    La funcion @c(new) se utiliza relativamente rara vez porque las variables
+    sin nombre mas comunes son de tipo estructura, para el que la sintaxis
+    literal @c(struct) (@l(#Seccion 4.4.1<>§4.4.1)) es mas flexible.
+
+    Dado que @c(new) es una funcion nativa, no una palabra clave, es posible
+    redefinir el nombre para algo distinto dentro de una funcion, por ejemplo:
+
+    ..src > go
+      func delta(old, new int) int { return new - old }
+    < src..
+
+    Por supuesto, dentro de @c(delta), la funcion nativa @c(new) no esta
+    disponible.
+
+*** Seccion 2.3.4 <> Tiempo de Vida de las Variables
+
+    La @e(vida util) de una variable es el intervalo de tiempo durante el cual
+    existe a medida que el programa se ejecuta. La duracion de una variable a
+    nivel de paquete, es la ejecucion completa del programa. Por el contrario,
+    las variables locales tienen una vida util dinamica: una nueva instancia se
+    crea cada vez que se ejecuta la instruccion de declaracion, y la variable
+    vive hasta que se vuelve @e(inaccesible), momento en el que su
+    almacenamiento se puede reciclar. Los parametros de funcion y los resultados
+    tambien son variables locales; Se crean cada vez que se llama a la funcion
+    que las encierra.
+
+    Por ejemplo, en este extracto del programa de Lissajous de la @l(#Seccion 1.4),
+
+    ..src > go
+      for t := 0.0; t < cycles*2*math.Pi; t += res {
+        x := math.Sin(t)
+        y := math.Sin(t*freq + phase)
+        img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5),
+          blackIndex)
+      }
+    < src..
+
+    la variable @c(t) se crea cada vez que el bucle @c(for) comienza, y nuevas
+    variables @c(x) y @c(y) se crean en cada iteracion del bucle.
+
+    ¿Como sabe el recolector de basura que el almacenamiento de una variable
+    puede ser recuperado? La historia completa es mucho mas detallada de lo que
+    necesitamos aqui, pero la idea basica es que cada variable a nivel de
+    paquete, y cada variable local de cada funcion actualmente activa, puede ser
+    el inicio o la raiz de una ruta a la variable en cuestion, sugiendo punteros
+    y otros tipos de referencias que finalmente conducen a la variable. Si no
+    existe tal ruta, la variable se ha vuelto inaccesible, por lo que ya no
+    puede afectar el resto del calculo.
+
+    Debido a que el tiempo de vida de una variable se determina por ser o no
+    accesible, una variable local puede sobrevivir a una sola iteracion del
+    bucle que lo rodea. Puede seguir existiendo incluso despues de que su
+    funcion de inclusion ha regresado.
+
+    Un compilador puede elegir por asignar las variables locales en el monticulo
+    o en la pila, pero, tal vez sorprendentemente, esta eleccion no depende de
+    si se utiliza @c(var) o @c(new) para declarar la variable.
+
+    ..cols >
+
+      ..src > go
+        var global *int
+
+        func f() {
+          var x int
+          x = 1
+          global = &x
+        }
+      < src..
+
+      ::
+
+      ..src > go
+        func g() {
+          y := new(int)
+          *y = 1
+        }
+      < src..
+
+    Aqui, @c(x) debe ser asignado al monticulo porque todavia es accesible desde
+    la variable @c(global) despues de haber devuelto @c(f), a pesar de ser
+    declarado como una variable local; decimos que @c(x) escapa de @c(f). Por el
+    contrario, cuando @c(g) regresa la variable @c(*y) se vuelve inaccesible y
+    se pueden reciclar. Dado que @c(*y) no escapa de @c(g), es seguro para el
+    compilador asignar @c(*y) en la pila, a pesar de que se asigno con @c(new).
+    En cualquier caso, la nocion de escapar no es algo de lo que tengas que
+    preocuparte para escribir codigo correcto, aunque es bueno tenerlo en cuenta
+    durante la optimizacion de rendimiento, ya que cada variable que escapa
+    requiere una asignacion de memoria adicional.
+
+    La recoleccion de basura es una tremenda ayuda para escribir programas
+    correctos, pero no elimina la carga de pensar en la memoria. No es necesario
+    asignar y liberar memoria de forma explicita, pero para escribir programas
+    eficientes es necesario tener en cuenta la duracion de las variables. Por
+    ejemplo, mantener punteros innecesarios a objetos de corta duracion dentro
+    de objetos de larga vida, especialmente variables globales, evitara que el
+    recolector de basura recupere los objetos de corta duracion.
+
+** Seccion 2.4 <> Asignaciones
+
+   El valor contenido en una variable es actualizado por una instruccion de
+   asignacion, que en su forma mas simple tiene una variable a la izquierda del
+   signo @c(=) y una expresion a la derecha.
+
+   ..src > go
+     x = 1                       // variable con nombre
+     *p = true                   // variable indirecta
+     person.name = "bob"         // campo de ustructura
+     count[x] = count[x] * scale // elemento de arreglo, slice o mapa
+   < src..
+
+   Cada uno de los operadores aritmeticos y operadores binarios a nivel de bits
+   tiene su correspondiente @e(operador de asignacion) permitiendo, por ejemplo,
+   reescribir la ultima instruccion como
+
+   ..src > go
+     count[x] *= scale
+   < src..
+
+   Lo que nos ahorra tener que repetir (y reevaluar) la expresion de la
+   variable.
+
+   Las variables numericas tambien se pueden incrementar y disminuir con las
+   declaraciones @c(++) y @c(--):
+
+   ..src > go
+     v := 1
+     v++    // igual a v = v + 1; v es 2
+     v--    // igual a v = v - 1; v es 1 de nuevo
+   < src..
+
+*** seccion 2.4.1 <> Asignacion de Tuplas
+
+    Otra forma de asignacion, conocida como @e(asignacion de tuplas), permite
+    asignar varias variables a la vez. Todas las expresiones del lado derecho se
+    evaluan antes de actualizar cualquiera de las variables, haciendo que este
+    formato sea mas util cuando algunas de las variables aparecen en ambos lados
+    de la asignacion, como sucede, por ejemplo, al intercambiar los valores de
+    dos variables:
+
+    ..src > go
+      x, y = y, x
+      a[i], a[j] = a[j], a[i]
+    < src..
+
+    O cuando se calcula el mayor comun divisor de dos enteros:
+
+    ..src > go
+      func gcd(x, y int) int {
+        for y != 0 {
+          x, y = y, x%y
+        }
+        return x
+      }
+    < src..
+
+    O al calcular el n-esimo numero de Fibonacci iterativamente:
+
+    ..src > go
+      func fib(n int) int {
+        x, y := 0, 1
+        for i := 0; i < n; i++ {
+          x, y = y, x+y
+        }
+        return x
+      }
+    < src..
+
+    La asignacion de tuplas tambien puede hacer una secuencia de tareas
+    triviales mas compacta,
+
+    ..src > go
+      i, j, k = 2, 3, 5
+    < src..
+
+    Aunque por una cuestion de estilo, evite la forma de tupla si las
+    expresiones son complejas; una secuencia de declaraciones separadas es mas
+    facil de leer.
+
+    Ciertas expresiones, como una llamada a una funcion con resultados
+    multiples, producen varios valores. Cuando se utiliza una llamada de este
+    tipo en una instruccion de asignacion, el lado izquierdo debe tener tantas
+    variables como la funcion tenga resultados.
+
+    ..src > go
+      f, err = os.Open("foo.txt") // Llamada de funcion devuelve dos valores
+    < src..
+
+    A menudo, las funciones utilizan estos resultados adicionales para indicar
+    algun tipo de error, ya sea devolviendo un @c(error) como en la llamada a
+    @c(os.Open), o un @c(bool), generalmente llamado @c(ok). Como veremos en
+    capitulos posteriores, hay tres operadores que a veces se comportan de esta
+    manera tambien. Si la busqueda en un mapa (@l(#Seccion 4.3<>§4.3)), un tipo
+    de asercion (@l(#Seccion 7.10<>§7.10)), o la recepcion de un canal
+    (@l(#Seccion 8.4.2<>§8.4.2)) aparece en una asignacion en la que se esperan
+    dos resultados, cada una produce un resultado booleano adicional:
+
+    ..src > go
+      v, ok = m[key]         // map lookup
+      v, ok = x.(T)          // type assertion
+      v, ok = <-ch           // channel receive
+    < src..
+
+    Al igual que con la declaracion de variables, podemos asignar valores no
+    deseados al identificador en blanco:
+
+    ..src > go
+      _, err = io.Copy(dst, src) // discard byte count
+      _, ok = x.(T)              // check type but discard result
+    < src..
+
+*** Seccion 2.4.2 <> Asignacion
+
+    Las sentencias de asignacion son una forma explicita de asignacion, pero hay
+    muchos lugares en un programa donde se produce una asignacion @e(implicita):
+    una llamada de funcion asigna implicitamente los valores de los argumentos a
+    las variables de parametros correspondientes; una instruccion @c(return)
+    asigna implicitamente los operandos de retorno a las variables de resultado
+    correspondientes; y una expresion literal para un tipo compuesto
+    (@l(#Seccion 4.2<>§4.2)), tal como esta slice:
+
+    ..src > go
+      medallas := []string{"oro", "plata", "bronce"}
+    < src..
+
+    Implicitamente asigna cada elemento, como si se hubiera escrito asi:
+
+    ..src > go
+      medallas[0] = "oro"
+      medallas[1] = "plata"
+      medallas[2] = "bronce"
+    < src..
+
+    Los elementos de mapas y canales, aunque no son variables ordinarias,
+    tambien estan sujetos a asignaciones implicitas similares.
+
+    Una asignacion, explicita o implicita, siempre es legal si el lado izquierdo
+    (la variable) y el lado derecho (el valor) tienen el mismo tipo. En terminos
+    mas generales, la asignacion es legal solo si el valor es @e(asignable) al
+    tipo de la variable.
+
+    La regla para la @e(asignabilidad) tiene casos para varios tipos, por lo que
+    vamos a explicar el caso relevante a medida que introducimos cada nuevo
+    tipo. Para los tipos que hemos discutido hasta ahora, las reglas son
+    simples: los tipos deben coincidir exactamente, y @c(nil) puede ser asignado
+    a cualquier variable de interfaz o tipo de referencia. Las constantes
+    (@l(#Seccion 3.6<>§3.6)) tienen reglas mas flexibles para la asignacion que
+    evitan la necesidad de conversiones mas explicitos.
+
+    Si dos valores pueden compararse con @c(==) y @c(!=) se relaciona con la
+    asignacion: en cualquier comparacion, el primer operando debe ser asignable
+    al tipo del segundo operando, o viceversa. Al igual que con la
+    asignabilidad, vamos a explicar los casos relevantes para la comparabilidad
+    cuando presentamos cada nuevo tipo.
+
+** Seccion 2.5 <> Declaraciones de tipo
+
+   El tipo de una variable o expresion define las caracteristicas de los valores
+   que puede tomar, como su tamaño (numero de bits o numero de elementos, tal
+   vez), como se representan internamente, las operaciones intrinsecas que se
+   pueden realizar en ellos, Y los metodos asociados con ellos.
+
+   En cualquier programa hay variables que comparten la misma representacion
+   pero que significan conceptos muy diferentes. Por ejemplo, un @c(int) podria
+   ser usado para representar un indice de bucle, una marca de tiempo, un
+   descriptor de archivo, o un mes; un @c(float64) podria representar una
+   velocidad en metros por segundo o una temperatura en una de varias escalas; y
+   un @c(string) podria representar una contraseña o el nombre de un color.
+
+   Una declaracion @c(type) define un nuevo @e(tipo con nombre) que tiene el
+   mismo @e(tipo subyacente) como un tipo existente. El tipo nombrado
+   proporciona una manera de separar los diferentes usos y quizas incompatibles
+   del tipo subyacente para que no puedan ser mezclados involuntariamente.
+
+   ..src > go
+     type name underlying-type
+   < src..
+
+   Las declaraciones de tipo aparecen mas a menudo en el nivel de paquete, donde
+   el tipo nombrado es visible en todo el paquete, y si el nombre se exporta
+   (inicia con una letra mayuscula), es accesible desde otros paquetes tambien.
+
+   Para ilustrar la declaracion de tipos, vamos a convertir las diferentes
+   escalas de temperatura en tipos distintos:
+
+   ..figure > @l(gopl.io/ch2/tempconv0/celsius.go<>gopl.io/ch2/tempconv0)
+
+     ..src > go
+       // Paquete tempconv realiza calculos de temperatura Celsius y Fahrenheit.
+       package tempconv
+
+       import "fmt"
+
+       type Celsius float64
+       type Fahrenheit float64
+
+       const (
+         AbsoluteZeroC Celsius = -273.15
+         FreezingC     Celsius = 0
+         BoilingC      Celsius = 100
+       )
+
+       func CToF(c Celsius) Fahrenheit { return Fahrenheit(c*9/5 + 32) }
+       func FToC(f Fahrenheit) Celsius { return Celsius((f - 32) * 5 / 9) }
+     < src..
+
+
+   Este paquete define dos tipos, @c(Celsius) y @c(Fahrenheit), para las dos
+   unidades de temperatura. A pesar de que ambos tienen el mismo tipo
+   subyacente, @c(float64), no son del mismo tipo, por lo que no pueden
+   compararse o ser combinados en expresiones aritmeticas. Distinguir los tipos
+   hace posible evitar errores como combinar inadvertidamente temperaturas en
+   las dos escalas diferentes; una conversion de tipo explicita como
+   @c[Celsius(t)] o @c[Fahrenheit(t)] es necesario para convertir desde un
+   @c(float64). @c[Celsius(t)] y @c[Fahrenheit(t)] son conversiones, no llamadas
+   a funcion. No cambian el valor o la representacion de ninguna manera, pero
+   hacen que el cambio de significado sea explicito. Por otro lado, las
+   funciones @c(CToF) y @c(FToC) convertir entre las dos escalas; Estas
+   devuelven valores diferentes.
+
+   Para cada tipo @c(T), hay una operacion de conversion correspondiente
+   @c[T(x)] que convierte el valor @c(x) al tipo @c(T). Se permite una
+   conversion de un tipo a otro si ambos tienen el mismo tipo subyacente, o si
+   ambos son tipos apuntador sin nombre que apuntan a variables del mismo tipo
+   subyacente; Estas conversiones cambian el tipo pero no la representacion del
+   valor. Si @c(x) es asignable a @c(T), se permite una conversion, pero suele
+   ser redundante,
+
+   Las conversiones tambien se permiten entre tipos numericos, y entre la cadena
+   y algunos tipos de slices, como veremos en el siguiente capitulo. Estas
+   conversiones pueden cambiar la representacion del valor. Por ejemplo, la
+   conversion de un numero de coma flotante a un entero descarta cualquier parte
+   fraccionaria, y la conversion de una cadena a un slice @c([]byte) asigna una
+   copia de los datos de cadena. En cualquier caso, una conversion nunca falla
+   en tiempo de ejecucion.
+
+   El tipo subyacente de un tipo con nombre determina su estructura y
+   representacion, asi como el conjunto de operaciones intrinsecas que admite,
+   que son iguales que si el tipo subyacente se hubiera utilizado
+   directamente. Eso significa que los operadores aritmeticos funcionan igual
+   para @c(Celsius) y @c(Fahrenheit) como lo hacen para @c(float64), como se
+   podria esperar.
+
+   ..src > go
+     fmt.Printf("%g\n", BoilingC-FreezingC)       // "100" °C
+     boilingF := CToF(BoilingC)
+     fmt.Printf("%g\n", boilingF-CToF(FreezingC)) // "180" °F
+     fmt.Printf("%g\n", boilingF-FreezingC)       // error de compilacion: tipo incorrecto
+   < src..
+
+   Los operadores de comparacion como @c(==) y @c(<) tambien se puede utilizar
+   para comparar un valor de un tipo con nombre a otro del mismo tipo, o a un
+   valor del tipo subyacente. Pero dos valores de diferentes tipos con nombre no
+   pueden compararse directamente:
+
+   ..src > go
+     var c Celsius
+     var f Fahrenheit
+     fmt.Println(c == 0)          // "true"
+     fmt.Println(f >= 0)          // "true"
+     fmt.Println(c == f)          // error de compilacion: tipo incorrecto
+     fmt.Println(c == Celsius(f)) // "true"!
+   < src..
+
+   Anote cuidadosamente el ultimo caso. A pesar de su nombre, la conversion de
+   tipo @c[Celsius(f)] no cambia el valor de su argumento, a su tipo. La prueba
+   es cierto porque @c(c) y @c(f) son ambos cero.
+
+   Un tipo con nombre puede proporcionar conveniencia de notacion si ayuda a
+   evitar escribir tipos complejos una y otra vez. La ventaja es pequeña cuando
+   el tipo subyacente es tan simple como @c(float64), pero grande para los tipos
+   complicados, como veremos cuando hablemos de estructuras.
+
+   Los tipos nombrados tambien permiten definir nuevos comportamientos para los
+   valores del tipo. Estos comportamientos se expresan como un conjunto de
+   funciones asociadas con el tipo, llamado @e(metodos) del tipo. Veremos los
+   metodos en detalle en el capitulo 6, pero daremos una idea del mecanismo
+   aqui.
+
+   La siguiente declaracion, en la que el parametro @c(Celsius) @c(c) aparece
+   antes del nombre de la funcion, se asocia con el tipo @c(Celsius) un metodo
+   llamado @c(String) que devuelve @c(c) como un valor numerico seguido por
+   @c(°C):
+
+   ..src > go
+     func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }
+   < src..
+
+
+   Muchos tipos declarar un metodo @c(String) de esta forma debido a que controla
+   como aparecen los valores del tipo cuando se imprimen en una cadena con el
+   paquete @c(fmt), como veremos en la @l(#Seccion 7.1).
+
+   ..src > go
+     c := FToC(212.0)
+     fmt.Println(c.String()) // "100°C"
+     fmt.Printf("%v\n", c)   // "100°C"; no es necesario llamar a String explicitamente
+     fmt.Printf("%s\n", c)   // "100°C"
+     fmt.Println(c)          // "100°C"
+     fmt.Printf("%g\n", c)   // "100"; no llama a String
+     fmt.Println(float64(c)) // "100"; no llama a String
+   < src..
+
+** Seccion 2.6 <> Paquetes y Ficheros
+
+   Los paquetes en Go sirven a los mismos propositos que las librerias o modulos
+   en otros lenguajes, soportando modularidad, encapsulacion, compilacion
+   separada y reutilizacion. El codigo fuente de un paquete reside en uno o mas
+   archivos @f(.go), por lo general en un directorio cuyo nombre termina con la
+   ruta de importacion; por ejemplo, los archivos del paquete
+   @c(gopl.io/ch1/helloworld) se almacenan en el directorio
+   @c($GOPATH/src/gopl.io/ch1/helloworld).
+
+   Cada paquete sirve como un @e(espacio de nombres) separado para sus
+   declaraciones. Dentro del paquete @c(image), por ejemplo, el identificador
+   @c(Decode) se refiere a una funcion diferente de la que el mismo
+   identificador en el paquete @c(unicode/utf16). Para hacer referencia a una
+   funcion desde fuera de su paquete, debemos @e(calificar) el identificador
+   para hacer explicito si nos referimos a @c(image.Decode) o @c(utf16.Decode).
+
+   Los paquetes tambien nos permiten ocultar informacion controlando que nombres
+   son visibles fuera del paquete, o @e(exportados). En Go, una regla simple
+   regula que identificadores se exportan y cuales no: los identificadores
+   exportados comienzan con una letra mayuscula.
+
+   Para ilustrar los fundamentos, supongamos que nuestro software de conversion
+   de temperatura se ha vuelto popular y queremos ponerlo a disposicion de la
+   comunidad Go como un nuevo paquete. ¿Como hacemos eso?
+
+   Vamos a crear un paquete llamado @c(gopl.io/ch2/tempconv), una variacion del
+   ejemplo anterior. (Aqui hemos hecho una excepcion a nuestra regla habitual de
+   ejemplos de numeracion en secuencia, de modo que la ruta del paquete puede
+   ser mas realista.) El propio paquete se almacena en dos archivos para mostrar
+   como se accede a las declaraciones en archivos separados de un paquete; En la
+   vida real, un pequeño paquete como este solo necesitaria un archivo.
+
+   Hemos puesto las declaraciones de los tipos, sus constantes y sus metodos en
+   @f(tempconv.go):
+
+   ..figure > @l(gopl.io/ch2/tempconv/tempconv.go<>gopl.io/ch2/tempconv)
+
+     ..src > go
+       // El paquete tempconv realiza conversiones Celsius y Fahrenheit.
+       package tempconv
+
+       import "fmt"
+
+       type Celsius float64
+       type Fahrenheit float64
+
+       const (
+       	AbsoluteZeroC Celsius = -273.15
+       	FreezingC     Celsius = 0
+       	BoilingC      Celsius = 100
+       )
+
+       func (c Celsius) String() string    { return fmt.Sprintf("%g°C", c) }
+       func (f Fahrenheit) String() string { return fmt.Sprintf("%g°F", f) }
+     < src..
+
+
+   y las funciones de conversion en @f(conv.go):
+
+   ..src > go
+     package tempconv
+
+     // CToF convierte una temperatura Celsius a Fahrenheit.
+     func CToF(c Celsius) Fahrenheit { return Fahrenheit(c*9/5 + 32) }
+
+     // FToC convierte una temperatura Fahrenheit a Celsius.
+     func FToC(f Fahrenheit) Celsius { return Celsius((f - 32) * 5 / 9) }
+   < src..
+
+   Cada archivo comienza con una declaracion @c(package) que define el nombre
+   del paquete. Cuando se importa el paquete, sus miembros se conocen como
+   @c(tempconv.CToF) y asi. Los nombres a nivel de paquete como los tipos y las
+   constantes declaradas en un archivo de un paquete son visibles para todos los
+   otros archivos del paquete, como si el codigo fuente estuviera todo en un
+   solo archivo. Observe que @f(tempconv.go) importa @c(fmt), pero @f(conv.go)
+   no lo hace, ya que no utiliza nada de @c(fmt).
+
+   Debido a que los nombres @c(const) de nivel de paquete comienzan con letras
+   mayusculas, tambien son accesibles con nombres calificados, por ejemplo,
+   @c(tempconv.AbsoluteZeroC):
+
+   ..src > go
+     fmt.Printf("Brrrr! %v\n", tempconv.AbsoluteZeroC) // "Brrrr! -273.15°C"
+   < src..
+
+   Para convertir una temperatura Celsius a Fahrenheit en un paquete que importa
+   @c(gopl.io/ch2/tempconv), podemos escribir el siguiente codigo:
+
+   ..src > go
+     fmt.Println(tempconv.CToF(tempconv.BoilingC)) // "212°F"
+   < src..
+
+   El @c(comentario de documentacion) (@l(#Seccion 10.7.4<>§10.7.4))
+   inmediatamente anterior a la declaracion del paquete, documenta el paquete en
+   su conjunto. Convencionalmente, debe comenzar con una oracion de resumen en
+   el estilo ilustrado. Solo un archivo en cada paquete debe tener un comentario
+   de documentacion del paquete. Los comentarios de documentacion extensos, a
+   menudo se colocan en su propio fichero, convencionalmente llamado @f(doc.go).
+
+   @b(Ejercicio 2.1): Añadir tipos, constantes y funciones a @c(tempconv) para
+   el procesamiento de temperaturas en la escala Kelvin, donde cero Kelvin es
+   -273,15°C y una diferencia de 1K tiene la misma magnitud de 1°C.
+
+*** Seccion 2.6.1 <> Importaciones
+
+    Dentro de un programa Go, cada paquete se identifica por una cadena unica
+    llamada la @e(ruta de importacion). Estas son las cadenas que aparecen en
+    una declaracion @c(import) como @c("gopl.io/ch2/tempconv"). La
+    especificacion del lenguaje no define de donde provienen estas cadenas o lo
+    que significan; Depende de las herramientas para interpretarlas. Cuando se
+    utiliza la herramienta @$(go) de (@l(#Capitulo 10)), una ruta de importacion
+    denota un directorio que contiene uno o mas archivos de codigo fuento Go que
+    juntos componen el paquete.
+
+    Ademas de su ruta de importacion, cada paquete tiene un nombre de paquete,
+    que es corto (y no necesariamente unico) nombre que aparece en su
+    declaracion @c(package). Por convencion, el nombre de un paquete coincide
+    con el ultimo segmento de la ruta de importacion, por lo que es facil
+    predecir que el nombre del paquete de @c(gopl.io/ch2/tempconv) es
+    @c(tempconv).
+
+    Para utilizar @c(gopl.io/ch2/tempconv), hay que importarlo:
+
+    ..figure > @l(gopl.io/ch2/cf/main.go<>gopl.io/ch2/cf)
+
+      ..src > go
+        // Cf conviente su argumento numerico en Celsius y Fahrenheit.
+        package main
+
+        import (
+          "fmt"
+          "os"
+          "strconv"
+
+          "gopl.io/ch2/tempconv"
+        )
+
+        func main() {
+          for _, arg := range os.Args[1:] {
+            t, err := strconv.ParseFloat(arg, 64)
+            if err != nil {
+              fmt.Fprintf(os.Stderr, "cf: %v\n", err)
+              os.Exit(1)
+            }
+            f := tempconv.Fahrenheit(t)
+            c := tempconv.Celsius(t)
+            fmt.Printf("%s = %s, %s = %s\n",
+              f, tempconv.FToC(f), c, tempconv.CToF(c))
+          }
+        }
+      < src..
+
+    La declaracion de importacion vincula un nombre corto al paquete importado
+    que se puede utilizar para referirse a su contenido en todo el archivo. El
+    @c(import) anterior nos permite referimos a nombres dentro de
+    @c(gopl.io/ch2/tempconv) mediante el uso de un identificador calificado como
+    @c(tempconv.CToF). Por defecto, el nombre corto es el nombre del paquete–en
+    este caso @c(tempconv), pero una declaracion de importacion puede
+    especificar un nombre alternativo para evitar un conflicto (@l(#Seccion
+    10.3<>§10.3)).
+
+    El programa @$(cf) convierte un unico argumento numerico de la linea de
+    comando a su valor en grados Celsius y Fahrenheit:
+
+    ..src > sh
+      $ go build gopl.io/ch2/cf
+      $ ./cf 32
+      32°F = 0°C, 32°C = 89.6°F
+      $ ./cf 212
+      212°F = 100°C, 212°C = 413.6°F
+      $ ./cf -40
+      -40°F = -40°C, -40°C = -40°F
+    < src..
+
+    Es un error importar un paquete y luego no hacer referencia a el. Esta
+    verificacion ayuda a eliminar las dependencias que se hacen innecesarias,
+    cuando el codigo evoluciona, aunque puede ser una molestia durante la
+    depuracion, ya que al comentar una linea de codigo como @c[log.Print("got
+    here!")] puede eliminar la unica referencia al de nombre de paquete @c(log),
+    probocando que el compilador emita un error. En esta situacion, es necesario
+    comentar o eliminar el @c(import) innecesario.
+
+    Mejor aun, utilice la herramienta @c(golang.org/x/tools/cmd/goimports), que
+    inserta y elimina paquetes de la declaracion de importacion, segun sea
+    necesario de forma automatica; la mayoria de los editores pueden
+    configurarse para ejecutar @$(goimports) cada vez que se guarda un fichero.
+    Al igual que la herramienta @$(gofmt), tambien imprime bonitos ficheros de
+    codigo fuene en el formato canonico.
+
+   @b(Ejercicio 2.2): Escribir un programa de proposito general para conversion
+   de unidades analogo a @$(cf) que leea los numeros de sus argumentos de linea
+   de comando o de la entrada estandar si no hay argumentos, y convierta cada
+   numero en unidades como la temperatura en grados Celsius y Fahrenheit,
+   longitud en Pies y metros, peso en libras y kilogramos y similares.
+
+*** Seccion 2.6.2 <> Inicializacion del paquete
+
+    La inicializacion del paquete comienza inicializando las variables a nivel
+    de paquete en el orden en que se declaran, excepto que las dependencias se
+    resuelven primero:
+
+    ..src > go
+      var a = b + c      // a inicializado tercero, a 3
+      var b = f()        // b inicializado segundo, a 2, llamando a f
+      var c = 1          // c inicializado primero, a 1
+
+      func f() int { return c + 1 }
+    < src..
+
+    Si el paquete tiene multiples ficheros @f(.go), se inicializan en el orden
+    en que se dan los archivos al compilador; La herramienta @$(go) ordena los
+    ficheros @f(.go) archivos por nombre antes de invocar el compilador.
+
+    Cada variable declarada en el nivel del paquete comienza su vida con el
+    valor de su expresion de inicializador, pero para algunas variables, como
+    tablas de datos, una expresion del inicializador no puede ser la manera mas
+    simple de establecer su valor inicial. En ese caso, el mecanismo de la
+    funcion @c(init) puede ser mas simple. Cualquier archivo puede contener
+    cualquier numero de funciones cuya declaracion sea
+
+    ..src > go
+      func init() { /* ... */ }
+    < src..
+
+    No se puede llamar o hacer referencia a estas funciones @c(init), pero por
+    lo demas son funciones normales. Dentro de cada archivo, las funciones
+    @c(init) se ejecutan automaticamente cuando se inicia el programa, en el
+    orden en que se declaran.
+
+    Los paquetes se inician uno a la vez, en el orden de las importaciones en el
+    programa, las dependencias en primer lugar, por lo que un paquete @c(p) que
+    importa a @c(q) puede estar seguro de que @c(q) se inicializa completamente
+    antes de la inicialiacion de @c(p). La inicializacion procede de abajo hacia
+    arriba; el paquete @c(main) es el ultimo en ser inicializado. De esta
+    manera, todos los paquetes se inicializan completamente antes de que inicie
+    la funcion @c(main).
+
+    El paquete a continuacion define una funcion @c(PopCount) que devuelve el
+    numero de bits establecidos, es decir, los bits cuyo valor es 1, en un valor
+    @c(uint64), que se llama @e(conteo de poblacion). Utiliza una funcion
+    @c(init) para calcular previamente una tabla de resultados, @c(pc), para
+    cada posible valor de 8 bits de modo que la funcion @c(PopCount) no necesite
+    tomar 64 pasos, pero solo puede devolver la suma de ocho consultas de
+    tabla. (Esto definitivamente no es el algoritmo mas rapido para el recuento
+    de bits, pero es conveniente para ilustrar las funciones @c(init), y para
+    mostrar como calcular previamente una tabla de valores, que a menudo es una
+    tecnica de programacion util).
+
+    ..figure > @l(gopl.io/ch2/popcount/main.go<>gopl.io/ch2/popcount)
+
+      ..src > go
+        package popcount
+
+        // pc[i] es el recuento de poblacion de i.
+        var pc [256]byte
+
+        func init() {
+          for i := range pc {
+            pc[i] = pc[i/2] + byte(i&1)
+          }
+        }
+
+        // PopCount regresa el conteo de la poblacion (numero de bist establecidos) de x.
+        func PopCount(x uint64) int {
+          return int(pc[byte(x>>(0*8))] +
+            pc[byte(x>>(1*8))] +
+            pc[byte(x>>(2*8))] +
+            pc[byte(x>>(3*8))] +
+            pc[byte(x>>(4*8))] +
+            pc[byte(x>>(5*8))] +
+            pc[byte(x>>(6*8))] +
+            pc[byte(x>>(7*8))])
+        }
+      < src..
+
+
+    Observe que el rango del bucle en @c(init) utiliza solo el indice; El valor
+    es innecesario y por lo tanto no necesita ser incluido. El bucle tambien
+    podria haber sido escrito como
+
+    ..src > go
+      i, _ := range pc {
+    < src..
+
+    Veremos otros usos de funciones @c(init) en la siguiente seccion y en la seccion
+    @l(#Seccion 10.5).
+
+    @b(Ejercicio 2.3): Vuelve a escribir @c(PopCount) para utilizar un bucle en
+    lugar de una sola expresion. Compare el rendimiento de las dos versiones. La
+    (@l(#Section 11.4) muestra como comparar el rendimiento de diferentes
+    implementaciones de forma sistematica.)
+
+    @b(Ejercicio 2.4): Escribe una version de @c(PopCount) que cuenta los bits
+    desplazando su argumento a traves de posiciones de 64 bits, poniendo a
+    prueba el bit mas a la derecha cada vez. Compare su rendimiento con la
+    version de buesqueda por la tabla.
+
+    @b(Ejercicio 2.5): La expresion @c&x&(x-1)] despeja el bit mas a la derecha
+    no-cero de @c(x). Escribe una version de @c(PopCount) que cuente bits
+    mediante este hecho, y evalua su rendimiento.
+
+** Seccion 2.7 <> Alcance
+
+   Una declaracion asocia un nombre a una entidad de programa, como una funcion
+   o una variable. El @e(alcance) de una declaracion es la parte del codigo
+   fuente, donde el uso de un nombre declarado hace referencia a esa
+   declaracion.
+
+   No confunda el alcance con el tiempo de vida. El alcance de una declaracion
+   es una region del texto del programa; Es una propiedad de tiempo de
+   compilacion. La vida util de una variable es el intervalo de tiempo durante
+   la ejecucion cuando la variable puede ser referida por otras partes del
+   programa; Es una propiedad en tiempo de ejecucion.
+
+   Un @e(bloque) sintactico es una secuencia de sentencias encerradas entre
+   llaves como las que rodean el cuerpo de una funcion o bucle. Un nombre
+   declarado dentro de un bloque sintactico no es visible fuera de ese
+   bloque. El bloque incluye sus declaraciones y determina su alcance. Podemos
+   generalizar esta nocion de bloques para incluir otras agrupaciones de
+   declaraciones que no estan explicitamente rodeadas por llaves en el codigo
+   fuente; los llamaremos a todos @e(bloques lexicos). Hay un bloque lexico para
+   todo el codigo fuente, llamado @e(bloque del universo); para cada paquete;
+   para cada archivo; para cada sentencia @c(for), @c(if), y @c(switch); para
+   cada caso en una sentencia @c(switch) o @c(select); Y, por supuesto, para
+   cada bloque sintactico explicito.
+
+   El bloque lexico de una declaracion determina su alcance, que puede ser
+   grande o pequeño. Las declaracion de tipos nativos, funciones y constantes,
+   por ejemplo @c(int), @c(len), y @c(true) estan en el bloque universo y pueden
+   ser referidos a lo largo de todo el programa. Declaraciones fuera de
+   cualquier funcion, es decir, a @e(nivel de paquete), puede ser refenciadas en
+   cualquier archivo en el mismo paquete. Paquetes importados, como @c(fmt) en
+   el ejemplo @c(tempconv), se declaran a @e(nivel de archivo), por lo que se
+   puede hacer referencia a partir del mismo archivo, pero no desde otro archivo
+   en el mismo paquete sin otro @c(import). Muchas declaraciones, como la de la
+   variable @c(c) en la funcion @c(tempconv.CToF), son @e(locales), por lo que
+   puden ser referidos solo desde dentro de la misma funcion o tal vez solo en
+   una parte de ella.
+
+   El alcance de una etiqueta de flujo de control, tal como se utiliza por las
+   sentencias @c(break), @c(continue), y @c(goto), es toda la funcion que la
+   rodea.
+
+   Un programa puede contener varias declaraciones del mismo nombre, siempre y
+   cuando cada declaracion este en un bloque lexico diferente. Por ejemplo,
+   puede declarar una variable local con el mismo nombre que una variable a
+   nivel de paquete. O, como se muestra en la @l(#Seccion 2.3.3), se puede
+   declarar un parametro de funcion llamado @c(new), a pesar de tener una
+   funcion con este nombre declarada con anterioridad en el bloque universo. No
+   exagere, cuanto mayor sea el alcance de la redeclaracion, mas probable es que
+   sorprenda al lector.
+
+   Cuando el compilador encuentra una referencia a un nombre, busca una
+   declaracion, comenzando con el bloque lexico interno mas cercano y explorando
+   hasta el bloque universo. Si el compilador no encuentra ninguna declaracion,
+   se informa de un error de @"(nombre no declarado.) Si se declara un nombre
+   tanto en un bloque externo como en un bloque interno, se encontrara primero
+   la declaracion interna. En ese caso, se dice que la declaracion interna
+   @e(obscurese) u @e(ocultar) la exterior, por lo que es inaccesible:
+
+   ..src > go
+     func f() {}
+     var g = "g"
+     func main() {
+       f := "f"
+       fmt.Println(f) // "f"; la variable f local oculta la funcion f a nivel de paquete
+       fmt.Println(g) // "g"; variable a nivel de paquete
+       fmt.Println(h) // error de compilacion: sin definir: h
+     }
+   < src..
+
+   Dentro de una funcion, los bloques lexicos pueden anidarse en una profundidad
+   arbitraria, por lo que una declaracion local puede sombrear a otra. La
+   mayoria de los bloques son creados por construcciones de flujo de control,
+   como las declaraciones @c(if) y los bucles @c(for). El programa siguiente
+   tiene tres variables distintas llamadas @c(x), ya que cada declaracion
+   aparece en un bloque lexico diferente. (Este ejemplo ilustra las reglas de
+   alcance, no es un buen estilo de programacion!)
+
+   ..src > go
+     func main() {
+       x := "hello!"
+       for i := 0; i < len(x); i++ {
+         x := x[i]
+         if x != '!' {
+           x := x + 'A' - 'a'
+           fmt.Printf("%c", x) // "HELLO" (una letra por iteracion)
+         }
+       }
+     }
+   < src..
+
+   Las expresiones @c(x[i]) y @c(x + 'A' - 'a') se refieren cada una a una
+   declaracion de @c(x) a partir de un bloque exterior; Lo explicaremos en un
+   momento. (Tenga en cuenta que esta ultima expresion @e(no) es equivalente a
+   @c(unicode.ToUpper)).
+
+   Como se menciono anteriormente, no todos los bloques lexicos corresponden con
+   secuencias delimitadas explicitamente por llaves; Algunos simplemente son
+   implicitos. El bucle @c(for) anterior crea dos bloques lexicos: el bloque
+   explicito para el cuerpo del bucle, y un bloque implicito que adicionalmente
+   encierra las variables declaradas por la clausula de inicializacion, como
+   @c(i). El alcance de una variable declarada en el bloque implicito es la
+   condicion, post-declaracion (@c(i++)), y el cuerpo del comunicado @c(for).
+
+   El siguiente ejemplo tambien tiene tres variables denominadas @c(x), cada una
+   declarada en un bloque distinto–una en el cuerpo de la funcion, una en un
+   bloque de sentencia @c(for) y uno en el cuerpo del bucle–pero solo dos de los
+   bloques son explicitos:
+
+   ..src > go
+     func main() {
+       x := "hello"
+       for _, x := range x {
+         x := x + 'A' - 'a'
+         fmt.Printf("%c", x) // "HELLO" (una letra por iteracion)
+       }
+     }
+   < src..
+
+   Al igual que bucle @c(for), las declaraciones @c(if) y @c(switch) tambien
+   crean un bloque implicito que, ademas del cuerpo de sus bloques. El codigo en
+   la siguiente cadena @c(if)-@c(else) muestra el alcance de @c(x) y @c(y):
+
+   ..src > go
+     if x := f(); x == 0 {
+       fmt.Println(x)
+     } else if y := g(x); x == y {
+       fmt.Println(x, y)
+     } else {
+       fmt.Println(x, y)
+     }
+     fmt.Println(x, y) // error de compilacion: x y y no son visibles aqui
+   < src..
+
+   La segunda declaracion @c(if) esta anidada dentro de la primera, por lo que
+   las variables declaradas dentro de la inicializacion de la primer declaracion
+   son visibles dentro de la segunda. Reglas similares se aplican a cada caso de
+   una sentencia @c(switch): hay un bloque para la condicion y un bloque para
+   cada cuerpo de caso.
+
+   En el nivel de paquete, el orden en el que aparecen las declaraciones no
+   tiene ningun efecto en su alcance, por lo que una declaracion puede referirse
+   a si misma, o a otra que le sigue, permitiendonos declarar tipos y funciones
+   recursivos o recursivos mutuamente. Sin embargo, el compilador reportara un
+   error si una declaracion constante o variable se refiere a si misma.
+
+   En este programa:
+
+   ..src > go
+     if f, err := os.Open(fname); err != nil { // error de compilacion: sin usar: f
+       return err
+     }
+     f.ReadByte() // error de compilacion: f sin definir
+     f.Close()    // error de compilacion: f sin definir
+   < src..
+
+   el alcance de @c(f) es solo la sentencia @c(if), por lo que @c(f) no es
+   accesible a los estados que despues de enta, lo que resulta en errores de
+   compilacion. Dependiendo del compilador, puede obtener un informe de errores
+   adicional de que la variable local @c(f) nunca fue utilizada.
+
+   Por lo tanto, a menudo es necesario declarar @c(f) antes de la condicion de modo
+   que sea accesible mas tarde:
+
+   ..src > go
+     f, err := os.Open(fname)
+     if err != nil {
+       return err
+     }
+     f.ReadByte()
+     f.Close()
+   < src..
+
+   Es posible que se sienta tentado a evitar declarar @c(f) y @c(err) en el
+   bloque externo moviendo las llamadas a @c(ReadByte) y @c(Close) dentro del
+   bloque @c(else):
+
+   ..src > go
+     if f, err := os.Open(fname); err != nil {
+       return err
+     } else {
+       // f and err are visible here too
+       f.ReadByte()
+       f.Close()
+     }
+   < src..
+
+   pero una practica normal en Go es tratar con el error en el bloque @c(if) y
+   luego regresar, de modo que la ruta de ejecucion exitosa no este indentada.
+
+   Las declaracion de variables compacta exige un conocimiento del
+   alcance. Considere el siguiente programa, que comienza obteniendo su
+   directorio de trabajo actual y guardandolo en una variable a nivel de
+   paquete. Esto podria hacerse llamando a @c(os.Getwd) en la funcion @c(main),
+   pero podria ser mejor separar esta preocupacion de la logica primaria, sobre
+   todo si no podemos conseguir el directorio, es un error fatal. La funcion
+   @c(log.Fatalf) imprime un mensaje y llama @c[os.Exit(1)].
+
+   ..src > go
+     var cwd string
+
+     func init() {
+       cwd, err := os.Getwd() // error de compilacion: sin usar: cwd
+       if err != nil {
+         log.Fatalf("os.Getwd failed: %v", err)
+       }
+     }
+   < src..
+  var cadena cwd
+
+  Dado que ni @c(cwd) ni @c(err) se declaran en el bloque de la funcion
+  @c(init), la sentencia @c(:=) declara ambas como variables locales. La
+  declaracion interna de @c(cwd) hace que la externa sea inaccesible, por lo que
+  la sentencia no actualiza la variable @c(cdw) de nivel de paquete como se
+  pretende.
+
+  Los compiladores de Go actuales detectan que la variable local @c(cwd) nunca
+  se utilza e informar de esto como un error, pero no son estrictamente
+  necesarias para llevar a cabo esta comprobacion. Por otra parte, un cambio
+  menor, como la adicion de una declaracion de registro que se hace referencia a
+  la @c(cwd) local, anularia la comprobacion.
+
+   ..src > go
+     var cwd string
+
+     func init() {
+       cwd, err := os.Getwd() // NOTA: incorrecto!
+       if err != nil {
+         log.Fatalf("os.Getwd failed: %v", err)
+       }
+       log.Printf("Working directory = %s", cwd)
+     }
+   < src..
+
+   La variable global @c(cwd) permanece sin inicializar, y la salida del
+   registro aparentemente normal ofusca el fallo.
+
+   Hay un numero de maneras de lidiar con este problema potencial. La mas
+   directa es evitar @c(:=) declarando @c(err) en una declaracion @c(var)
+   separada:
+
+   ..src > go
+     var cwd string
+
+     func init() {
+       var err error
+       cwd, err = os.Getwd()
+       if err != nil {
+         log.Fatalf("os.Getwd failed: %v", err)
+       }
+     }
+   < src..
+
+   Hemos visto como los paquetes, archivos, declaraciones y declaraciones
+   expresan la estructura de los programas. En los proximos dos capitulos,
+   veremos la estructura de los datos.
+
+* Capitulo 3 <> Tipos de datos basicos
