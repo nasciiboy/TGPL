@@ -3365,24 +3365,30 @@
    @c(%b) (an adverb!) to pad the result with zeros to exactly 8 digits.
 
    ..src > go
-     var x uint8 = 1<<1 | 1<<5
-     var y uint8 = 1<<1 | 1<<2
+     package main
 
-     fmt.Printf("%08b\n", x)    // "00100010", the set {1, 5}
-     fmt.Printf("%08b\n", y)    // "00000110", the set {1, 2}
-     fmt.Printf("%08b\n", x&y)  // "00000010", the intersection {1}
-     fmt.Printf("%08b\n", x|y)  // "00100110", the union {1, 2, 5}
-     fmt.Printf("%08b\n", x^y)  // "00100100", the symmetric difference {2, 5}
-     fmt.Printf("%08b\n", x&^y) // "00100000", the difference {5}
+     import "fmt"
 
-     for i := uint(0); i < 8; i++ {
-       if x&(1<<i) != 0 { // membership test
-         fmt.Println(i)   // "1", "5"
+     func main(){
+       var x uint8 = 1<<1 | 1<<5
+       var y uint8 = 1<<1 | 1<<2
+
+       fmt.Printf("%08b\n", x)    // "00100010", the set {1, 5}
+       fmt.Printf("%08b\n", y)    // "00000110", the set {1, 2}
+       fmt.Printf("%08b\n", x&y)  // "00000010", the intersection {1}
+       fmt.Printf("%08b\n", x|y)  // "00100110", the union {1, 2, 5}
+       fmt.Printf("%08b\n", x^y)  // "00100100", the symmetric difference {2, 5}
+       fmt.Printf("%08b\n", x&^y) // "00100000", the difference {5}
+
+       for i := uint(0); i < 8; i++ {
+         if x&(1<<i) != 0 { // membership test
+           fmt.Println(i)   // "1", "5"
+         }
        }
-     }
 
-     fmt.Printf("%08b\n", x<<1) // "01000100", the set {2, 6}
-     fmt.Printf("%08b\n", x>>1) // "00010001", the set {0, 4}
+       fmt.Printf("%08b\n", x<<1) // "01000100", the set {2, 6}
+       fmt.Printf("%08b\n", x>>1) // "00010001", the set {0, 4}
+     }
    < src..
 
    (@l(#Section 6.5) shows an implementation of integer sets that can be much
@@ -3460,7 +3466,7 @@
    to floating-point or vice versa, may change the value or lose precision:
 
    ..src > go
-     f := 3.141 // a float64
+     f := 3.141          // a float64
      i := int(f)
      fmt.Println(f, i)   // "3.141 3"
      f = 1.99
@@ -3484,7 +3490,7 @@
    are widely used to emphasize the bit pattern of a number over its numeric
    value.
 
-   When printing numbers using the fmt package, we can control the radix and
+   When printing numbers using the @c(fmt) package, we can control the radix and
    format with the @c(%d), @c(%o), and @c(%x) verbs, as shown in this example:
 
    ..src > go
@@ -3770,8 +3776,8 @@
    < src..
 
    If a floating-point literal or decimal integer literal is immediately
-   followed by i, such as @c(3.141592i) or @c(2i), it becomes an @e(imaginary literal),
-   denoting a complex number with a zero real component:
+   followed by @c(i), such as @c(3.141592i) or @c(2i), it becomes an
+   @e(imaginary literal), denoting a complex number with a zero real component:
 
    ..src > go
      fmt.Println(1i * 1i) // "(-1+0i)", i² = -1
@@ -3860,6 +3866,11 @@
    its standard output the PNG-encoded image of the iconic fractal, shown in
    Figure 3.3.
 
+   ..figure > Figure 3.3. The Mandelbrot set.
+
+     ..img > img/Figure-3.3.jpg
+
+
    @b(Exercise 3.5): Implement a full-color Mandelbrot set using the function
    @c(image.NewRGBA) and the type @c(color.RGBA) or @c(color.YCbCr).
 
@@ -3872,11 +3883,6 @@
    solutions to a function such as @m(z⁴-1 = 0). Shade each starting point by
    the number of iterations required to get close to one of the four
    roots. Color each point by the root it approaches.
-
-   ..figure > Figure 3.3. The Mandelbrot set.
-
-     ..img > img/Figure-3.3.jpg
-
 
    @b(Exercise 3.8): Rendering fractals at high zoom levels demands great
    arithmetic precision. Implement the same fractal using four different
@@ -4042,10 +4048,10 @@
    same underlying memory, making it cheap to copy strings of any length.
    Similarly, a string @c(s) and a substring like @c(s[7:]) may safely share the
    same data, so the substring operation is also cheap. No new memory is
-   allocated in either case. figure 3.4 illustrates the arrangement of a string
+   allocated in either case. Figure 3.4 illustrates the arrangement of a string
    and two of its substrings sharing the same underlying byte array.
 
-   ..figure > Figure 3.4. The string "hello, world" and two substrings.
+   ..figure > Figure 3.4. The string @c("hello, world") and two substrings.
 
      ..img > img/Figure-3.4.jpg
 
@@ -4088,10 +4094,10 @@
     | @c(\\) | backslash                                    |
 
     Arbitrary bytes can also be included in literal strings using hexadecimal or
-    octal escapes. A @e(hexadecimal) escape is written @e(\xhh), with exactly
+    octal escapes. A @e(hexadecimal) escape is written @c(\x)@e(hh), with exactly
     two hexadecimal digits @e(h) (in upper or lower case). An octal escape is
     written @e(\ooo) with exactly three octal digits @e(o) (0 through 7) not
-    exceeding @e(\377). Both denote a single byte with the specified
+    exceeding @c(\377). Both denote a single byte with the specified
     value. Later, we’ll see how to encode Unicode code points numerically in
     string literals.
 
@@ -4256,14 +4262,13 @@
 
     On the other hand, if we really care about the individual Unicode
     characters, we have to use other mechanisms. Consider the string from our
-    very first example, which includes two East
-
-    Asian characters. Figure 3.5 illustrates its representation in memory. The
-    string contains 13 bytes, but interpreted as UTF-8, it encodes only nine
-    code points or runes:
+    very first example, which includes two East Asian characters. Figure 3.5
+    illustrates its representation in memory. The string contains 13 bytes, but
+    interpreted as UTF-8, it encodes only nine code points or runes:
 
     ..src > go
       import "unicode/utf8"
+
       s := "Hello, 世界"
       fmt.Println(len(s))                    // "13"
       fmt.Println(utf8.RuneCountInString(s)) // "9"
@@ -4289,16 +4294,16 @@
     Figure 3.5; notice how the index jumps by more than 1 for each non-ASCII
     rune.
 
-    ..figure > Figure 3.5. A @c(range) loop decodes a UTF-8-encoded string.
-
-      ..img  > img/Figure-3.5.jpg
-
-
     ..src > go
       for i, r := range "Hello, 世界" {
         fmt.Printf("%d\t%q\t%d\n", i, r, r)
       }
     < src..
+
+    ..figure > Figure 3.5. A @c(range) loop decodes a UTF-8-encoded string.
+
+      ..img  > img/Figure-3.5.jpg
+
 
     We could use a simple @c(range) loop to count the number of runes in a string,
     like this:
@@ -4364,10 +4369,9 @@
     < src..
 
     Converting an integer value to a string interprets the integer as a rune
-    value, and yields the
+    value, and yields the UTF-8 representation of that rune:
 
     ..src > go
-      UTF-8 representation of that rune:
       fmt.Println(string(65))     // "A", not "65"
       fmt.Println(string(0x4eac)) // "京"
     < src..
@@ -4381,9 +4385,9 @@
 *** Section 3.5.4 <> Strings and Byte Slices
 
     Four standard packages are particularly important for manipulating strings:
-    @c(bytes), @c(strings), @c(strconv), and @c(unicode). The @c(string) spackage
-    provides many functions for searching, replacing, comparing, trimming,
-    splitting, and joining strings.
+    @c(bytes), @c(strings), @c(strconv), and @c(unicode). The @c(strings)
+    package provides many functions for searching, replacing, comparing,
+    trimming, splitting, and joining strings.
 
     The @c(bytes) package has similar functions for manipulating slices of
     bytes, of type @c([]byte), which share some properties with strings. Because
@@ -4697,6 +4701,7 @@
    ..src > go
      const noDelay time.Duration = 0
      const timeout = 5 * time.Minute
+
      fmt.Printf("%T %[1]v\n", noDelay)     // "time.Duration 0"
      fmt.Printf("%T %[1]v\n", timeout)     // "time.Duration 5m0s
      fmt.Printf("%T %[1]v\n", time.Minute) // "time.Duration 1m0s"
@@ -4755,6 +4760,7 @@
 
     ..src > go
       type Flags uint
+
       const (
         FlagUp Flags = 1 << iota // is up
         FlagBroadcast            // supports broadcast access capability

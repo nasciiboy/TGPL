@@ -6026,3 +6026,3292 @@
 
 # * Chapter 3 <> Basic Data Types
 * Capitulo 3 <> Tipos de datos basicos
+
+#   It’s all bits at the bottom, of course, but computers operate fundamentally on
+#   fixed-size numbers called @e(words), which are interpreted as integers,
+#   floating-point numbers, bit sets, or memory addresses, then combined into
+#   larger aggregates that represent packets, pixels, portfolios, poetry, and
+#   everything else. Go offers a variety of ways to organize data, with a spectrum
+#   of data types that at one end match the features of the hardware and at the
+#   other end provide what programmers need to conveniently represent complicated
+#   data structures.
+  En el fondo todo son solo bits, por supuesto, pero las computadoras operan
+  fundamentalmente en numeros de tamaño fijo llamados palabras, que se
+  interpretan como numeros enteros, numeros de punto flotante, conjuntos de
+  bits, o direcciones de memoria, que luego se combinana en agregados mas
+  grandes que representan paquetes, pixeles, carteras, poesia y todo lo
+  demas. Go ofrece una variedad de formas de organizar los datos, con un
+  espectro de tipos de datos que en un extremo coinciden con las caracteristicas
+  del hardware y en el otro extremo proporcionan lo que los programadores
+  necesitan para representar convenientemente estructuras de datos complicadas.
+
+#   Go’s types fall into four categories: @e(basic types), @e(aggregate types),
+#   @e(reference types), and @e(interface types). Basic types, the topic of this
+#   chapter, include numbers, strings, and booleans. Aggregate types—arrays
+#   (@l(#Section 4.1<>§4.1)) and structs (@l(#Section 4.4<>§4.4))—form more
+#   complicated data types by combining values of several simpler ones. Reference
+#   types are a diverse group that includes pointers (@l(#Section 2.3.2<>§2.3.2)),
+#   slices (@l(#Section 4.2<>§4.2)), maps (@l(#Section 4.3<>§4.3)), functions
+#   (@l(#Chapter 5)), and channels (@l(#Chapter 8)), but what they have in common
+#   is that they all refer to program variables or state @e(indirectly), so that
+#   the effect of an operation applied to one reference is observed by all copies
+#   of that reference. Finally, we’ll talk about interface types in @l(#Chapter
+#   7).
+  Los tipos de datos de Go se dividen en cuatro categorias: @e(tipos basicos),
+  @e(tipos de agregados), @e(tipos de referencia), y @e(tipos de interfaz). Los
+  tipos basicos, el tema de este capitulo, incluyen numeros, cadenas y
+  booleanos. Los tipos agregados–arreglos (@l(#Seccion 4.1<>§4.1)) y estructuras
+  (@l(#Section 4.4<>§4.4))–forma tipos de datos mas complejos mediante la
+  combinacion de otros valores mas simples. Los tipos de referencia son un grupo
+  diverso, que incluye punteros (@l(#Seccion 2.3.2<>§2.3.2)), slices
+  (@l(#Section 4.2<>§4.2)), mapas (@l(#Section 4.3<>§4.3)), funciones
+  (@l(#Capitulo 5)), y canales (@l(#Capitulo 8)), pero lo que tienen en comun es
+  que se todos ellos se refieren a variables del programa o estados
+  indirectamente, por lo que el efecto de una operacion que se aplica a una
+  referencia es observado por todas las copias de esa referencia. Por ultimo,
+  hablaremos de los tipos de interfaz en el @l(#Capitulo 7).
+
+# ** Section 3.1 <> Integers
+** Seccion 3.1 <> Enteros
+
+#    Go’s numeric data types include several sizes of integers, floating-point
+#    numbers, and complex numbers. Each numeric type determines the size and
+#    signedness of its values. Let’s begin with integers.
+   Los tipos de datos numericos de Go incluyen varios tamaños de enteros,
+   numeros de coma flotante y numeros complejos. Cada tipo numerico determina el
+   tamaño y la firma de sus valores. Comencemos con numeros enteros.
+
+#    Go provides both signed and unsigned integer arithmetic. There are four
+#    distinct sizes of signed integers—8, 16, 32, and 64 bits—represented by the
+#    types @c(int8), @c(int16), @c(int32), and @c(int64), and corresponding
+#    unsigned versions @c(uint8), @c(uint16), @c(uint32), and @c(uint64).
+   Go proporciona tanto aritmetica con y sin signo. Hay cuatro tamaños distintos
+   de numeros enteros–8, 16, 32 y 64 bits–representados por los tipos @c(int8),
+   @c(int16), @c(int32), y @c(int64), y las correspondientes versiones sin signo
+   @c(uint8), @c(uint16), @c(uint32), y @c(uint64).
+
+#    There are also two types called just @c(int) and @c(uint) that are the
+#    natural or most efficient size for signed and unsigned integers on a
+#    particular platform; @c(int) is by far the most widely used numeric
+#    type. Both these types have the same size, either 32 or 64 bits, but one must
+#    not make assumptions about which; different compilers may make different
+#    choices even on identical hardware.
+   Tambien hay dos tipos llamados simplemente @c(int) y @c(uint) que son del
+   tamaño natural o mas eficiente para los numeros enteros con y sin signo en
+   una plataforma en particular; @c(int) es de lejos el tipo numerico mas
+   utilizado. Ambos tipos tienen el mismo tamaño, 32 o 64 bits, pero uno no debe
+   hacer suposiciones sobre cual es; Diferentes compiladores pueden tomar
+   diferentes opciones incluso en hardware identico.
+
+#    The type @c(rune) is an synonym for @c(int32) and conventionally indicates
+#    that a value is a Unicode code point. The two names may be used
+#    interchangeably. Similarly, the type @c(byte) is an synonym for @c(uint8),
+#    and emphasizes that the value is a piece of raw data rather than a small
+#    numeric quantity.
+   El tipo @c(rune) es un sinonimo de @c(int32) y convencionalmente indica que
+   un valor es un punto de codigo Unicode. Los dos nombres pueden utilizarse
+   indistintamente. Del mismo modo, el tipo de @c(byte) es un sinonimo de
+   @c(uint8), y hace hincapie en que el valor es una pieza de datos en bruto mas
+   que una pequeña cantidad numerica.
+
+#    Finally, there is an unsigned integer type @c(uintptr), whose width is not
+#    specified but is sufficient to hold all the bits of a pointer value. The
+#    @c(uintptr) type is used only for low-level programming, such as at the
+#    boundary of a Go program with a C library or an operating system. We’ll see
+#    examples of this when we deal with the @c(unsafe) package in @l(#Chapter 13).
+   Por ultimo, existe un tipo entero sin signo @c(uintptr), cuya anchura no se
+   especifica, pero es suficiente para contener todos los bits de un valor de
+   puntero. El tipo @c(uintptr) solo se utiliza para la programacion a bajo
+   nivel, por ejemplo, en el limite de un programa Go con una libreria C o un
+   sistema operativo. Veremos ejemplos de esto cuando nos ocupemos del paquete
+   @c(unsafe) en el @l(#Capitulo 13).
+
+#    Regardless of their size, @c(int), @c(uint), and @c(uintptr) are different types
+#    from their explicitly sized siblings. Thus @c(int) is not the same type as
+#    @c(int32), even if the natural size of integers is 32 bits, and an explicit
+#    conversion is required to use an @c(int) value where an @c(int32) is needed,
+#    and vice versa.
+   Independientemente de su tamaño, @c(int), @c(uint) y @c(uintptr) son
+   diferentes tipos de sus hermanos de tamaño de forma explicita. Por lo tanto
+   @c(int) no es el mismo tipo que @c(int32), incluso si el tamaño natural de
+   enteros es de 32 bits, y requiere una conversion explicita utilizar un valor
+   @c(int) donde se necesita un @c(int32), y viceversa.
+
+#    Signed numbers are represented in 2’s-complement form, in which the
+#    high-order bit is reserved for the sign of the number and the range of values
+#    of an @m(n)-bit number is from -2ⁿ⁻¹ to 2ⁿ⁻¹-1. Unsigned integers use the
+#    full range of bits for non-negative values and thus have the range 0 to
+#    2ⁿ-1. For instance, the range of @c(int8) is -128 to 127, whereas the range
+#    of @c(uint8) is 0 to 255.
+   Numeros con signo se representan en forma de complemento a 2, en el que el
+   bit de orden superior esta reservado para el signo del numero y la gama de
+   valores de un numero de @m(n) bits es de -2ⁿ⁻¹ a 2ⁿ⁻¹-1. Los numeros enteros
+   sin signo usan el rango completo de bits para valores no negativos y por lo
+   tanto tienen el rango de 0 a 2ⁿ-1. Por ejemplo, la gama de @c(int8) entre
+   -128 y 127, mientras que la gama de @c(uint8) es de 0 a 255.
+
+#    Go’s binary operators for arithmetic, logic, and comparison are listed here
+#    in order of decreasing precedence:
+   En Go Los operadores binarios de aritmetica, logica y comparacion se enumeran
+   aqui en orden decreciente de precedencia:
+
+#    ..pre >
+#      *   /   %  <<  >>  &   &^
+#      +   -   |  ^
+#      ==  !=  <  <=  >   >=
+#      &&
+#      ||
+#    < pre..
+   ..pre >
+     *   /   %  <<  >>  &   &^
+     +   -   |  ^
+     ==  !=  <  <=  >   >=
+     &&
+     ||
+   < pre..
+
+#    There are only five levels of precedence for binary operators. Operators at
+#    the same level associate to the left, so parentheses may be required for
+#    clarity, or to make the operators evaluate in the intended order in an
+#    expression like @c[mask & (1 << 28)].
+   Solo hay cinco niveles de precedencia para los operadores binarios. Los
+   operadores en el mismo nivel se asocian a la izquierda, por lo que pueden ser
+   necesarios parentesis, para mayor claridad, o para hacer que los operadores
+   evaluan en el orden deseado en una expresion como @c[mask & (1 << 28)].
+
+#    Each operator in the first two lines of the table above, for instance @c(+),
+#    has a corresponding @c(assignment operator) like @c(+=) that may be used to
+#    abbreviate an assignment statement.
+   Cada operador en las dos primeras lineas de la tabla anterior, por ejemplo
+   @c(+), tiene un operador de asignacion correspondiente como @c(+=) que pueden
+   utilizarse para abreviar una instruccion de asignacion.
+
+#    The integer arithmetic operators @c(+), @c(-), @c(*), and @c(/) may be
+#    applied to integer, floating-point, and complex numbers, but the remainder
+#    operator @c(%) applies only to integers. The behavior of @c(%) for negative
+#    numbers varies across programming languages. In Go, the sign of the remainder
+#    is always the same as the sign of the dividend, so @c(-5%3) and @c(-5%-3) are
+#    both @c(-2). The behavior of @c(/) depends on whether its operands are
+#    integers, so @c(5.0/4.0) is @c(1.25), but @c(5/4) is @c(1) because integer
+#    division truncates the result toward zero.
+   Los operadores aritmetica enteros @c(+), @c(-), @c(*), y @c(/) pueden
+   aplicarse a numeros enteros, de coma flotante, y numeros complejos, pero el
+   operador @c(%) solo se aplica a numeros enteros. El comportamiento de @c(%)
+   para los numeros negativos varia a traves de los lenguajes de
+   programacion. En Go, el signo del resto es siempre el mismo que el signo del
+   dividendo, por lo @c(-5%3) y @c(-5%-3) son ambos @c(-2). El comportamiento de
+   @c(/) depende de si sus operandos son numeros enteros, por lo que @c(5.0/4.0)
+   es @c(1.25), pero @c(5/4) es @c(1) porque la division entera trunca el
+   resultado hacia cero.
+
+#    If the result of an arithmetic operation, whether signed or unsigned, has
+#    more bits than can be represented in the result type, it is said to
+#    @e(overflow). The high-order bits that do not fit are silently discarded. If
+#    the original number is a signed type, the result could be negative if the
+#    leftmost bit is a 1, as in the @c(int8) example here:
+   Si el resultado de una operacion aritmetica, ya sea con o sin signo, tiene
+   mas bits de los que pueden ser representados en el tipo del resultado, se
+   dice que se @e(desborda). Los bits de orden superior que no encajan se
+   descartan silenciosamente. Si el numero original es un tipo con signo, el
+   resultado podria ser negativo si el bit mas a la izquierda es un 1, como en
+   el @c(int8) ejemplo aqui:
+
+#    ..src > go
+#      var u uint8 = 255
+#      fmt.Println(u, u+1, u*u) // "255 0 1"
+#
+#      var i int8 = 127
+#      fmt.Println(i, i+1, i*i) // "127 -128 1"
+#    < src..
+   ..src > go
+     var u uint8 = 255
+     fmt.Println(u, u+1, u*u) // "255 0 1"
+
+     var i int8 = 127
+     fmt.Println(i, i+1, i*i) // "127 -128 1"
+   < src..
+
+#    Two integers of the same type may be compared using the binary comparison
+#    operators below; the type of a comparison expression is a boolean.
+   Dos numeros enteros del mismo tipo pueden compararse usando los operadores de
+   comparacion binarios siguientes; El tipo de una expresion de comparacion es
+   un booleano.
+
+#    | @c(==) | equal to                 |
+#    |--------|--------------------------|
+#    | @c(!=) | not equal to             |
+#    |--------|--------------------------|
+#    | @c(<)  | less than                |
+#    |--------|--------------------------|
+#    | @c(<=) | less than or equal to    |
+#    |--------|--------------------------|
+#    | @c(>)  | greater than             |
+#    |--------|--------------------------|
+#    | @c(>=) | greater than or equal to |
+   | @c(==) | igual a             |
+   |--------|---------------------|
+   | @c(!=) | no igual a          |
+   |--------|---------------------|
+   | @c(<)  | menor que           |
+   |--------|---------------------|
+   | @c(<=) | Menor que o igual a |
+   |--------|---------------------|
+   | @c(>)  | mayor que           |
+   |--------|---------------------|
+   | @c(>=) | Mayor que o igual a |
+
+#    In fact, all values of basic type—booleans, numbers, and strings—are
+#    @e(comparable), meaning that two values of the same type may be compared
+#    using the @c(==) and @c(!=) operators. Furthermore, integers, floating-point
+#    numbers, and strings are @e(ordered) by the comparison operators. The values
+#    of many other types are not comparable, and no other types are ordered. As we
+#    encounter each type, we’ll present the rules governing the @e(comparability)
+#    of its values.
+   De hecho, todos los valores de tipo basico–booleanos, numeros y cadenas–son
+   comparables, lo que significa que dos valores del mismo tipo pueden ser
+   comparados con los operadores @c(==) y @c(!=). Por otra parte, los numeros
+   enteros, numeros de punto flotante y cadenas son @e(ordenados) por los
+   operadores de comparacion. Los valores de muchos otros tipos no son
+   comparables y no se ordenan otros tipos. A medida que nos encontramos cada
+   tipo, vamos a presentar las normas que rigen la comparacion de sus valores.
+
+#    There are also unary addition and subtraction operators:
+   Tambien hay operadores unarios de suma y resta:
+
+#    | @c(+) | unary positive (no effect) |
+#    |-------|----------------------------|
+#    | @c(-) | unary negation             |
+   | @c(+) | Unario positivo (sin efecto) |
+   |-------|------------------------------|
+   | @c(-) | Negacion unaria              |
+
+#    For integers, @c(+x) is a shorthand for @c(0+x) and @c(-x) is a shorthand for
+#    @c(0-x); for floating-point and complex numbers, @c(+x) is just @c(x) and
+#    @c(-x) is the negation of @c(x).
+   Para enteros, @c(+x) es una abreviatura de @c(0+x) y @c(-x) es una
+   abreviatura de @c(0-x); para los numeros de punto flotante y complejos,
+   @c(+x) es @c(x) y @c(-x) es la negacion de @c(x).
+
+#    Go also provides the following bitwise binary operators, the first four of
+#    which treat their operands as bit patterns with no concept of arithmetic
+#    carry or sign:
+   Go tambien proporciona los siguientes operadores binarios a nivel de bits,
+   cuyos cuatro primeros tratan a sus operandos como patrones de bits sin ningun
+   concepto aritmetico o signo:
+
+#    | @c(&)  | bitwise AND         |
+#    |--------|---------------------|
+#    | @c(|)  | bitwise OR          |
+#    |--------|---------------------|
+#    | @c(^)  | bitwise XOR         |
+#    |--------|---------------------|
+#    | @c(&^) | bit clear (AND NOT) |
+#    |--------|---------------------|
+#    | @c(<<) | left shift          |
+#    |--------|---------------------|
+#    | @c(>>) | right shift         |
+   | @c(&)  | AND bit a bit                 |
+   |--------|-------------------------------|
+   | @c(|)  | OR bit a bit                  |
+   |--------|-------------------------------|
+   | @c(^)  | XOR bit a bit                 |
+   |--------|-------------------------------|
+   | @c(&^) | AND NOT                       |
+   |--------|-------------------------------|
+   | @c(<<) | desplazamiento a la izquierdo |
+   |--------|-------------------------------|
+   | @c(>>) | desplazamiento a la derecha   |
+
+#    The operator @c(^) is bitwise exclusive OR (XOR) when used as a binary
+#    operator, but when used as a unary prefix operator it is bitwise negation or
+#    complement; that is, it returns a value with each bit in its operand
+#    inverted. The @c(&^) operator is bit clear (AND NOT): in the expression @c(z
+#    = x &^ y), each bit of @c(z) is 0 if the corresponding bit of @c(y) is 1;
+#    other wise it equals the corresponding bit of @c(x).
+   El operador bit a bit @c(^) es un OR exclusivo (XOR) cuando se utiliza como
+   un operador binario (coloca un uno en cada posicion en donde sus operandos
+   tienen bits distintos, y un cero en donde son iguales), pero cuando se
+   utiliza como un operador de prefijo unario es el complemento a uno; es decir,
+   devuelve un valor con cada bit en su operando invertido. El operador @c(&^)
+   es para lipiar bits (AND NOT): en la expresion @c(z = x &^ y), cada bit de
+   @c(z) es 0 si el bit correspondiente de @c(y) es 1; de lo contrario es igual
+   al bit correspondiente de @c(x).
+
+#    The code below shows how bitwise operations can be used to interpret a
+#    @c(uint8) value as a compact and efficient set of 8 independent bits. It uses
+#    @c(Printf)’s @c(%b) verb to print a number’s binary digits; @c(08) modifies
+#    @c(%b) (an adverb!) to pad the result with zeros to exactly 8 digits.
+   El siguiente codigo muestra como se pueden utilizar las operaciones a nivel
+   de bit para interpretar un valor @c(uint8) como un conjunto compacto y
+   eficiente de 8 bits independientes. Se utiliza el verbo @c(%b) de @c(Printf)
+   para imprimir los digitos binarios de un numero; @c(08) modifica @c(%b) (un
+   adverbio!)  para rellenar el resultado con ceros a exactamente 8 digitos.
+
+#    ..src > go
+#      package main
+#
+#      import "fmt"
+#
+#      func main(){
+#        var x uint8 = 1<<1 | 1<<5
+#        var y uint8 = 1<<1 | 1<<2
+#
+#        fmt.Printf("%08b\n", x)    // "00100010", the set {1, 5}
+#        fmt.Printf("%08b\n", y)    // "00000110", the set {1, 2}
+#        fmt.Printf("%08b\n", x&y)  // "00000010", the intersection {1}
+#        fmt.Printf("%08b\n", x|y)  // "00100110", the union {1, 2, 5}
+#        fmt.Printf("%08b\n", x^y)  // "00100100", the symmetric difference {2, 5}
+#        fmt.Printf("%08b\n", x&^y) // "00100000", the difference {5}
+#
+#        for i := uint(0); i < 8; i++ {
+#          if x&(1<<i) != 0 { // membership test
+#            fmt.Println(i)   // "1", "5"
+#          }
+#        }
+#
+#        fmt.Printf("%08b\n", x<<1) // "01000100", the set {2, 6}
+#        fmt.Printf("%08b\n", x>>1) // "00010001", the set {0, 4}
+#      }
+#    < src..
+   ..src > go
+     package main
+
+     import "fmt"
+
+     func main(){
+       var x uint8 = 1<<1 | 1<<5
+       var y uint8 = 1<<1 | 1<<2
+
+       fmt.Printf("%08b\n", x)    // "00100010", el conjunto {1, 5}
+       fmt.Printf("%08b\n", y)    // "00000110", el conjunto {1, 2}
+       fmt.Printf("%08b\n", x&y)  // "00000010", la interseccion {1}
+       fmt.Printf("%08b\n", x|y)  // "00100110", la union {1, 2, 5}
+       fmt.Printf("%08b\n", x^y)  // "00100100", la diferencia simetrica {2, 5}
+       fmt.Printf("%08b\n", x&^y) // "00100000", la diferencia {5}
+
+       for i := uint(0); i < 8; i++ {
+         if x&(1<<i) != 0 { // prueba de pertenencia
+           fmt.Println(i)   // "1", "5"
+         }
+       }
+
+       fmt.Printf("%08b\n", x<<1) // "01000100", el conjunto {2, 6}
+       fmt.Printf("%08b\n", x>>1) // "00010001", el conjunto {0, 4}
+     }
+   < src..
+
+#    (@l(#Section 6.5) shows an implementation of integer sets that can be much
+#    bigger than a byte.)
+   (La @l(#Seccion 6.5) muestra una implementacion de conjuntos de numeros
+   enteros que pueden ser mucho mas grande que un byte).
+
+#    In the shift operations @c(x<<n) and @c(x>>n), the @c(n) operand determines
+#    the number of bit positions to shift and must be unsigned; the @c(x) operand
+#    may be unsigned or signed. Arithmetically, a left shift @c(x<<n) is
+#    equivalent to multiplication by 2ⁿ and a right shift @c(x>>n) is equivalent
+#    to the floor of division by 2ⁿ.
+   En las operaciones de desplazamiento @c(x<<n) y @c(x>>n), el operando @c(n)
+   determina el numero de posiciones de bits a cambiar y debe ser sin signo; el
+   operando @c(x) puede tener o no signo. Aritmeticamente, el desplazamiento a
+   la izquierda @c(x<<n) es equivalente a la multiplicacion por 2ⁿ y un
+   desplazamiento a la derecha @c(x>>n) es equivalente a dividir por 2ⁿ.
+
+#    Left shifts fill the vacated bits with zeros, as do right shifts of unsigned
+#    numbers, but right shifts of signed numbers fill the vacated bits with copies
+#    of the sign bit. For this reason, it is important to use unsigned arithmetic
+#    when you’re treating an integer as a bit pattern.
+   Los desplazamientos a la izquierda o derecha en enteros sin singno llenan los
+   bits desocupados con ceros, pero los desplazamientos a la derecha de numeros
+   con signo llenan los bits desocupados con copias del bit de signo. Por esta
+   razon, es importante utilizar aritmetica sin signo cuando se esta tratando un
+   entero como un patron de bits.
+
+#    Although Go provides unsigned numbers and arithmetic, we tend to use the
+#    signed @c(int) form even for quantities that can’t be negative, such as the
+#    length of an array, though @c(uint) might seem a more obvious choice. Indeed,
+#    the built-in @c(len) function returns a signed @c(int), as in this loop which
+#    announces prize medals in reverse order:
+   Aunque Go proporciona aritmetica y numeros sin signo, se tiende a utilizar un
+   int con signo incluso para cantidades que no pueden ser negativas, tales como
+   la longitud de un arreglo, aunque @c(uint) puede parecer una eleccion mas
+   obvia. De hecho, la funcion nativa @c(len) devuelve un @c(int) con signo,
+   como en este bucle que anuncia medallas de premio en el orden inverso:
+
+#    ..src > go
+#      medals := []string{"gold", "silver", "bronze"}
+#      for i := len(medals) - 1; i >= 0; i-- {
+#        fmt.Println(medals[i]) // "bronze", "silver", "gold"
+#      }
+#    < src..
+   ..src > go
+     medallas := []string{"oro", "plata", "bronce"}
+     for i := len(medallas) - 1; i >= 0; i-- {
+       fmt.Println(medallas[i]) // "bornce", "plata", "oro"
+     }
+   < src..
+
+#    The alternative would be calamitous. If @c(len) returned an unsigned number,
+#    then @c(i) too would be a @c(uint), and the condition @c(i >= 0) would always
+#    be true by definition. After the third iteration, in which @c(i == 0), the
+#    @c(i--) statement would cause @c(i) to become not -1, but the maximum
+#    @c(uint) value (for example, 2⁶⁴-1), and the evaluation of @c(medals[i])
+#    would fail at run time, or @e(panic) (@l(#Section 5.9<>§5.9)), by attempting
+#    to access an element outside the bounds of the slice.
+   La alternativa seria calamitosa. Si @c(len) devuelve un numero sin signo,
+   entonces @c(i) tambien seria un @c(uint), y la condicion @c(i >= 0) siempre
+   seria verdadera por definicion. Despues de la tercera iteracion, en la cual
+   @c(i == 0), la instruccion @c(i--) no haria que @c(i) se volviera -1, en
+   cambion seria el valor maximo de @c(uint) (es decir, 2⁶⁴-1), y la evaluacion
+   de @c(medallas[i]) fallaria en tiempo de ejecucion, o de @e(panico)
+   (@l(#Seccion 5.9<>§5.9)), al tratar de acceder a un elemento fuera de los
+   limites del slice.
+
+#    For this reason, unsigned numbers tend to be used only when their bitwise
+#    operators or peculiar arithmetic operators are required, as when implementing
+#    bit sets, parsing binary file formats, or for hashing and cryptography. They
+#    are typically not used for merely non-negative quantities.
+   Por esta razon, los numeros sin signo tienden a utilizarse solo cuando se
+   requieren sus operadores bit a bit u operadores aritmeticos peculiares, como
+   cuando se implementan conjuntos de bits, se analizan formatos binarios de
+   archivos o se usan hash y criptografia. Normalmente no se usan para
+   cantidades meramente no negativas.
+
+#    In general, an explicit conversion is required to convert a value from one
+#    type to another, and binary operators for arithmetic and logic (except
+#    shifts) must have operands of the same type. Although this occasionally
+#    results in longer expressions, it also eliminates a whole class of problems
+#    and makes programs easier to understand.
+   En general, se requiere una conversion explicita para convertir un valor de
+   un tipo a otro, y los operadores binarios para aritmetica y logica (excepto
+   los desplazamientos) deben tener operandos del mismo tipo. Aunque esto
+   resulta ocasionalmente en expresiones mas largas, tambien elimina toda una
+   clase de problemas y hace que los programas sean mas faciles de entender.
+
+#    As an example familiar from other contexts, consider this sequence:
+   Como ejemplo familiar de otros contextos, considere esta secuencia:
+
+#    ..src > go
+#      var apples int32 = 1
+#      var oranges int16 = 2
+#      var compote int = apples + oranges // compile error
+#    < src..
+   ..src > go
+     var manzanas int32 = 1
+     var naranjas int16 = 2
+     var compota int = manzanas + naranjas // Error de compiacion
+   < src..
+
+#    Attempting to compile these three declarations produces an error message:
+   Al intentar compilar estas tres declaraciones se genera un mensaje de error:
+
+#    ..pre >
+#      invalid operation: apples + oranges (mismatched types int32 and int16)
+#    < pre..
+   ..pre >
+     invalid operation: manzanas + naranjas (mismatched types int32 and int16)
+   < pre..
+
+#    This type mismatch can be fixed in several ways, most directly by converting
+#    everything to a common type:
+   Este tipo de incompatibilidad se puede corregir de varias maneras, mas
+   directamente convirtiendo todo a un tipo comun:
+
+#    ..src > go
+#      var compote = int(apples) + int(oranges)
+#    < src..
+   ..src > go
+     var compota = int(manzanas) + int(naranjas)
+   < src..
+
+#    As described in @l(#Section 2.5), for every type @c(T), the conversion
+#    operation @c[T(x)] converts the value @c(x) to type @c(T) if the conversion
+#    is allowed. Many integer-to-integer conversions do not entail any change in
+#    value; they just tell the compiler how to interpret a value. But a conversion
+#    that narrows a big integer into a smaller one, or a conversion from integer
+#    to floating-point or vice versa, may change the value or lose precision:
+   Como se describe en la @l(#Seccion 2.5), para cada tipo @c(T), la operacion
+   de conversion @c[T(x)] convierte el valor @c(x) a tipo @c(T) si se permite la
+   conversion. Muchas conversiones de entero a entero no implican ningun cambio
+   en el valor; Solo le dicen al compilador como interpretar un valor. Pero una
+   conversion que reduce un entero grande a uno mas pequeño o una conversion de
+   entero a punto flotante o viceversa, puede cambiar el valor o perder
+   precision:
+
+#    ..src > go
+#      f := 3.141          // a float64
+#      i := int(f)
+#      fmt.Println(f, i)   // "3.141 3"
+#      f = 1.99
+#      fmt.Println(int(f)) // "1"
+#    < src..
+   ..src > go
+     f := 3.141          // un float64
+     i := int(f)
+     fmt.Println(f, i)   // "3.141 3"
+     f = 1.99
+     fmt.Println(int(f)) // "1"
+   < src..
+
+#    Float to integer conversion discards any fractional part, truncating toward
+#    zero. You should avoid conversions in which the operand is out of range for
+#    the target type, because the behavior depends on the implementation:
+   La conversion de float a entero descarta cualquier parte fraccional,
+   truncando hacia cero. Debe evitar las conversiones en las que el operando
+   este fuera del rango del tipo destino, ya que el comportamiento depende de la
+   implementacion:
+
+#    ..src > go
+#      f := 1e100  // a float64
+#      i := int(f) // result is implementation-dependent
+#    < src..
+   ..src > go
+     f := 1e100  // un float64
+     i := int(f) // el resultado depende de la implementacion
+   < src..
+
+#    Integer literals of any size and type can be written as ordinary decimal
+#    numbers, or as octal numbers if they begin with @c(0), as in @c(0666), or as
+#    hexadecimal if they begin with @c(0x) or @c(0X), as in @c(0xdeadbeef). Hex
+#    digits may be upper or lower case. Nowadays octal numbers seem to be used for
+#    exactly one purpose—file permissions on POSIX systems—but hexadecimal numbers
+#    are widely used to emphasize the bit pattern of a number over its numeric
+#    value.
+   Los literales enteros de cualquier tamaño y tipo se pueden escribir como
+   numeros decimales ordinarios, o bien con numeros octales si comienzan con
+   @c(0), como en @c(0666), o como hexadecimal si comienzan con @c(0x) o @c(0X),
+   como en @c(0xdeadbeef). Los digitos hexadecimales pueden ser mayusculas o
+   minusculas. Hoy en dia los numeros octales parecen ser utilizados para
+   exactamente un proposito–permisos de archivo en sistemas POSIX–pero los
+   numeros hexadecimales se utilizan ampliamente para enfatizar el patron de
+   bits de un numero sobre su valor numerico.
+
+#    When printing numbers using the fmt package, we can control the radix and
+#    format with the @c(%d), @c(%o), and @c(%x) verbs, as shown in this example:
+   Al imprimir numeros usando el paquete @c(fmt), podemos controlar la base y el
+   formato con los verbos @c(%d), @c(%o), y @c(%x), como se muestra en este
+   ejemplo:
+
+#    ..src > go
+#      o := 0666
+#      fmt.Printf("%d %[1]o %#[1]o\n", o) // "438 666 0666"
+#      x := int64(0xdeadbeef)
+#      fmt.Printf("%d %[1]x %#[1]x %#[1]X\n", x)
+#      // Output:
+#      // 3735928559 deadbeef 0xdeadbeef 0XDEADBEEF
+#    < src..
+   ..src > go
+     o := 0666
+     fmt.Printf("%d %[1]o %#[1]o\n", o) // "438 666 0666"
+     x := int64(0xdeadbeef)
+     fmt.Printf("%d %[1]x %#[1]x %#[1]X\n", x)
+     // Salida:
+     // 3735928559 deadbeef 0xdeadbeef 0XDEADBEEF
+   < src..
+
+#    Note the use of two @c(fmt) tricks. Usually a @c(Printf) format string
+#    containing multiple @c(%) verbs would require the same number of extra
+#    operands, but the @c([1]) @"(adverbs) after @c(%) tell @c(Printf) to use the
+#    first operand over and over again. Second, the @c(#) adverb for @c(%o) or
+#    @c(%x) or @c(%X) tells @c(Printf) to emit a @c(0) or @c(0x) or @c(0X) prefix
+#    respectively.
+   Observe el uso de dos trucos de @c(fmt). Por lo general, una cadena de
+   formato @c(Printf) que contiene multiples verbos @c(%) requeriria el mismo
+   numero de operandos adicionales, pero los @"(adverbios) @c([1]) despues de
+   @c(%) le indican a @c(Printf) utilizar el primer operando una y otra vez. En
+   segundo lugar, el adverbio @c(#) enr @c(%o) o @c(%x) o @c(%X) indica a
+   @c(Printf) emitir un prefijo @c(0) o @c(0x) o @c(0X) respectivamente.
+
+#    Rune literals are written as a character within single quotes. The simplest
+#    example is an ASCII character like @c('a'), but it’s possible to write any
+#    Unicode code point either directly or with numeric escapes, as we will see
+#    shortly.
+   Las literales de runa se escriben como un caracter entre comillas
+   simples. El ejemplo mas simple es un caracter ASCII como @c('a'), pero es
+   posible escribir cualquier punto de codigo Unicode directamente o con escapes
+   numericos, como veremos en breve.
+
+#    Runes are printed with @c(%c), or with @c(%q) if quoting is desired:
+   Las runas se imprimen con @c(%c), o con @c(%q) si se desea citar:
+
+#    ..src > go
+#      ascii := 'a'
+#      unicode := '𢉩'
+#      newline := '\n'
+#      fmt.Printf("%d %[1]c %[1]q\n", ascii)   // "97 a 'a'"
+#      fmt.Printf("%d %[1]c %[1]q\n", unicode) // "22269 𢉩 '𢉩'"
+#      fmt.Printf("%d %[1]q\n", newline)       // "10 '\n'"
+#    < src..
+   ..src > go
+     ascii := 'a'
+     unicode := '𢉩'
+     newline := '\n'
+     fmt.Printf("%d %[1]c %[1]q\n", ascii)   // "97 un 'a'"
+     fmt.Printf("%d %[1]c %[1]q\n", unicode) // "22269 𢉩 '𢉩'"
+     fmt.Printf("%d %[1]q\n", newline)       // "10 '\n'"
+   < src..
+
+# ** Section 3.2 <> Floating-Point Numbers
+** Seccion 3.2 <> Numeros de punto flotante
+
+#    Go provides two sizes of floating-point numbers, @c(float32) and
+#    @c(float64). Their arithmetic properties are governed by the IEEE 754
+#    standard implemented by all modern CPUs.
+   Go ofrece dos tamaños de numeros de punto flotante, @c(float32) y
+   @c(float64). Sus propiedades aritmeticas se rigen por el estandar IEEE 754
+   implementado por todas las CPUs modernas.
+
+#    Values of these numeric types range from tiny to huge. The limits of
+#    floating-point values can be found in the @c(math) package. The constant
+#    @c(math.MaxFloat32), the largest @c(float32), is about @c(3.4e38), and
+#    @c(math.MaxFloat64) is about @c(1.8e308). The smallest positive values are
+#    near @c(1.4e-45) and @c(4.9e-324), respectively.
+   Los valores de estos tipos numericos varian de pequeño a enorme. Los limites
+   de valores de coma flotante se pueden encontrar en el paquete @c(math). La
+   constante @c(math.MaxFloat32), el mayor valor de @c(float32), es cerca de
+   @c(3.4e38) y @c(math.MaxFloat64) es @c(1.8e308). Los valores positivos mas
+   pequeños son @c(1.4e-45) y @c(4.9e-324), respectivamente.
+
+#    A @c(float32) provides approximately six decimal digits of precision, whereas
+#    a @c(float64) provides about 15 digits; @c(float64) should be preferred for
+#    most purposes because @c(float32) computations accumulate error rapidly
+#    unless one is quite careful, and the smallest positive integer that cannot be
+#    exactly represented as a @c(float32) is not large:
+   Un @c(float32) proporciona aproximadamente seis digitos decimales de
+   precision, mientras que un @c(float64) proporciona alrededor de 15 digitos;
+   @c(float64) debe ser preferido para la mayoria de los propositos porque los
+   calculos sobre @c(float32) acumulan errores rapidamente a menos que sea
+   bastante cuidadoso, y el numero entero positivo mas pequeño que no se puede
+   representar exactamente como @c(float32) no es grande:
+
+#    ..src > go
+#      var f float32 = 16777216 // 1 << 24
+#      fmt.Println(f == f+1)    // "true"!
+#    < src..
+   ..src > go
+     var f float32 = 16777216 // 1 << 24
+     fmt.Println(f == f+1)    // "true"!
+   < src..
+
+#    Floating-point numbers can be written literally using decimals, like this:
+   Los numeros de punto flotante se pueden escribir literalmente usando
+   decimales, asi:
+
+#    ..src > go
+#      const e = 2.71828 // (approximately)
+#    < src..
+   ..src > go
+     const e = 2.71828 // (aproximadamente)
+   < src..
+
+#    Digits may be omitted before the decimal point (@c(.707)) or after it
+#    (@c(1.)). Very small or very large numbers are better written in scientific
+#    notation, with the letter @c(e) or @c(E) preceding the decimal exponent:
+   Pueden omitirse los digitos antes del punto decimal (@c(.707)) o despues de
+   el (@c(1.)). Es mejor escribir numeros muy pequeños o muy grandes en notacion
+   cientifica, con la letra @c(e) o @c(E) precediendo el exponente decimal:
+
+#    ..src > go
+#      const Avogadro = 6.02214129e23
+#      const Planck   = 6.62606957e-34
+#    < src..
+   ..src > go
+     const Avogadro = 6.02214129e23
+     const Planck   = 6.62606957e-34
+   < src..
+
+#    Floating-point values are conveniently printed with @c(Printf)’s @c(%g) verb,
+#    which chooses the most compact representation that has adequate precision,
+#    but for tables of data, the @c(%e) (exponent) or @c(%f) (no exponent) forms
+#    may be more appropriate. All three verbs allow field width and numeric
+#    precision to be controlled.
+   Los Valores de coma flotante se imprimen convenientemente con el verbo @c(%g)
+   de @c(Printf), que elige la representacion mas compacta con la precision
+   adecuada, pero para las tablas de datos, es mas adecuado el formato @c(%e)
+   (exponente) o %f (sin exponente). Los tres verbos permiten controlar el ancho
+   del campo y la precision numerica.
+
+#    ..src > go
+#      for x := 0; x < 8; x++ {
+#        fmt.Printf("x = %d eˣ = %8.3f\n", x, math.Exp(float64(x)))
+#      }
+#    < src..
+   ..src > go
+     for x := 0; x < 8; x++ {
+       fmt.Printf("x = %d eˣ = %8.3f\n", x, math.Exp(float64(x)))
+     }
+   < src..
+
+#    The code above prints the powers of @e(e) with three decimal digits of
+#    precision, aligned in an eight-character field:
+   El codigo anterior imprime las potencias de @e(e) con tres digitos decimales
+   de precision, alineados en un campo de ocho caracteres:
+
+#    ..pre >
+#      x = 0 eˣ =    1.000
+#      x = 1 eˣ =    2.718
+#      x = 2 eˣ =    7.389
+#      x = 3 eˣ =   20.086
+#      x = 4 eˣ =   54.598
+#      x = 5 eˣ =  148.413
+#      x = 6 eˣ =  403.429
+#      x = 7 eˣ = 1096.633
+   ..pre >
+     x = 0 eˣ =    1.000
+     x = 1 eˣ =    2.718
+     x = 2 eˣ =    7.389
+     x = 3 eˣ =   20.086
+     x = 4 eˣ =   54.598
+     x = 5 eˣ =  148.413
+     x = 6 eˣ =  403.429
+     x = 7 eˣ = 1096.633
+
+#    In addition to a large collection of the usual mathematical functions, the
+#    @c(math) package has functions for creating and detecting the special values
+#    defined by IEEE 754: the positive and negative infinities, which represent
+#    numbers of excessive magnitude and the result of division by zero; and NaN
+#    (@"(not a number)), the result of such mathematically dubious operations as
+#    @c(0/0) or @c[Sqrt(-1)].
+   Ademas de una gran coleccion de las funciones matematicas comunes, el paquete
+   @c(math) tiene funciones para crear y detectar los valores especiales
+   definidas por IEEE 754: los infinitos positivo y negativo, que representan
+   los numeros de magnitud excesiva y el resultado de la division por cero; y
+   NaN (@"(not a number)), el resultado de operaciones matematicamente dudosas
+   como @c(0/0) o @[Sqrt(-1)].
+
+#    ..src > go
+#      var z float64
+#      fmt.Println(z, -z, 1/z, -1/z, z/z) // "0 -0 +Inf -Inf NaN"
+#    < src..
+   ..src > go
+     var z float64
+     fmt.Println(z, -z, 1/z, -1/z, z/z) // "0 -0 +Inf -Inf NaN"
+   < src..
+
+#    The function @c(math.IsNaN) tests whether its argument is a not-a-number
+#    value, and @c(math.NaN) returns such a value. It’s tempting to use NaN as a
+#    sentinel value in a numeric computation, but testing whether a specific
+#    computational result is equal to NaN is fraught with peril because any
+#    comparison with NaN @e(always) yields @c(false):
+   La funcion @c(math.IsNaN) prueba si su argumento es un valor no-numerico, y
+   @c(math.NaN) devuelve ese valor. Es tentador utilizar NaN como un valor
+   centinela en un calculo numerico, pero probar si el resultado de un calculo
+   especifico es igual NaN esta lleno de peligros, ya que cualquier comparacion
+   con NaN @e(siempre) produce @c(false):
+
+#    ..src > go
+#      nan := math.NaN()
+#      fmt.Println(nan == nan, nan < nan, nan > nan) // "false false false"
+#    < src..
+   ..src > go
+     nan := math.NaN()
+     fmt.Println(nan == nan, nan < nan, nan > nan) // "false false false"
+   < src..
+
+#    If a function that returns a floating-point result might fail, it’s better to
+#    report the failure separately, like this:
+   Si una funcion que devuelve un resultado de coma flotante puede fallar, es
+   mejor informar el error por separado, como aqui:
+
+#    ..src > go
+#      func compute() (value float64, ok bool) {
+#        // ...
+#        if failed {
+#          return 0, false
+#        }
+#        return result, true
+#      }
+#    < src..
+   ..src > go
+     func compute() (value float64, ok bool) {
+       // ...
+       if failed {
+         return 0, false
+       }
+       return result, true
+     }
+   < src..
+
+#    The next program illustrates floating-point graphics computation. It plots a
+#    function of two variables @c[z = f(x, y)] as a wire mesh 3-D surface, using
+#    Scalable Vector Graphics (@A(SVG)), a standard @A(XML) notation for line
+#    drawings. Figure 3.1 shows an example of its output for the function
+#    @c[sin(r)/r], where @c(r) is @c[sqrt(x*x+y*y)].
+   El siguiente programa ilustra el calculo de graficos en coma flotante. Se
+   traza una funcion de dos variables @c[z = f(x, y)] como una superficie de
+   malla de alambre 3-D, utilizando graficos vectoriales escalables (SVG), en
+   notacion XML estandar para dibujos lineales. La Figura 3.1 muestra un ejemplo
+   de salida de la funcion @c[sin(r)/r], donde @c(r) es @c[sqrt(x*x+y*y)].
+
+#    ..figure > Figure 3.1. A surface plot of the function @c[sin(r)/r].
+   ..figure > Figura 3.1. Un grafico superficial de la funcion @c[sin(r)/r].
+
+#      ..img > img/Figure-3.1.jpg
+     ..img > img/Figure-3.1.jpg
+
+
+#    ..figure > @l(gopl.io/ch3/surface/main.go<>gopl.io/ch3/surface)
+   ..figure > @l(gopl.io/ch3/surface/main.go<>gopl.io/ch3/surface)
+
+#      ..src > go
+#        // Surface computes an SVG rendering of a 3-D surface function.
+#        package main
+#
+#        import (
+#          "fmt"
+#          "math"
+#        )
+#
+#        const (
+#          width, height = 600, 320            // canvas size in pixels
+#          cells         = 100                 // number of grid cells
+#          xyrange       = 30.0                // axis ranges (-xyrange..+xyrange)
+#          xyscale       = width / 2 / xyrange // pixels per x or y unit
+#          zscale        = height * 0.4        // pixels per z unit
+#          angle         = math.Pi / 6         // angle of x, y axes (=30°)
+#        )
+#
+#        var sin30, cos30 = math.Sin(angle), math.Cos(angle) // sin(30°), cos(30°)
+#
+#        func main() {
+#          fmt.Printf("<svg xmlns='http://www.w3.org/2000/svg' "+
+#            "style='stroke: grey; fill: white; stroke-width: 0.7' "+
+#            "width='%d' height='%d'>", width, height)
+#          for i := 0; i < cells; i++ {
+#            for j := 0; j < cells; j++ {
+#              ax, ay := corner(i+1, j)
+#              bx, by := corner(i, j)
+#              cx, cy := corner(i, j+1)
+#              dx, dy := corner(i+1, j+1)
+#              fmt.Printf("<polygon points='%g,%g %g,%g %g,%g %g,%g'/>\n",
+#                ax, ay, bx, by, cx, cy, dx, dy)
+#            }
+#          }
+#          fmt.Println("</svg>")
+#        }
+#
+#        func corner(i, j int) (float64, float64) {
+#          // Find point (x,y) at corner of cell (i,j).
+#          x := xyrange * (float64(i)/cells - 0.5)
+#          y := xyrange * (float64(j)/cells - 0.5)
+#
+#          // Compute surface height z.
+#          z := f(x, y)
+#
+#          // Project (x,y,z) isometrically onto 2-D SVG canvas (sx,sy).
+#          sx := width/2 + (x-y)*cos30*xyscale
+#          sy := height/2 + (x+y)*sin30*xyscale - z*zscale
+#          return sx, sy
+#        }
+#
+#        func f(x, y float64) float64 {
+#          r := math.Hypot(x, y) // distance from (0,0)
+#          return math.Sin(r) / r
+#        }
+#      < src..
+     ..src > go
+       // Surface calcula una representacion SVG de una funcion de superficie 3D
+       package main
+
+       import (
+         "fmt"
+         "math"
+       )
+
+       const (
+         width, height = 600, 320            // tamaño de la superficie en pixeles
+         cells         = 100                 // numero de celdas de la cuadricula
+         xyrange       = 30.0                // ejes (-xyrange..+xyrange)
+         xyscale       = width / 2 / xyrange // pixeles por unidad x o y
+         zscale        = height * 0.4        // pixeles por unidad z
+         angle         = math.Pi / 6         // angulo de ejes x, y (=30°)
+       )
+
+       var sin30, cos30 = math.Sin(angle), math.Cos(angle) // sin(30°), cos(30°)
+
+       func main() {
+         fmt.Printf("<svg xmlns='http://www.w3.org/2000/svg' "+
+           "style='stroke: grey; fill: white; stroke-width: 0.7' "+
+           "width='%d' height='%d'>", width, height)
+         for i := 0; i < cells; i++ {
+           for j := 0; j < cells; j++ {
+             ax, ay := corner(i+1, j)
+             bx, by := corner(i, j)
+             cx, cy := corner(i, j+1)
+             dx, dy := corner(i+1, j+1)
+             fmt.Printf("<polygon points='%g,%g %g,%g %g,%g %g,%g'/>\n",
+               ax, ay, bx, by, cx, cy, dx, dy)
+           }
+         }
+         fmt.Println("</svg>")
+       }
+
+       func corner(i, j int) (float64, float64) {
+         // Hallar el punto (x,y) en la esquina de la celda (i,j).
+         x := xyrange * (float64(i)/cells - 0.5)
+         y := xyrange * (float64(j)/cells - 0.5)
+
+         // Calcular la altura de la superficie z.
+         z := f(x, y)
+
+         // Proyeccion isometrica (x,y,z) sobre superficie SVG 2-D (sx,sy).
+         sx := width/2 + (x-y)*cos30*xyscale
+         sy := height/2 + (x+y)*sin30*xyscale - z*zscale
+         return sx, sy
+       }
+
+       func f(x, y float64) float64 {
+         r := math.Hypot(x, y) // distancia de (0,0)
+         return math.Sin(r) / r
+       }
+     < src..
+
+
+#    Notice that the function corner returns two values, the coordinates of the
+#    corner of the cell.
+   Observe que la esquina de funcion devuelve dos valores, las coordenadas de la
+   esquina de la celda.
+
+#    The explanation of how the program works requires only basic geometry, but
+#    it’s fine to skip over it, since the point is to illustrate floating-point
+#    computation. The essence of the program is mapping between three different
+#    coordinate systems, shown in Figure 3.2. The first is a 2-D grid of 100&100
+#    cells identified by integer coordinates @m[(i, j)], starting at @m[(0, 0)] in
+#    the far back corner. We plot from the back to the front so that background
+#    polygons may be obscured by foreground ones.
+   La explicacion de como funciona el programa requiere solo geometria basica,
+   pero esta bien pasarla por alto, ya que el punto es ilustrar la computacion
+   de punto flotante. La esencia del programa es el mapeo entre tres sistemas de
+   coordenadas diferentes, como se muestra en la Figura 3.2. La primera es una
+   red de 2D de 100 y 100 celdas identificadas por coordenadas enteras @m[(i,
+   j)], a partir de @m[(0, 0)] en la esquina mas lejanas. Trazamos desde la
+   parte posterior al frente de modo que los poligonos del fondo puedan ser
+   oscurecidos por los primeros.
+
+#    The second coordinate system is a mesh of 3-D floating-point coordinates
+#    @m[(x, y, z)], where @m(x) and @m(y) are linear functions of @m(i) and @m(j),
+#    translated so that the origin is in the center, and scaled by the constant
+#    @c(xyrange). The height @m(z) is the value of the surface function @m[ƒ(x,
+#    y)].
+   El segundo sistema de coordenadas es una malla de coordenadas 3-D de punto
+   flotante @m[(x, y, z)], donde @m(x) e @m(y) son funciones lineales de @m(i) y
+   @m(j), traducido de manera que el origen esta en el centro, y escalado por la
+   constante @c(xyrange). La altura @m(z) es el valor de la funcion de
+   superficie @m[ƒ(x, y)].
+
+#    The third coordinate system is the 2-D image canvas, with @m[(0, 0)] in the
+#    top left corner. Points in this plane are denoted @m[(sx, sy)]. We use an
+#    isometric projection to map each 3-D point
+   El tercer sistema de coordenadas es la superficie 2-D de la imagen, con
+   @m[(0, 0)] en la esquina superior izquierda. Los puntos en este plano se
+   denotan @m[(sx, sy)]. Utilizamos una proyeccion isometrica para correlacionar
+   cada punto 3D
+
+#    ..figure > Figure 3.2. Three different coordinate systems.
+   ..figure > Figura 3.2. Tres sistemas de coordenadas diferentes.
+
+#      ..img > img/Figure-3.2.jpg
+     ..img > img/Figure-3.2.jpg
+
+
+#    @m[(x, y, z)] onto the 2-D canvas. A point appears farther to the right on
+#    the canvas the greater its @m(x) value or the @e(smaller) its @m(y)
+#    value. And a point appears farther down the canvas the greater its @m(x)
+#    value or @m(y) value, and the smaller its @m(z) value. The vertical and
+#    horizontal scale factors for @m(x) and @m(y) are derived from the sine and
+#    cosine of a 30° angle. The scale factor for @m(z), 0.4, is an arbitrary
+#    parameter.
+   @m[(x, y, z)] sobre la superficie 2-D. Un punto aparece mas a la derecha en
+   la superficie cuanto mayor sera su valor @m(x) o menor sea su valor @m(y). Y
+   un punto aparece mas abajo en la superficie cuanto mayor sera su valor @m(x)
+   o el valor @m(y), y cuanto menor sea su valor @m(z). Los factores de escala
+   horizontal o vertical para @m(x) e @m(y) se derivan del seno y coseno de un
+   angulo de 30°. El factor de escala para @m(z), 0.4, es un parametro
+   arbitrario.
+
+#    For each cell in the 2-D grid, the main function computes the coordinates on
+#    the image canvas of the four corners of the polygon ABCD, where B corresponds
+#    to @m[(i, j)] and A, C, and D are its neighbors, then prints an SVG
+#    instruction to draw it.
+   Para cada celda de la cuadricula 2-D, la funcion principal calcula las
+   coordenadas en la superficie de imagen de las cuatro esquinas del poligono
+   ABCD, donde B corresponde a @m[(i, j)] y A, C, y D son sus vecinos, entonces
+   imprime una instruccion SVG para dibujarla.
+
+#    @b(Exercise 3.1): If the function @c(f) returns a non-finite @c(float64)
+#    value, the SVG file will contain invalid @c(<polygon>) elements (although
+#    many SVG renderers handle this gracefully). Modify the program to skip
+#    invalid polygons.
+   @b(Ejercicio 3.1): Si la funcion @c(f) devuelve un valor @c(float64)
+   no-finito, el archivo SVG contendra elementos @c(<polygon>) no validos
+   (aunque muchos procesadores SVG manejan esto con gracia). Modifique el
+   programa para omitir poligonos no validos.
+
+#    @b(Exercise 3.2): Experiment with visualizations of other functions from the
+#    @c(math) package. Can you produce an egg box, moguls, or a saddle?
+   @b(Ejercicio 3.2): Experimente con visualizaciones de otras funciones del
+   paquete @c(math). ¿Puede usted producir una caja de huevos, moguls, o una
+   montura?
+
+#    @b(Exercise 3.3): Color each polygon based on its height, so that the peaks
+#    are colored red (@c(#ff0000)) and the valleys blue (@c(#0000ff)).
+   @b(Ejercicio 3.3): El color de cada poligono en funcion de su altura, por lo
+   que los picos son de color rojo (@c(#ff0000)) y los valles azul
+   (@c(#0000ff)).
+
+#    @b(Exercise 3.4): Following the approach of the Lissajous example in
+#    @l(#Section 1.7), construct a web server that computes surfaces and writes
+#    SVG data to the client. The server must set the @c(Content-Type) header like
+#    this:
+   @b(Ejercicio 3.4): Siguiendo el enfoque del ejemplo Lissajous en la
+   @l(#Seccion 1.7), construya un servidor web que calcule superficies y escriba
+   los datos SVG al cliente. El servidor debe establecer el manejador
+   @c(Content-Type) asi:
+
+#    ..src > go
+#      w.Header().Set("Content-Type", "image/svg+xml")
+#    < src..
+   ..src > go
+     w.Header().Set("Content-Type", "image/svg+xml")
+   < src..
+
+#    (This step was not required in the Lissajous example because the server uses
+#    standard heuristics to recognize common formats like PNG from the first 512
+#    bytes of the response and generates the proper header.) Allow the client to
+#    specify values like height, width, and color as HTTP request parameters.
+   (Este paso no era necesario en el ejemplo de Lissajous porque el servidor
+   utiliza la heuristica estandar para reconocer formatos comunes como PNG de
+   los primeros 512 bytes de la respuesta y generar el encabezado
+   adecuado). Permitir al cliente especificar valores como altura, ancho y color
+   como parametros de peticion HTTP.
+
+# ** Section 3.3 <> Complex Numbers
+** Seccion 3.3 <> Numeros complejos
+
+#    Go provides two sizes of complex numbers, @c(complex64) and @c(complex128),
+#    whose components are @c(float32) and @c(float64) respectively. The built-in
+#    function @c(complex) creates a complex number from its real and imaginary
+#    components, and the built-in @c(real) and @c(imag) functions extract those
+#    components:
+   Go proporciona dos tamaños de numeros complejos, @c(complex64) y
+   @c(complex128), cuyos componentes son @c(float32) y @c(float64)
+   respectivamente. La funcion nativa @c(complex) crea un numero complejo a
+   partir de sus componentes real e imaginario, e incorpora funciones @c(real) y
+   @c(imag) para extraer estos componentes:
+
+#    ..src > go
+#      var x complex128 = complex(1, 2) // 1+2i
+#      var y complex128 = complex(3, 4) // 3+4i
+#      fmt.Println(x*y)                 // "(-5+10i)"
+#      fmt.Println(real(x*y))           // "-5"
+#      fmt.Println(imag(x*y))           // "10"
+#    < src..
+   ..src > go
+     var x complex128 = complex(1, 2) // 1+2i
+     var y complex128 = complex(3, 4) // 3+4i
+     fmt.Println(x*y)                 // "(-5+10i)"
+     fmt.Println(real(x*y))           // "-5"
+     fmt.Println(imag(x*y))           // "10"
+   < src..
+
+#    If a floating-point literal or decimal integer literal is immediately
+#    followed by @c(i), such as @c(3.141592i) or @c(2i), it becomes an
+#    @e(imaginary literal), denoting a complex number with a zero real
+#    component:
+   Si un punto flotante literal entero o decimal literal es seguido
+   inmediatamente por @c(i), como @c(3.141592i) o @c(2i), se convierte en un
+   literal imaginario, que denota un numero complejo con un componente real
+   cero:
+
+#    ..src > go
+#      fmt.Println(1i * 1i) // "(-1+0i)", i² = -1
+#    < src..
+   ..src > go
+     fmt.Println(1i * 1i) // "(-1+0i)", i² = -1
+   < src..
+
+#    Under the rules for constant arithmetic, complex constants can be added to
+#    other constants (integer or floating point, real or imaginary), allowing us
+#    to write complex numbers naturally, like @c(1+2i), or equivalently,
+#    @c(2i+1). The declarations of @c(x) and @c(y) above can be simplified:
+   Bajo las reglas de la aritmetica constante, constantes complejas se pueden
+   añadir a otras constantes (enteras o de coma flotante, real o imaginarias),
+   lo que nos permite escribir numeros complejos de forma natural, como
+   @c(1+2i), o equivalentemente, @c(2i+1) . Las anteriores declaraciones @c(x) y
+   @c(y) se pueden simplificar:
+
+#    ..src > go
+#      x := 1 + 2i
+#      y := 3 + 4i
+#    < src..
+   ..src > go
+     x := 1 + 2i
+     y := 3 + 4i
+   < src..
+
+#    Complex numbers may be compared for equality with @c(==) and @c(!=). Two
+#    complex numbers are equal if their real parts are equal and their imaginary
+#    parts are equal.
+   Los numeros complejos se pueden comparar por igualdad con @c(==) y
+   @c(!=). Dos numeros complejos son iguales si sus partes reales son iguales y
+   sus partes imaginarias son iguales.
+
+#    The @c(math/cmplx) package provides library functions for working with
+#    complex numbers, such as the complex square root and exponentiation
+#    functions.
+   El paquete @c(math/cmplx) proporciona funciones de libreria para trabajar con
+   numeros complejos, tales como las raiz cuadrada compleja y las funciones de
+   exponenciacion.
+
+#    ..src > go
+#      fmt.Println(cmplx.Sqrt(-1)) // "(0+1i)"
+#    < src..
+   ..src > go
+     fmt.Println(cmplx.Sqrt(-1)) // "(0+1i)"
+   < src..
+
+#    The following program uses @c(complex128) arithmetic to generate a Mandelbrot
+#    set.
+   El siguiente programa utiliza aritmetica @c(complex128) para generar un
+   conjunto de Mandelbrot.
+
+#    ..figure > @l(gopl.io/ch3/mandelbrot/main.go<>gopl.io/ch3/mandelbrot)
+   ..figure > @l(gopl.io/ch3/mandelbrot/main.go<>gopl.io/ch3/mandelbrot)
+
+#      ..src > go
+#        // Mandelbrot emits a PNG image of the Mandelbrot fractal.
+#        package main
+#
+#        import (
+#          "image"
+#          "image/color"
+#          "image/png"
+#          "math/cmplx"
+#          "os"
+#        )
+#
+#        func main() {
+#          const (
+#            xmin, ymin, xmax, ymax = -2, -2, +2, +2
+#            width, height          = 1024, 1024
+#          )
+#
+#          img := image.NewRGBA(image.Rect(0, 0, width, height))
+#          for py := 0; py < height; py++ {
+#            y := float64(py)/height*(ymax-ymin) + ymin
+#            for px := 0; px < width; px++ {
+#              x := float64(px)/width*(xmax-xmin) + xmin
+#              z := complex(x, y)
+#              // Image point (px, py) represents complex value z.
+#              img.Set(px, py, mandelbrot(z))
+#            }
+#          }
+#          png.Encode(os.Stdout, img) // NOTE: ignoring errors
+#        }
+#
+#        func mandelbrot(z complex128) color.Color {
+#          const iterations = 200
+#          const contrast = 15
+#
+#          var v complex128
+#          for n := uint8(0); n < iterations; n++ {
+#            v = v*v + z
+#            if cmplx.Abs(v) > 2 {
+#              return color.Gray{255 - contrast*n}
+#            }
+#          }
+#          return color.Black
+#        }
+#      < src..
+     ..src > go
+       // Mandelbrot emite una imagen PNG del fractal de Mandelbrot.
+       package main
+
+       import (
+         "image"
+         "image/color"
+         "image/png"
+         "math/cmplx"
+         "os"
+       )
+
+       func main() {
+         const (
+           xmin, ymin, xmax, ymax = -2, -2, +2, +2
+           width, height          = 1024, 1024
+         )
+
+         img := image.NewRGBA(image.Rect(0, 0, width, height))
+         for py := 0; py < height; py++ {
+           y := float64(py)/height*(ymax-ymin) + ymin
+           for px := 0; px < width; px++ {
+             x := float64(px)/width*(xmax-xmin) + xmin
+             z := complex(x, y)
+             // El punto de imagen (px, py) representa el valor complejo z.
+             img.Set(px, py, mandelbrot(z))
+           }
+         }
+         png.Encode(os.Stdout, img) // NOTA: ignorando errores
+       }
+
+       func mandelbrot(z complex128) color.Color {
+         const iterations = 200
+         const contrast = 15
+
+         var v complex128
+         for n := uint8(0); n < iterations; n++ {
+           v = v*v + z
+           if cmplx.Abs(v) > 2 {
+             return color.Gray{255 - contrast*n}
+           }
+         }
+         return color.Black
+       }
+     < src..
+
+
+#    The two nested loops iterate over each point in a 1024x1024 grayscale raster
+#    image representing the -2 to +2 portion of the complex plane. The program
+#    tests whether repeatedly squaring and adding the number that point represents
+#    eventually @"(escapes) the circle of radius 2. If so, the point is shaded by
+#    the number of iterations it took to escape. If not, the value belongs to the
+#    Mandelbrot set, and the point remains black. Finally, the program writes to
+#    its standard output the PNG-encoded image of the iconic fractal, shown in
+#    Figure 3.3.
+   Los dos bucles anidados iteran sobre cada punto en una imagen en cuadricula
+   de escala de grises de 1024x1024 que representa la porcion de -2 a +2 del
+   plano complejo. El programa prueba si repetidamente cuadrando y añadiendo el
+   numero del punto representado eventualmente @"(escapa) el circulo de
+   radio 2. Si es asi, el punto es sombreado por el numero de iteraciones que se
+   tardo en escapar. Si no, el valor pertenece al conjunto de Mandelbrot, y el
+   punto permanece negro. Finalmente, el programa escribe en su salida estandar
+   la imagen codificada en PNG del iconico fractal, que se muestra en la Figura
+   3.3.
+
+#    ..figure > Figure 3.3. The Mandelbrot set.
+   ..figure > Figura 3.3. El conjunto de Mandelbrot.
+
+#      ..img > img/Figure-3.3.jpg
+     ..img > img/Figure-3.3.jpg
+
+
+#    @b(Exercise 3.5): Implement a full-color Mandelbrot set using the function
+#    @c(image.NewRGBA) and the type @c(color.RGBA) or @c(color.YCbCr).
+   @b(Ejercicio 3.5): Implementar a todo color el cojunto de Mandelbrot usando
+   la funcion @c(image.NewRGBA) y el tipo @c(color.RGBA) o @c(color.YCbCr).
+
+#    @b(Exercise 3.6): Supersampling is a technique to reduce the effect of
+#    pixelation by computing the color value at several points within each pixel
+#    and taking the average. The simplest method is to divide each pixel into four
+#    @"(subpixels.) Implement it.
+   @b(Ejercicio 3.6): Supermuestreo es una tecnica para reducir el efecto de
+   pixelacion calculando el valor del color en varios puntos dentro de cada
+   pixel y tomando el promedio. El metodo mas simple consiste en dividir cada
+   pixel en cuatro @"(subpixeles.) Implementalo.
+
+#    @b(Exercise 3.7): Another simple fractal uses Newton’s method to find complex
+#    solutions to a function such as @m(z⁴-1 = 0). Shade each starting point by
+#    the number of iterations required to get close to one of the four
+#    roots. Color each point by the root it approaches.
+   @b(Ejercicio 3.7): Otro fractal sencillo utiliza el metodo Newton para
+   encontrar soluciones complejas a una funcion como @m(z⁴-1 = 0). Sombrea cada
+   punto de partida por el numero de iteraciones necesarias para acercarse a una
+   de las cuatro raices. Colorea cada punto por la raiz que se aproxima.
+
+#    @b(Exercise 3.8): Rendering fractals at high zoom levels demands great
+#    arithmetic precision. Implement the same fractal using four different
+#    representations of numbers: @c(complex64), @c(complex128), @c(big.Float), and
+#    @c(big.Rat). (The latter two types are found in the @c(math/big) package.
+#    @c(Float) uses arbitrary but bounded-precision floating-point; @c(Rat) uses
+#    unbounded-precision rational numbers.) How do they compare in performance and
+#    memory usage? At what zoom levels do rendering artifacts become visible?
+   @b(Ejercicio 3.8): La Representacion de fractales con altos niveles de zoom
+   exige una gran precision aritmetica. Implementa el mismo fractal utilizando
+   cuatro representaciones diferentes de numeros: @c(complex64), @c(complex128),
+   @c(big.Float), y @c(big.Rat). (Los ultimos dos tipos se encuentran en el
+   paquete @c(math/big). @c(Float) utiliza arbitraria, pero delimitada precision
+   de punto flotante; @c(Rat) utiliza numeros racionales sin limites de
+   precision.)  ¿Como se comparan en el rendimiento y uso de memoria? ¿A que
+   niveles de zoom se hacen visibles los artefactos de renderizacion?
+
+#    @b(Exercise 3.9): Write a web server that renders fractals and writes the
+#    image data to the client.  Allow the client to specify the @m(x), @m(y), and
+#    zoom values as parameters to the HTTP request.
+   @b(Ejercicio 3.9): Escriba un servidor web que procese fractales y escribe
+   los datos de imagen al cliente. Permita que el cliente especifique las
+   coordenadas @c(x), @c(y), y los valores de zoom como parametros en la
+   peticion HTTP.
+
+# ** Section 3.4 <> Booleans
+** Seccion 3.4 <> Booleanos
+
+#    A value of type @c(bool), or @e(boolean), has only two possible values,
+#    @c(true) and @c(false). The conditions in @c(if) and @c(for) statements are
+#    booleans, and comparison operators like @c(==) and @c(<) produce a boolean
+#    result. The unary operator @c(!) is logical negation, so @c(!true) is
+#    @c(false), or, one might say, @c[(!true==false)==true], although as a matter
+#    of style, we always simplify redundant boolean expressions like @c(x==true)
+#    to @c(x).
+   Un valor de tipo @c(bool), o @e(booleano), tiene solo dos valores posibles,
+   @c(true) y @c(false). Las condiciones en @c(if) y @c(for) son declaraciones
+   booleanas, y los operadores de comparacion como @c(==) y @c(<) producen un
+   resultado booleano. El operador unario @c(!) es la negacion logica, de modo
+   que @c(!true) es @c(false), o, por decirlo asi, @c[(!true==false)==true],
+   aunque por cuestion de estilo, siempre simplificamos las expresiones
+   booleanas redundantes como @c(x==true) a @c(x).
+
+#    Boolean values can be combined with the @c(&&) (AND) and @c(||) (OR)
+#    operators, which have @e(shortcircuit) behavior: if the answer is already
+#    determined by the value of the left operand, the right operand is not
+#    evaluated, making it safe to write expressions like this:
+   Los valores booleanos pueden ser combinados con los operadores @c(&&) (AND) y
+   @c(||) (OR), que tienen un comportamiento de @e(cortocircuito): si la
+   respuesta ya esta determinada por el valor del operando de la izquierda, el
+   operando de la derecha no se evalua, por lo que es seguro para escribir
+   expresiones como esta:
+
+#    ..src > go
+#      s != "" && s[0] == 'x'
+#    < src..
+   ..src > go
+     s != "" && s[0] == 'x'
+   < src..
+
+#    where @c(s[0]) would panic if applied to an empty string.
+   donde @c(s[0]) produciria un panico si se aplica a una cadena vacia.
+
+#    Since @c(&&) has higher precedence than @c(||) (mnemonic: @c(&&) is boolean
+#    multiplication, @c(||) is boolean addition), no parentheses are required for
+#    conditions of this form:
+   Ya que @c(&&) tiene mayor precedencia que @c(||) (mnemonico: @c(&&) es la
+   multiplicacion booleana, @c(||) es la adicion boolean), no se requieren
+   parentesis para las condiciones de esta forma:
+
+#    ..src > go
+#      if 'a' <= c && c <= 'z' ||
+#        'A' <= c && c <= 'Z' ||
+#        '0' <= c && c <= '9' {
+#        // ...ASCII letter or digit...
+#      }
+#    < src..
+   ..src > go
+     if 'a' <= c && c <= 'z' ||
+       'A' <= c && c <= 'Z' ||
+       '0' <= c && c <= '9' {
+       // ...letra o digito ASCII...
+     }
+   < src..
+
+#    There is no implicit conversion from a boolean value to a numeric value like
+#    0 or 1, or vice versa. It’s necessary to use an explicit @c(if), as in
+   No hay una conversion implicita de un valor booleano a un valor numerico como
+   0 o 1, o viceversa. Es necesario utilizar un @c(if) explicito, como en
+
+#    ..src > go
+#      i := 0
+#      if b {
+#        i = 1
+#      }
+#    < src..
+   ..src > go
+     i := 0
+     if b {
+       i = 1
+     }
+   < src..
+
+#    It might be worth writing a conversion function if this operation were needed often:
+   Podria valer la pena escribir una funcion de conversion si esta operacion se
+   necesita a menudo:
+
+#    ..src > go
+#      // btoi returns 1 if b is true and 0 if false.
+#      func btoi(b bool) int {
+#        if b {
+#          return 1
+#        }
+#        return 0
+#      }
+#    < src..
+   ..src > go
+     // btoi regresa 1 si b es verdadero y 0 sy es falso.
+     func btoi(b bool) int {
+       if b {
+         return 1
+       }
+       return 0
+     }
+   < src..
+
+#    The inverse operation is so simple that it doesn’t warrant a function, but
+#    for symmetry here it is:
+   La operacion inversa es tan simple que no necesita una funcion, pero por
+   simetria aqui esta:
+
+#    ..src > go
+#      // itob reports whether i is non-zero.
+#      func itob(i int) bool { return i != 0 }
+#    < src..
+   ..src > go
+     // itob reporta cuando i no es cero.
+     func itob(i int) bool { return i != 0 }
+   < src..
+
+# ** Section 3.5 <> Strings
+** Seccion 3.5 <> Cadenas
+
+#    A string is an immutable sequence of bytes. Strings may contain arbitrary
+#    data, including bytes with value 0, but usually they contain human-readable
+#    text. Text strings are conventionally interpreted as UTF-8-encoded sequences
+#    of Unicode code points (runes), which we’ll explore in detail very soon.
+   Una cadena es una secuencia inmutable de bytes. Las cadenas pueden contener
+   datos arbitrarios, incluyendo bytes con valor 0, pero normalmente contienen
+   texto legible por humanos. Las cadenas de texto se interpretan de forma
+   convencional como secuencias codificadas en UTF-8 de puntos de codigo Unicode
+   (runas), que exploraremos en detalle muy pronto.
+
+#    The built-in @c(len) function returns the number of bytes (not runes) in a
+#    string, and the @e(index) operation @c(s[i]) retrieves the @m(i)-th byte of
+#    string @c(s), where @c(0) ≤ @c(i) < @c[len(s)].
+   La funcion nativa @c(len) devuelve el numero de bytes (no runas) en una
+   cadena, y la operacion de indice @c(s[i]) recupera el @m(n)-esimo byte de la
+   cadena @c(s), donde @c(0) ≤ @c(i) < @c[len(s)].
+
+#    ..src > go
+#      s := "hello, world"
+#      fmt.Println(len(s))     // "12"
+#      fmt.Println(s[0], s[7]) // "104 119"  ('h' and 'w')
+#    < src..
+   ..src > go
+     s := "hello, world"
+     fmt.Println(len(s))     // "12"
+     fmt.Println(s[0], s[7]) // "104 119"  ('h' and 'w')
+   < src..
+
+#    Attempting to access a byte outside this range results in a panic:
+   Intentar acceder a un byte fuera de este rango produce un panico:
+
+#    ..src > go
+#      c := s[len(s)] // panic: index out of range
+#    < src..
+   ..src > go
+     c := s[len(s)] // panico: indice fuera de rango
+   < src..
+
+#    The @m(i)-th byte of a string is not necessarily the @m(i)-th @e(character)
+#    of a string, because the UTF-8 encoding of a non-ASCII code point requires
+#    two or more bytes. Working with characters is discussed shortly.
+   El @m(n)-esimo byte de una cadena no es necesariamente el @m(n)-esimo
+   caracter de una cadena, porque la codificacion UTF-8 de un punto de codigo no
+   ASCII requiere dos o mas bytes. Como Trabajar con caracteres se discutira en
+   breve.
+
+#    The @e(substring) operation @c(s[i:j]) yields a new string consisting of the
+#    bytes of the original string starting at index @c(i) and continuing up to,
+#    but not including, the byte at index @c(j). The result contains @c(j-i)
+#    bytes.
+   La operacion de subcadena @c(s[i:j]) produce una nueva cadena que consta de
+   los bytes de la cadena original a partir del indice @c(i) y continua hasta,
+   pero no incluyendo, el byte en el indice @c(j). El resultado contiene @c(j-i)
+   bytes.
+
+#    ..src > go
+#      fmt.Println(s[0:5]) // "hello"
+#    < src..
+   ..src > go
+     fmt.Println(s[0:5]) // "hello"
+   < src..
+
+#    Again, a panic results if either index is out of bounds or if @c(j) is less
+#    than @c(i).
+   De nuevo, se produce un panico si cualquiera de los indices esta fuera de
+   limite o si @c(j) es menor que @c(i).
+
+#    Either or both of the @c(i) and @c(j) operands may be omitted, in which case the
+#    default values of 0 (the start of the string) and @c[len(s)] (its end) are
+#    assumed, respectively.
+   Cualquiera o ambos operandos @c(i) y @c(j) pueden omitirse, en cuyo caso los
+   valores por defecto son 0 (el inicio de la cadena) y @c[len(s)] (su final),
+   respectivamente.
+
+#    ..src > go
+#      fmt.Println(s[:5]) // "hello"
+#      fmt.Println(s[7:]) // "world"
+#      fmt.Println(s[:])  // "hello, world"
+#    < src..
+   ..src > go
+     fmt.Println(s[:5]) // "hello"
+     fmt.Println(s[7:]) // "world"
+     fmt.Println(s[:])  // "hello, world"
+   < src..
+
+#    The @c(+) operator makes a new string by concatenating two strings:
+   El operador c(+) crea una nueva cadena mediante la concatenacion de dos
+   cadenas:
+
+#    ..src > go
+#      fmt.Println("goodbye" + s[5:]) // "goodbye, world"
+#    < src..
+   ..src > go
+     fmt.Println("goodbye" + s[5:]) // "goodbye, world"
+   < src..
+
+#    Strings may be compared with comparison operators like @c(==) and @c(<); the
+#    comparison is done byte by byte, so the result is the natural lexicographic
+#    ordering.
+   Las cadenas pueden compararse con los operadores de comparacion como @c(==) y
+   @c(<); La comparacion se realiza byte a byte, por lo que el resultado es el
+   orden lexicografico natural.
+
+#    String values are immutable: the byte sequence contained in a string value
+#    can never be changed, though of course we can assign a new value to a string
+#    @e(variable). To append one string to another, for instance, we can write
+   Los valores de cadena son inmutables: la secuencia de bytes contenidos en un
+   valor de cadena no se puede cambiar, aunque, por supuesto, podemos asignar un
+   nuevo valor a una variable de cadena. Para añadir una cadena a otra, por
+   ejemplo, podemos escribir
+
+#    ..src > go
+#      s := "left foot"
+#      t := s
+#      s += ", right foot"
+#    < src..
+   ..src > go
+     s := "left foot"
+     t := s
+     s += ", right foot"
+   < src..
+
+#    This does not modify the string that @c(s) originally held but causes @c(s)
+#    to hold the new string formed by the @c(+=) statement; meanwhile, @c(t) still
+#    contains the old string.
+   Esto no modifica la cadena que retenia @c(s) originalmente, pero hace que
+   @c(s) contenga la nueva cadena formada por la sentencia @c(+=); Mientras
+   tanto, @c(t) aun contiene la cadena antigua.
+
+#    ..src > go
+#      fmt.Println(s) // "left foot, right foot"
+#      fmt.Println(t) // "left foot"
+#    < src..
+   ..src > go
+     fmt.Println(s) // "left foot, right foot"
+     fmt.Println(t) // "left foot"
+   < src..
+
+#    Since strings are immutable, constructions that try to modify a string’s data
+#    in place are not allowed:
+   Dado que las cadenas son inmutables, no se permiten las construcciones que
+   intentan modificar los datos de una cadena en su lugar:
+
+#    ..src > go
+#      s[0] = 'L' // compile error: cannot assign to s[0]
+#    < src..
+   ..src > go
+     s[0] = 'L' // error de compilacion: no se puede asignar a s[0]
+   < src..
+
+#    Immutability means that it is safe for two copies of a string to share the
+#    same underlying memory, making it cheap to copy strings of any length.
+#    Similarly, a string @c(s) and a substring like @c(s[7:]) may safely share the
+#    same data, so the substring operation is also cheap. No new memory is
+#    allocated in either case. Figure 3.4 illustrates the arrangement of a string
+#    and two of its substrings sharing the same underlying byte array.
+   Inmutabilidad significa que es seguro que dos copias de una cadena compartan
+   la misma memoria subyacente, por lo que es barato copiar cadenas de cualquier
+   longitud. Del mismo modo, una cadena @c(s) y una subcadena como @c(s[7:])
+   pueden compartir de forma segura los mismos datos, por lo que la operacion
+   subcadena tambien es barata. No se asigna ninguna memoria nueva en ningun
+   caso. La Figura 3.4 ilustra la disposicion de una cadena y dos de sus
+   subcadenas que comparten el mismo arreglo de bytes subyacente.
+
+#    ..figure > Figure 3.4. The string @c("hello, world") and two substrings.
+   ..figure > Figura 3.4. La cadena @c("hello, world") y dos subcadenas.
+
+#      ..img > img/Figure-3.4.jpg
+     ..img > img/Figure-3.4.jpg
+
+# *** Section 3.5.1 <> String Literals
+*** Seccion 3.5.1 <> Cadenas Literales
+
+#     A string value can be written as a @e(string literal), a sequence of bytes
+#     enclosed in double quotes:
+    Un valor de cadena se puede escribir como una @e(cadena literal), una
+    secuencia de bytes entre comillas dobles:
+
+#     ..src > go
+#       "Hello, 世界"
+#     < src..
+    ..src > go
+      "Hello, 世界"
+    < src..
+
+#     Because Go source files are always encoded in UTF-8 and Go text strings are
+#     conventionally interpreted as UTF-8, we can include Unicode code points in
+#     string literals.
+    Debido a que los archivos fuente de Go siempre estan codificados en UTF-8 y
+    las cadenas de texto Go son interpretadas convencionalmente como UTF-8,
+    podemos incluir puntos de codigo Unicode en literales de cadena.
+
+#     Within a double-quoted string literal, @e(escape sequences) that begin with
+#     a backslash @c(\) can be used to insert arbitrary byte values into the
+#     string. One set of escapes handles ASCII control codes like newline,
+#     carriage return, and tab:
+    Dentro de una literal de cadena entre comillas dobles, las secuencias de
+    escape que comienzan con una barra invertida @c(\) se pueden utilizar para
+    insertar valores arbitrarios de bytes en la cadena. Un conjunto de escape
+    maneja codigos de control ASCII como newline, retorno de carro y tabulacion:
+
+#     | @c(\a) | @"(alert) or bell                            |
+#     |--------|----------------------------------------------|
+#     | @c(\b) | backspace                                    |
+#     |--------|----------------------------------------------|
+#     | @c(\f) | form feed                                    |
+#     |--------|----------------------------------------------|
+#     | @c(\n) | newline                                      |
+#     |--------|----------------------------------------------|
+#     | @c(\r) | carriage return                              |
+#     |--------|----------------------------------------------|
+#     | @c(\t) | tab                                          |
+#     |--------|----------------------------------------------|
+#     | @c(\v) | vertical tab                                 |
+#     |--------|----------------------------------------------|
+#     | @c(\') | single quote (only in the rune literal '\'') |
+#     |--------|----------------------------------------------|
+#     | @c(\") | double quote (only within "..." literals)    |
+#     |--------|----------------------------------------------|
+#     | @c(\\) | backslash                                    |
+    | @c(\a) | @"(alerta) o  campana                            |
+    |--------|--------------------------------------------------|
+    | @c(\b) | retroceso                                        |
+    |--------|--------------------------------------------------|
+    | @c(\f) | form feed                                        |
+    |--------|--------------------------------------------------|
+    | @c(\n) | linea nueva                                      |
+    |--------|--------------------------------------------------|
+    | @c(\r) | retorno de carro                                 |
+    |--------|--------------------------------------------------|
+    | @c(\t) | tabulador                                        |
+    |--------|--------------------------------------------------|
+    | @c(\v) | tabulador vertical                               |
+    |--------|--------------------------------------------------|
+    | @c(\') | comilla simple (solo en la runa literal '\'')    |
+    |--------|--------------------------------------------------|
+    | @c(\") | comillas dobles (solo dentro de "..." literales) |
+    |--------|--------------------------------------------------|
+    | @c(\\) | barra invertida                                  |
+
+#     Arbitrary bytes can also be included in literal strings using hexadecimal or
+#     octal escapes. A @e(hexadecimal) escape is written @c(\x)@e(hh), with exactly
+#     two hexadecimal digits @e(h) (in upper or lower case). An octal escape is
+#     written @e(\ooo) with exactly three octal digits @e(o) (0 through 7) not
+#     exceeding @e(\377). Both denote a single byte with the specified
+#     value. Later, we’ll see how to encode Unicode code points numerically in
+#     string literals.
+    Los bytes arbitrarios tambien se pueden incluir en cadenas literales usando
+    escapes hexadecimales u octales. Un escape hexadecimal se escribe
+    @c(\x)@e(hh), con exactamente dos digitos hexadecimales @e(h) (en mayusculas
+    o minusculas). Un escape octal se escribe @e(\ooo) con exactamente tres
+    digitos octales @e(o) (0 a 7) no superior a @c(\377). Ambos denotan un solo
+    byte con el valor especificado. Mas adelante, veremos como codificar
+    numericamente los puntos de codigo Unicode en literales de cadena.
+
+#     A @e(raw string literal) is written @c(`...`), using backquotes instead of
+#     double quotes. Within a raw string literal, no escape sequences are
+#     processed; the contents are taken literally, including backslashes and
+#     newlines, so a raw string literal may spread over several lines in the
+#     program source. The only processing is that carriage returns are deleted so
+#     that the value of the string is the same on all platforms, including those
+#     that conventionally put carriage returns in text files.
+    Una @e(literal de cadena sin formato) se escribe @c(`...`), utilizando
+    comillas inversas en lugar de comillas dobles. Dentro de una literal de
+    cadena sin formato, no se procesan secuencias de escape; Los contenidos se
+    toman literalmente, incluyendo barras invertidas y lineas nuevas, por lo que
+    un literal de cadena sin formato puede extenderse por varias lineas en el
+    codigo del programa. El unico procesamiento es que los retornos de carro se
+    eliminan para que el valor de la cadena sea el mismo en todas las
+    plataformas, incluidas aquellas que convencionalmente ponen retornos de
+    carro en archivos de texto.
+
+#     Raw string literals are a convenient way to write regular expressions, which
+#     tend to have lots of backslashes. They are also useful for HTML templates,
+#     JSON literals, command usage messages, and the like, which often extend over
+#     multiple lines.
+    Las literales de cadenas sin formato son una manera conveniente de escribir
+    expresiones regulares, que tienden a tener un monton de barras
+    inversas. Tambien son utiles para plantillas HTML, literales JSON, mensajes
+    de uso de comandos y similares, que a menudo se extienden sobre varias
+    lineas.
+
+#     ..src > go
+#       const GoUsage = `Go is a tool for managing Go source code.
+#
+#       Usage:
+#           go command [arguments]
+#       ...`
+#     < src..
+    ..src > go
+      const GoUsage = `Go is a tool for managing Go source code.
+
+      Usage:
+          go command [arguments]
+      ...`
+    < src..
+
+# *** Section 3.5.2 <> Unicode
+*** Seccion 3.5.2 <> Unicode
+
+#     Long ago, life was simple and there was, at least in a parochial view, only
+#     one character set to deal with: ASCII, the American Standard Code for
+#     Information Interchange. ASCII, or more precisely US-ASCII, uses 7 bits to
+#     represent 128 @"(characters): the upper- and lower-case letters of English,
+#     digits, and a variety of punctuation and device-control characters. For much
+#     of the early days of computing, this was adequate, but it left a very large
+#     fraction of the world’s population unable to use their own writing systems
+#     in computers. With the growth of the Internet, data in myriad languages has
+#     become much more common. How can this rich variety be dealt with at all and,
+#     if possible, efficiently?
+    Hace mucho tiempo, la vida era simple y habia, por lo menos un punto de
+    vista parroquial, solo un conjunto de caracteres a manejar: ASCII, el codigo
+    estandar americano para el intercambio de la informacion (@e(American
+    Standard Code for Information Interchange)). ASCII, o mas precisamente
+    US-ASCII, utiliza 7 bits para representar 128 @"(caracteres): las letras
+    mayusculas y minusculas del ingles, digitos y una variedad de caracteres de
+    puntuacion y control de dispositivo. Durante gran parte de los primeros dias
+    de la informatica, esto fue adecuado, pero dejo a una gran parte de la
+    poblacion mundial incapaz de utilizar sus propios sistemas de escritura en
+    las computadoras. Con el crecimiento de Internet, los datos en innumerables
+    idiomas se han vuelto mucho mas comunes. ¿Como puede manejarse esta rica
+    variedad y, si es posible, de forma eficiente?
+
+#     The answer is Unicode (@l(http://unicode.org/<>unicode.org)), which collects
+#     all of the characters in all of the world’s writing systems, plus accents
+#     and other diacritical marks, control codes like tab and carriage return, and
+#     plenty of esoterica, and assigns each one a standard number called a
+#     @e(Unicode code point) or, in Go terminology, a @c(rune).
+    La respuesta es Unicode (@l(http://unicode.org/<>unicode.org)), que recoge
+    todos los caracteres de todos los sistemas de escritura del mundo, ademas de
+    acentos y otros signos diacriticos, codigos de control como tabulador y
+    retorno de carro, y plenty of esoterica, y asigna a cada uno un numero
+    estandar denominado @e(punto de codigo Unicode) o, en la terminologia Go,
+    una runa.
+
+#     Unicode version 8 defines code points for over 120,000 characters in well
+#     over 100 languages and scripts. How are these represented in computer
+#     programs and data? The natural data type to hold a single rune is @c(int32),
+#     and that’s what Go uses; it has the synonym @c(rune) for precisely this
+#     purpose.
+    Unicode version 8 define puntos de codigo para mas de 120.000 caracteres en
+    mas de 100 idiomas y scripts. ¿Como se representan esto en los datos y
+    programas de computadora? El tipo de datos naturales para almacenar una sola
+    runa es @c(int32), y eso es lo utiliza Go; tiene el sinonimo @c(rune)
+    precisamente para este proposito.
+
+#     We could represent a sequence of runes as a sequence of @c(int32) values. In
+#     this representation, which is called UTF-32 or UCS-4, the encoding of each
+#     Unicode code point has the same size, 32 bits. This is simple and uniform,
+#     but it uses much more space than necessary since most computer-readable text
+#     is in ASCII, which requires only 8 bits or 1 byte per character. All the
+#     characters in widespread use still number fewer than 65,536, which would fit
+#     in 16 bits. Can we do better?
+    Podriamos representar una secuencia de runas como una secuencia de valores
+    @c(int32). Esta representacion, se llama UTF-32 o UCS-4, la codificacion de
+    cada punto de codigo Unicode tiene el mismo tamaño, 32 bits. Esto es simple
+    y uniforme, pero utiliza mucho mas espacio de lo necesario, ya que la
+    mayoria de texto legible por computadora esta en ASCII, que requiere solo 8
+    bits o 1 byte por caracter. Todos los caracteres en uso generalizado todavia
+    aun son menos de 65.536, que cabrian en 16 bits. ¿Podemos hacerlo mejor?
+
+# *** Section 3.5.3 <> UTF-8
+*** Seccion 3.5.3 <> UTF-8
+
+#     UTF-8 is a variable-length encoding of Unicode code points as bytes. UTF-8
+#     was invented by Ken Thompson and Rob Pike, two of the creators of Go, and is
+#     now a Unicode standard. It uses between 1 and 4 bytes to represent each
+#     rune, but only 1 byte for ASCII characters, and only 2 or 3 bytes for most
+#     runes in common use. The high-order bits of the first byte of the encoding
+#     for a rune indicate how many bytes follow. A high-order @c(0) indicates
+#     7-bit ASCII, where each rune takes only 1 byte, so it is identical to
+#     conventional ASCII. A high-order @c(110) indicates that the rune takes 2
+#     bytes; the second byte begins with @c(10). Larger runes have analogous
+#     encodings.
+    UTF-8 es una codificacion de longitud variable de puntos de codigo Unicode
+    como bytes. UTF-8 fue inventado por Ken Thompson y Rob Pike, dos de los
+    creadores de Go, y ahora es un estandar Unicode. Utiliza entre 1 y 4 bytes
+    para representar cada runa, pero solo 1 byte para caracteres ASCII y solo 2
+    o 3 bytes para la mayoria de runas en uso comun. Los bits de orden alto del
+    primer byte de la codificacion de una runa indican cuantos bytes siguen. Un
+    alto orden 0 indica ASCII de 7 bits, donde cada runa toma solo 1 byte, por
+    lo que es identica a ASCII convencional. Un alto orden @c(110) indica que la
+    runa toma 2 bytes; el segundo byte comienza con @c(10). Las runas mas
+    grandes tienen codificaciones analogas.
+
+#     | @c(0xxxxxx)                            | runes 0−127    | (ASCII)               |
+#     |----------------------------------------|----------------|-----------------------|
+#     | @c(11xxxxx 10xxxxxx)                   | 128−2047       | (values <128 unused)  |
+#     |----------------------------------------|----------------|-----------------------|
+#     | @c(110xxxx 10xxxxxx 10xxxxxx)          | 2048−65535     | (values <2048 unused) |
+#     |----------------------------------------|----------------|-----------------------|
+#     | @c(1110xxx 10xxxxxx 10xxxxxx 10xxxxxx) | 65536−0x10ffff | (other values unused) |
+    | @c(0xxxxxx)                            | runas 0−127    | (ASCII)                       |
+    |----------------------------------------|----------------|-------------------------------|
+    | @c(11xxxxx 10xxxxxx)                   | 128−2047       | (valores <128 no utilizados)  |
+    |----------------------------------------|----------------|-------------------------------|
+    | @c(110xxxx 10xxxxxx 10xxxxxx)          | 2048−65535     | (valores <2048 no utilizados) |
+    |----------------------------------------|----------------|-------------------------------|
+    | @c(1110xxx 10xxxxxx 10xxxxxx 10xxxxxx) | 65536−0x10ffff | (otros valores no utiliados)  |
+
+#     A variable-length encoding precludes direct indexing to access the @m(n)-th
+#     character of a string, but UTF-8 has many desirable properties to compensate.
+#     The encoding is compact, compatible with ASCII, and self-synchronizing: it’s
+#     possible to find the beginning of a character by backing up no more than
+#     three bytes. It’s also a prefix code, so it can be decoded from left to
+#     right without any ambiguity or lookahead. No rune’s encoding is a substring
+#     of any other, or even of a sequence of others, so you can search for a rune
+#     by just searching for its bytes, without worrying about the preceding
+#     context. The lexicographic byte order equals the Unicode code point order,
+#     so sorting UTF-8 works naturally. There are no embedded NUL (zero) bytes,
+#     which is convenient for programming languages that use NUL to terminate
+#     strings.
+    Una codificacion de longitud variable impide la indexacion directa para
+    acceder al @m(n)-esimo caracter de una cadena, pero UTF-8 tiene muchas
+    propiedades deseables para compensar. La codificacion es compacta,
+    compatible con ASCII y auto-sincronizada: es posible encontrar el inicio de
+    un caracter al realizar una copia de seguridad de no mas de tres
+    bytes. Tambien es un prefijo de codigo, por lo que se puede decodificar de
+    izquierda a derecha sin ninguna ambigüedad o lookahead. La codificacion de
+    ninguna runa es una subcadena de cualquier otra, o incluso de una secuencia
+    de otras, por lo que puedes buscar una runa simplemente buscando sus bytes,
+    sin preocuparte por el contexto anterior. El orden de bytes lexicografico es
+    igual al orden de los puntos de codigo Unicode, por lo que la ordenacion de
+    UTF-8 funciona de forma natural. No hay ningun NUL incrustado (cero) bytes,
+    que es conveniente para los lenguajes de programacion que utilizan NUL para
+    terminar cadenas.
+
+#     Go source files are always encoded in UTF-8, and UTF-8 is the preferred
+#     encoding for text strings manipulated by Go programs. The @c(unicode)
+#     package provides functions for working with individual runes (such as
+#     distinguishing letters from numbers, or converting an uppercase letter to a
+#     lower-case one), and the @c(unicode/utf8) package provides functions for
+#     encoding and decoding runes as bytes using UTF-8.
+    Los archivos de codigo fuente de Go siempre estan codificados en UTF-8 y
+    UTF-8 es la codificacion preferida para las cadenas de texto manipuladas por
+    los programas Go. El paquete @c(unicode) proporciona funciones para trabajar
+    con runas individuales (como distinguir letras de numeros, o la conversion
+    de una letra mayuscula a una minuscula), y el paquete @c(unicode/utf8)
+    proporciona funciones para codificar y decodificar runas como bytes usando
+    UTF-8.
+
+#     Many Unicode characters are hard to type on a keyboard or to distinguish
+#     visually from similar-looking ones; some are even invisible. Unicode escapes
+#     in Go string literals allow us to specify them by their numeric code point
+#     value. There are two forms, @c(\u)@e(hhhh) for a 16-bit value and @c(\U)@e(hhhhhhhh)
+#     for a 32-bit value, where each @e(h) is a hexadecimal digit; the need for the
+#     32-bit form arises very infrequently. Each denotes the UTF-8 encoding of the
+#     specified code point. Thus, for example, the following string literals all
+#     represent the same six-byte string:
+    Muchos caracteres Unicode son dificiles de escribir en un teclado o
+    distinguir visualmente de otros de similar aspecto; Algunos son incluso
+    invisibles. Go nos permite el escape de literales Unicode en una cadena Go
+    al especificarlos por su valor numerico. Hay dos formas, @c(\u)@e(hhhh) para
+    un valor de 16 bits y @c(\U)@e(hhhhhhhh) para un valor de 32 bits, donde
+    cada @e(h) es un digito hexadecimal; La necesidad de la forma de 32 bits se
+    presenta con poca frecuencia. Cada uno denota la codificacion UTF-8 del
+    punto de codigo especificado. Asi, por ejemplo, los siguientes literales de
+    cadena representan la misma cadena de seis bytes:
+
+#     ..src > go
+#       "世界"
+#       "\xe4\xb8\x96\xe7\x95\x8c"
+#       "\u4e16\u754c"
+#       "\U00004e16\U0000754c"
+#     < src..
+    ..src > go
+      "世界"
+      "\xe4\xb8\x96\xe7\x95\x8c"
+      "\u4e16\u754c"
+      "\U00004e16\U0000754c"
+    < src..
+
+#     The three escape sequences above provide alternative notations for the first
+#     string, but the values they denote are identical.  Unicode escapes may also
+#     be used in rune literals. These three literals are equivalent:
+    Las tres secuencias de escape anteriores proporcionan notaciones
+    alternativas para la primera cadena, pero los valores que denotan son
+    identicos. Los escapes Unicode tambien se puede utilizar en runas
+    literales. Estos tres literales son equivalentes:
+
+#     ..pre >
+#       '世' '\u4e16' '\U00004e16'
+    ..pre >
+      '世' '\u4e16' '\U00004e16'
+
+#     A rune whose value is less than 256 may be written with a single hexadecimal
+#     escape, such as @c('\x41') for @c('A'), but for higher values, a @c(\u) or
+#     @c(\U) escape must be used. Consequently, @c('\xe4\xb8\x96') is not a legal
+#     rune literal, even though those three bytes are a valid UTF-8 encoding of a
+#     single code point.
+    Una runa cuyo valor es menor que 256 se puede escribir con una sola de
+    escape hexadecimal, por ejemplo @c('\x41') para @c('A'), pero para los
+    valores mas altos, debe utilizar un @c(\u) o @c(\U) de escape. En
+    consecuencia, @c('\xe4\xb8\x96') no es una runa literal legal, a pesar de
+    que esos tres bytes son un UTF-8 valido de un unico punto de codigo.
+
+#     Thanks to the nice properties of UTF-8, many string operations don’t require
+#     decoding. We can test whether one string contains another as a prefix:
+    Gracias a las buenas propiedades de UTF-8, muchas operaciones de cadena no
+    requieren decodificacion. Podemos probar si una cadena contiene otra como
+    prefijo:
+
+#     ..src > go
+#       func HasPrefix(s, prefix string) bool {
+#         return len(s) >= len(prefix) && s[:len(prefix)] == prefix
+#       }
+#     < src..
+    ..src > go
+      func HasPrefix(s, prefix string) bool {
+        return len(s) >= len(prefix) && s[:len(prefix)] == prefix
+      }
+    < src..
+
+#     or as a suffix:
+    O como sufijo:
+
+#     ..src > go
+#       func HasSuffix(s, suffix string) bool {
+#         return len(s) >= len(suffix) && s[len(s)-len(suffix):] == suffix
+#       }
+#     < src..
+    ..src > go
+      func HasSuffix(s, suffix string) bool {
+        return len(s) >= len(suffix) && s[len(s)-len(suffix):] == suffix
+      }
+    < src..
+
+#     or as a substring:
+    O como una subcadena:
+
+#     ..src > go
+#       func Contains(s, substr string) bool {
+#         for i := 0; i < len(s); i++ {
+#           if HasPrefix(s[i:], substr) {
+#             return true
+#           }
+#         }
+#         return false
+#       }
+#     < src..
+    ..src > go
+      func Contains(s, substr string) bool {
+        for i := 0; i < len(s); i++ {
+          if HasPrefix(s[i:], substr) {
+            return true
+          }
+        }
+        return false
+      }
+    < src..
+
+#     using the same logic for UTF-8-encoded text as for raw bytes. This is not
+#     true for other encodings. (The functions above are drawn from the @c(strings)
+#     package, though its implementation of @c(Contains) uses a hashing technique to
+#     search more efficiently.)
+    Utilizando la misma logica para un texto codificado en UTF-8 como para bytes
+    sin procesar. Esto no es cierto para otras codificaciones. (Las funciones
+    anteriores se han extraido del paquete @c(strings), aunque su implementacion
+    de @c(Contains) utiliza una tecnica de hash para buscar de manera mas
+    eficiente.)
+
+#     On the other hand, if we really care about the individual Unicode
+#     characters, we have to use other mechanisms. Consider the string from our
+#     very first example, which includes two East Asian characters. Figure 3.5
+#     illustrates its representation in memory. The string contains 13 bytes,
+#     but interpreted as UTF-8, it encodes only nine code points or runes:
+    Por otro lado, si realmente nos preocupamos por los caracteres Unicode
+    individuales, tenemos que usar otros mecanismos. Consideremos la cadena de
+    nuestro primer ejemplo, la cual incluye dos caracteres asiaticos. La Figura
+    3.5 ilustra su representacion en la memoria. La cadena contiene 13 bytes,
+    pero interpretada como UTF-8, codifica solo nueve puntos de codigo o runas:
+
+#     ..src > go
+#       import "unicode/utf8"
+#
+#       s := "Hello, 世界"
+#       fmt.Println(len(s))                    // "13"
+#       fmt.Println(utf8.RuneCountInString(s)) // "9"
+#     < src..
+    ..src > go
+      import "unicode/utf8"
+
+      s := "Hello, 世界"
+      fmt.Println(len(s))                    // "13"
+      fmt.Println(utf8.RuneCountInString(s)) // "9"
+    < src..
+
+#     To process those characters, we need a UTF-8 decoder. The @c(unicode/utf8)
+#     package provides one that we can use like this:
+    Para procesar esos caracteres, necesitamos un decodificador UTF-8. El
+    paquete @c(unicode/utf8) proporciona uno que podemos utilizar de la
+    siguiente manera:
+
+#     ..src > go
+#       for i := 0; i < len(s); {
+#         r, size := utf8.DecodeRuneInString(s[i:])
+#         fmt.Printf("%d\t%c\n", i, r)
+#         i += size
+#       }
+#     < src..
+    ..src > go
+      for i := 0; i < len(s); {
+        r, size := utf8.DecodeRuneInString(s[i:])
+        fmt.Printf("%d\t%c\n", i, r)
+        i += size
+      }
+    < src..
+
+#     Each call to @c(DecodeRuneInString) returns @c(r), the rune itself, and
+#     @c(size), the number of bytes occupied by the UTF-8 encoding of @c(r). The
+#     size is used to update the byte index @c(i) of the next rune in the
+#     string. But this is clumsy, and we need loops of this kind all the
+#     time. Fortunately, Go’s @c(range) loop, when applied to a string, performs
+#     UTF-8 decoding implicitly. The output of the loop below is also shown in
+#     Figure 3.5; notice how the index jumps by more than 1 for each non-ASCII
+#     rune.
+    Cada llamada a @c(DecodeRuneInString) regresa @c(r), la runa en si, y
+    @c(size), el numero de bytes ocupados por la codificacion UTF-8 de @c(r). El
+    tamaño se utiliza para actualizar el indice del byte @c(i) de la siguiente
+    runa en la cadena. Pero esto es torpe, y necesitamos bucles de este tipo
+    todo el tiempo. Afortunadamente, Go tiene los bucles @c(range), cuando se
+    aplica a una cadena, realiza decodificacion UTF-8 de forma implicita. La
+    salida del bucle de siguiente se muestra en la Figura 3.5; Observe como el
+    indice salta en mas de 1 para cada runa no ASCII.
+
+#     ..src > go
+#       for i, r := range "Hello, 世界" {
+#         fmt.Printf("%d\t%q\t%d\n", i, r, r)
+#       }
+#     < src..
+    ..src > go
+      for i, r := range "Hello, 世界" {
+        fmt.Printf("%d\t%q\t%d\n", i, r, r)
+      }
+    < src..
+
+#     ..figure > Figure 3.5. A @c(range) loop decodes a UTF-8-encoded string.
+    ..figure > Figura 3.5. Un bucle @c(range) descodifica una cadena UTF-8-codificado.
+
+#       ..img  > img/Figure-3.5.jpg
+      ..img  > img/Figure-3.5.jpg
+
+
+#     We could use a simple @c(range) loop to count the number of runes in a string,
+#     like this:
+    Podriamos usar un simple bucle @c(range) para contar el numero de runas en
+    una cadena, como aqui:
+
+#     ..src > go
+#       n := 0
+#       for _, _ = range s {
+#         n++
+#       }
+#     < src..
+    ..src > go
+      n := 0
+      for _, _ = range s {
+        n++
+      }
+    < src..
+
+#     As with the other forms of @c(range) loop, we can omit the variables we
+#     don’t need:
+    Al igual que con las otras formas de bucle @c(range), podemos omitir las
+    variables que no necesitamos:
+
+#     ..src > go
+#       n := 0
+#       for range s {
+#         n++
+#       }
+#     < src..
+    ..src > go
+      n := 0
+      for range s {
+        n++
+      }
+    < src..
+
+#     Or we can just call @c[utf8.RuneCountInString(s)].
+    O podemos simplemente llamar a @c[utf8.RuneCountInString(s)].
+
+#     We mentioned earlier that it is mostly a matter of convention in Go that
+#     text strings are interpreted as UTF-8-encoded sequences of Unicode code
+#     points, but for correct use of @c(range) loops on strings, it’s more than a
+#     convention, it’s a necessity. What happens if we range over a string
+#     containing arbitrary binary data or, for that matter, UTF-8 data containing
+#     errors?
+    Ya hemos mencionado que es sobre todo una cuestion de convencion en Go que
+    las cadenas de texto se interpretan como secuencias codificadas en UTF-8 de
+    puntos de codigo Unicode, pero para el uso correcto de bucles @c(range) de
+    cadenas, es mas que una convencion, es una necesidad. ¿Que sucede si
+    aplicamos @c(range) en cadena que contiene datos binarios arbitrarios o, de
+    hecho, datos UTF-8 que contienen errores?
+
+#     Each time a UTF-8 decoder, whether explicit in a call to
+#     @c(utf8.DecodeRuneInString) or implicit in a @c(range) loop, consumes an
+#     unexpected input byte, it generates a special Unicode @e(replacement
+#     character), @c('\uFFFD'), which is usually printed as a white question mark
+#     inside a black hexagonal or diamond-like shape �. When a program encounters
+#     this rune value, it’s often a sign that some upstream part of the system
+#     that generated the string data has been careless in its treatment of text
+#     encodings.
+    Cada vez que un decodificador UTF-8, ya sea explicito en una llamada a
+    @c(utf8.DecodeRuneInString) o implicito en un bucle @c(range), consume un
+    byte de entrada inesperado, se genera un caracter Unicode de reemplazo
+    especial, @c('\uFFFD'), que generalmente se impreme como un signo de
+    interrogacion dentro de una forma hexagonal o un diamante negro �. Cuando un
+    programa encuentra este valor de runa, a menudo es un signo de que parte del
+    sistema que genero los datos de cadena ha sido descuidado en su tratamiento
+    de las codificaciones de texto.
+
+#     UTF-8 is exceptionally convenient as an interchange format but within a
+#     program runes may be more convenient because they are of uniform size and
+#     are thus easily indexed in arrays and slices.
+    UTF-8 es excepcionalmente conveniente como un formato de intercambio, pero
+    dentro de un programa las runas puede ser mas conveniente porque son de
+    tamaño uniforme y por lo tanto, de facil indexado en arreglos y slices.
+
+#     A @c([]rune) conversion applied to a UTF-8-encoded string returns the
+#     sequence of Unicode code points that the string encodes:
+    Una conversion @c([]rune) aplicada a una cadena codificada en UTF-8 devuelve la
+    secuencia de codigos Unicode:
+
+#     ..src > go
+#       // "program" in Japanese katakana
+#       s := "プログラム"
+#       fmt.Printf("% x\n", s) // "e3 83 97 e3 83 ad e3 82 b0 e3 83 a9 e3 83 a0"
+#       r := []rune(s)
+#       fmt.Printf("%x\n", r)  // "[30d7 30ed 30b0 30e9 30e0]"
+#     < src..
+    ..src > go
+      // "programa" en katakana
+      s := "プログラム"
+      fmt.Printf("% x\n", s) // "e3 83 97 e3 83 ad e3 82 b0 e3 83 a9 e3 83 a0"
+      r := []rune(s)
+      fmt.Printf("%x\n", r)  // "[30d7 30ed 30b0 30e9 30e0]"
+    < src..
+
+#     (The verb @c(% x) in the first @c(Printf) inserts a space between each pair
+#     of hex digits.)
+    (El verbo @c(% x) en el primer @c(Printf) inserta un espacio entre cada par
+    de digitos hexadecimales.)
+
+#     If a slice of runes is converted to a string, it produces the concatenation
+#     of the UTF-8 encodings of each rune:
+    Si un slice de runas se convierte en una cadena, produce la concatenacion de
+    las codificaciones UTF-8 de cada runa:
+
+#     ..src > go
+#       fmt.Println(string(r)) // "プログラム"
+#     < src..
+    ..src > go
+      fmt.Println(string(r)) // "プログラム"
+    < src..
+
+#     Converting an integer value to a string interprets the integer as a rune
+#     value, and yields the UTF-8 representation of that rune:
+    Convertir un valor entero en una cadena interpre el entero como un valor
+    de runa, y produce la representacion UTF-8 de esa runa:
+
+#     ..src > go
+#       UTF-8 representation of that rune:
+#       fmt.Println(string(65))     // "A", not "65"
+#       fmt.Println(string(0x4eac)) // "京"
+#     < src..
+    ..src > go
+      fmt.Println(string(65))     // "A", not "65"
+      fmt.Println(string(0x4eac)) // "京"
+    < src..
+
+#     If the rune is invalid, the replacement character is substituted:
+    Si la runa no es valida, se reemplasa por el caracter de sustitucion:
+
+#     ..src > go
+#       fmt.Println(string(1234567)) // "�"
+#     < src..
+    ..src > go
+      fmt.Println(string(1234567)) // "�"
+    < src..
+
+# *** Section 3.5.4 <> Strings and Byte Slices
+*** Seccion 3.5.4 <> Cadenas y Slices de Bytes
+
+#     Four standard packages are particularly important for manipulating strings:
+#     @c(bytes), @c(strings), @c(strconv), and @c(unicode). The @c(string) spackage
+#     provides many functions for searching, replacing, comparing, trimming,
+#     splitting, and joining strings.
+    cuatro paquetes estandar son particularmente importantes para la
+    manipulacion de cadenas: @c(bytes), @c(strings), @c(strconv) y
+    @c(unicode). El paquete @c(strings) ofrece muchas funciones para busqueda,
+    reemplazo, comparacion, recorte, division, y union en cadenas.
+
+#     The @c(bytes) package has similar functions for manipulating slices of
+#     bytes, of type @c([]byte), which share some properties with strings. Because
+#     strings are immutable, building up strings incrementally can involve a lot
+#     of allocation and copying. In such cases, it’s more efficient to use the
+#     @c(bytes.Buffer) type, which we’ll show in a moment.
+    El paquete @c(bytes) tiene funciones similares para manipular slices de
+    bytes, de tipo @c([]byte), que comparten algunas propiedades con
+    @c(strings). Debido a que las cadenas son inmutables, la construccion de
+    cadenas de forma incremental puede implicar una gran cantidad de asignacion
+    y copiado. En tales casos, es mas eficaz utilizar el tipo @c(bytes.Buffer),
+    que vamos a mostrar en un momento.
+
+#     The @c(strconv) package provides functions for converting boolean, integer,
+#     and floating-point values to and from their string representations, and
+#     functions for quoting and unquoting strings.
+    El paquete @c(strconv) proporciona funciones para convertir booleanos,
+    enteros, y valores de coma flotante hacia y desde sus representaciones en
+    cadenas, y funciones para citar y des-citar cadenas.
+
+#     The @c(unicode) package provides functions like @c(IsDigit), @c(IsLetter),
+#     @c(IsUpper), and @c(IsLower) for classifying runes. Each function takes a
+#     single rune argument and returns a boolean. Conversion functions like
+#     @c(ToUpper) and @c(ToLower) convert a rune into the given case if it is a
+#     letter. All these functions use the Unicode standard categories for letters,
+#     digits, and so on. The @c(strings) package has similar functions, also
+#     called @c(ToUpper) and @c(ToLower), that return a new string with the
+#     specified transformation applied to each character of the original string.
+    El paquete @c(unicode) proporciona funciones como @c(IsDigit), @c(IsLetter),
+    @c(IsUpper) y @c(IsLower) para la clasificacion de runas. Cada funcion toma
+    un unico argumento de tipo runa y devuelve un booleano. Las funciones de
+    conversion como @c(ToUpper) y @c(ToLower) convierten una runa en el caso
+    concreto si se trata de una letra. Todas estas funciones utilizan las
+    categorias estandar de Unicode para las letras, los digitos, etc. El paquete
+    @c(strings) tiene funciones similares, tambien llamadas @c(ToUpper) y
+    @c(ToLower), que devuelven una nueva cadena con la transformacion
+    especificada aplicada a cada caracter de la cadena original.
+
+#     The @c(basename) function below was inspired by the Unix shell utility of
+#     the same name. In our version, @c(basename)(s) removes any prefix of s that
+#     looks like a file system path with components separated by slashes, and it
+#     removes any suffix that looks like a file type:
+    La siguiente funcion @c(basename) se inspiro en la utilidad de shell Unix
+    del mismo nombre. En nuestra version, @c[basename(s)] elimina cualquier
+    prefijo de @c(s) que paresca una ruta de sistema con componentes separados
+    por barras, y elimina cualquier sufijo que se parece a un tipo de archivo:
+
+#     ..src > go
+#       fmt.Println(basename("a/b/c.go")) // "c"
+#       fmt.Println(basename("c.d.go"))   // "c.d"
+#       fmt.Println(basename("abc"))      // "abc"
+#     < src..
+    ..src > go
+      fmt.Println(basename("a/b/c.go")) // "c"
+      fmt.Println(basename("c.d.go"))   // "c.d"
+      fmt.Println(basename("abc"))      // "abc"
+    < src..
+
+#     The first version of @c(basename) does all the work without the help of
+#     libraries:
+    La primer version de basename hace todo el trabajo sin la ayuda de
+    librerias:
+
+#     ..figure > @l(gopl.io/ch3/basename1/main.go<>gopl.io/ch3/basename1)
+    ..figure > @l(gopl.io/ch3/basename1/main.go<>gopl.io/ch3/basename1)
+
+#       ..src > go
+#         // basename removes directory components and a .suffix.
+#         // e.g., a => a, a.go => a, a/b/c.go => c, a/b.c.go => b.c
+#         func basename(s string) string {
+#           // Discard last '/' and everything before.
+#           for i := len(s) - 1; i >= 0; i-- {
+#             if s[i] == '/' {
+#               s = s[i+1:]
+#               break
+#             }
+#           }
+#           // Preserve everything before last '.'.
+#           for i := len(s) - 1; i >= 0; i-- {
+#             if s[i] == '.' {
+#               s = s[:i]
+#               break
+#             }
+#           }
+#           return s
+#         }
+#       < src..
+      ..src > go
+        // basename elimina los .subfijos y componentes de directorios.
+        // e.g., a => a, a.go => a, a/b/c.go => c, a/b.c.go => b.c
+        func basename(s string) string {
+          // Descarta el ultimo '/' y todo lo anterior.
+          for i := len(s) - 1; i >= 0; i-- {
+            if s[i] == '/' {
+              s = s[i+1:]
+              break
+            }
+          }
+          // Conserva todo antes del ultimo '.'.
+          for i := len(s) - 1; i >= 0; i-- {
+            if s[i] == '.' {
+              s = s[:i]
+              break
+            }
+          }
+          return s
+        }
+      < src..
+
+
+#     A simpler version uses the @c(strings.LastIndex) library function:
+    Una version mas simple utiliza la funcion de libreria @c(strings.LastIndex):
+
+#     ..figure > @l(gopl.io/ch3/basename2/main.go<>gopl.io/ch3/basename2)
+    ..figure > @l(gopl.io/ch3/basename2/main.go<>gopl.io/ch3/basename2)
+
+#       ..src > go
+#         func basename(s string) string {
+#           slash := strings.LastIndex(s, "/") // -1 if "/" not found
+#           s = s[slash+1:]
+#           if dot := strings.LastIndex(s, "."); dot >= 0 {
+#             s = s[:dot]
+#           }
+#           return s
+#         }
+#       < src..
+      ..src > go
+        func basename(s string) string {
+          slash := strings.LastIndex(s, "/") // -1 si no se encuentra "/"
+          s = s[slash+1:]
+          if dot := strings.LastIndex(s, "."); dot >= 0 {
+            s = s[:dot]
+          }
+          return s
+        }
+      < src..
+
+
+#     The @c(path) and @c(path/filepath) packages provide a more general set of
+#     functions for manipulating hierarchical names. The @c(path) package works
+#     with slash-delimited paths on any platform. It shouldn’t be used for file
+#     names, but it is appropriate for other domains, like the path component of a
+#     URL. By contrast, @c(path/filepath) manipulates file names using the rules
+#     for the host platform, such as @c(/foo/bar) for POSIX or @c(c:\foo\bar) on
+#     Microsoft Windows.
+    Los paquetes @c(path) y @c(path/filepath) proporcionan un conjunto general
+    de funciones para manipular nombres jerarquicos. El paquete @c(path)
+    funciona con rutas delimitada por barras en cualquier plataforma. No se debe
+    utilizar para nombres de archivo, pero es apropiado para otros dominios,
+    como los componente de ruta de una URL. Por el contrario, @c(path/filepath)
+    manipula los nombres de archivos usando las reglas para la plataforma
+    huesped, tales como @c(/foo/bar) para POSIX o @c(c:\foo\bar) en Microsoft
+    Windows.
+
+#     Let’s continue with another substring example. The task is to take a string
+#     representation of an integer, such as @c("12345"), and insert commas every
+#     three places, as in @c("12,345"). This version only works for integers;
+#     handling floating-point numbers is left as a exercise.
+    Vamos a continuar con otro ejemplo de subcadena. La tarea es tomar una
+    representacion de cadena de un entero, como @c("12345"), e insertar comas
+    cada tres posiciones, como en @c("12,345") . Esta version solo funciona para
+    enteros; El manejo de numeros de coma flotante se deja como un ejercicio.
+
+#     ..figure > @l(gopl.io/ch3/comma/main.go<>gopl.io/ch3/comma)
+    ..figure > @l(gopl.io/ch3/comma/main.go<>gopl.io/ch3/comma)
+
+#       ..src > go
+#         // comma inserts commas in a non-negative decimal integer string.
+#         func comma(s string) string {
+#           n := len(s)
+#           if n <= 3 {
+#             return s
+#           }
+#           return comma(s[:n-3]) + "," + s[n-3:]
+#         }
+#       < src..
+      ..src > go
+        // comma inserta comas en una cadena de numeros enteros decimales negativos.
+        func comma(s string) string {
+          n := len(s)
+          if n <= 3 {
+            return s
+          }
+          return comma(s[:n-3]) + "," + s[n-3:]
+        }
+      < src..
+
+
+#     The argument to @c(comma) is a string. If its length is less than or equal
+#     to 3, no comma is necessary. Otherwise, @c(comma) calls itself recursively
+#     with a substring consisting of all but the last three characters, and
+#     appends a comma and the last three characters to the result of the recursive
+#     call.
+    El argumento de @c(comma) es una cadena. Si su longitud es menor o igual a
+    3, no es necesaria una coma. De lo contrario, comma se llama a si misma de
+    forma recursiva con una subcadena formada por todos menos los tres ultimos
+    caracteres, y añåde una coma y los tres ultimos caracteres en el resultado
+    de la llamada recursiva.
+
+#     A string contains an array of bytes that, once created, is immutable. By
+#     contrast, the elements of a byte slice can be freely modified.
+    Una cadena contiene un arreglo de bytes que, una vez creado, es
+    inmutable. Por el contrario, los elementos de una slice de bytes se pueden
+    modificar libremente.
+
+#     Strings can be converted to byte slices and back again:
+    Las cadenas se pueden convertir en slices de bytes y viceversa:
+
+#     ..src > go
+#       s := "abc"
+#       b := []byte(s)
+#       s2 := string(b)
+#     < src..
+    ..src > go
+      s := "abc"
+      b := []byte(s)
+      s2 := string(b)
+    < src..
+
+#     Conceptually, the @c{[]byte(s)} conversion allocates a new byte array
+#     holding a copy of the bytes of @c(s), and yields a slice that references the
+#     entirety of that array. An optimizing compiler may be able to avoid the
+#     allocation and copying in some cases, but in general copying is required to
+#     ensure that the bytes of @c(s) remain unchanged even if those of @c(b) are
+#     subsequently modified. The conversion from byte slice back to string with
+#     @c[string(b)] also makes a copy, to ensure immutability of the resulting
+#     string @c(s2).
+    Conceptualmente, la conversion @c{[]byte(s)} asigna un nuevo arreglo de
+    bytes que guarda una copia de bytes de @c(s), y produce un slice que hace
+    referencia a la totalidad del arreglo. Un compilador optimizado puede ser
+    capaz de evitar la asignacion y la copia en algunos casos, pero en general,
+    la copia es necesaria para asegurar que los bytes de @c(s) se mantienen sin
+    cambios incluso si los de @c(b) son modificados posteriormente. La
+    conversion de slice de byte de nuevo a cadena con @c[string(b)] tambien
+    genera una copia, para asegurar inmutabilidad de la cadena resultante
+    @c(s2).
+
+#     To avoid conversions and unnecessary memory allocation, many of the utility
+#     functions in the @c(bytes) package directly parallel their counterparts in
+#     the @c(strings) package. For example, here are half a dozen functions from
+#     @c(strings):
+    Para evitar conversiones y asignacion de memoria innecesaria, muchas
+    de las funciones de utilidad en el paquete @c(bytes) directamente paralelos a
+    sus contrapartes en el paquete @c(strings). Por ejemplo, aqui hay una media
+    docena de funciones en @c(strings):
+
+#     ..src > go
+#       func Contains(s, substr string) bool
+#       func Count(s, sep string) int
+#       func Fields(s string) []string
+#       func HasPrefix(s, prefix string) bool
+#       func Index(s, sep string) int
+#       func Join(a []string, sep string) string
+#     < src..
+    ..src > go
+      func Contains(s, substr string) bool
+      func Count(s, sep string) int
+      func Fields(s string) []string
+      func HasPrefix(s, prefix string) bool
+      func Index(s, sep string) int
+      func Join(a []string, sep string) string
+    < src..
+
+#     and the corresponding ones from @c(bytes):
+    y las correspondientes en bytes :
+
+#     ..src > go
+#       func Contains(b, subslice []byte) bool
+#       func Count(s, sep []byte) int
+#       func Fields(s []byte) [][]byte
+#       func HasPrefix(s, prefix []byte) bool
+#       func Index(s, sep []byte) int
+#       func Join(s [][]byte, sep []byte) []byte
+#     < src..
+    ..src > go
+      func Contains(b, subslice []byte) bool
+      func Count(s, sep []byte) int
+      func Fields(s []byte) [][]byte
+      func HasPrefix(s, prefix []byte) bool
+      func Index(s, sep []byte) int
+      func Join(s [][]byte, sep []byte) []byte
+    < src..
+
+#     The only difference is that strings have been replaced by byte slices.
+    La unica diferencia es que las cadenas han sido reemplazadas por slices de
+    bytes.
+
+#     The @c(bytes) package provides the @c(Buffer) type for efficient
+#     manipulation of byte slices. A @c(Buffer) starts out empty but grows as data
+#     of types like @c(string), @c(byte), and @c([]byte) are written to it. As the
+#     example below shows, a @c(bytes.Buffer) variable requires no initialization
+#     because its zero value is usable:
+    El paquete @c(bytes) proporciona el tipo @c(Buffer) para la manipulacion
+    eficiente de slices de @c(byte). Un @c(Buffer) comienza vacio, pero crece a
+    medida que los datos de tipos como @c(string), @c(byte), y @c([]byte) se
+    escriben en el. Como muestra el siguiente ejemplo, una variable
+    @c(bytes.Buffer) no requiere inicializacion porque su valor cero es
+    utilizable:
+
+#     ..figure > @l(gopl.io/ch3/printints/main.go<>gopl.io/ch3/printints)
+    ..figure > @l(gopl.io/ch3/printints/main.go<>gopl.io/ch3/printints)
+
+#       ..src > go
+#         // intsToString is like fmt.Sprint(values) but adds commas.
+#         func intsToString(values []int) string {
+#           var buf bytes.Buffer
+#           buf.WriteByte('[')
+#           for i, v := range values {
+#             if i > 0 {
+#               buf.WriteString(", ")
+#             }
+#             fmt.Fprintf(&buf, "%d", v)
+#           }
+#           buf.WriteByte(']')
+#           return buf.String()
+#         }
+#
+#         func main() {
+#           fmt.Println(intsToString([]int{1, 2, 3})) // "[1, 2, 3]"
+#         }
+#       < src..
+      ..src > go
+        // intsToString es como fmt.Sprint(values) pero agrega comas.
+        func intsToString(values []int) string {
+          var buf bytes.Buffer
+          buf.WriteByte('[')
+          for i, v := range values {
+            if i > 0 {
+              buf.WriteString(", ")
+            }
+            fmt.Fprintf(&buf, "%d", v)
+          }
+          buf.WriteByte(']')
+          return buf.String()
+        }
+
+        func main() {
+          fmt.Println(intsToString([]int{1, 2, 3})) // "[1, 2, 3]"
+        }
+      < src..
+
+
+#     When appending the UTF-8 encoding of an arbitrary rune to a
+#     @c(bytes.Buffer), it’s best to use @c(bytes.Buffer)’s @c(WriteRune) method,
+#     but @c(WriteByte) is fine for ASCII characters such as @c('[') and @c(']').
+    Cuando se agrega la codificacion UTF-8 de un runa arbitraria a un
+    @c(bytes.Buffer), lo mejor es utilizar el metodo @c(WriteRune) de
+    @c(bytes.Buffer), pero @c(WriteByte) esta bien para caracteres ASCII como
+    @c('[') y @c(']').
+
+#     The @c(bytes.Buffer) type is extremely versatile, and when we discuss
+#     interfaces in @l(#Chapter 7), we’ll see how it may be used as a replacement
+#     for a file whenever an I/O function requires a sink for bytes
+#     (@c(io.Writer)) as @c(Fprintf) does above, or a source of bytes
+#     (@c(io.Reader)).
+    El tipo @c(bytes.Buffer) es extremadamente versatil, y cuando hablemos de
+    interfaces en el @l(#Capitulo 7), vamos a ver como se puede utilizar como un
+    sustituto de un archivo cada vez que una funcion de E/S requiere un poso de
+    bytes (@c(io.Writer)) como @c(Fprintf), o una fuente de bytes
+    (@c(io.Reader)).
+
+#     @b(Exercise 3.10): Write a non-recursive version of @c(comma), using
+#     @c(bytes.Buffer) instead of string concatenation.
+   @b(Ejercicio 3.10): Escribir una version no recursiva de @c(comma),
+   utilizando @c(bytes.Buffer) en lugar de la concatenacion de cadenas.
+
+#     @b(Exercise 3.11): Enhance @c(comma) so that it deals correctly with
+#     floating-point numbers and an optional sign.
+   @b(Ejercicio 3.11): Mejorar @c(comma) para que se maneje correctamente los
+   numeros de punto flotante y un opcionalmente con signo.
+
+#     @b(Exercise 3.12): Write a function that reports whether two strings are
+#     anagrams of each other, that is, they contain the same letters in a
+#     different order.
+   @b(Ejercicio 3.12): Escribir una funcion que informa de si dos cadenas son
+   anagramas entre si, es decir, que contienen las mismas letras en un orden
+   diferente.
+
+# *** Section 3.5.5 <> Conversions between Strings and Numbers
+*** Seccion 3.5.5 <> Conversiones entre cadenas y numeros
+
+#     In addition to conversions between strings, runes, and bytes, it’s often
+#     necessary to convert between numeric values and their string
+#     representations. This is done with functions from the @c(strconv) package.
+    Ademas de las conversiones entre cadenas, runas y bytes, a menudo es
+    necesario convertir entre valores numericos y sus representaciones de
+    cadena. Esto se realiza con las funciones del paquete @c(strconv).
+
+#     To convert an integer to a string, one option is to use @c(fmt.Sprintf);
+#     another is to use the function @c(strconv.Itoa) (@"(integer to ASCII)):
+    Para convertir un entero a una cadena, una opcion es utilizar @c(fmt.Sprintf);
+    otra es utilizar la funcion @c(strconv.Itoa) (@"(entero a ASCII)):
+
+#     ..src > go
+#       x := 123
+#       y := fmt.Sprintf("%d", x)
+#       fmt.Println(y, strconv.Itoa(x)) // "123 123"
+#     < src..
+    ..src > go
+      x := 123
+      y := fmt.Sprintf("%d", x)
+      fmt.Println(y, strconv.Itoa(x)) // "123 123"
+    < src..
+
+#     @c(FormatInt) and @c(FormatUint) can be used to format numbers in a
+#     different base:
+    @c(FormatInt) y @c(FormatUint) se pueden utilizar para dar formato a numeros
+    en una base diferente:
+
+#     ..src > go
+#       fmt.Println(strconv.FormatInt(int64(x), 2)) // "1111011"
+#     < src..
+    ..src > go
+      fmt.Println(strconv.FormatInt(int64(x), 2)) // "1111011"
+    < src..
+
+#     The @c(fmt.Printf) verbs @c(%b), @c(%d), @c(%u), and @c(%x) are often more
+#     convenient than @c(Format) functions, especially if we want to include
+#     additional information besides the number:
+    Los verbos @c(%b), @c(%d), @c(%u) y @c(%x) de @c(fmt.Printf) a menudo son
+    mas conveniente que las funciones @c(Format), sobre todo si queremos incluir
+    informacion adicional ademas del numero:
+
+#     ..src > go
+#       s := fmt.Sprintf("x=%b", x) // "x=1111011"
+#     < src..
+    ..src > go
+      s := fmt.Sprintf("x=%b", x) // "x=1111011"
+    < src..
+
+#     To parse a string representing an integer, use the @c(strconv) functions
+#     @c(Atoi) or @c(ParseInt), or ParseUint for unsigned integers:
+    Para analizar una cadena que representa un numero entero, utilice las
+    funciones de @c(strconv) como @c(Atoi) o @c(ParseInt), o @c(ParseUint) para
+    enteros sin signo:
+
+#     ..src > go
+#       x, err := strconv.Atoi("123")             // x is an int
+#       y, err := strconv.ParseInt("123", 10, 64) // base 10, up to 64 bits
+#     < src..
+    ..src > go
+      x, err := strconv.Atoi("123")             // x es un entero
+      y, err := strconv.ParseInt("123", 10, 64) // base 10, hasta 64 bits
+    < src..
+
+#     The third argument of @c(ParseInt) gives the size of the integer type that
+#     the result must fit into; for example, 16 implies @c(int16), and the special
+#     value of 0 implies @c(int). In any case, the type of the result y is always
+#     @c(int64), which you can then convert to a smaller type.
+    El tercer argumento de @c(ParseInt) da el tamaño del tipo de entero que debe
+    ser el resultado; por ejemplo, 16 implica @c(int16), y el valor especial 0
+    implica @c(int) . En cualquier caso, el tipo del resultado @c(y) es siempre
+    @c(int64), que luego se puede convertir a un tipo mas pequeño.
+
+#     Sometimes @c(fmt.Scanf) is useful for parsing input that consists of orderly
+#     mixtures of strings and numbers all on a single line, but it can be
+#     inflexible, especially when handling incomplete or irregular input.
+    A veces es util @c(fmt.Scanf) para el analisis de entrada que consta de
+    mezclas ordenadas de cadenas y numeros todo en una sola linea, pero puede
+    ser inflexible, especialmente cuando se maneja una entrada incompleta o
+    irregular.
+
+# ** Section 3.6 <> Constants
+** Seccion 3.6 <> Constantes
+
+#    Constants are expressions whose value is known to the compiler and whose
+#    evaluation is guaranteed to occur at compile time, not at run time. The
+#    underlying type of every constant is a basic type: boolean, string, or
+#    number.
+   Las constantes son expresiones cuyo valor es conocido por el compilador y
+   cuya evaluacion se garantiza que se produzca en tiempo de compilacion, no en
+   tiempo de ejecucion. El tipo subyacente de cada constante es un tipo basico:
+   booleano, cadena o numero.
+
+#    A @c(const) declaration defines named values that look syntactically like
+#    variables but whose value is constant, which prevents accidental (or
+#    nefarious) changes during program execution.  For instance, a constant is
+#    more appropriate than a variable for a mathematical constant like @c(pi),
+#    since its value won’t change:
+   Una declaracion @c(const) define los valores que se ven sintacticamente como
+   variables con nombre pero cuyo valor es constante, lo que evita cambios
+   accidentales (o nefastos) durante la ejecucion del programa. Por ejemplo, una
+   constante es mas apropiada que una variable para una constante matematica
+   como @c(pi), ya que su valor no cambiara:
+
+#    ..src > go
+#      const pi = 3.14159 // approximately; math.Pi is a better approximation
+#    < src..
+   ..src > go
+     const pi = 3.14159 // aproximadamente; math.Pi un una mejor aproximacion
+   < src..
+
+#    As with variables, a sequence of constants can appear in one declaration;
+#    this would be appropriate for a group of related values:
+   Al igual que con las variables, una secuencia de constantes puede aparecer en
+   una declaracion; Esto seria apropiado para un grupo de valores relacionados:
+
+#    ..src > go
+#      const (
+#        e  = 2.71828182845904523536028747135266249775724709369995957496696763
+#        pi = 3.14159265358979323846264338327950288419716939937510582097494459
+#      )
+#    < src..
+   ..src > go
+     const (
+       e  = 2.71828182845904523536028747135266249775724709369995957496696763
+       pi = 3.14159265358979323846264338327950288419716939937510582097494459
+     )
+   < src..
+
+#    Many computations on constants can be completely evaluated at compile time,
+#    reducing the work necessary at run time and enabling other compiler
+#    optimizations. Errors ordinarily detected at run time can be reported at
+#    compile time when their operands are constants, such as integer division by
+#    zero, string indexing out of bounds, and any floating-point operation that
+#    would result in a non-finite value.
+   Muchos calculos de constantes pueden evaluarse completamente en tiempo de
+   compilacion, reduciendo el trabajo necesario en tiempo de ejecucion y
+   habilitando otras optimizaciones de compilador. Los errores ordinariamente
+   detectados en tiempo de ejecucion pueden ser reportados en tiempo de
+   compilacion cuando sus operandos son constantes, como la division entera por
+   cero, una cadena de indexacion fuera de limites y cualquier operacion de
+   punto flotante que daria lugar a un valor no finito.
+
+#    The results of all arithmetic, logical, and comparison operations applied to
+#    constant operands are themselves constants, as are the results of conversions
+#    and calls to certain built-in functions such as @c(len), @c(cap), @c(real),
+#    @c(imag), @c(complex), and @c(unsafe.Sizeof) (@l(#Section 13.1<>§13.1)).
+   Los resultados de toda la aritmetica, y operaciones de comparacion logicos
+   aplicados a operandos constantes son en si mismas constantes, como son los
+   resultados de las conversiones y las llamadas a ciertas funciones nativas
+   como @c(len), @c(cap), @c(real), @c(imag), @c(complex), y @c(unsafe.Sizeof)
+   (@l(#Seccion 13.1<>§13.1)).
+
+#    Since their values are known to the compiler, constant expressions may appear
+#    in types, specifically as the length of an array type:
+   Ya que sus valores son conocidos por el compilador, las expresiones
+   constantes pueden aparecer en los tipos, especificamente como la longitud de
+   un tipo de arreglo:
+
+#    ..src > go
+#      const IPv4Len = 4
+#
+#      // parseIPv4 parses an IPv4 address (d.d.d.d).
+#      func parseIPv4(s string) IP {
+#        var p [IPv4Len]byte
+#        // ...
+#      }
+#    < src..
+   ..src > go
+     const IPv4Len = 4
+
+     // parseIPv4 analiza una direccion IPv4 (d.d.d.d).
+     func parseIPv4(s string) IP {
+       var p [IPv4Len]byte
+       // ...
+     }
+   < src..
+
+#    A constant declaration may specify a type as well as a value, but in the
+#    absence of an explicit type, the type is inferred from the expression on the
+#    right-hand side. In the following, @c(time.Duration) is a named type whose
+#    underlying type is @c(int64), and @c(time.Minute) is a constant of that
+#    type. Both of the constants declared below thus have the type
+#    @c(time.Duration) as well, as revealed by @c(%T):
+   Una declaracion constante puede especificar un tipo como un valor, pero en
+   ausencia de un tipo explicito, el tipo se infiere de la expresion en el lado
+   derecho. En el siguiente ejemplo, @c(time.Duration) es un tipo con nombre
+   cuyo tipo subyacente es @c(int64), y @c(time.Minute) es una constante de ese
+   tipo. Por lo tanto las dos constantes declaradas a continuacion tienen el
+   tipo @c(time.Duration), como lo revela @c(%T):
+
+#    ..src > go
+#      const noDelay time.Duration = 0
+#      const timeout = 5 * time.Minute
+#
+#      fmt.Printf("%T %[1]v\n", noDelay)     // "time.Duration 0"
+#      fmt.Printf("%T %[1]v\n", timeout)     // "time.Duration 5m0s
+#      fmt.Printf("%T %[1]v\n", time.Minute) // "time.Duration 1m0s"
+#    < src..
+   ..src > go
+     const noDelay time.Duration = 0
+     const timeout = 5 * time.Minute
+
+     fmt.Printf("%T %[1]v\n", noDelay)     // "time.Duration 0"
+     fmt.Printf("%T %[1]v\n", timeout)     // "time.Duration 5m0s
+     fmt.Printf("%T %[1]v\n", time.Minute) // "time.Duration 1m0s"
+   < src..
+
+#    When a sequence of constants is declared as a group, the right-hand side
+#    expression may be omitted for all but the first of the group, implying that
+#    the previous expression and its type should be used again. For example:
+   Cuando una secuencia de constantes se declara como un grupo, la expresion del
+   lado derecho se puede omitir para todas excepto para la primera del grupo, lo
+   que implica que la expresion anterior y su tipo deben ser utilizados de
+   nuevo. Por ejemplo:
+
+#    ..src > go
+#      const (
+#        a = 1
+#        b
+#        c = 2
+#        d
+#      )
+#
+#      fmt.Println(a, b, c, d) // "1 1 2 2"
+#    < src..
+   ..src > go
+     const (
+       a = 1
+       b
+       c = 2
+       d
+     )
+
+     fmt.Println(a, b, c, d) // "1 1 2 2"
+   < src..
+
+#    This is not very useful if the implicitly copied right-hand side expression
+#    always evaluates to the same thing. But what if it could vary? This brings us
+#    to @c(iota).
+   Esto no es muy util si la expresion del lado derecho implicitamente copiada
+   se evalua siempre con el mismo valor. Pero, ¿y si pudiera variar? Esto nos
+   lleva a @c(iota).
+
+# *** Section 3.6.1 <> The Constant Generator @c(iota)
+*** Seccion 3.6.1 <> El Generador Constante @c(iota)
+
+#     A @c(const) declaration may use the @e(constant generator) @c(iota), which
+#     is used to create a sequence of related values without spelling out each one
+#     explicitly. In a @c(const) declaration, the value of @c(iota) begins at zero
+#     and increments by one for each item in the sequence.
+    Una declaracion @c(const) puede utilizar el generador de constante @c(iota),
+    que se utiliza para crear una secuencia de valores relacionados sin escribir
+    cada uno de forma explicita. En una declaracion @c(const), el valor de
+    @c(iota) comienza en cero y se incrementa en uno en cada elemento de la
+    secuencia.
+
+#     Here’s an example from the @c(time) package, which defines named constants
+#     of type @c(Weekday) for the days of the week, starting with zero for
+#     @c(Sunday). Types of this kind are often called @e(enumerations), or
+#     @e(enums) for short.
+    He aqui un ejemplo del paquete @c(time), que define constantes de tipo
+    @c(Weekday) de los dias de la semana, a partir de cero para @c(Sunday).
+    Tipos de esta clase a menudo se conocen como @e(enumeraciones), o @e(enums),
+    para abreviar.
+
+#     ..src > go
+#       type Weekday int
+#
+#       const (
+#         Sunday Weekday = iota
+#         Monday
+#         Tuesday
+#         Wednesday
+#         Thursday
+#         Friday
+#         Saturday
+#       )
+#     < src..
+    ..src > go
+      type Weekday int
+
+      const (
+        Sunday Weekday = iota
+        Monday
+        Tuesday
+        Wednesday
+        Thursday
+        Friday
+        Saturday
+      )
+    < src..
+
+#     This declares @c(Sunday) to be 0, @c(Monday) to be 1, and so on.
+    Esto declara que @c(Sunday) debe ser 0, @c(Monday) debe ser 1, y asi
+    sucesivamente.
+
+#     We can use @c(iota) in more complex expressions too, as in this example from
+#     the @c(net) package where each of the lowest 5 bits of an unsigned integer
+#     is given a distinct name and boolean interpretation:
+    Podemos utilizar @c(iota) en expresiones mas complejas, como en este ejemplo
+    del paquete @c(net) en el que se le da a cada uno de los 5 bits mas bajos de
+    un entero sin signo un nombre distinto e interpretacion booleana:
+
+#     ..src > go
+#       type Flags uint
+#
+#       const (
+#         FlagUp Flags = 1 << iota // is up
+#         FlagBroadcast            // supports broadcast access capability
+#         FlagLoopback             // is a loopback interface
+#         FlagPointToPoint         // belongs to a point-to-point link
+#         FlagMulticast            // supports multicast access capability
+#       )
+#     < src..
+    ..src > go
+      type Flags uint
+
+      const (
+        FlagUp Flags = 1 << iota // esta arriba
+        FlagBroadcast            // soporta acceso broadcast
+        FlagLoopback             // es una interface loopback
+        FlagPointToPoint         // pertenece a un enlace punto-a-punto
+        FlagMulticast            // soporta acceso multicast
+      )
+    < src..
+
+#     As @c(iota) increments, each constant is assigned the value of @c(1 <<
+#     iota), which evaluates to successive powers of two, each corresponding to a
+#     single bit. We can use these constants within functions that test, set, or
+#     clear one or more of these bits:
+    Como @c(iota) incrementa, a cada constante se le asigna el valor de @c(1 <<
+    iota), que evalua a potencias consecutivas de dos, cada un corresponde a un
+    solo bit. Podemos utilizar estas constantes dentro de funciones que prueban,
+    establecen o borran uno o mas de estos bits:
+
+#     ..figure > @l(gopl.io/ch3/netflag/netflag.go<>gopl.io/ch3/netflag)
+    ..figure > @l(gopl.io/ch3/netflag/netflag.go<>gopl.io/ch3/netflag)
+
+#       ..src > go
+#         func IsUp(v Flags) bool     { return v&FlagUp == FlagUp }
+#         func TurnDown(v *Flags)     { *v &^= FlagUp }
+#         func SetBroadcast(v *Flags) { *v |= FlagBroadcast }
+#         func IsCast(v Flags) bool   { return v&(FlagBroadcast|FlagMulticast) != 0 }
+#
+#         func main() {
+#           var v Flags = FlagMulticast | FlagUp
+#           fmt.Printf("%b %t\n", v, IsUp(v))   // "10001 true"
+#           TurnDown(&v)
+#           fmt.Printf("%b %t\n", v, IsUp(v))   // "10000 false"
+#           SetBroadcast(&v)
+#           fmt.Printf("%b %t\n", v, IsUp(v))   // "10010 false"
+#           fmt.Printf("%b %t\n", v, IsCast(v)) // "10010 true"
+#         }
+#       < src..
+      ..src > go
+        func IsUp(v Flags) bool     { return v&FlagUp == FlagUp }
+        func TurnDown(v *Flags)     { *v &^= FlagUp }
+        func SetBroadcast(v *Flags) { *v |= FlagBroadcast }
+        func IsCast(v Flags) bool   { return v&(FlagBroadcast|FlagMulticast) != 0 }
+
+        func main() {
+          var v Flags = FlagMulticast | FlagUp
+          fmt.Printf("%b %t\n", v, IsUp(v))   // "10001 true"
+          TurnDown(&v)
+          fmt.Printf("%b %t\n", v, IsUp(v))   // "10000 false"
+          SetBroadcast(&v)
+          fmt.Printf("%b %t\n", v, IsUp(v))   // "10010 false"
+          fmt.Printf("%b %t\n", v, IsCast(v)) // "10010 true"
+        }
+      < src..
+
+
+#     As a more complex example of @c(iota), this declaration names the powers of
+#     1024:
+    Como un ejemplo mas complejo de @c(iota), esta declaracion nombra las
+    potencias de 1024:
+
+#     ..src > go
+#       const (
+#         _ = 1 << (10 * iota)
+#         KiB // 1024
+#         MiB // 1048576
+#         GiB // 1073741824
+#         TiB // 1099511627776              (exceeds 1 << 32)
+#         PiB // 1125899906842624
+#         EiB // 1152921504606846976
+#         ZiB // 1180591620717411303424     (exceeds 1 << 64)
+#         YiB // 1208925819614629174706176
+#       )
+#     < src..
+    ..src > go
+      const (
+        _ = 1 << (10 * iota)
+        KiB // 1024
+        MiB // 1048576
+        GiB // 1073741824
+        TiB // 1099511627776              (exede 1 << 32)
+        PiB // 1125899906842624
+        EiB // 1152921504606846976
+        ZiB // 1180591620717411303424     (exede 1 << 64)
+        YiB // 1208925819614629174706176
+      )
+    < src..
+
+#     The @c(iota) mechanism has its limits. For example, it’s not possible to
+#     generate the more familiar powers of 1000 (KB, MB, and so on) because there
+#     is no exponentiation operator.
+    El mecanismo @c(iota) tiene sus limites. Por ejemplo, no es posible generar
+    las potencias mas familiares de 1000 (KB, MB, etc.) porque no hay un
+    operador de exponenciacion.
+
+#     @b(Exercise 3.13): Write @c(const) declarations for KB, MB, up through YB as
+#     compactly as you can.
+   @b(Ejercicio 3.13): Escribir declaraciones @c(const) para KB, MB, hasta YB lo
+   mas compacto como sea posible.
+
+# *** Section 3.6.2 <> Untyped Constants
+*** Seccion 3.6.2 <> Constantes Sin Tipo
+
+#     Constants in Go are a bit unusual. Although a constant can have any of the
+#     basic data types like @c(int) or @c(float64), including named basic types
+#     like @c(time.Duration), many constants are not committed to a particular
+#     type. The compiler represents these uncommitted constants with much greater
+#     numeric precision than values of basic types, and arithmetic on them is more
+#     precise than machine arithmetic; you may assume at least 256 bits of
+#     precision. There are six flavors of these uncommitted constants, called
+#     @e(untyped) boolean, untyped integer, untyped rune, untyped floating-point,
+#     untyped complex, and untyped string.
+    Las constantes en Go son un poco inusuales. Aunque una constante puede tener
+    cualquiera de los tipos de datos basicos como @c(int) o @c(float64),
+    incluyendo tipos basicos con nombre como @c(time.Duration), muchas
+    constantes no estan comprometidas con un tipo particular. El compilador
+    representa estas constantes no comprometidas con una precision numerica
+    mucho mayor que los valores de tipos basicos, y la aritmetica en ellas es
+    mas precisa que la aritmetica de la maquina; Puede suponer al menos 256 bits
+    de precision. Hay seis sabores de estas constantes no comprometidos, llamado
+    booleanos @e(sin tipo), enteros sin tipo, runas sin tipo, punto flotante sin
+    tipo, complejos sin tipo y cadenas sin tipo.
+
+#     By deferring this commitment, untyped constants not only retain their higher
+#     precision until later, but they can participate in many more expressions
+#     than committed constants without requiring conversions. For example, the
+#     values @c(ZiB) and @c(YiB) in the example above are too big to store in any
+#     integer variable, but they are legitimate constants that may be used in
+#     expressions like this one:
+    Al aplazar este compromiso, las constantes no tipificadas no solo conservan
+    su mayor precision hasta mas tarde, sino que pueden participar en muchas mas
+    expresiones que las constantes comprometidas sin requerir conversiones. Por
+    ejemplo, los valores @c(ZiB) y @c(YiB) en el ejemplo anterior son demasiado
+    grandes para almacenase en cualquier variable entera, pero son legitimas
+    constantes que pueden utilizarse en las expresiones como esta:
+
+#     ..src > go
+#       fmt.Println(YiB/ZiB) // "1024"
+#     < src..
+    ..src > go
+      fmt.Println(YiB/ZiB) // "1024"
+    < src..
+
+#     As another example, the floating-point constant @c(math.Pi) may be used
+#     wherever any floatingpoint or complex value is needed:
+    Como otro ejemplo, la constante de coma flotante @c(math.Pi) puede
+    utilizarse alli donde se necesite cualquier valor de coma flotante o
+    complejo:
+
+#     ..src > go
+#       var x float32 = math.Pi
+#       var y float64 = math.Pi
+#       var z complex128 = math.Pi
+#     < src..
+    ..src > go
+      var x float32 = math.Pi
+      var y float64 = math.Pi
+      var z complex128 = math.Pi
+    < src..
+
+#     If @c(math.Pi) had been committed to a specific type such as @c(float64),
+#     the result would not be as precise, and type conversions would be required
+#     to use it when a @c(float32) or @c(complex128) value is wanted:
+    Si @c(math.Pi) entubiera comprometido con un tipo especifico, como
+    @c(float64), el resultado no seria tan preciso, y se requerira de conversion
+    de tipos para usarlo con valores @c(float32) o @c(complex128):
+
+#     ..src > go
+#       const Pi64 float64 = math.Pi
+#
+#       var x float32 = float32(Pi64)
+#       var y float64 = Pi64
+#       var z complex128 = complex128(Pi64)
+#     < src..
+    ..src > go
+      const Pi64 float64 = math.Pi
+
+      var x float32 = float32(Pi64)
+      var y float64 = Pi64
+      var z complex128 = complex128(Pi64)
+    < src..
+
+#     For literals, syntax determines flavor. The literals @c(0), @c(0.0), @c(0i),
+#     and @c('\u0000') all denote constants of the same value but different
+#     flavors: untyped integer, untyped floating-point, untyped complex, and
+#     untyped rune, respectively. Similarly, @c(true) and @c(false) are untyped
+#     booleans and string literals are untyped strings.
+    Para literales, la sintaxis determina el sabor. Los literales de @c(0),
+    @c(0.0), @c(0i), y @c('\u0000') representan constantes del mismo valor pero
+    diferentes sabores: entero sin tipo, sin tipo de punto flotante, complejo
+    sin tipo, y runa sin tipo, respectivamente. Del mismo modo, @c(true) y
+    @c(false) son booleanos sin tipo y literales de cadena son cadenas sin tipo.
+
+#     Recall that @c(/) may represent integer or floating-point division depending on
+#     its operands.  Consequently, the choice of literal may affect the result of
+#     a constant division expression:
+    Recordemos que @c(/) puede representar un numero entero o division de punto
+    flotante dependiendo de sus operandos. En consecuencia, la eleccion de
+    literal puede afectar el resultado de una expresion de division constante:
+
+#     ..src > go
+#       var f float64 = 212
+#       fmt.Println((f - 32) * 5 / 9)     // "100"; (f - 32) * 5 is a float64
+#       fmt.Println(5 / 9 * (f - 32))     // "0";   5/9 is an untyped integer, 0
+#       fmt.Println(5.0 / 9.0 * (f - 32)) // "100"; 5.0/9.0 is an untyped float
+#     < src..
+    ..src > go
+      var f float64 = 212
+      fmt.Println((f - 32) * 5 / 9)     // "100"; (f - 32) * 5 es un float64
+      fmt.Println(5 / 9 * (f - 32))     // "0";   5/9 es un entero sin tipo, 0
+      fmt.Println(5.0 / 9.0 * (f - 32)) // "100"; 5.0/9.0 es un float sin tipo
+    < src..
+
+#     Only constants can be untyped. When an untyped constant is assigned to a
+#     variable, as in the first statement below, or appears on the right-hand side
+#     of a variable declaration with an explicit type, as in the other three
+#     statements, the constant is implicitly converted to the type of that
+#     variable if possible.
+    Solo las constantes pueden no tener tipo. Cuando una constante no tipificada
+    se asigna a una variable, como en la primer instruccion a continuacion, o
+    aparece en el lado derecho de una declaracion de variable con un tipo
+    explicito, como en las otras tres sentencias, la constante se convierte
+    implicitamente en el tipo de esa variable si es posible.
+
+#     ..src > go
+#       var f float64 = 3 + 0i // untyped complex -> float64
+#       f = 2                  // untyped integer -> float64
+#       f = 1e123              // untyped floating-point -> float64
+#       f = 'a'                // untyped rune -> float64
+#     < src..
+    ..src > go
+      var f float64 = 3 + 0i // complejo sin tipo -> float64
+      f = 2                  // entero sin tipo -> float64
+      f = 1e123              // punto flotante sin tipo -> float64
+      f = 'a'                // runa sin tipo -> float64
+    < src..
+
+#     The statements above are thus equivalent to these:
+    Las afirmaciones anteriores son, pues, equivalentes a estas:
+
+#     ..src > go
+#       var f float64 = float64(3 + 0i)
+#       f = float64(2)
+#       f = float64(1e123)
+#       f = float64('a')
+#     < src..
+    ..src > go
+      var f float64 = float64(3 + 0i)
+      f = float64(2)
+      f = float64(1e123)
+      f = float64('a')
+    < src..
+
+#     Whether implicit or explicit, converting a constant from one type to another
+#     requires that the target type can represent the original value. Rounding is
+#     allowed for real and complex floating-point numbers:
+    Ya sea implicita o explicitamente, la conversion de una constante de un tipo
+    a otro requiere que el tipo de destino pueda representar el valor
+    original. Se permite el redondeo para numeros reales y complejos de coma
+    flotante:
+
+#     ..src > go
+#       const (
+#         deadbeef = 0xdeadbeef // untyped int with value 3735928559
+#         a = uint32(deadbeef)  // uint32 with value 3735928559
+#         b = float32(deadbeef) // float32 with value 3735928576 (rounded up)
+#         c = float64(deadbeef) // float64 with value 3735928559 (exact)
+#         d = int32(deadbeef)   // compile error: constant overflows int32
+#         e = float64(1e309)    // compile error: constant overflows float64
+#         f = uint(-1)          // compile error: constant underflows uint
+#       )
+#     < src..
+    ..src > go
+      const (
+        deadbeef = 0xdeadbeef // int sin tipo con valor 3735928559
+        a = uint32(deadbeef)  // uint32 con valor 3735928559
+        b = float32(deadbeef) // float32 con valor 3735928576 (rounded up)
+        c = float64(deadbeef) // float64 con valor 3735928559 (exact)
+        d = int32(deadbeef)   // error de compilacion: desbordamiento constante int32
+        e = float64(1e309)    // error de compilacion: desbordamiento constante float64
+        f = uint(-1)          // error de compilacion: subdesbordamiento constante uint
+      )
+    < src..
+
+#     In a variable declaration without an explicit type (including short variable
+#     declarations), the flavor of the untyped constant implicitly determines the
+#     default type of the variable, as in these examples:
+    En una declaracion de variable sin un tipo explicito (incluyendo declaracion
+    de variables compacto), el sabor de la constante no tipificada determina
+    implicitamente el tipo predeterminado de la variable, como en estos
+    ejemplos:
+
+#     ..src > go
+#       i := 0      // untyped integer;        implicit int(0)
+#       r := '\000' // untyped rune;           implicit rune('\000')
+#       f := 0.0    // untyped floating-point; implicit float64(0.0)
+#       c := 0i     // untyped complex;        implicit complex128(0i)
+#     < src..
+    ..src > go
+      i := 0      // entero sin tipo;         int(0) implicitio
+      r := '\000' // runa sin tipo;           rune('\000') implicitio
+      f := 0.0    // punto flotante sin tipo; float64(0.0) implicitio
+      c := 0i     // complejo sin tipo;       complex128(0i) implicitio
+    < src..
+
+#     Note the asymmetry: untyped integers are converted to @c(int), whose size is
+#     not guaranteed, but untyped floating-point and complex numbers are converted
+#     to the explicitly sized types @c(float64) and @c(complex128). The language
+#     has no unsized @c(float) and @c(complex) types analogous to unsized @c(int),
+#     because it is very difficult to write correct numerical algorithms without
+#     knowing the size of one’s floating-point data types.
+    Observese la asimetria: los enteros sin tipo se convierten en @c(int), cuyo
+    tamaño no esta garantizado, pero los numeros de punto flotante y numeros
+    complejos se convierten a los tipos de tamaño @c(float64) y @c(complex128)
+    de forma explicita. El lenguaje no cuenta con tipos @c(float) y @c(complex)
+    sin tamaño, analogos a @c(int) sin tamaño, porque es muy dificil escribir
+    algoritmos numericos correctos sin conocer el tamaño de uno de los tipos de
+    datos de punto flotante.
+
+#     To give the variable a different type, we must explicitly convert the
+#     untyped constant to the desired type or state the desired type in the
+#     variable declaration, as in these examples:
+    Para dar un tipo diferente a la variable, debemos convertir explicitamente
+    la constante no tipificada en el tipo deseado o indicar el tipo deseado en
+    la declaracion de variables, como en estos ejemplos:
+
+#     ..src > go
+#       var i = int8(0)
+#       var i int8 = 0
+#     < src..
+    ..src > go
+      var i = int8(0)
+      var i int8 = 0
+    < src..
+
+#     These defaults are particularly important when converting an untyped
+#     constant to an interface value (see @l(#Chapter 7)) since they determine its
+#     dynamic type.
+    Estos valores predeterminados son particularmente importantes cuando se
+    convierte una constante sin tipo a un valor de interfaz (ver @l(#Capitulo
+    7)) ya que determinan su tipo dinamico.
+
+#     ..src > go
+#       fmt.Printf("%T\n", 0)      // "int"
+#       fmt.Printf("%T\n", 0.0)    // "float64"
+#       fmt.Printf("%T\n", 0i)     // "complex128"
+#       fmt.Printf("%T\n", '\000') // "int32" (rune)
+#     < src..
+    ..src > go
+      fmt.Printf("%T\n", 0)      // "int"
+      fmt.Printf("%T\n", 0.0)    // "float64"
+      fmt.Printf("%T\n", 0i)     // "complex128"
+      fmt.Printf("%T\n", '\000') // "int32" (rune)
+    < src..
+
+#     We’ve now covered the basic data types of Go. The next step is to show how
+#     they can be combined into larger groupings like arrays and structs, and then
+#     into data structures for solving real programming problems; that is the
+#     topic of @l(#Chapter 4).
+    Ahora hemos cubierto los tipos de datos basicos de Go. El siguiente paso es
+    mostrar como se pueden combinar en agrupaciones mas grandes como arreglos y
+    estructuras, y luego en estructuras de datos para resolver problemas de
+    programacion real; ese es el tema del @l(#Capitulo 4).
+
+# * Chapter 4 <> Composite Types
+* Capitulo 4 <> Tipos Compuestos

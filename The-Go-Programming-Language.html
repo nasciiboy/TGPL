@@ -225,9 +225,6 @@
 <p>The figure below shows the most important influences of earlier programming languages on the design of Go.</p>
 <figure>
 <img src="img/go-influences.jpg" />
-<figcaption>
-<p>esta es una image</p>
-</figcaption>
 </figure>
 <p>Go is sometimes described as a <q>C-like language,</q> or as <q>C for the 21st century.</q> From C, Go inherited its expression syntax, control-flow statements, basic data types, call-by-value parameter passing, pointers, and above all, C’s emphasis on programs that compile to efficient machine code and cooperate naturally with the abstractions of current operating systems.</p>
 <p>But there are other ancestors in Go’s family tree. One major stream of influence comes from languages by Niklaus Wirth, beginning with Pascal. Modula-2 inspired the package concept.  Oberon eliminated the distinction between module interface files and module implementation files. Oberon-2 influenced the syntax for packages, imports, and declarations, and Object Oberon provided the syntax for method declarations.</p>
@@ -1770,24 +1767,30 @@ $ ./cf -40
 </table>
 <p>The operator <code>^</code> is bitwise exclusive OR (XOR) when used as a binary operator, but when used as a unary prefix operator it is bitwise negation or complement; that is, it returns a value with each bit in its operand inverted. The <code>&amp;^</code> operator is bit clear (AND NOT): in the expression <code>z = x &amp;^ y</code>, each bit of <code>z</code> is 0 if the corresponding bit of <code>y</code> is 1; other wise it equals the corresponding bit of <code>x</code>.</p>
 <p>The code below shows how bitwise operations can be used to interpret a <code>uint8</code> value as a compact and efficient set of 8 independent bits. It uses <code>Printf</code>’s <code>%b</code> verb to print a number’s binary digits; <code>08</code> modifies <code>%b</code> (an adverb!) to pad the result with zeros to exactly 8 digits.</p>
-<div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">x</span> <span class="kt">uint8</span> <span class="p">=</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">1</span> <span class="p">|</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">5</span>
-<span class="kd">var</span> <span class="nx">y</span> <span class="kt">uint8</span> <span class="p">=</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">1</span> <span class="p">|</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">2</span>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
 
-<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="p">)</span>    <span class="c1">// &quot;00100010&quot;, the set {1, 5}</span>
-<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>    <span class="c1">// &quot;00000110&quot;, the set {1, 2}</span>
-<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="o">&amp;</span><span class="nx">y</span><span class="p">)</span>  <span class="c1">// &quot;00000010&quot;, the intersection {1}</span>
-<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="p">|</span><span class="nx">y</span><span class="p">)</span>  <span class="c1">// &quot;00100110&quot;, the union {1, 2, 5}</span>
-<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="p">^</span><span class="nx">y</span><span class="p">)</span>  <span class="c1">// &quot;00100100&quot;, the symmetric difference {2, 5}</span>
-<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="o">&amp;^</span><span class="nx">y</span><span class="p">)</span> <span class="c1">// &quot;00100000&quot;, the difference {5}</span>
+<span class="kn">import</span> <span class="s">&quot;fmt&quot;</span>
 
-<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nb">uint</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="nx">x</span><span class="o">&amp;</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="nx">i</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1">// membership test</span>
-    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>   <span class="c1">// &quot;1&quot;, &quot;5&quot;</span>
+<span class="kd">func</span> <span class="nx">main</span><span class="p">(){</span>
+  <span class="kd">var</span> <span class="nx">x</span> <span class="kt">uint8</span> <span class="p">=</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">1</span> <span class="p">|</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">5</span>
+  <span class="kd">var</span> <span class="nx">y</span> <span class="kt">uint8</span> <span class="p">=</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">1</span> <span class="p">|</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">2</span>
+
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="p">)</span>    <span class="c1">// &quot;00100010&quot;, the set {1, 5}</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>    <span class="c1">// &quot;00000110&quot;, the set {1, 2}</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="o">&amp;</span><span class="nx">y</span><span class="p">)</span>  <span class="c1">// &quot;00000010&quot;, the intersection {1}</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="p">|</span><span class="nx">y</span><span class="p">)</span>  <span class="c1">// &quot;00100110&quot;, the union {1, 2, 5}</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="p">^</span><span class="nx">y</span><span class="p">)</span>  <span class="c1">// &quot;00100100&quot;, the symmetric difference {2, 5}</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="o">&amp;^</span><span class="nx">y</span><span class="p">)</span> <span class="c1">// &quot;00100000&quot;, the difference {5}</span>
+
+  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nb">uint</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">x</span><span class="o">&amp;</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="nx">i</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1">// membership test</span>
+      <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>   <span class="c1">// &quot;1&quot;, &quot;5&quot;</span>
+    <span class="p">}</span>
   <span class="p">}</span>
-<span class="p">}</span>
 
-<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// &quot;01000100&quot;, the set {2, 6}</span>
-<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="o">&gt;&gt;</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// &quot;00010001&quot;, the set {0, 4}</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// &quot;01000100&quot;, the set {2, 6}</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%08b\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="o">&gt;&gt;</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// &quot;00010001&quot;, the set {0, 4}</span>
+<span class="p">}</span>
 </pre></div>
 <p>(<a href="#Section-6.5" >Section 6.5</a> shows an implementation of integer sets that can be much bigger than a byte.)</p>
 <p>In the shift operations <code>x&lt;&lt;n</code> and <code>x&gt;&gt;n</code>, the <code>n</code> operand determines the number of bit positions to shift and must be unsigned; the <code>x</code> operand may be unsigned or signed. Arithmetically, a left shift <code>x&lt;&lt;n</code> is equivalent to multiplication by 2ⁿ and a right shift <code>x&gt;&gt;n</code> is equivalent to the floor of division by 2ⁿ.</p>
@@ -1812,7 +1815,7 @@ $ ./cf -40
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">compote</span> <span class="p">=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">apples</span><span class="p">)</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="nx">oranges</span><span class="p">)</span>
 </pre></div>
 <p>As described in <a href="#Section-2.5" >Section 2.5</a>, for every type <code>T</code>, the conversion operation <code>T(x)</code> converts the value <code>x</code> to type <code>T</code> if the conversion is allowed. Many integer-to-integer conversions do not entail any change in value; they just tell the compiler how to interpret a value. But a conversion that narrows a big integer into a smaller one, or a conversion from integer to floating-point or vice versa, may change the value or lose precision:</p>
-<div class="highlight"><pre><span></span><span class="nx">f</span> <span class="o">:=</span> <span class="mf">3.141</span> <span class="c1">// a float64</span>
+<div class="highlight"><pre><span></span><span class="nx">f</span> <span class="o">:=</span> <span class="mf">3.141</span>          <span class="c1">// a float64</span>
 <span class="nx">i</span> <span class="o">:=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>   <span class="c1">// &quot;3.141 3&quot;</span>
 <span class="nx">f</span> <span class="p">=</span> <span class="mf">1.99</span>
@@ -1823,7 +1826,7 @@ $ ./cf -40
 <span class="nx">i</span> <span class="o">:=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="c1">// result is implementation-dependent</span>
 </pre></div>
 <p>Integer literals of any size and type can be written as ordinary decimal numbers, or as octal numbers if they begin with <code>0</code>, as in <code>0666</code>, or as hexadecimal if they begin with <code>0x</code> or <code>0X</code>, as in <code>0xdeadbeef</code>. Hex digits may be upper or lower case. Nowadays octal numbers seem to be used for exactly one purpose—file permissions on POSIX systems—but hexadecimal numbers are widely used to emphasize the bit pattern of a number over its numeric value.</p>
-<p>When printing numbers using the fmt package, we can control the radix and format with the <code>%d</code>, <code>%o</code>, and <code>%x</code> verbs, as shown in this example:</p>
+<p>When printing numbers using the <code>fmt</code> package, we can control the radix and format with the <code>%d</code>, <code>%o</code>, and <code>%x</code> verbs, as shown in this example:</p>
 <div class="highlight"><pre><span></span><span class="nx">o</span> <span class="o">:=</span> <span class="mo">0666</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%d %[1]o %#[1]o\n&quot;</span><span class="p">,</span> <span class="nx">o</span><span class="p">)</span> <span class="c1">// &quot;438 666 0666&quot;</span>
 <span class="nx">x</span> <span class="o">:=</span> <span class="nb">int64</span><span class="p">(</span><span class="mh">0xdeadbeef</span><span class="p">)</span>
@@ -1982,7 +1985,7 @@ x = 7 eˣ = 1096.633</pre>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nb">real</span><span class="p">(</span><span class="nx">x</span><span class="o">*</span><span class="nx">y</span><span class="p">))</span>           <span class="c1">// &quot;-5&quot;</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nb">imag</span><span class="p">(</span><span class="nx">x</span><span class="o">*</span><span class="nx">y</span><span class="p">))</span>           <span class="c1">// &quot;10&quot;</span>
 </pre></div>
-<p>If a floating-point literal or decimal integer literal is immediately followed by i, such as <code>3.141592i</code> or <code>2i</code>, it becomes an <em>imaginary literal</em>, denoting a complex number with a zero real component:</p>
+<p>If a floating-point literal or decimal integer literal is immediately followed by <code>i</code>, such as <code>3.141592i</code> or <code>2i</code>, it becomes an <em>imaginary literal</em>, denoting a complex number with a zero real component:</p>
 <div class="highlight"><pre><span></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="m">1i</span> <span class="o">*</span> <span class="m">1i</span><span class="p">)</span> <span class="c1">// &quot;(-1+0i)&quot;, i² = -1</span>
 </pre></div>
 <p>Under the rules for constant arithmetic, complex constants can be added to other constants (integer or floating point, real or imaginary), allowing us to write complex numbers naturally, like <code>1+2i</code>, or equivalently, <code>2i+1</code>. The declarations of <code>x</code> and <code>y</code> above can be simplified:</p>
@@ -2042,15 +2045,15 @@ x = 7 eˣ = 1096.633</pre>
 </pre></div>
 </div>
 <p>The two nested loops iterate over each point in a 1024x1024 grayscale raster image representing the -2 to +2 portion of the complex plane. The program tests whether repeatedly squaring and adding the number that point represents eventually <q>escapes</q> the circle of radius 2. If so, the point is shaded by the number of iterations it took to escape. If not, the value belongs to the Mandelbrot set, and the point remains black. Finally, the program writes to its standard output the PNG-encoded image of the iconic fractal, shown in Figure 3.3.</p>
-<p><b>Exercise 3.5</b>: Implement a full-color Mandelbrot set using the function <code>image.NewRGBA</code> and the type <code>color.RGBA</code> or <code>color.YCbCr</code>.</p>
-<p><b>Exercise 3.6</b>: Supersampling is a technique to reduce the effect of pixelation by computing the color value at several points within each pixel and taking the average. The simplest method is to divide each pixel into four <q>subpixels.</q> Implement it.</p>
-<p><b>Exercise 3.7</b>: Another simple fractal uses Newton’s method to find complex solutions to a function such as <span class="math" >z⁴-1 = 0</span>. Shade each starting point by the number of iterations required to get close to one of the four roots. Color each point by the root it approaches.</p>
 <div class="figure" >
 <p class="title">Figure 3.3. The Mandelbrot set.</p>
 <figure>
 <img src="img/Figure-3.3.jpg" />
 </figure>
 </div>
+<p><b>Exercise 3.5</b>: Implement a full-color Mandelbrot set using the function <code>image.NewRGBA</code> and the type <code>color.RGBA</code> or <code>color.YCbCr</code>.</p>
+<p><b>Exercise 3.6</b>: Supersampling is a technique to reduce the effect of pixelation by computing the color value at several points within each pixel and taking the average. The simplest method is to divide each pixel into four <q>subpixels.</q> Implement it.</p>
+<p><b>Exercise 3.7</b>: Another simple fractal uses Newton’s method to find complex solutions to a function such as <span class="math" >z⁴-1 = 0</span>. Shade each starting point by the number of iterations required to get close to one of the four roots. Color each point by the root it approaches.</p>
 <p><b>Exercise 3.8</b>: Rendering fractals at high zoom levels demands great arithmetic precision. Implement the same fractal using four different representations of numbers: <code>complex64</code>, <code>complex128</code>, <code>big.Float</code>, and <code>big.Rat</code>. (The latter two types are found in the <code>math/big</code> package. <code>Float</code> uses arbitrary but bounded-precision floating-point; <code>Rat</code> uses unbounded-precision rational numbers.) How do they compare in performance and memory usage? At what zoom levels do rendering artifacts become visible?</p>
 <p><b>Exercise 3.9</b>: Write a web server that renders fractals and writes the image data to the client.  Allow the client to specify the <span class="math" >x</span>, <span class="math" >y</span>, and zoom values as parameters to the HTTP request.</p>
 </div>
@@ -2125,9 +2128,9 @@ x = 7 eˣ = 1096.633</pre>
 <p>Since strings are immutable, constructions that try to modify a string’s data in place are not allowed:</p>
 <div class="highlight"><pre><span></span><span class="nx">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="sc">&#39;L&#39;</span> <span class="c1">// compile error: cannot assign to s[0]</span>
 </pre></div>
-<p>Immutability means that it is safe for two copies of a string to share the same underlying memory, making it cheap to copy strings of any length. Similarly, a string <code>s</code> and a substring like <code>s[7:]</code> may safely share the same data, so the substring operation is also cheap. No new memory is allocated in either case. figure 3.4 illustrates the arrangement of a string and two of its substrings sharing the same underlying byte array.</p>
+<p>Immutability means that it is safe for two copies of a string to share the same underlying memory, making it cheap to copy strings of any length. Similarly, a string <code>s</code> and a substring like <code>s[7:]</code> may safely share the same data, so the substring operation is also cheap. No new memory is allocated in either case. Figure 3.4 illustrates the arrangement of a string and two of its substrings sharing the same underlying byte array.</p>
 <div class="figure" >
-<p class="title">Figure 3.4. The string &quot;hello, world&quot; and two substrings.</p>
+<p class="title">Figure 3.4. The string <code>&quot;hello, world&quot;</code> and two substrings.</p>
 <figure>
 <img src="img/Figure-3.4.jpg" />
 </figure>
@@ -2154,7 +2157,7 @@ x = 7 eˣ = 1096.633</pre>
 <tr><td><code>\\</code></td><td>backslash</td></tr>
 </tbody>
 </table>
-<p>Arbitrary bytes can also be included in literal strings using hexadecimal or octal escapes. A <em>hexadecimal</em> escape is written <em>\xhh</em>, with exactly two hexadecimal digits <em>h</em> (in upper or lower case). An octal escape is written <em>\ooo</em> with exactly three octal digits <em>o</em> (0 through 7) not exceeding <em>\377</em>. Both denote a single byte with the specified value. Later, we’ll see how to encode Unicode code points numerically in string literals.</p>
+<p>Arbitrary bytes can also be included in literal strings using hexadecimal or octal escapes. A <em>hexadecimal</em> escape is written <code>\x</code><em>hh</em>, with exactly two hexadecimal digits <em>h</em> (in upper or lower case). An octal escape is written <em>\ooo</em> with exactly three octal digits <em>o</em> (0 through 7) not exceeding <code>\377</code>. Both denote a single byte with the specified value. Later, we’ll see how to encode Unicode code points numerically in string literals.</p>
 <p>A <em>raw string literal</em> is written <code>`...`</code>, using backquotes instead of double quotes. Within a raw string literal, no escape sequences are processed; the contents are taken literally, including backslashes and newlines, so a raw string literal may spread over several lines in the program source. The only processing is that carriage returns are deleted so that the value of the string is the same on all platforms, including those that conventionally put carriage returns in text files.</p>
 <p>Raw string literals are a convenient way to write regular expressions, which tend to have lots of backslashes. They are also useful for HTML templates, JSON literals, command usage messages, and the like, which often extend over multiple lines.</p>
 <div class="highlight"><pre><span></span><span class="kd">const</span> <span class="nx">GoUsage</span> <span class="p">=</span> <span class="s">`Go is a tool for managing Go source code.</span>
@@ -2214,9 +2217,9 @@ x = 7 eˣ = 1096.633</pre>
 <span class="p">}</span>
 </pre></div>
 <p>using the same logic for UTF-8-encoded text as for raw bytes. This is not true for other encodings. (The functions above are drawn from the <code>strings</code> package, though its implementation of <code>Contains</code> uses a hashing technique to search more efficiently.)</p>
-<p>On the other hand, if we really care about the individual Unicode characters, we have to use other mechanisms. Consider the string from our very first example, which includes two East</p>
-<p>Asian characters. Figure 3.5 illustrates its representation in memory. The string contains 13 bytes, but interpreted as UTF-8, it encodes only nine code points or runes:</p>
+<p>On the other hand, if we really care about the individual Unicode characters, we have to use other mechanisms. Consider the string from our very first example, which includes two East Asian characters. Figure 3.5 illustrates its representation in memory. The string contains 13 bytes, but interpreted as UTF-8, it encodes only nine code points or runes:</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="s">&quot;unicode/utf8&quot;</span>
+
 <span class="nx">s</span> <span class="o">:=</span> <span class="s">&quot;Hello, 世界&quot;</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">))</span>                    <span class="c1">// &quot;13&quot;</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">utf8</span><span class="p">.</span><span class="nx">RuneCountInString</span><span class="p">(</span><span class="nx">s</span><span class="p">))</span> <span class="c1">// &quot;9&quot;</span>
@@ -2229,16 +2232,16 @@ x = 7 eˣ = 1096.633</pre>
 <span class="p">}</span>
 </pre></div>
 <p>Each call to <code>DecodeRuneInString</code> returns <code>r</code>, the rune itself, and <code>size</code>, the number of bytes occupied by the UTF-8 encoding of <code>r</code>. The size is used to update the byte index <code>i</code> of the next rune in the string. But this is clumsy, and we need loops of this kind all the time. Fortunately, Go’s <code>range</code> loop, when applied to a string, performs UTF-8 decoding implicitly. The output of the loop below is also shown in Figure 3.5; notice how the index jumps by more than 1 for each non-ASCII rune.</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">r</span> <span class="o">:=</span> <span class="k">range</span> <span class="s">&quot;Hello, 世界&quot;</span> <span class="p">{</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%d\t%q\t%d\n&quot;</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
 <div class="figure" >
 <p class="title">Figure 3.5. A <code>range</code> loop decodes a UTF-8-encoded string.</p>
 <figure>
 <img src="img/Figure-3.5.jpg" />
 </figure>
 </div>
-<div class="highlight"><pre><span></span><span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">r</span> <span class="o">:=</span> <span class="k">range</span> <span class="s">&quot;Hello, 世界&quot;</span> <span class="p">{</span>
-  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%d\t%q\t%d\n&quot;</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
-<span class="p">}</span>
-</pre></div>
 <p>We could use a simple <code>range</code> loop to count the number of runes in a string, like this:</p>
 <div class="highlight"><pre><span></span><span class="nx">n</span> <span class="o">:=</span> <span class="mi">0</span>
 <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="k">range</span> <span class="nx">s</span> <span class="p">{</span>
@@ -2266,9 +2269,8 @@ x = 7 eˣ = 1096.633</pre>
 <p>If a slice of runes is converted to a string, it produces the concatenation of the UTF-8 encodings of each rune:</p>
 <div class="highlight"><pre><span></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">r</span><span class="p">))</span> <span class="c1">// &quot;プログラム&quot;</span>
 </pre></div>
-<p>Converting an integer value to a string interprets the integer as a rune value, and yields the</p>
-<div class="highlight"><pre><span></span><span class="nx">UTF</span><span class="o">-</span><span class="mi">8</span> <span class="nx">representation</span> <span class="nx">of</span> <span class="nx">that</span> <span class="kt">rune</span><span class="p">:</span>
-<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="mi">65</span><span class="p">))</span>     <span class="c1">// &quot;A&quot;, not &quot;65&quot;</span>
+<p>Converting an integer value to a string interprets the integer as a rune value, and yields the UTF-8 representation of that rune:</p>
+<div class="highlight"><pre><span></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="mi">65</span><span class="p">))</span>     <span class="c1">// &quot;A&quot;, not &quot;65&quot;</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="mh">0x4eac</span><span class="p">))</span> <span class="c1">// &quot;京&quot;</span>
 </pre></div>
 <p>If the rune is invalid, the replacement character is substituted:</p>
@@ -2277,7 +2279,7 @@ x = 7 eˣ = 1096.633</pre>
 </div>
 <h4 id="Section-3.5.4" >Strings and Byte Slices</h4>
 <div class="hBody-4" >
-<p>Four standard packages are particularly important for manipulating strings: <code>bytes</code>, <code>strings</code>, <code>strconv</code>, and <code>unicode</code>. The <code>string</code> spackage provides many functions for searching, replacing, comparing, trimming, splitting, and joining strings.</p>
+<p>Four standard packages are particularly important for manipulating strings: <code>bytes</code>, <code>strings</code>, <code>strconv</code>, and <code>unicode</code>. The <code>strings</code> package provides many functions for searching, replacing, comparing, trimming, splitting, and joining strings.</p>
 <p>The <code>bytes</code> package has similar functions for manipulating slices of bytes, of type <code>[]byte</code>, which share some properties with strings. Because strings are immutable, building up strings incrementally can involve a lot of allocation and copying. In such cases, it’s more efficient to use the <code>bytes.Buffer</code> type, which we’ll show in a moment.</p>
 <p>The <code>strconv</code> package provides functions for converting boolean, integer, and floating-point values to and from their string representations, and functions for quoting and unquoting strings.</p>
 <p>The <code>unicode</code> package provides functions like <code>IsDigit</code>, <code>IsLetter</code>, <code>IsUpper</code>, and <code>IsLower</code> for classifying runes. Each function takes a single rune argument and returns a boolean. Conversion functions like <code>ToUpper</code> and <code>ToLower</code> convert a rune into the given case if it is a letter. All these functions use the Unicode standard categories for letters, digits, and so on. The <code>strings</code> package has similar functions, also called <code>ToUpper</code> and <code>ToLower</code>, that return a new string with the specified transformation applied to each character of the original string.</p>
@@ -2437,6 +2439,7 @@ x = 7 eˣ = 1096.633</pre>
 <p>A constant declaration may specify a type as well as a value, but in the absence of an explicit type, the type is inferred from the expression on the right-hand side. In the following, <code>time.Duration</code> is a named type whose underlying type is <code>int64</code>, and <code>time.Minute</code> is a constant of that type. Both of the constants declared below thus have the type <code>time.Duration</code> as well, as revealed by <code>%T</code>:</p>
 <div class="highlight"><pre><span></span><span class="kd">const</span> <span class="nx">noDelay</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span> <span class="p">=</span> <span class="mi">0</span>
 <span class="kd">const</span> <span class="nx">timeout</span> <span class="p">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span>
+
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%T %[1]v\n&quot;</span><span class="p">,</span> <span class="nx">noDelay</span><span class="p">)</span>     <span class="c1">// &quot;time.Duration 0&quot;</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%T %[1]v\n&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">)</span>     <span class="c1">// &quot;time.Duration 5m0s</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%T %[1]v\n&quot;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="p">)</span> <span class="c1">// &quot;time.Duration 1m0s&quot;</span>
@@ -2472,6 +2475,7 @@ x = 7 eˣ = 1096.633</pre>
 <p>This declares <code>Sunday</code> to be 0, <code>Monday</code> to be 1, and so on.</p>
 <p>We can use <code>iota</code> in more complex expressions too, as in this example from the <code>net</code> package where each of the lowest 5 bits of an unsigned integer is given a distinct name and boolean interpretation:</p>
 <div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">Flags</span> <span class="kt">uint</span>
+
 <span class="kd">const</span> <span class="p">(</span>
   <span class="nx">FlagUp</span> <span class="nx">Flags</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span> <span class="c1">// is up</span>
   <span class="nx">FlagBroadcast</span>            <span class="c1">// supports broadcast access capability</span>
@@ -3129,7 +3133,7 @@ x = 7 eˣ = 1096.633</pre>
 <p>The <code>ReadRune</code> method performs UTF-8 decoding and returns three values: the decoded rune, the length in bytes of its UTF-8 encoding, and an error value. The only error we expect is end-of-file. If the input was not a legal UTF-8 encoding of a rune, the returned rune is <code>unicode.ReplacementChar</code> and the length is 1.</p>
 <p>The <code class="command" >charcount</code> program also prints a count of the lengths of the UTF-8 encodings of the runes that appeared in the input. A map is not the best data structure for that; since encoding lengths range only from 1 to <code>utf8.UTFMax</code> (which has the value 4), an array is more compact.</p>
 <p>As an experiment, we ran <code class="command" >charcount</code> on this book itself at one point. Although it’s mostly in English, of course, it does have a fair number of non-ASCII characters. Here are the top ten:</p>
-<p>..pre ° 27 世 15 界 14 é 13 ˣ 10 ≤ 5 × 5  𢉩 4 � 4 □ 3</p>
+<pre class="pre" >° 27 世 15 界 14 é 13 ˣ 10 ≤ 5 × 5  𢉩 4 � 4 □ 3</pre>
 <p>and here is the distribution of the lengths of all the UTF-8 encodings:</p>
 <pre class="pre" >len  count
 1    765391
