@@ -5006,7 +5006,7 @@
    < src..
 
    By default, the elements of a new array variable are initially set to the
-   zero value for the element type, which is @c(0) for numbers. We can use an
+   zero value for the element type, which is 0 for numbers. We can use an
    @e(array literal) to initialize an array with a list of values:
 
    ..src > go
@@ -5101,6 +5101,7 @@
        }
      < src..
 
+
    The two inputs differ by only a single bit, but approximately half the bits
    are different in the digests. Notice the @c(Printf) verbs: @c(%x) to print
    all the elements of an array or slice of bytes in hexadecimal, @c(%t) to show
@@ -5185,7 +5186,7 @@
 
      ..img > img/Figure-4.1.jpg
 
-   The slice operator @c(s[i:j]), where @c(0) ≤ @c(i) ≤ @c(j) ≤ @c[cap(s)],
+   The @e(slice operator) @c(s[i:j]), where @c(0) ≤ @c(i) ≤ @c(j) ≤ @c[cap(s)],
    creates a new slice that refers to elements @c(i) through @c(j-1) of the
    sequence @c(s), which may be an array variable, a pointer to an array, or
    another slice. The resulting slice has @c(j-i) elements. If @c(i) is omitted,
@@ -5258,7 +5259,7 @@
      fmt.Println(a) // "[5 4 3 2 1 0]"
    < src..
 
-   A simple way to @c(rotate) a slice left by @m(n) elements is to apply the
+   A simple way to @e(rotate) a slice left by @m(n) elements is to apply the
    @c(reverse) function three times, first to the leading @m(n) elements, then
    to the remaining elements, and finally to the whole slice. (To rotate to the
    right, make the third call first.)
@@ -5464,8 +5465,8 @@
     Let’s take a closer look at the @c(i=3) iteration. The slice @c(x) contains
     the three elements @c([0 1 2]) but has capacity 4, so there is a single
     element of slack at the end, and @c(appendInt) of the element 3 may proceed
-    without reallocating. The resulting slice y has length and capacity 4, and
-    has the same underlying array as the original slice @c(x), as Figure 4.2
+    without reallocating. The resulting slice @c(y) has length and capacity 4,
+    and has the same underlying array as the original slice @c(x), as Figure 4.2
     shows.
 
     ..figure > Figure 4.2. Appending with room to grow.
@@ -5969,7 +5970,7 @@
 
          in := bufio.NewReader(os.Stdin)
          for {
-           r, n, err := in.ReadRune() // returns rune, nbytes, error
+           r, n, err := in.ReadRune()    // returns rune, nbytes, error
            if err == io.EOF {
              break
            }
@@ -6138,7 +6139,7 @@
      EmployeeByID(id).Salary = 0 // fired for... no real reason
    < src..
 
-   The last statement updates the Employee struct that is pointed to by the
+   The last statement updates the @c(Employee) struct that is pointed to by the
    result of the call to @c(EmployeeByID). If the result type of
    @c(EmployeeByID) were changed to @c(Employee) instead of @c(*Employee), the
    assignment statement would not compile since its left-hand side would not
@@ -6173,7 +6174,7 @@
    repetition would get tiresome. Instead, struct types usually appear within
    the declaration of a named type like @c(Employee).
 
-   A named struct type @c(S) can’t declare a field of the same type @c(S:) an
+   A named struct type @c(S) can’t declare a field of the same type @c(S): an
    aggregate value cannot contain itself. (An analogous restriction applies to
    arrays.) But @c(S) may declare a field of the pointer type @c(*S), which lets
    us create recursive data structures like linked lists and trees. This is
@@ -6288,7 +6289,9 @@
     ..src > go
       package p
       type T struct{ a, b int } // a and b are not exported
+    < src..
 
+    ..src > go
       package q
       import "p"
       var _ = p.T{a: 1, b: 2} // compile error: can't reference a, b
@@ -6577,9 +6580,9 @@
 
    | @c(boolean) | @c(true)                                 |
    |-------------|------------------------------------------|
-   | @c(number)  | @c(-273).15                              |
+   | @c(number)  | @c(-273.15)                              |
    |-------------|------------------------------------------|
-   | @c(string)  | @c("She said \"Hello, 世界\"")           |
+   | @c(string)  | @c("She said \"Hello, 世界\"")             |
    |-------------|------------------------------------------|
    | @c(array)   | @c(["gold", "silver", "bronze"])         |
    |-------------|------------------------------------------|
@@ -6627,7 +6630,7 @@
      fmt.Printf("%s\n", data)
    < src..
 
-   @c(Marshal) produces a byte slice containing a ver y long string with no
+   @c(Marshal) produces a byte slice containing a very long string with no
    extraneous white space; we’ve folded the lines so it fits:
 
    ..src > go
@@ -6889,13 +6892,13 @@
    @b(Exercise 4.12): The popular web comic @e(xkcd) has a JSON interface. For
    example, a request to @l(https://xkcd.com/571/info.0.json) produces a
    detailed description of comic 571, one of many favorites. Download each URL
-   (once!)  and build an offline index. Write a tool @c(xkcd) that, using this
+   (once!)  and build an offline index. Write a tool @$(xkcd) that, using this
    index, prints the URL and transcript of each comic that matches a search term
    provided on the command line.
 
    @b(Exercise 4.13): The JSON-based web service of the Open Movie Database lets
    you search @l(https://omdbapi.com/) for a movie by name and download its
-   poster image. Write a tool poster that downloads the poster image for the
+   poster image. Write a tool @$(poster) that downloads the poster image for the
    movie named on the command line.
 
 ** Section 4.6 <> Text and HTML Templates

@@ -2609,7 +2609,7 @@ x = 7 eˣ = 1096.633</pre>
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%d\n&quot;</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
-<p>By default, the elements of a new array variable are initially set to the zero value for the element type, which is <code>0</code> for numbers. We can use an <em>array literal</em> to initialize an array with a list of values:</p>
+<p>By default, the elements of a new array variable are initially set to the zero value for the element type, which is 0 for numbers. We can use an <em>array literal</em> to initialize an array with a list of values:</p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">q</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="kt">int</span> <span class="p">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span>
 <span class="kd">var</span> <span class="nx">r</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="kt">int</span> <span class="p">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">r</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="c1">// &quot;0&quot;</span>
@@ -2696,7 +2696,7 @@ x = 7 eˣ = 1096.633</pre>
 <img src="img/Figure-4.1.jpg" />
 </figure>
 </div>
-<p>The slice operator <code>s[i:j]</code>, where <code>0</code> ≤ <code>i</code> ≤ <code>j</code> ≤ <code>cap(s)</code>, creates a new slice that refers to elements <code>i</code> through <code>j-1</code> of the sequence <code>s</code>, which may be an array variable, a pointer to an array, or another slice. The resulting slice has <code>j-i</code> elements. If <code>i</code> is omitted, it’s 0, and if <code>j</code> is omitted, it’s <code>len(s)</code>. Thus the slice <code>months[1:13]</code> refers to the whole range of valid months, as does the slice <code>months[1:]</code>; the slice <code>months[:]</code> refers to the whole array. Let’s define overlapping slices for the second quarter and the northern summer:</p>
+<p>The <em>slice operator</em> <code>s[i:j]</code>, where <code>0</code> ≤ <code>i</code> ≤ <code>j</code> ≤ <code>cap(s)</code>, creates a new slice that refers to elements <code>i</code> through <code>j-1</code> of the sequence <code>s</code>, which may be an array variable, a pointer to an array, or another slice. The resulting slice has <code>j-i</code> elements. If <code>i</code> is omitted, it’s 0, and if <code>j</code> is omitted, it’s <code>len(s)</code>. Thus the slice <code>months[1:13]</code> refers to the whole range of valid months, as does the slice <code>months[1:]</code>; the slice <code>months[:]</code> refers to the whole array. Let’s define overlapping slices for the second quarter and the northern summer:</p>
 <div class="highlight"><pre><span></span><span class="nx">Q2</span> <span class="o">:=</span> <span class="nx">months</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>
 <span class="nx">summer</span> <span class="o">:=</span> <span class="nx">months</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">Q2</span><span class="p">)</span>     <span class="c1">// [&quot;April&quot; &quot;May&quot; &quot;June&quot;]</span>
@@ -2734,7 +2734,7 @@ x = 7 eˣ = 1096.633</pre>
 <span class="nx">reverse</span><span class="p">(</span><span class="nx">a</span><span class="p">[:])</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="c1">// &quot;[5 4 3 2 1 0]&quot;</span>
 </pre></div>
-<p>A simple way to <code>rotate</code> a slice left by <span class="math" >n</span> elements is to apply the <code>reverse</code> function three times, first to the leading <span class="math" >n</span> elements, then to the remaining elements, and finally to the whole slice. (To rotate to the right, make the third call first.)</p>
+<p>A simple way to <em>rotate</em> a slice left by <span class="math" >n</span> elements is to apply the <code>reverse</code> function three times, first to the leading <span class="math" >n</span> elements, then to the remaining elements, and finally to the whole slice. (To rotate to the right, make the third call first.)</p>
 <div class="highlight"><pre><span></span><span class="nx">s</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">}</span>
 <span class="c1">// Rotate s left by two positions.</span>
 <span class="nx">reverse</span><span class="p">(</span><span class="nx">s</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
@@ -2832,7 +2832,7 @@ x = 7 eˣ = 1096.633</pre>
 7  cap=8     [0 1 2 3 4 5 6 7]
 8  cap=16    [0 1 2 3 4 5 6 7 8]
 9  cap=16    [0 1 2 3 4 5 6 7 8 9]</pre>
-<p>Let’s take a closer look at the <code>i=3</code> iteration. The slice <code>x</code> contains the three elements <code>[0 1 2]</code> but has capacity 4, so there is a single element of slack at the end, and <code>appendInt</code> of the element 3 may proceed without reallocating. The resulting slice y has length and capacity 4, and has the same underlying array as the original slice <code>x</code>, as Figure 4.2 shows.</p>
+<p>Let’s take a closer look at the <code>i=3</code> iteration. The slice <code>x</code> contains the three elements <code>[0 1 2]</code> but has capacity 4, so there is a single element of slack at the end, and <code>appendInt</code> of the element 3 may proceed without reallocating. The resulting slice <code>y</code> has length and capacity 4, and has the same underlying array as the original slice <code>x</code>, as Figure 4.2 shows.</p>
 <div class="figure" >
 <p class="title">Figure 4.2. Appending with room to grow.</p>
 <figure>
@@ -3099,7 +3099,7 @@ x = 7 eˣ = 1096.633</pre>
 
   <span class="nx">in</span> <span class="o">:=</span> <span class="nx">bufio</span><span class="p">.</span><span class="nx">NewReader</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">)</span>
   <span class="k">for</span> <span class="p">{</span>
-    <span class="nx">r</span><span class="p">,</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">in</span><span class="p">.</span><span class="nx">ReadRune</span><span class="p">()</span> <span class="c1">// returns rune, nbytes, error</span>
+    <span class="nx">r</span><span class="p">,</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">in</span><span class="p">.</span><span class="nx">ReadRune</span><span class="p">()</span>    <span class="c1">// returns rune, nbytes, error</span>
     <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span> <span class="p">{</span>
       <span class="k">break</span>
     <span class="p">}</span>
@@ -3201,7 +3201,7 @@ x = 7 eˣ = 1096.633</pre>
 <span class="nx">id</span> <span class="o">:=</span> <span class="nx">dilbert</span><span class="p">.</span><span class="nx">ID</span>
 <span class="nx">EmployeeByID</span><span class="p">(</span><span class="nx">id</span><span class="p">).</span><span class="nx">Salary</span> <span class="p">=</span> <span class="mi">0</span> <span class="c1">// fired for... no real reason</span>
 </pre></div>
-<p>The last statement updates the Employee struct that is pointed to by the result of the call to <code>EmployeeByID</code>. If the result type of <code>EmployeeByID</code> were changed to <code>Employee</code> instead of <code>*Employee</code>, the assignment statement would not compile since its left-hand side would not identify a variable.</p>
+<p>The last statement updates the <code>Employee</code> struct that is pointed to by the result of the call to <code>EmployeeByID</code>. If the result type of <code>EmployeeByID</code> were changed to <code>Employee</code> instead of <code>*Employee</code>, the assignment statement would not compile since its left-hand side would not identify a variable.</p>
 <p>Fields are usually written one per line, with the field’s name preceding its type, but consecutive fields of the same type may be combined, as with <code>Name</code> and <code>Address</code> here:</p>
 <div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">Employee</span> <span class="kd">struct</span> <span class="p">{</span>
   <span class="nx">ID</span>            <span class="kt">int</span>
@@ -3215,7 +3215,7 @@ x = 7 eˣ = 1096.633</pre>
 <p>Field order is significant to type identity. Had we also combined the declaration of the <code>Position</code> field (also a string), or interchanged <code>Name</code> and <code>Address</code>, we would be defining a different struct type. Typically we only combine the declarations of related fields.</p>
 <p>The name of a struct field is exported if it begins with a capital letter; this is Go’s main access control mechanism. A struct type may contain a mixture of exported and unexported fields.</p>
 <p>Struct types tend to be verbose because they often involve a line for each field. Although we could write out the whole type each time it is needed, the repetition would get tiresome. Instead, struct types usually appear within the declaration of a named type like <code>Employee</code>.</p>
-<p>A named struct type <code>S</code> can’t declare a field of the same type <code>S:</code> an aggregate value cannot contain itself. (An analogous restriction applies to arrays.) But <code>S</code> may declare a field of the pointer type <code>*S</code>, which lets us create recursive data structures like linked lists and trees. This is illustrated in the code below, which uses a binary tree to implement an insertion sort:</p>
+<p>A named struct type <code>S</code> can’t declare a field of the same type <code>S</code>: an aggregate value cannot contain itself. (An analogous restriction applies to arrays.) But <code>S</code> may declare a field of the pointer type <code>*S</code>, which lets us create recursive data structures like linked lists and trees. This is illustrated in the code below, which uses a binary tree to implement an insertion sort:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch4/treesort/sort.go" >gopl.io/ch4/treesort</a></p>
 <div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">tree</span> <span class="kd">struct</span> <span class="p">{</span>
@@ -3284,8 +3284,8 @@ x = 7 eˣ = 1096.633</pre>
 <p>The two forms cannot be mixed in the same literal. Nor can you use the (order-based) first form of literal to sneak around the rule that unexported identifiers may not be referred to from another package.</p>
 <div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">p</span>
 <span class="kd">type</span> <span class="nx">T</span> <span class="kd">struct</span><span class="p">{</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span> <span class="p">}</span> <span class="c1">// a and b are not exported</span>
-
-<span class="kn">package</span> <span class="nx">q</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">q</span>
 <span class="kn">import</span> <span class="s">&quot;p&quot;</span>
 <span class="kd">var</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">T</span><span class="p">{</span><span class="nx">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span> <span class="c1">// compile error: can&#39;t reference a, b</span>
 <span class="kd">var</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">T</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span>       <span class="c1">// compile error: can&#39;t reference a, b</span>
@@ -3442,7 +3442,7 @@ x = 7 eˣ = 1096.633</pre>
 <table>
 <tbody>
 <tr><td><code>boolean</code></td><td><code>true</code></td></tr>
-<tr><td><code>number</code></td><td><code>-273</code>.15</td></tr>
+<tr><td><code>number</code></td><td><code>-273.15</code></td></tr>
 <tr><td><code>string</code></td><td><code>&quot;She said \&quot;Hello, 世界\&quot;&quot;</code></td></tr>
 <tr><td><code>array</code></td><td><code>[&quot;gold&quot;, &quot;silver&quot;, &quot;bronze&quot;]</code></td></tr>
 <tr><td><code>object</code></td><td><code>{&quot;year&quot;: 1980, &quot;event&quot;: &quot;archery&quot;, &quot;medals&quot;: [&quot;gold&quot;, &quot;silver&quot;, &quot;bronze&quot;]}</code></td></tr>
@@ -3476,7 +3476,7 @@ x = 7 eˣ = 1096.633</pre>
 <span class="p">}</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%s\n&quot;</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span>
 </pre></div>
-<p><code>Marshal</code> produces a byte slice containing a ver y long string with no extraneous white space; we’ve folded the lines so it fits:</p>
+<p><code>Marshal</code> produces a byte slice containing a very long string with no extraneous white space; we’ve folded the lines so it fits:</p>
 <div class="highlight"><pre><span></span><span class="p">[{</span><span class="s">&quot;Title&quot;</span><span class="p">:</span><span class="s">&quot;Casablanca&quot;</span><span class="p">,</span><span class="s">&quot;released&quot;</span><span class="p">:</span><span class="mi">1942</span><span class="p">,</span><span class="s">&quot;Actors&quot;</span><span class="p">:[</span><span class="s">&quot;Humphrey Bogart&quot;</span><span class="p">,</span><span class="s">&quot;Ingrid Bergman&quot;</span><span class="p">]},{</span><span class="s">&quot;Title&quot;</span><span class="p">:</span><span class="s">&quot;Cool Hand Luke&quot;</span><span class="p">,</span><span class="s">&quot;released&quot;</span><span class="p">:</span><span class="mi">1967</span><span class="p">,</span><span class="s">&quot;color&quot;</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="s">&quot;Actors&quot;</span><span class="p">:[</span><span class="s">&quot;Paul Newman&quot;</span><span class="p">]},{</span><span class="s">&quot;Title&quot;</span><span class="p">:</span><span class="s">&quot;Bullitt&quot;</span><span class="p">,</span><span class="s">&quot;released&quot;</span><span class="p">:</span><span class="mi">1968</span><span class="p">,</span><span class="s">&quot;color&quot;</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="s">&quot;Actors&quot;</span><span class="p">:[</span><span class="s">&quot;Steve McQueen&quot;</span><span class="p">,</span><span class="s">&quot;Jacqueline Bisset&quot;</span><span class="p">]}]</span>
 </pre></div>
 <p>This compact representation contains all the information but it’s hard to read. For human consumption, a variant called <code>json.MarshalIndent</code> produces neatly indented output. Two additional arguments define a prefix for each line of output and a string for each level of indentation:</p>
@@ -3648,8 +3648,8 @@ $ ./issues repo:golang/go is:open json decoder
 <p>The GitHub web-service interface at <a href="https://developer.github.com/v3/" >https://developer.github.com/v3/</a> has many more features than we have space for here.</p>
 <p><b>Exercise 4.10</b>: Modify <code>issues</code> to report the results in age categories, say less than a month old, less than a year old, and more than a year old.</p>
 <p><b>Exercise 4.11</b>: Build a tool that lets users create, read, update, and delete GitHub issues from the command line, invoking their preferred text editor when substantial text input is required.</p>
-<p><b>Exercise 4.12</b>: The popular web comic <em>xkcd</em> has a JSON interface. For example, a request to <a href="https://xkcd.com/571/info.0.json" >https://xkcd.com/571/info.0.json</a> produces a detailed description of comic 571, one of many favorites. Download each URL (once!)  and build an offline index. Write a tool <code>xkcd</code> that, using this index, prints the URL and transcript of each comic that matches a search term provided on the command line.</p>
-<p><b>Exercise 4.13</b>: The JSON-based web service of the Open Movie Database lets you search <a href="https://omdbapi.com/" >https://omdbapi.com/</a> for a movie by name and download its poster image. Write a tool poster that downloads the poster image for the movie named on the command line.</p>
+<p><b>Exercise 4.12</b>: The popular web comic <em>xkcd</em> has a JSON interface. For example, a request to <a href="https://xkcd.com/571/info.0.json" >https://xkcd.com/571/info.0.json</a> produces a detailed description of comic 571, one of many favorites. Download each URL (once!)  and build an offline index. Write a tool <code class="command" >xkcd</code> that, using this index, prints the URL and transcript of each comic that matches a search term provided on the command line.</p>
+<p><b>Exercise 4.13</b>: The JSON-based web service of the Open Movie Database lets you search <a href="https://omdbapi.com/" >https://omdbapi.com/</a> for a movie by name and download its poster image. Write a tool <code class="command" >poster</code> that downloads the poster image for the movie named on the command line.</p>
 </div>
 <h3 id="Section-4.6" >Text and HTML Templates</h3>
 <div class="hBody-3" >
