@@ -3809,6 +3809,7 @@ $ go doc html/template
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">hypot</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">float64</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">math</span><span class="p">.</span><span class="nx">Sqrt</span><span class="p">(</span><span class="nx">x</span><span class="o">*</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="o">*</span><span class="nx">y</span><span class="p">)</span>
 <span class="p">}</span>
+
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">hypot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="c1">// &quot;5&quot;</span>
 </pre></div>
 <p><code>x</code> and <code>y</code> are parameters in the declaration, <code>3</code> and <code>4</code> are arguments of the call, and the function returns a <code>float64</code> value.</p>
@@ -3914,7 +3915,7 @@ $ go doc html/template
 <span class="p">}</span>
 </pre></div>
 <p>To descend the tree for a node <code>n</code>, <code>visit</code> recursively calls itself for each of <code>n</code>’s children, which are held in the <code>FirstChild</code> linked list.</p>
-<p>Let’s run findlinks on the Go home page, piping the output of <code>fetch</code> (<a href="#Section-1.5" >§1.5</a>) to the input of <code>findlinks</code>. We’ve edited the output slightly for brevity.</p>
+<p>Let’s run <code class="command" >findlinks</code> on the Go home page, piping the output of <code class="command" >fetch</code> (<a href="#Section-1.5" >§1.5</a>) to the input of <code class="command" >findlinks</code>. We’ve edited the output slightly for brevity.</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch1/fetch
 $ go build gopl.io/ch5/findlinks1
 $ ./fetch https://golang.org <span class="p">|</span> ./findlinks1
@@ -3955,7 +3956,7 @@ http://www.google.com/intl/en/policies/privacy/
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Note one subtlety: although <code>outline</code> <q>pushes</q> an element on <code>stack</code>, there is no corresponding pop. When outline calls itself recursively, the callee receives a copy of <code>stack</code>. Although the callee may append elements to this slice, modifying its underlying array and perhaps even allocating a new array, it doesn’t modify the initial elements that are visible to the caller, so when the function returns, the caller’s <code>stack</code> is as it was before the call.</p>
+<p>Note one subtlety: although <code>outline</code> <q>pushes</q> an element on <code>stack</code>, there is no corresponding pop. When <code>outline</code> calls itself recursively, the callee receives a copy of <code>stack</code>. Although the callee may append elements to this slice, modifying its underlying array and perhaps even allocating a new array, it doesn’t modify the initial elements that are visible to the caller, so when the function returns, the caller’s <code>stack</code> is as it was before the call.</p>
 <p>Here’s the outline of <code>https://golang.org</code>, again edited for brevity:</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch5/outline
 $ ./fetch https://golang.org <span class="p">|</span> ./outline
@@ -3974,7 +3975,7 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 </pre></div>
 <p>As you can see by experimenting with <code>outline</code>, most HTML documents can be processed with only a few levels of recursion, but it’s not hard to construct pathological web pages that require extremely deep recursion.</p>
 <p>Many programming language implementations use a fixed-size function call stack; sizes from 64KB to 2MB are typical. Fixed-size stacks impose a limit on the depth of recursion, so one must be careful to avoid a <em>stack overflow</em> when traversing large data structures recursively; fixed-size stacks may even pose a security risk. In contrast, typical Go implementations use variable-size stacks that start small and grow as needed up to a limit on the order of a gigabyte.  This lets us use recursion safely and without worrying about overflow.</p>
-<p><b>Exercise 5.1</b>: Change the <code>findlinks</code> program to traverse the <code>n.FirstChild</code> linked list using recursive calls to <code>visit</code> instead of a loop.</p>
+<p><b>Exercise 5.1</b>: Change the <code class="command" >findlinks</code> program to traverse the <code>n.FirstChild</code> linked list using recursive calls to <code>visit</code> instead of a loop.</p>
 <p><b>Exercise 5.2</b>: Write a function to populate a mapping from element names—<code>p</code>, <code>div</code>, <code>span</code>, and so on—to the number of elements with that name in an HTML document tree.</p>
 <p><b>Exercise 5.3</b>: Write a function to print the contents of all text nodes in an HTML document tree. Do not descend into <code>&lt;script&gt;</code> or <code>&lt;style&gt;</code> elements, since their contents are not visible in a web browser.</p>
 <p><b>Exercise 5.4</b>: Extend the <code>visit</code> function so that it extracts other kinds of links from the document, such as images, scripts, and style sheets.</p>
@@ -3982,7 +3983,7 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 <h3 id="Section-5.3" >Multiple Return Values</h3>
 <div class="hBody-3" >
 <p>A function can return more than one result. We’ve seen many examples of functions from standard packages that return two values, the desired computational result and an error value or boolean that indicates whether the computation worked. The next example shows how to write one of our own.</p>
-<p>The program below is a variation of <code>findlinks</code> that makes the HTTP request itself so that we no longer need to run <code>fetch</code>. Because the HTTP and parsing operations can fail, <code>findLinks</code> declares two results: the list of discovered links and an error. Incidentally, the HTML parser can usually recover from bad input and construct a document containing error nodes, so <code>Parse</code> rarely fails; when it does, it’s typically due to underlying I/O errors.</p>
+<p>The program below is a variation of <code class="command" >findlinks</code> that makes the HTTP request itself so that we no longer need to run <code class="command" >fetch</code>. Because the HTTP and parsing operations can fail, <code class="command" >findLinks</code> declares two results: the list of discovered links and an error. Incidentally, the HTML parser can usually recover from bad input and construct a document containing error nodes, so <code>Parse</code> rarely fails; when it does, it’s typically due to underlying I/O errors.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/findlinks2/main.go" >gopl.io/ch5/findlinks2</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
@@ -4074,7 +4075,7 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 </div>
 <h3 id="Section-5.4" >Errors</h3>
 <div class="hBody-3" >
-<p>Some functions always succeed at their task. For example, <code>strings.Contains</code> and <code>strconv.FormatBool</code> have well-defined results for all possible argument values and cannot fail— barring catastrophic and unpredictable scenarios like running out of memory, where the symptom is far from the cause and from which there’s little hope of recovery.</p>
+<p>Some functions always succeed at their task. For example, <code>strings.Contains</code> and <code>strconv.FormatBool</code> have well-defined results for all possible argument values and cannot fail—barring catastrophic and unpredictable scenarios like running out of memory, where the symptom is far from the cause and from which there’s little hope of recovery.</p>
 <p>Other functions always succeed so long as their preconditions are met. For example, the <code>time.Date</code> function always constructs a <code>time.Time</code> from its components—year, month, and so on—unless the last argument (the time zone) is <code>nil</code>, in which case it panics. This panic is a sure sign of a bug in the calling code and should never happen in a well-written program.</p>
 <p>For many other functions, even in a well-written program, success is not assured because it depends on factors beyond the programmer’s control. Any function that does I/O, for example, must confront the possibility of error, and only a naïve programmer believes a simple read or write cannot fail. Indeed, it’s when the most reliable operations fail unexpectedly that we most need to know why.</p>
 <p>Errors are thus an important part of a package’s API or an application’s user interface, and failure is just one of several expected behaviors. This is the approach Go takes to error handling.</p>
@@ -4094,7 +4095,7 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 <h4 id="Section-5.4.1" >Error-Handling Strategies</h4>
 <div class="hBody-4" >
 <p>When a function call returns an error, it’s the caller’s responsibility to check it and take appropriate action. Depending on the situation, there may be a number of possibilities. Let’s take a look at five of them.</p>
-<p>First, and most common, is to <em>propagate</em> the error, so that a failure in a subroutine becomes a failure of the calling routine. We saw examples of this in the <code>findLinks</code> function of <a href="#Section-5.3" >Section 5.3</a>. If the call to <code>http.Get</code> fails, findLinks returns the HTTP error to the caller without further ado:</p>
+<p>First, and most common, is to <em>propagate</em> the error, so that a failure in a subroutine becomes a failure of the calling routine. We saw examples of this in the <code>findLinks</code> function of <a href="#Section-5.3" >Section 5.3</a>. If the call to <code>http.Get</code> fails, <code>findLinks</code> returns the HTTP error to the caller without further ado:</p>
 <div class="highlight"><pre><span></span><span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
 <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
   <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
@@ -4186,7 +4187,7 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 <span class="c1">// EOF is the error returned by Read when no more input is available.</span>
 <span class="kd">var</span> <span class="nx">EOF</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;EOF&quot;</span><span class="p">)</span>
 </pre></div>
-<p>The caller can detect this condition using a simple comparison, as in the loop below, which reads runes from the standard input. (The <code>charcount</code> program in <a href="#Section-4.3" >Section 4.3</a> provides a more complete example.)</p>
+<p>The caller can detect this condition using a simple comparison, as in the loop below, which reads runes from the standard input. (The <code class="command" >charcount</code> program in <a href="#Section-4.3" >Section 4.3</a> provides a more complete example.)</p>
 <div class="highlight"><pre><span></span><span class="nx">in</span> <span class="o">:=</span> <span class="nx">bufio</span><span class="p">.</span><span class="nx">NewReader</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">)</span>
 <span class="k">for</span> <span class="p">{</span>
   <span class="nx">r</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">in</span><span class="p">.</span><span class="nx">ReadRune</span><span class="p">()</span>
@@ -4279,7 +4280,7 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 <p>If we call <code>forEachNode</code> on an HTML document, like this:</p>
 <div class="highlight"><pre><span></span><span class="nx">forEachNode</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">startElement</span><span class="p">,</span> <span class="nx">endElement</span><span class="p">)</span>
 </pre></div>
-<p>we get a more elaborate variation on the output of our earlier <code>outline</code> program:</p>
+<p>we get a more elaborate variation on the output of our earlier <code class="command" >outline</code> program:</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch5/outline2
 $ ./outline2 http://gopl.io
 &lt;html&gt;
@@ -4507,7 +4508,7 @@ $ ./outline2 http://gopl.io
   <span class="nx">breadthFirst</span><span class="p">(</span><span class="nx">crawl</span><span class="p">,</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 <span class="p">}</span>
 </pre></div>
-<p>Let’s crawl the web starting from <a href="https://golang.org" >https://golang.org</a>. Here are some of the resulting links:</p>
+<p>Let’s crawl the web starting from <code>https://golang.org</code>. Here are some of the resulting links:</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch5/findlinks3
 $ ./findlinks3 https://golang.org
 https://golang.org/
@@ -4556,7 +4557,7 @@ https://vimeo.com/53221560
 <span class="p">}</span>
 </pre></div>
 <p>The reason is a consequence of the scope rules for loop variables. In the program immediately above, the <code>for</code> loop introduces a new lexical block in which the variable <code>dir</code> is declared. All function values created by this loop <q>capture</q> and share the same variable—an addressable storage location, not its value at that particular moment. The value of <code>dir</code> is updated in successive iterations, so by the time the cleanup functions are called, the <code>dir</code> variable has been updated several times by the now-completed <code>for</code> loop. Thus <code>dir</code> holds the value from the final iteration, and consequently all calls to <code>os.RemoveAll</code> will attempt to remove the same directory.</p>
-<p>Frequently, the inner variable introduced to work around this problem—<code>dir</code> in our example— is given the exact same name as the outer variable of which it is a copy, leading to odd-looking but crucial variable declarations like this:</p>
+<p>Frequently, the inner variable introduced to work around this problem—<code>dir</code> in our example—is given the exact same name as the outer variable of which it is a copy, leading to odd-looking but crucial variable declarations like this:</p>
 <div class="highlight"><pre><span></span><span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">dir</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">tempDirs</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">dir</span> <span class="o">:=</span> <span class="nx">dir</span> <span class="c1">// declares inner dir, initialized to outer dir</span>
   <span class="c1">// ...</span>
@@ -4616,7 +4617,7 @@ https://vimeo.com/53221560
 <span class="nx">errorf</span><span class="p">(</span><span class="nx">linenum</span><span class="p">,</span> <span class="s">&quot;undefined: %s&quot;</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span> <span class="c1">// &quot;Line 12: undefined: count&quot;</span>
 </pre></div>
 <p>The <code>interface{}</code> type means that this function can accept any values at all for its final arguments, as we’ll explain in <a href="#Chapter-7" >Chapter 7</a>.</p>
-<p><b>Exercise 5.15</b>: Write variadic functions <code>max</code> and <code>min</code>, analogous to sum. What should these functions do when called with no arguments? Write variants that require at least one argument.</p>
+<p><b>Exercise 5.15</b>: Write variadic functions <code>max</code> and <code>min</code>, analogous to <code>sum</code>. What should these functions do when called with no arguments? Write variants that require at least one argument.</p>
 <p><b>Exercise 5.16</b>: Write a variadic version of <code>strings.Join</code>.</p>
 <p><b>Exercise 5.17</b>: Write a variadic function <code>ElementsByTagName</code> that, given an HTML node tree and zero or more names, returns all the elements that match one of those names. Here are two example calls:</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">ElementsByTagName</span><span class="p">(</span><span class="nx">doc</span> <span class="o">*</span><span class="nx">html</span><span class="p">.</span><span class="nx">Node</span><span class="p">,</span> <span class="nx">name</span> <span class="o">...</span><span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="o">*</span><span class="nx">html</span><span class="p">.</span><span class="nx">Node</span>
@@ -4730,7 +4731,7 @@ title: https://golang.org/doc/gopher/frontpage.png
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">bigSlowOperation</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">defer</span> <span class="nx">trace</span><span class="p">(</span><span class="s">&quot;bigSlowOperation&quot;</span><span class="p">)()</span> <span class="c1">// don&#39;t forget the extra parentheses</span>
   <span class="c1">// ...lots of work...</span>
-  <span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span> <span class="c1">// simulate slow operation by sleeping</span>
+  <span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>      <span class="c1">// simulate slow operation by sleeping</span>
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="nx">trace</span><span class="p">(</span><span class="nx">msg</span> <span class="kt">string</span><span class="p">)</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
@@ -4747,7 +4748,7 @@ $ ./trace
 <span class="m">2015</span>/11/18 <span class="m">09</span>:53:36 <span class="nb">exit</span> bigSlowOperation <span class="o">(</span><span class="m">10</span>.000589217s<span class="o">)</span>
 </pre></div>
 <p>Deferred functions run <em>after</em> return statements have updated the function’s result variables.  Because an anonymous function can access its enclosing function’s variables, including named results, a deferred anonymous function can observe the function’s results.</p>
-<p>Consider the function double:</p>
+<p>Consider the function <code>double</code>:</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">double</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">x</span>
 <span class="p">}</span>
@@ -4797,7 +4798,7 @@ $ ./trace
   <span class="c1">// ...process f...</span>
 <span class="p">}</span>
 </pre></div>
-<p>The example below is an improved <code>fetch</code> program (<a href="#Section-1.5" >§1.5</a>) that writes the HTTP response to a local file instead of to the standard output. It derives the file name from the last component of the URL path, which it obtains using the <code>path.Base</code> function.</p>
+<p>The example below is an improved <code class="command" >fetch</code> program (<a href="#Section-1.5" >§1.5</a>) that writes the HTTP response to a local file instead of to the standard output. It derives the file name from the last component of the URL path, which it obtains using the <code>path.Base</code> function.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/fetch/main.go" >gopl.io/ch5/fetch</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// Fetch downloads the URL and returns the</span>
@@ -4855,6 +4856,7 @@ $ ./trace
 <p>Consider the function <code>regexp.Compile</code>, which compiles a regular expression into an efficient form for matching. It returns an <code>error</code> if called with an ill-formed pattern, but checking this error is unnecessary and burdensome if the caller knows that a particular call cannot fail. In such cases, it’s reasonable for the caller to handle an error by panicking, since it is believed to be impossible.</p>
 <p>Since most regular expressions are literals in the program source code, the <code>regexp</code> package provides a wrapper function <code>regexp.MustCompile</code> that does this check:</p>
 <div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">regexp</span>
+
 <span class="kd">func</span> <span class="nx">Compile</span><span class="p">(</span><span class="nx">expr</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">Regexp</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span>
 
 <span class="kd">func</span> <span class="nx">MustCompile</span><span class="p">(</span><span class="nx">expr</span> <span class="kt">string</span><span class="p">)</span> <span class="o">*</span><span class="nx">Regexp</span> <span class="p">{</span>
@@ -4951,10 +4953,10 @@ defer 3</pre>
 </pre></div>
 <p>The deferred function in <code>Parse</code> recovers from a panic, using the panic value to construct an error message; a fancier version might include the entire call stack using <code>runtime.Stack</code>. The deferred function then assigns to the <code>err</code> result, which is returned to the caller.</p>
 <p>Recovering indiscriminately from panics is a dubious practice because the state of a package’s variables after a panic is rarely well defined or documented. Perhaps a critical update to a data structure was incomplete, a file or network connection was opened but not closed, or a lock was acquired but not released. Furthermore, by replacing a crash with, say, a line in a log file, indiscriminate recovery may cause bugs to go unnoticed.</p>
-<p>Recovering from a panic within the same package can help simplify the handling of complex or unexpected errors, but as a general rule, you should not attempt to recover from another package’s panic. Public APIs should report failures as <code>errors</code>. Similarly, you should not recover from a panic that may pass through a function you do not maintain, such as a callerprovided callback, since you cannot reason about its safety.</p>
+<p>Recovering from a panic within the same package can help simplify the handling of complex or unexpected errors, but as a general rule, you should not attempt to recover from another package’s panic. Public APIs should report failures as <code>errors</code>. Similarly, you should not recover from a panic that may pass through a function you do not maintain, such as a caller-provided callback, since you cannot reason about its safety.</p>
 <p>For example, the <code>net/http</code> package provides a web server that dispatches incoming requests to user-provided handler functions. Rather than let a panic in one of these handlers kill the process, the server calls <code>recover</code>, prints a stack trace, and continues serving. This is convenient in practice, but it does risk leaking resources or leaving the failed handler in an unspecified state that could lead to other problems.</p>
 <p>For all the above reasons, it’s safest to recover selectively if at all. In other words, recover only from panics that were intended to be recovered from, which should be rare. This intention can be encoded by using a distinct, unexported type for the panic value and testing whether the value returned by <code>recover</code> has that type. (We’ll see one way to do this in the next example.) If so, we report the panic as an ordinary <code>error</code>; if not, we call <code>panic</code> with the same value to resume the state of panic.</p>
-<p>The example below is a variation on the <code>title</code> program that reports an error if the HTML document contains multiple <code>&lt;title&gt;</code> elements. If so, it aborts the recursion by calling <code>panic</code> with a value of the special type <code>bailout</code>.</p>
+<p>The example below is a variation on the <code class="command" >title</code> program that reports an error if the HTML document contains multiple <code>&lt;title&gt;</code> elements. If so, it aborts the recursion by calling <code>panic</code> with a value of the special type <code>bailout</code>.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/title3/title.go" >gopl.io/ch5/title3</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// soleTitle returns the text of the first non-empty title element</span>

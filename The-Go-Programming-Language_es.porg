@@ -84,8 +84,8 @@
   Go es un proyecto de codigo abierto, por lo que el codigo fuente de su
   compilador, librerias y herramientas esta disponible gratuitamente para
   cualquiera. Las contribuciones al proyecto provienen de una activa comunidad
-  mundial. Go se ejecuta en sistemas tipo Unix –GNU/Linux, FreeBSD, OpenBSD,
-  Mac OS X– y en Plan 9 y Microsoft Windows. Los programas escritos en uno de
+  mundial. Go se ejecuta en sistemas tipo Unix–GNU/Linux, FreeBSD, OpenBSD,
+  Mac OS X–y en Plan 9 y Microsoft Windows. Los programas escritos en uno de
   estos entornos generalmente funcionan sin modificacion en los otros.
 
 #   This book is meant to help you start using Go effectively right away and to
@@ -9843,7 +9843,6 @@
 #          }
 #        }
 #      < src..
-   ..figure > @l(gopl.io/ch4/rev/main.go<>gopl.io/ch4/rev)
      ..src > go
        // reverse invierte un slice de enteros en su posicion.
        func reverse(s []int) {
@@ -13392,3 +13391,3946 @@
 
 # * Chapter 5 <> Functions
 * Capitulo 5 <> Funciones
+
+#   A function lets us wrap up a sequence of statements as a unit that can be
+#   called from elsewhere in a program, perhaps multiple times. Functions make it
+#   possible to break a big job into smaller pieces that might well be written by
+#   different people separated by both time and space.  A function hides its
+#   implementation details from its users. For all of these reasons, functions are
+#   a critical part of any programming language.
+  Una funcion nos permite envolver una secuencia de sentencias como una unidad
+  que se puede llamar desde cualquier lugar de un programa, tal vez varias
+  veces. Las funciones hacen posible romper un gran trabajo en pedazos mas
+  pequeños que bien podrian ser escritos por diferentes personas separadas por
+  el tiempo y el espacio. Una funcion oculta sus detalles de implementacion a
+  sus usuarios. Por todas estas razones, las funciones son una parte critica de
+  cualquier lenguaje de programacion.
+
+#   We’ve seen many functions already. Now let’s take time for a more thorough
+#   discussion. The running example of this chapter is a web crawler, that is, the
+#   component of a web search engine responsible for fetching web pages,
+#   discovering the links within them, fetching the pages identified by those
+#   links, and so on. A web crawler gives us ample opportunity to explore
+#   recursion, anonymous functions, error handling, and aspects of functions that
+#   are unique to Go.
+  Ya hemos visto muchas funciones. Ahora tomaremos un tiempo para una discusion
+  mas exhaustiva. El ejemplo de ejecucion de este capitulo es un rastreador web,
+  es decir, el componente de un motor de busqueda web responsable de buscar
+  paginas web, descubrir los vinculos dentro de ellas, buscar las paginas
+  identificadas por dichos vinculos, etc. Un rastreador web nos da una amplia
+  oportunidad para explorar la recursividad, funciones anonimas, manejo de
+  errores y aspectos de funciones que son unicos de Go.
+
+# ** Section 5.1 <> Function Declarations
+** Seccion 5.1 <> Declaracion de Funciones
+
+#    A function declaration has a name, a list of parameters, an optional list of
+#    results, and a body:
+   Una declaracion de funcion tiene un nombre, una lista de parametros, una
+   lista opcional de resultados y un cuerpo:
+
+#    ..src > go
+#      func name(parameter-list) (result-list) {
+#        body
+#      }
+#    < src..
+   ..src > go
+     func rombre(lista-de-parametros) (lista-de-resultados) {
+       cuerpo
+     }
+   < src..
+
+#    The parameter list specifies the names and types of the function’s
+#    @e(parameters), which are the local variables whose values or @e(arguments)
+#    are supplied by the caller. The result list specifies the types of the values
+#    that the function returns. If the function returns one unnamed result or no
+#    results at all, parentheses are optional and usually omitted. Leaving off the
+#    result list entirely declares a function that does not return any value and
+#    is called only for its effects. In the @c(hypot) function,
+   La lista de parametros especifica el nombres y tipos de los @e(parametros) de
+   la funcion, que son las variables locales cuyos valores o argumentos son
+   suministrados por quien hace la llamada. La lista de resultados especifica
+   los tipos de los valores que devuelve la funcion. Si la funcion devuelve un
+   resultado sin nombre o ningun resultado, los parentesis son opcionales y
+   normalmente se omiten. Dejar fuera la lista de resultados declara
+   completamente que una funcion que no devuelve ningun valor y se llama solo
+   por sus efectos. En la funcion @c(hypot),
+
+#    ..src > go
+#      func hypot(x, y float64) float64 {
+#        return math.Sqrt(x*x + y*y)
+#      }
+#
+#      fmt.Println(hypot(3, 4)) // "5"
+#    < src..
+   ..src > go
+     func hypot(x, y float64) float64 {
+       return math.Sqrt(x*x + y*y)
+     }
+
+     fmt.Println(hypot(3, 4)) // "5"
+   < src..
+
+#    @c(x) and @c(y) are parameters in the declaration, @c(3) and @c(4) are
+#    arguments of the call, and the function returns a @c(float64) value.
+   @c(x) y @c(y) son parametros en la declaracion, @c(3) y @c(4) son argumentos
+   de la llamada, y la funcion devuelve un valor @c(float64).
+
+#    Like parameters, results may be named. In that case, each name declares a
+#    local variable initialized to the zero value for its type.
+   Al igual que los parametros, los resultados pueden tener nombre. En ese caso,
+   cada nombre declara una variable local inicializada al valor cero para su
+   tipo.
+
+#    A function that has a result list must end with a @c(return) statement unless
+#    execution clearly cannot reach the end of the function, perhaps because the
+#    function ends with a call to @c(panic) or an infinite @c(for) loop with no
+#    @c(break).
+   Una funcion que tiene una lista de resultados debe terminar con una
+   declaracion @c(return), a menos que la ejecucion claramente no pueda llegar
+   al final de la funcion, tal vez porque la funcion termina con una llamada a
+   @c(panic) o un bucle @c(for) infinito sin @c(break).
+
+#    As we saw with @c(hypot), a sequence of parameters or results of the same
+#    type can be factored so that the type itself is written only once. These two
+#    declarations are equivalent:
+   Como hemos visto con @c(hypot), una secuencia de parametros o resultados del
+   mismo tipo puede ser un factor para que el propio tipo se escriba una sola
+   vez. Estas dos declaraciones son equivalentes:
+
+#    ..src > go
+#      func f(i, j, k int, s, t string)                { /* ... */ }
+#      func f(i int, j int, k int, s string, t string) { /* ... */ }
+#    < src..
+   ..src > go
+     func f(i, j, k int, s, t string)                { /* ... */ }
+     func f(i int, j int, k int, s string, t string) { /* ... */ }
+   < src..
+
+#    Here are four ways to declare a function with two parameters and one result,
+#    all of type @c(int).  The blank identifier can be used to emphasize that a
+#    parameter is unused.
+   Aqui hay cuatro formas de declarar una funcion con dos parametros y un
+   resultado, todos de tipo @c(int). El identificador en blanco puede usarse
+   para enfatizar que un parametro no se utiliza.
+
+#    ..src > go
+#      func add(x int, y int) int   { return x + y }
+#      func sub(x, y int) (z int)   { z = x - y; return }
+#      func first(x int, _ int) int { return x }
+#      func zero(int, int) int      { return 0 }
+#
+#      fmt.Printf("%T\n", add)   // "func(int, int) int"
+#      fmt.Printf("%T\n", sub)   // "func(int, int) int"
+#      fmt.Printf("%T\n", first) // "func(int, int) int"
+#      fmt.Printf("%T\n", zero)  // "func(int, int) int"
+#    < src..
+   ..src > go
+     func add(x int, y int) int   { return x + y }
+     func sub(x, y int) (z int)   { z = x - y; return }
+     func first(x int, _ int) int { return x }
+     func zero(int, int) int      { return 0 }
+
+     fmt.Printf("%T\n", add)   // "func(int, int) int"
+     fmt.Printf("%T\n", sub)   // "func(int, int) int"
+     fmt.Printf("%T\n", first) // "func(int, int) int"
+     fmt.Printf("%T\n", zero)  // "func(int, int) int"
+   < src..
+
+#    The type of a function is sometimes called its @e(signature). Two functions
+#    have the same type or signature if they have the same sequence of parameter
+#    types and the same sequence of result types. The names of parameters and
+#    results don’t affect the type, nor does whether or not they were declared
+#    using the factored form.
+   El tipo de una funcion a veces se denomina su @e(firma). Dos funciones tienen
+   el mismo tipo o firma si tienen la misma secuencia de tipos de parametros y
+   la misma secuencia de tipos de resultados. Los nombres de los parametros y
+   resultados no afectan al tipo, ni tampoco si se declararon utilizando el
+   formto factorizado.
+
+#    Every function call must provide an argument for each parameter, in the order
+#    in which the parameters were declared. Go has no concept of default parameter
+#    values, nor any way to specify arguments by name, so the names of parameters
+#    and results don’t matter to the caller except as documentation.
+   Cada llamada de funcion debe proporcionar un argumento para cada parametro,
+   en el orden en que se declararon los parametros. Go no tiene concepto de
+   valores de parametro predeterminados, ni ninguna forma de especificar
+   argumentos por nombre, por lo que los nombres de parametros y resultados no
+   importan al llamador, excepto como documentacion.
+
+#    Parameters are local variables within the body of the function, with their
+#    initial values set to the arguments supplied by the caller. Function
+#    parameters and named results are variables in the same lexical block as the
+#    function’s outermost local variables.
+   Los parametros son variables locales dentro del cuerpo de la funcion, con sus
+   valores iniciales establecidos a los argumentos proporcionados por quien
+   realiza la llamada. Los parametros de funcion y los resultados con nombre son
+   variables en el mismo bloque lexico que las variables locales mas externas de
+   la funcion.
+
+#    Arguments are passed @e(by value), so the function receives a copy of each
+#    argument; modifications to the copy do not affect the caller. However, if the
+#    argument contains some kind of reference, like a pointer, slice, map,
+#    function, or channel, then the caller may be affected by any modifications
+#    the function makes to variables @e(indirectly) referred to by the argument.
+   Los argumentos se pasan por valor, por lo que la funcion recibe una copia de
+   cada argumento; Las modificaciones a la copia no afectan a la persona que
+   llama. Sin embargo, si el argumento contiene algun tipo de referencia, como
+   un puntero, slice, mapa, funcion o canal, entonces la persona que llama puede
+   verse afectada por las modificaciones que hace la funcion de las variables
+   que referencian @e(indirectamente) por el argumento.
+
+#    You may occasionally encounter a function declaration without a body,
+#    indicating that the function is implemented in a language other than Go. Such
+#    a declaration defines the function signature.
+   De vez en cuando puede encontrar una declaracion de funcion sin un cuerpo, lo
+   que indica que la funcion se implementa en un idioma que no es Go. Dicha
+   declaracion define la firma de la funcion.
+
+#    ..src > go
+#      package math
+#
+#      func Sin(x float64) float64 // implemented in assembly language
+#    < src..
+   ..src > go
+     package math
+
+     func Sin(x float64) float64 // implementado en lenguaje ensamblador
+   < src..
+
+# ** Section 5.2 <> Recursion
+** Seccion 5.2 <> Recursividad
+
+#    Functions may be @e(recursive), that is, they may call themselves, either
+#    directly or indirectly.  Recursion is a powerful technique for many problems,
+#    and of course it’s essential for processing recursive data structures. In
+#    @l(#Section 4.4), we used recursion over a tree to implement a simple
+#    insertion sort. In this section, we’ll use it again for processing HTML
+#    documents.
+   Las funciones pueden ser @e(recursivas), es decir, que pueden llamarse a si
+   mismas, ya sea directa o indirectamente. La recursion es una tecnica poderosa
+   para muchos problemas, y por supuesto es esencial para procesar estructuras
+   de datos recursivas. En la @l(#Seccion 4.4), se utilizo la recursividad sobre
+   un arbol para implementar un mecanismo de insercion sencillo. En esta
+   seccion, volveremos a usarlo para procesar documentos HTML.
+
+#    The example program below uses a non-standard package,
+#    @c(golang.org/x/net/html), which provides an HTML parser. The
+#    @c(golang.org/x/...) repositories hold packages designed and maintained by
+#    the Go team for applications such as networking, internationalized text
+#    processing, mobile platforms, image manipulation, cryptography, and developer
+#    tools. These packages are not in the standard library because they’re still
+#    under development or because they’re rarely needed by the majority of Go
+#    programmers.
+   El siguiente programa de ejemplo utiliza un paquete no estandar,
+   @c(golang.org/x/net/html), que proporciona un analizador de HTML. Los
+   repositorios @c(golang.org/x/...) tienen paquetes diseñados y mantenidos por
+   el equipo de Go para aplicaciones tales como redes, procesamiento de texto
+   internacionalizado, plataformas moviles, manipulacion de imagenes,
+   criptografia, y herramientas de desarrollo. Estos paquetes no estan en la
+   libreria estandar porque todavia estan en desarrollo o porque son raramente
+   necesarios por la mayoria de los programadores de Go.
+
+#    The parts of the @c(golang.org/x/net/html) API that we’ll need are shown
+#    below. The function @c(html.Parse) reads a sequence of bytes, parses them,
+#    and returns the root of the HTML document tree, which is an @c(html.Node).
+#    HTML has several kinds of nodes—text, comments, and so on—but here we are
+#    concerned only with element nodes of the form @c(<name key='value'>).
+   Las partes de  la API @c(golang.org/x/net/html) que tendremos que se muestran a
+   continuacion. La funcion @c(html.Parse) lee una secuencia de bytes, los analiza,
+   y devuelve la raiz del arbol del documento HTML, que es un @c(html.Node). HTML
+   tiene varios tipos de nodos–texto, comentarios, etc.–pero aqui solo nos
+   interesan con nodos de elemento de la forma @c(<nombre clave='valor'>).
+
+#    ..figure > @c(golang.org/x/net/html)
+   ..figure > @c(golang.org/x/net/html)
+
+#      ..src > go
+#        package html
+#        type Node struct {
+#          Type                    NodeType
+#          Data                    string
+#          Attr                    []Attribute
+#          FirstChild, NextSibling *Node
+#        }
+#
+#        type NodeType int32
+#
+#        const (
+#          ErrorNode NodeType = iota
+#          TextNode
+#          DocumentNode
+#          ElementNode
+#          CommentNode
+#          DoctypeNode
+#        )
+#
+#        type Attribute struct {
+#          Key, Val string
+#        }
+#
+#        func Parse(r io.Reader) (*Node, error)
+#      < src..
+     ..src > go
+       package html
+       type Node struct {
+         Type                    NodeType
+         Data                    string
+         Attr                    []Attribute
+         FirstChild, NextSibling *Node
+       }
+
+       type NodeType int32
+
+       const (
+         ErrorNode NodeType = iota
+         TextNode
+         DocumentNode
+         ElementNode
+         CommentNode
+         DoctypeNode
+       )
+
+       type Attribute struct {
+         Key, Val string
+       }
+
+       func Parse(r io.Reader) (*Node, error)
+     < src..
+
+
+#    The @c(main) function parses the standard input as HTML, extracts the links
+#    using a recursive @c(visit) function, and prints each discovered link:
+   La funcion @c(main) analiza la entrada estandar como HTML, extrae los enlaces
+   usando un cuncion recursiva @c(visit), e imprime cada enlace descubierto:
+
+#    ..figure > @l(gopl.io/ch5/findlinks1/main.go<>gopl.io/ch5/findlinks1)
+   ..figure > @l(gopl.io/ch5/findlinks1/main.go<>gopl.io/ch5/findlinks1)
+
+#      ..src > go
+#        // Findlinks1 prints the links in an HTML document read from standard input.
+#        package main
+#
+#        import (
+#          "fmt"
+#          "os"
+#
+#          "golang.org/x/net/html"
+#        )
+#
+#        func main() {
+#          doc, err := html.Parse(os.Stdin)
+#          if err != nil {
+#            fmt.Fprintf(os.Stderr, "findlinks1: %v\n", err)
+#            os.Exit(1)
+#          }
+#          for _, link := range visit(nil, doc) {
+#            fmt.Println(link)
+#          }
+#        }
+#      < src..
+     ..src > go
+       // Findlinks1 imprime los enlaces en un documento HTML leido en la entrada estandar
+       package main
+
+       import (
+         "fmt"
+         "os"
+
+         "golang.org/x/net/html"
+       )
+
+       func main() {
+         doc, err := html.Parse(os.Stdin)
+         if err != nil {
+           fmt.Fprintf(os.Stderr, "findlinks1: %v\n", err)
+           os.Exit(1)
+         }
+         for _, link := range visit(nil, doc) {
+           fmt.Println(link)
+         }
+       }
+     < src..
+
+
+#    The @c(visit) function traverses an HTML node tree, extracts the link from
+#    the @c(href) attribute of each @e(anchor) element @c(<a href='...'>), appends
+#    the links to a slice of strings, and returns the resulting slice:
+   La funcion @c(visit) atraviesa un arbol de nodos HTML, extrae el enlace desde
+   el atributo @c(href) de cada elemento de @e(anclaje) @c(<a href='...'>),
+   añade los enlaces a un slice de strings, y devuelve el slice resultante:
+
+#    ..src > go
+#      // visit appends to links each link found in n and returns the result.
+#      func visit(links []string, n *html.Node) []string {
+#        if n.Type == html.ElementNode && n.Data == "a" {
+#          for _, a := range n.Attr {
+#            if a.Key == "href" {
+#              links = append(links, a.Val)
+#            }
+#          }
+#        }
+#        for c := n.FirstChild; c != nil; c = c.NextSibling {
+#          links = visit(links, c)
+#        }
+#        return links
+#      }
+#    < src..
+   ..src > go
+     // visit agrega los enlaces de cada enlace encontrado en n y devuelve el resultado
+     func visit(links []string, n *html.Node) []string {
+       if n.Type == html.ElementNode && n.Data == "a" {
+         for _, a := range n.Attr {
+           if a.Key == "href" {
+             links = append(links, a.Val)
+           }
+         }
+       }
+       for c := n.FirstChild; c != nil; c = c.NextSibling {
+         links = visit(links, c)
+       }
+       return links
+     }
+   < src..
+
+#    To descend the tree for a node @c(n), @c(visit) recursively calls itself for
+#    each of @c(n)’s children, which are held in the @c(FirstChild) linked list.
+   Para descender por el arbol a un nodo @c(n), @c(visit) se llama a si misma
+   recursivamente para cada uno de los hijos de @c(n), que se mantienen en el
+   lista enlazada @c(FirstChild).
+
+#    Let’s run @$(findlinks) on the Go home page, piping the output of @$(fetch)
+#    (@l(#Section 1.5<>§1.5)) to the input of @$(findlinks). We’ve edited the
+#    output slightly for brevity.
+   Vamos a ejecutar @$(findlinks) en la pagina principal de Go, canalizando el
+   resultado de @$(fetch) (@l(#Seccion 1.5<>§1.5)) a la entrada de
+   @$(findlinks). Hemos modificado la salida ligeramente por brevedad.
+
+#    ..src > sh
+#      $ go build gopl.io/ch1/fetch
+#      $ go build gopl.io/ch5/findlinks1
+#      $ ./fetch https://golang.org | ./findlinks1
+#      #
+#      /doc/
+#      /pkg/
+#      /help/
+#      /blog/
+#      http://play.golang.org/
+#      //tour.golang.org/
+#      https://golang.org/dl/
+#      //blog.golang.org/
+#      /LICENSE
+#      /doc/tos.html
+#      http://www.google.com/intl/en/policies/privacy/
+#    < src..
+   ..src > sh
+     $ go build gopl.io/ch1/fetch
+     $ go build gopl.io/ch5/findlinks1
+     $ ./fetch https://golang.org | ./findlinks1
+     #
+     /doc/
+     /pkg/
+     /help/
+     /blog/
+     http://play.golang.org/
+     //tour.golang.org/
+     https://golang.org/dl/
+     //blog.golang.org/
+     /LICENSE
+     /doc/tos.html
+     http://www.google.com/intl/en/policies/privacy/
+   < src..
+
+#    Notice the variety of forms of links that appear in the page. Later we’ll see
+#    how to resolve them relative to the base URL, @c(https://golang.org), to make
+#    absolute URLs.
+   Observe la variedad de formas de enlaces que aparecen en la pagina. Mas
+   adelante veremos como resolverlos con relacion al URL base,
+   @c(https://golang.org), para crear URL absolutas.
+
+#    The next program uses recursion over the HTML node tree to print the
+#    structure of the tree in outline. As it encounters each element, it pushes
+#    the element’s tag onto a stack, then prints the stack.
+   El siguiente programa utiliza la recursion sobre el arbol de nodos HTML para
+   imprimir la estructura del arbol en esquema. Cuando encuentra cada elemento,
+   empuja la etiqueta del elemento sobre una pila, luego imprime la pila.
+
+#    ..figure > @l(gopl.io/ch5/outline/main.go<>gopl.io/ch5/outline)
+   ..figure > @l(gopl.io/ch5/outline/main.go<>gopl.io/ch5/outline)
+
+#      ..src > go
+#        func main() {
+#          doc, err := html.Parse(os.Stdin)
+#          if err != nil {
+#            fmt.Fprintf(os.Stderr, "outline: %v\n", err)
+#            os.Exit(1)
+#          }
+#          outline(nil, doc)
+#        }
+#
+#        func outline(stack []string, n *html.Node) {
+#          if n.Type == html.ElementNode {
+#            stack = append(stack, n.Data) // push tag
+#            fmt.Println(stack)
+#          }
+#          for c := n.FirstChild; c != nil; c = c.NextSibling {
+#            outline(stack, c)
+#          }
+#        }
+#      < src..
+     ..src > go
+       func main() {
+         doc, err := html.Parse(os.Stdin)
+         if err != nil {
+           fmt.Fprintf(os.Stderr, "outline: %v\n", err)
+           os.Exit(1)
+         }
+         outline(nil, doc)
+       }
+
+       func outline(stack []string, n *html.Node) {
+         if n.Type == html.ElementNode {
+           stack = append(stack, n.Data) // push tag
+           fmt.Println(stack)
+         }
+         for c := n.FirstChild; c != nil; c = c.NextSibling {
+           outline(stack, c)
+         }
+       }
+     < src..
+
+
+#    Note one subtlety: although @c(outline) @"(pushes) an element on @c(stack),
+#    there is no corresponding pop. When outline calls itself recursively, the
+#    callee receives a copy of @c(stack). Although the callee may append elements
+#    to this slice, modifying its underlying array and perhaps even allocating a
+#    new array, it doesn’t modify the initial elements that are visible to the
+#    caller, so when the function returns, the caller’s @c(stack) is as it was
+#    before the call.
+   Considere una sutileza: aunque @c(outline) @"(empuja) un elemento en el
+   @c(stack), no hay ninguna extraccion correspondiente. Cuando @c(outline) se
+   llama a si misma de forma recursiva, el receptor recibe una copia del
+   @c(stack). Aunque el destinatario de la llamada puede añadir elementos a este
+   slice, modificando de su arreglo subyacente e incluso asignando un nuevo
+   arreglo, no modifica los elementos iniciales que son visibles para quien
+   realiza la llamada, asi que cuando la funcion regresa, el @c(stack) del
+   llamantede es tal cual antes de la llamada.
+
+#    Here’s the outline of @c(https://golang.org), again edited for brevity:
+   Aqui esta el esquema de @c(https://golang.org), editado nuevamente por
+   razones de brevedad:
+
+#    ..src > sh
+#      $ go build gopl.io/ch5/outline
+#      $ ./fetch https://golang.org | ./outline
+#      [html]
+#      [html head]
+#      [html head meta]
+#      [html head title]
+#      [html head link]
+#      [html body]
+#      [html body div]
+#      [html body div]
+#      [html body div div]
+#      [html body div div form]
+#      [html body div div form div]
+#      [html body div div form div a]
+#    < src..
+   ..src > sh
+     $ go build gopl.io/ch5/outline
+     $ ./fetch https://golang.org | ./outline
+     [html]
+     [html head]
+     [html head meta]
+     [html head title]
+     [html head link]
+     [html body]
+     [html body div]
+     [html body div]
+     [html body div div]
+     [html body div div form]
+     [html body div div form div]
+     [html body div div form div a]
+   < src..
+
+#    As you can see by experimenting with @c(outline), most HTML documents can be
+#    processed with only a few levels of recursion, but it’s not hard to construct
+#    pathological web pages that require extremely deep recursion.
+   Como puede ver mediante la experimentacion con @c(outline), la mayoria de los
+   documentos HTML pueden ser procesados con solo unos pocos niveles de
+   recursividad, pero no es dificil de construir paginas web patologicas que
+   requieren una recursion extremadamente profunda.
+
+#    Many programming language implementations use a fixed-size function call
+#    stack; sizes from 64KB to 2MB are typical. Fixed-size stacks impose a limit
+#    on the depth of recursion, so one must be careful to avoid a @e(stack
+#    overflow) when traversing large data structures recursively; fixed-size
+#    stacks may even pose a security risk. In contrast, typical Go implementations
+#    use variable-size stacks that start small and grow as needed up to a limit on
+#    the order of a gigabyte.  This lets us use recursion safely and without
+#    worrying about overflow.
+   Muchas implementaciones de lenguaje de programacion utilizan una funcion
+   stack de tamaño fijo; Tamaños de 64KB a 2MB son tipicos. Pilas de tamaño fijo
+   imponen un limite en la profundidad de la recursividad, por lo que hay que
+   tener cuidado para evitar un desbordamiento de pila cuando se atraviesa
+   grandes estructuras de datos de forma recursiva; Las pilas de tamaño fijo
+   pueden incluso suponer un riesgo para la seguridad. En contraste, las
+   implementaciones tipicas de Go usan pilas de tamaño variable que comienzan
+   pequeñas y crecen segun sea necesario hasta un limite del orden de un
+   gigabyte. Esto nos permite usar la recursion de forma segura y sin
+   preocuparnos por el desbordamiento.
+
+#    @b(Exercise 5.1): Change the @$(findlinks) program to traverse the
+#    @c(n.FirstChild) linked list using recursive calls to @c(visit) instead of a
+#    loop.
+   @b(Ejercicio 5.1): Cambiar el programa @$(findlinks) para atravesar la lista
+   enlazada @c(n.FirstChild) mediante llamadas recursivas a @c(visit) en lugar
+   de un bucle.
+
+#    @b(Exercise 5.2): Write a function to populate a mapping from element
+#    names—@c(p), @c(div), @c(span), and so on—to the number of elements with that
+#    name in an HTML document tree.
+   @b(Ejercicio 5.2): Escribir una funcion para rellenar un mapeo con los
+   nombres de los elementos–@c(p), @c(div), @c(span), y asi sucesivamente-al
+   numero de elementos con ese nombre en un arbol de documentos HTML.
+
+#    @b(Exercise 5.3): Write a function to print the contents of all text nodes in
+#    an HTML document tree. Do not descend into @c(<script>) or @c(<style>)
+#    elements, since their contents are not visible in a web browser.
+   @b(Ejercicio 5.3): Escribir una funcion para imprimir el contenido de todos
+   los nodos de texto en un arbol de documentos HTML. No descender dentro de
+   elementos @c(<script>) o @c(<style>), ya que sus contenidos no son visibles
+   en un navegador web.
+
+#    @b(Exercise 5.4): Extend the @c(visit) function so that it extracts other
+#    kinds of links from the document, such as images, scripts, and style sheets.
+   @b(Ejercicio 5.4): Extender la funcion @c(visit) para que los extractos otros
+   tipos de enlaces desde el documento, como imagenes, scripts y hojas de
+   estilo.
+
+# ** Section 5.3 <> Multiple Return Values
+** Seccion 5.3 <> Multiples Valores de Retorno
+
+#    A function can return more than one result. We’ve seen many examples of
+#    functions from standard packages that return two values, the desired
+#    computational result and an error value or boolean that indicates whether the
+#    computation worked. The next example shows how to write one of our own.
+   Una funcion puede devolver mas de un resultado. Hemos visto muchos ejemplos
+   de funciones de paquetes estandar que devuelven dos valores, el resultado
+   computacional deseado y un valor de error o booleano que indica si el calculo
+   funciono. El siguiente ejemplo muestra como escribir una nosotros mismos.
+
+#    The program below is a variation of @$(findlinks) that makes the HTTP request
+#    itself so that we no longer need to run @$(fetch). Because the HTTP and
+#    parsing operations can fail, @$(findLinks) declares two results: the list of
+#    discovered links and an error. Incidentally, the HTML parser can usually
+#    recover from bad input and construct a document containing error nodes, so
+#    @c(Parse) rarely fails; when it does, it’s typically due to underlying I/O
+#    errors.
+   El programa siguiente es una variacion de @$(findlinks) que hace la peticion
+   HTTP por si mismo, asi que ya no necesitamos para ejecutar @$(fetch). Ya que
+   las operaciones de analisis y HTTP pueden fallar, @$(findLinks) declara dos
+   resultados: la lista de enlaces descubiertos y un error. Por cierto, el
+   analizador de HTML por lo general puede recuperarse de una entrada incorrecta
+   y construir un documento que contiene nodos de error, por lo @c(Parse)
+   raramente falla; Cuando lo hace, normalmente se debe a errores de E/S
+   subyacentes.
+
+#    ..figure > @l(gopl.io/ch5/findlinks2/main.go<>gopl.io/ch5/findlinks2)
+   ..figure > @l(gopl.io/ch5/findlinks2/main.go<>gopl.io/ch5/findlinks2)
+
+#      ..src > go
+#        func main() {
+#          for _, url := range os.Args[1:] {
+#            links, err := findLinks(url)
+#            if err != nil {
+#              fmt.Fprintf(os.Stderr, "findlinks2: %v\n", err)
+#              continue
+#            }
+#            for _, link := range links {
+#              fmt.Println(link)
+#            }
+#          }
+#        }
+#
+#        // findLinks performs an HTTP GET request for url, parses the
+#        // response as HTML, and extracts and returns the links.
+#        func findLinks(url string) ([]string, error) {
+#          resp, err := http.Get(url)
+#          if err != nil {
+#            return nil, err
+#          }
+#          if resp.StatusCode != http.StatusOK {
+#            resp.Body.Close()
+#            return nil, fmt.Errorf("getting %s: %s", url, resp.Status)
+#          }
+#          doc, err := html.Parse(resp.Body)
+#          resp.Body.Close()
+#          if err != nil {
+#            return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
+#          }
+#          return visit(nil, doc), nil
+#        }
+#      < src..
+     ..src > go
+       func main() {
+         for _, url := range os.Args[1:] {
+           links, err := findLinks(url)
+           if err != nil {
+             fmt.Fprintf(os.Stderr, "findlinks2: %v\n", err)
+             continue
+           }
+           for _, link := range links {
+             fmt.Println(link)
+           }
+         }
+       }
+
+       // findLinks realiza una peticion HTTP GET por la url, analiza la
+       // respuesta como HTML, y extrae y regresa los enlaces.
+       func findLinks(url string) ([]string, error) {
+         resp, err := http.Get(url)
+         if err != nil {
+           return nil, err
+         }
+         if resp.StatusCode != http.StatusOK {
+           resp.Body.Close()
+           return nil, fmt.Errorf("getting %s: %s", url, resp.Status)
+         }
+         doc, err := html.Parse(resp.Body)
+         resp.Body.Close()
+         if err != nil {
+           return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
+         }
+         return visit(nil, doc), nil
+       }
+     < src..
+
+
+#    There are four return statements in @c(findLinks), each of which returns a
+#    pair of values. The first three @c(return)s cause the function to pass the
+#    underlying errors from the @c(http) and @c(html) packages on to the
+#    caller. In the first case, the error is returned unchanged; in the second and
+#    third, it is augmented with additional context information by @c(fmt.Errorf)
+#    (@l(#Section 7.8<>§7.8)). If @c(findLinks) is successful, the final return
+#    statement returns the slice of links, with no error.
+   Hay cuatro sentencias @c(return) en @c(findLinks), cada uno de las cuales
+   devuelve un par de valores. Los tres primeros @c(return) hacen la funcion
+   pase los errores subyacentes de los paquetes @c(http) y @c(html) al
+   llamador. En el primer caso, el error se devuelve sin cambios; en el segundo
+   y tercero, que expande con informacion de contexto adicional con
+   @c(fmt.Errorf) (@l(#Seccion 7.8<>§7.8)). Si @c(findLinks) tiene exito, la
+   ultima sentencia @c(return) devuelve el slice de enlaces, sin error.
+
+#    We must ensure that @c(resp.Body) is closed so that network resources are
+#    properly released even in case of error. Go’s garbage collector recycles
+#    unused memory, but do not assume it will release unused operating system
+#    resources like open files and network connections. They should be closed
+#    explicitly.
+   Debemos asegurarnos de cerrar @c(resp.Body) para que los recursos de red se
+   liberen adecuadamente, incluso en caso de error. El recolector de basura de
+   Go recicla la memoria no utilizada, pero no asume que liberara recursos del
+   sistema operativo no utilizados como archivos abiertos y conexiones de
+   red. Deberan cerrarse explicitamente.
+
+#    The result of calling a multi-valued function is a tuple of values. The
+#    caller of such a function must explicitly assign the values to variables if
+#    any of them are to be used:
+   El resultado de llamar a una funcion multi-valor es una tupla de valores. El
+   llamador de tal funcion debe asignar explicitamente los valores a las
+   variables si se desea utilizar alguna de ellas:
+
+#    ..src > go
+#      links, err := findLinks(url)
+#    < src..
+   ..src > go
+     links, err := findLinks(url)
+   < src..
+
+#    To ignore one of the values, assign it to the blank identifier:
+   Para ignorar uno de los valores, asintelo al identificador en blanco:
+
+#    ..src > go
+#      links, _ := findLinks(url) // errors ignored
+#    < src..
+   ..src > go
+     links, _ := findLinks(url) // errors ignored
+   < src..
+
+#    The result of a multi-valued call may itself be returned from a
+#    (multi-valued) calling function, as in this function that behaves like
+#    @c(findLinks) but logs its argument:
+   El resultado de una llamada multi-valor en si puede ser devuelto desde una
+   llamada funcion (multi-valor), como en esta funcion que se comporta como
+   @c(findLinks) pero registra su argumento:
+
+#    ..src > go
+#      func findLinksLog(url string) ([]string, error) {
+#        log.Printf("findLinks %s", url)
+#        return findLinks(url)
+#      }
+#    < src..
+   ..src > go
+     func findLinksLog(url string) ([]string, error) {
+       log.Printf("findLinks %s", url)
+       return findLinks(url)
+     }
+   < src..
+
+#    A multi-valued call may appear as the sole argument when calling a function
+#    of multiple parameters. Although rarely used in production code, this feature
+#    is sometimes convenient during debugging since it lets us print all the
+#    results of a call using a single statement. The two print statements below
+#    have the same effect.
+   Una llamada multi-valor puede aparecer como el unico argumento cuando se
+   llama a una funcion de multiples parametros. Aunque rara vez se utiliza en
+   codigo de produccion, esta caracteristica es a veces conveniente durante la
+   depuracion, ya que nos permite imprimir todos los resultados de una llamada
+   utilizando una sola sentencia. Las dos instrucciones de impresion siguientes
+   tienen el mismo efecto.
+
+#    ..src > go
+#      log.Println(findLinks(url))
+#
+#      links, err := findLinks(url)
+#      log.Println(links, err)
+#    < src..
+   ..src > go
+     log.Println(findLinks(url))
+
+     links, err := findLinks(url)
+     log.Println(links, err)
+   < src..
+
+#    Well-chosen names can document the significance of a function’s
+#    results. Names are particularly valuable when a function returns multiple
+#    results of the same type, like
+   Los nombres bien elegidos pueden documentar la importancia de los resultados
+   de una funcion. Los nombres son particularmente valiosos cuando una funcion
+   devuelve multiples resultados del mismo tipo, como
+
+#    ..src > go
+#      func Size(rect image.Rectangle) (width, height int)
+#      func Split(path string) (dir, file string)
+#      func HourMinSec(t time.Time) (hour, minute, second int)
+#    < src..
+   ..src > go
+     func Size(rect image.Rectangle) (width, height int)
+     func Split(path string) (dir, file string)
+     func HourMinSec(t time.Time) (hour, minute, second int)
+   < src..
+
+#    but it’s not always necessary to name multiple results solely for
+#    documentation. For instance, convention dictates that a final @c(bool) result
+#    indicates success; an @c(error) result often needs no explanation.
+   Pero no siempre es necesario nombrar multiples resultados unicamente para la
+   documentacion. Por ejemplo, la convencion dicta que un resultado final
+   @c(bool) indica el exito; un resultado erroneo a menudo no necesita
+   explicacion.
+
+#    In a function with named results, the operands of a return statement may be
+#    omitted. This is called a @e(bare return).
+   En una funcion con resultados nombrados, se pueden omitir los operandos de
+   una sentencia de devolucion. Esto se llama un @c(retorno desnudo).
+
+#    ..src > go
+#      // CountWordsAndImages does an HTTP GET request for the HTML
+#      // document url and returns the number of words and images in it.
+#      func CountWordsAndImages(url string) (words, images int, err error) {
+#        resp, err := http.Get(url)
+#        if err != nil {
+#          return
+#        }
+#
+#        doc, err := html.Parse(resp.Body)
+#        resp.Body.Close()
+#        if err != nil {
+#          err = fmt.Errorf("parsing HTML: %s", err)
+#          return
+#        }
+#        words, images = countWordsAndImages(doc)
+#        return
+#      }
+#
+#      func countWordsAndImages(n *html.Node) (words, images int) { /* ... */ }
+#    < src..
+   ..src > go
+     // CountWordsAndImages realiza una peticion HTTP GET para la URL del
+     // documento HTML y regresa el numero de palabras e imagenes que contiene.
+     func CountWordsAndImages(url string) (words, images int, err error) {
+       resp, err := http.Get(url)
+       if err != nil {
+         return
+       }
+
+       doc, err := html.Parse(resp.Body)
+       resp.Body.Close()
+       if err != nil {
+         err = fmt.Errorf("parsing HTML: %s", err)
+         return
+       }
+       words, images = countWordsAndImages(doc)
+       return
+     }
+
+     func countWordsAndImages(n *html.Node) (words, images int) { /* ... */ }
+   < src..
+
+#    A bare return is a shorthand way to return each of the named result variables
+#    in order, so in the function above, each return statement is equivalent to
+   Un retorno desnudo es una forma abreviada de devolver cada una de las
+   variables de resultado nombradas en orden, por lo que en la funcion anterior,
+   cada sentencia @c(return) es equivalente a
+
+#    ..src > go
+#      return words, images, err
+#    < src..
+   ..src > go
+     return words, images, err
+   < src..
+
+#    In functions like this one, with many return statements and several results,
+#    bare returns can reduce code duplication, but they rarely make code easier to
+#    understand. For instance, it’s not obvious at first glance that the two early
+#    returns are equivalent to @c(return 0, 0, err) (because the result variables
+#    @c(words) and @c(images) are initialized to their zero values) and that the
+#    final @c(return) is equivalent to @c(return words, images, nil). For this
+#    reason, bare returns are best used sparingly.
+   En funciones como esta, con muchas declaraciones de retorno y varios
+   resultados, los resultados desnudos pueden reducir la duplicacion de codigo,
+   pero rara vez hacen que el codigo sea mas facil de entender. Por ejemplo, no
+   es obvio a primera vista que los dos primeros resultados son equivalentes a
+   @c(return 0, 0, err) (porque las variables de resultado @c(words) e
+   @c(images) se inicializan con sus valores cero) y que el ultimo @c(return) es
+   equivalente a @c(return words, images, nil). Por esta razon, es mejor
+   utilizar los resultados desnudos con moderacion.
+
+#    @b(Exercise 5.5): Implement @c(countWordsAndImages). (See Exercise 4.9 for
+#    word-splitting.)
+   @b(Ejercicio 5.5): Implementar @c(countWordsAndImages). (Ver el ejercicio 4.9
+   para la division de palabras.)
+
+#    @b(Exercise 5.6): Modify the @c(corner) function in @c(gopl.io/ch3/surface)
+#    (@l(#Section 3.2<>§3.2)) to use named results and a bare return statement.
+   @b(Ejercicio 5.6): Modificar la funcion @c(corner) en @c(gopl.io/ch3/surface)
+   (@l(#Seccion 3.2<>§3.2)) para utilizar resultados con nombre y una
+   declaracion de retorno desnudo.
+
+# ** Section 5.4 <> Errors
+** Seccion 5.4 <> Errores
+
+#    Some functions always succeed at their task. For example,
+#    @c(strings.Contains) and @c(strconv.FormatBool) have well-defined results for
+#    all possible argument values and cannot fail— barring catastrophic and
+#    unpredictable scenarios like running out of memory, where the symptom is far
+#    from the cause and from which there’s little hope of recovery.
+   Algunas funciones siempre tienen exito en su tarea. Por ejemplo,
+   @c(strings.Contains) y @c(strconv.FormatBool) tienen bien definidos todos los
+   posibles valores de los argumentos y no pueden fallar–salvo escenarios
+   catastroficos e impredecibles como quedarse sin memoria, donde el sintoma
+   esta lejos de la causa y de la cual hay poca esperanza de recuperacion.
+
+#    Other functions always succeed so long as their preconditions are met. For
+#    example, the @c(time.Date) function always constructs a @c(time.Time) from
+#    its components—year, month, and so on—unless the last argument (the time
+#    zone) is @c(nil), in which case it panics. This panic is a sure sign of a bug
+#    in the calling code and should never happen in a well-written program.
+   Otras funciones siempre tienen exito siempre y cuando se cumplan sus
+   condiciones previas. Por ejemplo, la funcion @c(time.Date) siempre construye
+   un @c(time.Time) a partir de sus componentes–año, mes, y asi sucesivamente–a
+   menos que el ultimo argumento (la zona horaria) sea @c(nil), en cuyo caso se
+   entra en panico. Este panico es un signo seguro de un error en el codigo de
+   llamada y nunca debe suceder en un programa bien escrito.
+
+#    For many other functions, even in a well-written program, success is not
+#    assured because it depends on factors beyond the programmer’s control. Any
+#    function that does I/O, for example, must confront the possibility of error,
+#    and only a naïve programmer believes a simple read or write cannot
+#    fail. Indeed, it’s when the most reliable operations fail unexpectedly that
+#    we most need to know why.
+   Para muchas otras funciones, incluso en un programa bien escrito, el exito no
+   esta asegurado porque depende de factores ajenos al control del
+   programador. Cualquier funcion que haga E/S, por ejemplo, debe enfrentarse a
+   la posibilidad de error, y solo un programador ingenuo cree que una simple
+   lectura o escritura no puede fallar. De hecho, es cuando las operaciones mas
+   confiables fallan inesperadamente que necesitamos saber por que.
+
+#    Errors are thus an important part of a package’s API or an application’s user
+#    interface, and failure is just one of several expected behaviors. This is the
+#    approach Go takes to error handling.
+   Los errores son, por lo tanto, una parte importante de la API de un paquete o
+   de la interfaz de usuario de una aplicacion, y el error es solo uno de varios
+   comportamientos esperados. Este es el enfoque que Go toma respecto al manejo
+   de errores.
+
+#    A function for which failure is an expected behavior returns an additional
+#    result, conventionally the last one. If the failure has only one possible
+#    cause, the result is a boolean, usually called @c(ok), as in this example of a
+#    cache lookup that always succeeds unless there was no entry for that key:
+   Una funcion cuyo fallo es un comportamiento esperado devuelve un resultado
+   adicional, convencionalmente el ultimo. Si el fallo tiene solo una causa
+   posible, el resultado es un valor booleano, generalmente llamado @c(ok), como
+   en este ejemplo de una busqueda en la cache que siempre tiene exito a menos
+   que no hubiera ninguna entrada para esa clave:
+
+#    ..src > go
+#      value, ok := cache.Lookup(key)
+#      if !ok {
+#        // ...cache[key] does not exist...
+#      }
+#    < src..
+   ..src > go
+     value, ok := cache.Lookup(key)
+     if !ok {
+       // ...cache[key] does not exist...
+     }
+   < src..
+
+#    More often, and especially for I/O, the failure may have a variety of causes
+#    for which the caller will need an explanation. In such cases, the type of the
+#    additional result is @c(error).
+   Mas a menudo, y especialmente para E/S, el fallo puede tener una variedad
+   de causas para las cuales el llamador necesitara una explicacion. En tales
+   casos, el tipo del resultado adicional es @c(error).
+
+#    The built-in type @c(error) is an interface type. We’ll see more of what this
+#    means and its implications for error handling in @l(#Chapter 7). For now it’s
+#    enough to know that an error may be nil or non-nil, that nil implies success
+#    and non-nil implies failure, and that a non-nil @c(error) has an error
+#    message string which we can obtain by calling its @c(Error) method or print
+#    by calling @c[fmt.Println(err)] or @c[fmt.Printf("%v", err)].
+   El tipo nativo @c(error) es un tipo de interfaz. Veremos mas de lo que esto
+   significa y sus implicaciones para el manejo de errores en el @l(#Capitulo
+   7). Por ahora es suficiente saber que un error puede ser o no @c(nil), que
+   nil implica el exito y no-nil implica el fracaso, y que un error no-nil tiene
+   una cadena del mensaje de error que se puede obtener llamando a su metodo
+   @c(Error) o imprimir mediante @c[fmt.Println(err)] o @c[fmt.Printf("%v",
+   err)].
+
+#    Usually when a function returns a non-nil error, its other results are
+#    undefined and should be ignored. However, a few functions may return partial
+#    results in error cases. For example, if an error occurs while reading from a
+#    file, a call to @c(Read) returns the number of bytes it was able to read
+#    @e(and) an @c(error) value describing the problem. For correct behavior, some
+#    callers may need to process the incomplete data before handling the error, so
+#    it is important that such functions clearly document their results.
+   Normalmente cuando una funcion devuelve un error no-nil, sus otros resultados
+   son indefinidos y se deben ignorar. Sin embargo, algunas funciones pueden
+   devolver resultados parciales en casos de error. Por ejemplo, si se produce
+   un error durante la lectura de un archivo, una llamada a @c(Read) devuelve el
+   numero de bytes que fue capaz de leer @e(y) un valor @c(error) que describe
+   el problema. Para el comportamiento correcto, algunos llamadores pueden
+   necesitar procesar los datos incompletos antes de manejar el error, por lo
+   que es importante que estas funciones documente claramente sus resultados.
+
+#    Go’s approach sets it apart from many other languages in which failures are
+#    reported using @e(exceptions), not ordinary values. Although Go does have an
+#    exception mechanism of sorts, as we will see in @l(#Section 5.9), it is used
+#    only for reporting truly unexpected errors that indicate a bug, not the
+#    routine errors that a robust program should be built to expect.
+   El enfoque de Go lo diferencia de muchos otros lenguajes en los que se
+   reportan fallos utilizando @e(excepciones), no valores normales. Aunque Go
+   tiene un mecanismo de excepcion, como veremos en la @l(#Seccion 5.9), se
+   utiliza solo para informar de los errores realmente inesperadas que indican
+   un error, no los errores de rutina que un programa robusto deberia esperar.
+
+#    The reason for this design is that exceptions tend to entangle the
+#    description of an error with the control flow required to handle it, often
+#    leading to an undesirable outcome: routine errors are reported to the end
+#    user in the form of an incomprehensible stack trace, full of information
+#    about the structure of the program but lacking intelligible context about
+#    what went wrong.
+   La razon de este diseño es que las excepciones tienden a enredar la
+   descripcion de un error con el flujo de control requerido para manejarlo,
+   conduciendo a menudo a un resultado indeseable: los errores de rutina se
+   informan al usuario final en forma de un rastro de pila incomprensible, lleno
+   de informacion sobre la estructura del programa pero carece de un contexto
+   inteligible sobre lo que salio mal.
+
+#    By contrast, Go programs use ordinary control-flow mechanisms like @c(if) and
+#    @c(return) to respond to errors. This style undeniably demands that more
+#    attention be paid to error-handling logic, but that is precisely the point.
+   Por el contrario, los programas Go utilizan mecanismos de control de flujo
+   normales como @c(if) y @c(return) para responder a los errores. Este estilo
+   indudablemente exige que se preste mas atencion a la logica de manejo de
+   errores, pero ese es precisamente el punto.
+
+# *** Section 5.4.1 <> Error-Handling Strategies
+*** Seccion 5.4.1 <> Estrategias de Manejo de Errores
+
+#     When a function call returns an error, it’s the caller’s responsibility to
+#     check it and take appropriate action. Depending on the situation, there may
+#     be a number of possibilities. Let’s take a look at five of them.
+    Cuando una llamada de funcion devuelve un error, es responsabilidad del
+    llamador comprobarlo y tomar la accion apropiada. Dependiendo de la
+    situacion, puede haber una serie de posibilidades. Echemos un vistazo a
+    cinco de ellas.
+
+#     First, and most common, is to @e(propagate) the error, so that a failure in
+#     a subroutine becomes a failure of the calling routine. We saw examples of
+#     this in the @c(findLinks) function of @l(#Section 5.3). If the call to
+#     @c(http.Get) fails, @c(findLinks) returns the HTTP error to the caller without
+#     further ado:
+    La primera y mas comun, es @e(propagar) el error, por lo que un fallo en una
+    subrutina se convierte en un fracaso de la rutina de llamada. Vimos ejemplos
+    de esto en la funcion @c(findLinks) de la @l(#Seccion 5.3). Si la llamada a
+    @c(http.Get) falla, @c(findLinks) devuelve el error HTTP a la persona al
+    llamador sin mas preambulos:
+
+#     ..src > go
+#       resp, err := http.Get(url)
+#       if err != nil {
+#         return nil, err
+#       }
+#     < src..
+    ..src > go
+      resp, err := http.Get(url)
+      if err != nil {
+        return nil, err
+      }
+    < src..
+
+#     In contrast, if the call to @c(html.Parse) fails, @c(findLinks) does not
+#     return the HTML parser’s error directly because it lacks two crucial pieces
+#     of information: that the error occurred in the parser, and the URL of the
+#     document that was being parsed. In this case, @c(findLinks) constructs a new
+#     error message that includes both pieces of information as well as the
+#     underlying parse error:
+    Por el contrario, si la llamada a @c(html.Parse) falla, @c(findLinks) no
+    devuelve el error del analizador de HTML directamente, porque carece de dos
+    piezas cruciales de informacion: que se produjo el error en el analizador, y
+    la direccion URL del documento que se esta analizando. En este caso,
+    @c(findLinks) construye un nuevo mensaje de error que incluye las dos piezas
+    de informacion, asi como un analisis del error subyacente:
+
+#     ..src > go
+#       doc, err := html.Parse(resp.Body)
+#       resp.Body.Close()
+#       if err != nil {
+#         return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
+#       }
+#     < src..
+    ..src > go
+      doc, err := html.Parse(resp.Body)
+      resp.Body.Close()
+      if err != nil {
+        return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
+      }
+    < src..
+
+#     The @c(fmt.Errorf) function formats an error message using @c(fmt.Sprintf)
+#     and returns a new @c(error) value. We use it to build descriptive errors by
+#     successively prefixing additional context information to the original error
+#     message. When the error is ultimately handled by the program’s @c(main)
+#     function, it should provide a clear causal chain from the root problem to
+#     the overall failure, reminiscent of a NASA accident investigation:
+    La funcion @c(fmt.Errorf) da formato a un mensaje de error utilizando
+    @c(fmt.Sprintf) y devuelve un nuevo valor @c(error). Lo utilizamos para
+    generar errores descriptivos mediante el prefijo sucesivo de informacion de
+    contexto adicional al mensaje de error original. Cuando el error es en
+    ultima instancia, manejado por la funcion @c(main) del programa, se debe
+    proporcionar una cadena causal clara a partir de la raiz del problema de la
+    falta en su conjunto, que recuerda a una investigacion de accidentes de la
+    NASA:
+
+#     ..pre >
+#       genesis: crashed: no parachute: G-switch failed: bad relay orientation
+    ..pre >
+      genesis: crashed: no parachute: G-switch failed: bad relay orientation
+
+#     Because error messages are frequently chained together, message strings
+#     should not be capitalized and newlines should be avoided. The resulting
+#     errors may be long, but they will be selfcontained when found by tools like
+#     @$(grep).
+    Debido a que los mensajes de error con frecuencia se encadenan juntos, las
+    cadenas de mensajes no deben ser mayusculas y las lineas nuevas deben
+    evitarse. Los errores resultantes pueden ser largos, pero seran
+    autocontenidos cuando sean encuontrados por herramientas como grep.
+
+#     When designing error messages, be deliberate, so that each one is a
+#     meaningful description of the problem with sufficient and relevant detail,
+#     and be consistent, so that errors returned by the same function or by a
+#     group of functions in the same package are similar in form and can be dealt
+#     with in the same way.
+    Cuando diseñe mensajes de error, sea deliberado, de modo que cada uno sea
+    una descripcion significativa del problema con detalles suficientes y
+    relevantes, y sea consistente, de modo que los errores devueltos por la
+    misma funcion o por un grupo de funciones en el mismo paquete sean similares
+    en forma y se puedan tratar de la misma manera.
+
+#     For example, the @c(os) package guarantees that every error returned by a
+#     file operation, such as @c(os.Open) or the @c(Read), @c(Write), or @c(Close)
+#     methods of an open file, describes not just the nature of the failure
+#     (permission denied, no such directory, and so on) but also the name of the
+#     file, so the caller needn’t include this information in the error message it
+#     constructs.
+    Por ejemplo, el paquete @c(os) garantiza que cada error devuelto por una
+    operacion de archivo, como @c(os.Open) o los metodos @c(Read), @c(Write), o
+    @c(Close) de un archivo abierto, no describen solo la naturaleza de la falla
+    (permiso denegado, directorio erroneo, etc), sino tambien el nombre del
+    archivo, por lo el que llamador no necesita incluir esta informacion en el
+    mensaje de error.
+
+#     In general, the call @c[f(x)] is responsible for reporting the attempted
+#     operation @c(f) and the argument value @c(x) as they relate to the context
+#     of the error. The caller is responsible for adding further information that
+#     it has but the call @c[f(x)] does not, such as the URL in the call to
+#     @c(html.Parse) above.
+    En general, la llamada @c[f(x)] es responsable de informar el intento de
+    operacion @c(f) y el valor del argumento @c(x) en su relacion con el
+    contexto del error. El llamador es responsable de añadir mas informacion que
+    tiene, pero la llamada @c[f(x)] no, tal como la URL en la llamada a
+    @c(html.Parse) anterior.
+
+#     Let’s move on to the second strategy for handling errors. For errors that
+#     represent transient or unpredictable problems, it may make sense to
+#     @e(retry) the failed operation, possibly with a delay between tries, and
+#     perhaps with a limit on the number of attempts or the time spent trying
+#     before giving up entirely.
+    Pasemos a la segunda estrategia para manejar errores. Para errores que
+    representan problemas transitorios o impredecibles, puede tener sentido
+    volver a intentar la operacion fallida, posiblemente con un retardo entre
+    intentos, y tal vez con un limite en el numero de intentos o el tiempo
+    dedicado a tratar antes de renunciar por completo.
+
+#     ..figure > @l(gopl.io/ch5/wait/wait.go<>gopl.io/ch5/wait)
+    ..figure > @l(gopl.io/ch5/wait/wait.go<>gopl.io/ch5/wait)
+
+#       ..src > go
+#         // WaitForServer attempts to contact the server of a URL.
+#         // It tries for one minute using exponential back-off.
+#         // It reports an error if all attempts fail.
+#         func WaitForServer(url string) error {
+#           const timeout = 1 * time.Minute
+#           deadline := time.Now().Add(timeout)
+#           for tries := 0; time.Now().Before(deadline); tries++ {
+#             _, err := http.Head(url)
+#             if err == nil {
+#               return nil // success
+#             }
+#             log.Printf("server not responding (%s); retrying...", err)
+#             time.Sleep(time.Second << uint(tries)) // exponential back-off
+#           }
+#           return fmt.Errorf("server %s failed to respond after %s", url, timeout)
+#         }
+#       < src..
+      ..src > go
+        // WaitForServer intenta ponerse en contacto con el servidor de una URL
+        // Se intenta durante un minuto usando retroceso exponencial.
+        // Informa un error si todos los intentos fallan.
+        func WaitForServer(url string) error {
+          const timeout = 1 * time.Minute
+          deadline := time.Now().Add(timeout)
+          for tries := 0; time.Now().Before(deadline); tries++ {
+            _, err := http.Head(url)
+            if err == nil {
+              return nil // exito
+            }
+            log.Printf("server not responding (%s); retrying...", err)
+            time.Sleep(time.Second << uint(tries)) // retroceso exponencial
+          }
+          return fmt.Errorf("server %s failed to respond after %s", url, timeout)
+        }
+      < src..
+
+
+#     Third, if progress is impossible, the caller can print the error and stop
+#     the program gracefully, but this course of action should generally be
+#     reserved for the main package of a program.  Library functions should
+#     usually propagate errors to the caller, unless the error is a sign of an
+#     internal inconsistency—that is, a bug.
+    En tercer lugar, si el progreso es imposible, el llamante puede imprimir el
+    error y detener el programa con gracia, pero este curso de accion
+    generalmente debe reservarse para el paquete principal de un programa. Las
+    funciones de la libreria normalmente deben propagar errores al llamante, a
+    menos que el error sea un signo de una inconsistencia interna, es decir, un
+    error.
+
+#     ..src > go
+#       // (In function main.)
+#       if err := WaitForServer(url); err != nil {
+#         fmt.Fprintf(os.Stderr, "Site is down: %v\n", err)
+#         os.Exit(1)
+#       }
+#     < src..
+    ..src > go
+      // (Dentro de la funcion main.)
+      if err := WaitForServer(url); err != nil {
+        fmt.Fprintf(os.Stderr, "Site is down: %v\n", err)
+        os.Exit(1)
+      }
+    < src..
+
+#     A more convenient way to achieve the same effect is to call @c(log.Fatalf).
+#     As with all the @c(log) functions, by default it prefixes the time and date
+#     to the error message.
+    Una forma mas conveniente para lograr el mismo efecto es llamar a
+    @c(log.Fatalf). Al igual que con todas las funciones @c(log), por defecto se
+    prefija la hora y la fecha para el mensaje de error.
+
+#     ..src > go
+#       if err := WaitForServer(url); err != nil {
+#         log.Fatalf("Site is down: %v\n", err)
+#       }
+#     < src..
+    ..src > go
+      if err := WaitForServer(url); err != nil {
+        log.Fatalf("Site is down: %v\n", err)
+      }
+    < src..
+
+#     The default format is helpful in a long-running server, but less so for an
+#     interactive tool:
+    El formato predeterminado es util en un servidor de larga ejecucion, pero
+    menos para una herramienta interactiva:
+
+#     ..pre >
+#       2006/01/02 15:04:05 Site is down: no such domain: bad.gopl.io
+    ..pre >
+      2006/01/02 15:04:05 Site is down: no such domain: bad.gopl.io
+
+#     For a more attractive output, we can set the prefix used by the @c(log) package
+#     to the name of the command, and suppress the display of the date and time:
+    Para una salida mas atractiva, podemos establecer el prefijo utilizado por
+    el paquete @c(log) en el nombre del comando, y suprimir la visualizacion de la
+    fecha y hora:
+
+#     ..src > go
+#       log.SetPrefix("wait: ")
+#       log.SetFlags(0)
+#     < src..
+    ..src > go
+      log.SetPrefix("wait: ")
+      log.SetFlags(0)
+    < src..
+
+#     Fourth, in some cases, it’s sufficient just to log the error and then
+#     continue, perhaps with reduced functionality. Again there’s a choice between
+#     using the @c(log) package, which adds the usual prefix:
+    En cuarto lugar, en algunos casos, basta con registrar el error y luego
+    continuar, tal vez con funcionalidad reducida. Una vez mas hay una eleccion
+    entre utilizar el paquete @c(log), que añade el prefijo habitual:
+
+#     ..src > go
+#       if err := Ping(); err != nil {
+#         log.Printf("ping failed: %v; networking disabled", err)
+#       }
+#     < src..
+    ..src > go
+      if err := Ping(); err != nil {
+        log.Printf("ping failed: %v; networking disabled", err)
+      }
+    < src..
+
+#     and printing directly to the standard error stream:
+    e imprimir directamente a flujo de error estardar:
+
+#     ..src > go
+#       if err := Ping(); err != nil {
+#         fmt.Fprintf(os.Stderr, "ping failed: %v; networking disabled\n", err)
+#       }
+#     < src..
+    ..src > go
+      if err := Ping(); err != nil {
+        fmt.Fprintf(os.Stderr, "ping failed: %v; networking disabled\n", err)
+      }
+    < src..
+
+#     (All @c(log) functions append a newline if one is not already present.)
+    (Todas las funciones log añaden un salto de linea si no hay uno presente).
+
+#     And fifth and finally, in rare cases we can safely ignore an error entirely:
+    Y quinto y ultimo, en casos raros podemos ignorar un error completamente:
+
+#     ..src > go
+#       dir, err := ioutil.TempDir("", "scratch")
+#       if err != nil {
+#         return fmt.Errorf("failed to create temp dir: %v", err)
+#       }
+#
+#       // ...use temp dir...
+#
+#       os.RemoveAll(dir) // ignore errors; $TMPDIR is cleaned periodically
+#     < src..
+    ..src > go
+      dir, err := ioutil.TempDir("", "scratch")
+      if err != nil {
+        return fmt.Errorf("failed to create temp dir: %v", err)
+      }
+
+      // ...use temp dir...
+
+      os.RemoveAll(dir) // ignorar errores; $TMPDIR se limpia periodicamente
+    < src..
+
+#     The call to @c(os.RemoveAll) may fail, but the program ignores it because
+#     the operating system periodically cleans out the temporary directory. In
+#     this case, discarding the error was intentional, but the program logic would
+#     be the same had we forgotten to deal with it. Get into the habit of
+#     considering errors after every function call, and when you deliberately
+#     ignore one, document your intention clearly.
+    La llamada a os.RemoveAll puede fallar, pero el programa lo ignora porque el
+    sistema operativo periodicamente limpia el directorio temporal. En este
+    caso, descartar el error fue intencional, pero la logica del programa seria
+    la misma si hubieramos olvidado tratar con el. Adquiera el habito de
+    considerar errores despues de cada llamada de funcion, y cuando
+    deliberadamente ignora uno, documente claramente su intencion.
+
+#     Error handling in Go has a particular rhythm. After checking an error,
+#     failure is usually dealt with before success. If failure causes the function
+#     to return, the logic for success is not indented within an @c(else) block
+#     but follows at the outer level. Functions tend to exhibit a common
+#     structure, with a series of initial checks to reject errors, followed by the
+#     substance of the function at the end, minimally indented.
+    El manejo de errores en Go tiene un ritmo particular. Despues de comprobar
+    un error, el fracaso suele tratarse antes del exito. Si el fallo hace que la
+    funcion regrese, la logica para el exito no se sangra dentro de un bloque
+    @c(else), pero continua en el nivel externo. Las funciones tienden a exhibir
+    una estructura comun, con una serie de comprobaciones iniciales para
+    rechazar errores, seguidas por la esencia de la funcion al final,
+    minimamente indentada.
+
+# *** Section 5.4.2 <> End of File (EOF)
+*** Seccion 5.4.2 <> Fin de Archivo (EOF)
+
+#     Usually, the variety of errors that a function may return is interesting to
+#     the end user but not to the intervening program logic. On occasion, however,
+#     a program must take different actions depending on the kind of error that
+#     has occurred. Consider an attempt to read @m(n) bytes of data from a
+#     file. If @m(n) is chosen to be the length of the file, any error represents
+#     a failure. On the other hand, if the caller repeatedly tries to read
+#     fixed-size chunks until the file is exhausted, the caller must respond
+#     differently to an end-of-file condition than it does to all other errors.
+#     For this reason, the @c(io) package guarantees that any read failure caused
+#     by an end-of-file condition is always reported by a distinguished error,
+#     @c(io.EOF), which is defined as follows:
+    Normalmente, la variedad de errores que una funcion puede devolver es
+    interesante para el usuario final, pero no para la logica del programa
+    intermedio. En ocasiones, sin embargo, un programa debe tomar diferentes
+    acciones dependiendo del tipo de error que se ha producido. Considere un
+    intento de leer @m(n) bytes de datos de un archivo. Si se elige @m(n) para
+    ser la longitud del archivo, cualquier error representa un fracaso. Por otro
+    lado, si el llamador trata repetidamente de leer fragmentos de tamaño fijo
+    hasta que el archivo se agote, el llamador debe responder de manera
+    diferente a una condicion de fin de archivo que a todos los demas
+    errores. Por esta razon, el paquete @c(io) garantiza que cualquier daño
+    causado por una condicion de fin de archivo siempre informa de un error
+    distinguida, @c(io.EOF), que se define de la siguiente manera:
+
+#     ..src > go
+#       package io
+#
+#       import "errors"
+#
+#       // EOF is the error returned by Read when no more input is available.
+#       var EOF = errors.New("EOF")
+#     < src..
+    ..src > go
+      package io
+
+      import "errors"
+
+      // EOF es el error devuelto por Read cuando no hay mas entrada disponible.
+      var EOF = errors.New("EOF")
+    < src..
+
+#     The caller can detect this condition using a simple comparison, as in the
+#     loop below, which reads runes from the standard input. (The @$(charcount)
+#     program in @l(#Section 4.3) provides a more complete example.)
+    El llamador puede detectar esta condicion usando una comparacion simple,
+    como en el bucle siguiente, que lee runas de la entrada estandar. (El
+    programa @$(charcount) en la @l(#Seccion 4.3) ofrece un ejemplo mas
+    completo.)
+
+#     ..src > go
+#       in := bufio.NewReader(os.Stdin)
+#       for {
+#         r, _, err := in.ReadRune()
+#         if err == io.EOF {
+#           break // finished reading
+#         }
+#         if err != nil {
+#           return fmt.Errorf("read failed: %v", err)
+#         }
+#         // ...use r...
+#       }
+#     < src..
+    ..src > go
+      in := bufio.NewReader(os.Stdin)
+      for {
+        r, _, err := in.ReadRune()
+        if err == io.EOF {
+          break // lectura terminada
+        }
+        if err != nil {
+          return fmt.Errorf("read failed: %v", err)
+        }
+        // ...usar r...
+      }
+    < src..
+
+#     Since in an end-of-file condition there is no information to report besides
+#     the fact of it, @c(io.EOF) has a fixed error message, @c("EOF"). For other
+#     errors, we may need to report both the quality and quantity of the error, so
+#     to speak, so a fixed error value will not do. In @l(#Section 7.11), we’ll
+#     present a more systematic way to distinguish certain error values from
+#     others.
+    Puesto que en una condicion de fin de archivo no existe informacion que
+    informar ademas del hecho de que, @c(io.EOF) tiene un mensaje de error fijo,
+    @c("EOF"). Para otros errores, es posible que tengamos que informar tanto la
+    calidad como la cantidad del error, por asi decirlo, por lo que un valor de
+    error fijo no lo hara. En la @l(#Seccion 7.11), vamos a presentar de manera
+    mas sistematica a distinguir ciertos valores de error de los demas.
+
+# ** Section 5.5 <> Function Values
+** Seccion 5.5 <> Valores de la Funcion
+
+#    Functions are @e(first-class values) in Go: like other values, function
+#    values have types, and they may be assigned to variables or passed to or
+#    returned from functions. A function value may be called like any other
+#    function. For example:
+   En Go las funciones son valores de primera clase: al igual que otros valores,
+   los valores de funcion tienen tipos, y pueden ser asignados a variables o
+   pasarse a o regresarlas de funciones. Un valor de funcion puede ser llamado
+   como cualquier otra funcion. Por ejemplo:
+
+#    ..src > go
+#      func square(n int) int     { return n * n }
+#      func negative(n int) int   { return -n }
+#      func product(m, n int) int { return m * n }
+#
+#      f := square
+#      fmt.Println(f(3))     // "9"
+#
+#      f = negative
+#      fmt.Println(f(3))     // "-3"
+#      fmt.Printf("%T\n", f) // "func(int) int"
+#
+#      f = product // compile error: can't assign f(int, int) int to f(int) int
+#    < src..
+   ..src > go
+     func square(n int) int     { return n * n }
+     func negative(n int) int   { return -n }
+     func product(m, n int) int { return m * n }
+
+     f := square
+     fmt.Println(f(3))     // "9"
+
+     f = negative
+     fmt.Println(f(3))     // "-3"
+     fmt.Printf("%T\n", f) // "func(int) int"
+
+     f = product // error de compilacion: no se puede asignar f(int, int) int a f(int) int
+   < src..
+
+#    The zero value of a function type is @c(nil). Calling a nil function value
+#    causes a panic:
+   El valor cero para el tipo funcion es @c(nil). Llamar a un valor de funcion
+   nulo produce un panico:
+
+#    ..src > go
+#      var f func(int) int
+#      f(3) // panic: call of nil function
+#    < src..
+   ..src > go
+     var f func(int) int
+     f(3) // panico: llamar a funcion nil
+   < src..
+
+#    Function values may be compared with @c(nil):
+   Los valores de funcion pueden compararse con @c(nil):
+
+#    ..src > go
+#      var f func(int) int
+#      if f != nil {
+#        f(3)
+#      }
+#    < src..
+   ..src > go
+     var f func(int) int
+     if f != nil {
+       f(3)
+     }
+   < src..
+
+#    but they are not comparable, so they may not be compared against each other
+#    or used as keys in a map.
+   Pero no son comparables, por lo que no pueden comparse entre si o utilizarse
+   como claves en un mapa.
+
+#    Function values let us parameterize our functions over not just data, but
+#    behavior too. The standard libraries contain many examples. For instance,
+#    @c(strings.Map) applies a function to each character of a string, joining the
+#    results to make another string.
+   Los valores de las funciones nos permiten parametrizar nuestras funciones no
+   solo sobre los datos sino tambien sobre el comportamiento. Las librerias
+   estandar contienen muchos ejemplos. Por ejemplo, @c(strings.Map) aplica una
+   funcion a cada caracter de una cadena, uniendo los resultados para formar
+   otra cadena.
+
+#    ..src > go
+#      func add1(r rune) rune { return r + 1 }
+#
+#      fmt.Println(strings.Map(add1, "HAL-9000")) // "IBM.:111"
+#      fmt.Println(strings.Map(add1, "VMS"))      // "WNT"
+#
+#      fmt.Println(strings.Map(add1, "Admix"))    // "Benjy"
+#    < src..
+   ..src > go
+     func add1(r rune) rune { return r + 1 }
+
+     fmt.Println(strings.Map(add1, "HAL-9000")) // "IBM.:111"
+     fmt.Println(strings.Map(add1, "VMS"))      // "WNT"
+
+     fmt.Println(strings.Map(add1, "Admix"))    // "Benjy"
+   < src..
+
+#    The @c(findLinks) function from @l(#Section 5.2) uses a helper function,
+#    @c(visit), to visit all the nodes in an HTML document and apply an action to
+#    each one. Using a function value, we can separate the logic for tree
+#    traversal from the logic for the action to be applied to each node, letting
+#    us reuse the traversal with different actions.
+   La funcion @c(findLinks) de la @l(#Seccion 5.2) utiliza una funcion auxiliar,
+   @c(visit), para visitar todos los nodos en un documento HTML y aplicar una
+   accion a cada uno. Usando el valor de una funcion, podemos separar la logica
+   del recorrido del arbol de la logica para la accion a aplicar a cada nodo,
+   permitiendonos reutilizar el recorrido con diferentes acciones.
+
+#    ..figure > @l(gopl.io/ch5/outline2/outline.go<>gopl.io/ch5/outline2)
+   ..figure > @l(gopl.io/ch5/outline2/outline.go<>gopl.io/ch5/outline2)
+
+#      ..src > go
+#        // forEachNode calls the functions pre(x) and post(x) for each node
+#        // x in the tree rooted at n. Both functions are optional.
+#        // pre is called before the children are visited (preorder) and
+#        // post is called after (postorder).
+#        func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
+#          if pre != nil {
+#            pre(n)
+#          }
+#
+#          for c := n.FirstChild; c != nil; c = c.NextSibling {
+#            forEachNode(c, pre, post)
+#          }
+#
+#          if post != nil {
+#            post(n)
+#          }
+#        }
+#      < src..
+     ..src > go
+       // forEachNode llama a las funciones pre(x) y post(x) para cada nodo
+       // x en el arbol originado en n. Ambas funciones son opcionales.
+       // pre se llama antes de que los hijos sean visitados (preorden) y
+       // post se llama despues (postorden).
+       func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
+         if pre != nil {
+           pre(n)
+         }
+
+         for c := n.FirstChild; c != nil; c = c.NextSibling {
+           forEachNode(c, pre, post)
+         }
+
+         if post != nil {
+           post(n)
+         }
+       }
+     < src..
+
+
+#    The @c(forEachNode) function accepts two function arguments, one to call
+#    before a node’s children are visited and one to call after. This arrangement
+#    gives the caller a great deal of flexibility. For example, the functions
+#    @c(startElement) and @c(endElement) print the start and end tags of an HTML
+#    element like @c(<b>...</b>):
+   La funcion @c(forEachNode) acepta dos argumentos de funcion, una para llamar
+   antes de que se visiten los hijos de un nodo y otra para llamar despues. Esta
+   disposicion da a al lamador una gran flexibilidad. Por ejemplo, las funciones
+   @c(startElement) y @c(endElement) imprimen las etiquetas de inicio y fin de
+   un elemento HTML, como @c(<b>...</b>):
+
+#    ..src > go
+#      var depth int
+#
+#      func startElement(n *html.Node) {
+#        if n.Type == html.ElementNode {
+#          fmt.Printf("%*s<%s>\n", depth*2, "", n.Data)
+#          depth++
+#        }
+#      }
+#
+#      func endElement(n *html.Node) {
+#        if n.Type == html.ElementNode {
+#          depth--
+#          fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
+#        }
+#      }
+#    < src..
+   ..src > go
+     var depth int
+
+     func startElement(n *html.Node) {
+       if n.Type == html.ElementNode {
+         fmt.Printf("%*s<%s>\n", depth*2, "", n.Data)
+         depth++
+       }
+     }
+
+     func endElement(n *html.Node) {
+       if n.Type == html.ElementNode {
+         depth--
+         fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
+       }
+     }
+   < src..
+
+#    The functions also indent the output using another @c(fmt.Printf) trick. The
+#    @c(*) adverb in @c(%*s) prints a string padded with a variable number of
+#    spaces. The width and the string are provided by the arguments @c(depth*2)
+#    and @c("").
+   Las funciones tambien indentan la salida usando otro truco de
+   @c(fmt.Printf). El adverbio @c(*) en @c(%*s) imprime una cadena rellena con
+   un numero variable de espacios. La anchura y la cadena se proporcionan por
+   los argumentos @c(depth*2) y @c("").
+
+#    If we call @c(forEachNode) on an HTML document, like this:
+   Si llamamos a @c(forEachNode) en un documento HTML, de esta forma:
+
+#    ..src > go
+#      forEachNode(doc, startElement, endElement)
+#    < src..
+   ..src > go
+     forEachNode(doc, startElement, endElement)
+   < src..
+
+#    we get a more elaborate variation on the output of our earlier @$(outline)
+#    program:
+   obtenemos una variacion mas elaborada en la salida de nuestra programa
+   @$(outline) anterior:
+
+#    ..src > sh
+#      $ go build gopl.io/ch5/outline2
+#      $ ./outline2 http://gopl.io
+#      <html>
+#        <head>
+#          <meta>
+#          </meta>
+#          <title>
+#          </title>
+#          <style>
+#          </style>
+#        </head>
+#      <body>
+#        <table>
+#          <tbody>
+#            <tr>
+#              <td>
+#                <a>
+#                  <img>
+#                  </img>
+#      ...
+#    < src..
+   ..src > sh
+     $ go build gopl.io/ch5/outline2
+     $ ./outline2 http://gopl.io
+     <html>
+       <head>
+         <meta>
+         </meta>
+         <title>
+         </title>
+         <style>
+         </style>
+       </head>
+     <body>
+       <table>
+         <tbody>
+           <tr>
+             <td>
+               <a>
+                 <img>
+                 </img>
+     ...
+   < src..
+
+#    @b(Exercise 5.7): Develop @c(startElement) and @c(endElement) into a general
+#    HTML pretty-printer.  Print comment nodes, text nodes, and the attributes of
+#    each element (@c(<a href='...'>)). Use short forms like @c(<img/>) instead of
+#    @c(<img></img>) when an element has no children. Write a test to ensure that
+#    the output can be parsed successfully. (See @l(#Chapter 11).)
+   @b(Ejercicio 5.7): Desarrolla @c(startElement) y @c(endElement) en una
+   agradable impresora HTML general. Imprime los nodos de comentarios, nodos de
+   texto y los atributos de cada elemento (@c(<a href='...'>)). Utilizar formas
+   cortas como @c(<img/>) en lugar de @c(<img></img>) cuando un elemento no
+   tiene hijos. Escribir una prueba para asegurarse de que la salida se puede
+   analizar con exito. (Vease el @l(#Capitulo 11)).
+
+#    @b(Exercise 5.8): Modify @c(forEachNode) so that the @c(pre) and @c(post)
+#    functions return a boolean result indicating whether to continue the
+#    traversal. Use it to write a function @c(ElementByID) with the following
+#    signature that finds the first HTML element with the specified @c(id)
+#    attribute. The function should stop the traversal as soon as a match is
+#    found.
+   @b(Ejercicio 5.8): Modificar @c(forEachNode) para que las funciones @c(pre) y
+   @c(post) devuelvan un resultado booleano que señale si se debe continuar el
+   recorrido. Utilicelo para escribir una funcion @c(ElementByID) con la
+   siguiente firma que se encuentra el primer elemento HTML con el atributo id
+   especificado. La funcion debe detener el recorrido tan pronto como se
+   encuentre una coincidencia.
+
+#    ..src > go
+#      func ElementByID(doc *html.Node, id string) *html.Node
+#    < src..
+   ..src > go
+     func ElementByID(doc *html.Node, id string) *html.Node
+   < src..
+
+#    @b(Exercise 5.9): Write a function @c[expand(s string, f func(string) string)
+#    string] that replaces each substring @"(@c($foo)) within s by the text
+#    returned by @c[f("foo")].
+   @b(Ejercicio 5.9): Escribir una funcion @c[expand(s string, f func(string)
+   string) string] que reemplaze cada subcadena @c("$foo") dentro de @c(s) con
+   el texto devuelto por @c[f("foo")].
+
+# ** Section 5.6 <> Anonymous Functions
+** Seccion 5.6 <> Funciones Anonimas
+
+#    Named functions can be declared only at the package level, but we can use a
+#    @e(function literal) to denote a function value within any expression. A
+#    function literal is written like a function declaration, but without a name
+#    following the @c(func) keyword. It is an expression, and its value is called
+#    an @e(anonymous function).
+   Funciones con nombre se pueden declarar solo a nivel de paquete, pero podemos
+   utilizar un @e(literal de funcion) para denotar un valor de funcion dentro de
+   cualquier expresion. Un literal funcion se escribe como una declaracion de la
+   funcion, pero sin un nombre despues de la palabra clave @c(func). Es una
+   expresion, y su valor se denomina @e(funcion anonima).
+
+#    Function literals let us define a function at its point of use. As an
+#    example, the earlier call to @c(strings.Map) can be rewritten as
+   Los literales de la funcion definen una funcion en su punto de uso. A modo de
+   ejemplo, la llamada anterior a @c(strings.Map) se puede reescribir como
+
+#    ..src > go
+#      strings.Map(func(r rune) rune { return r + 1 }, "HAL-9000")
+#    < src..
+   ..src > go
+     strings.Map(func(r rune) rune { return r + 1 }, "HAL-9000")
+   < src..
+
+#    More importantly, functions defined in this way have access to the entire
+#    lexical environment, so the inner function can refer to variables from the
+#    enclosing function, as this example shows:
+   Mas importante aun, las funciones definidas de esta manera tienen acceso a
+   todo el entorno lexico, por lo que la funcion interna puede referirse a
+   variables de la funcion de inclusion, como muestra este ejemplo:
+
+#    ..figure > @l(gopl.io/ch5/squares/main.go<>gopl.io/ch5/squares)
+   ..figure > @l(gopl.io/ch5/squares/main.go<>gopl.io/ch5/squares)
+
+#      ..src > go
+#        // squares returns a function that returns
+#        // the next square number each time it is called.
+#        func squares() func() int {
+#          var x int
+#          return func() int {
+#            x++
+#            return x * x
+#          }
+#        }
+#
+#        func main() {
+#          f := squares()
+#          fmt.Println(f()) // "1"
+#          fmt.Println(f()) // "4"
+#          fmt.Println(f()) // "9"
+#          fmt.Println(f()) // "16"
+#        }
+#      < src..
+     ..src > go
+       // squares regresa una funcion que devuelve el siguiente
+       // cuadrado del numero cada ves que se llama.
+       func squares() func() int {
+         var x int
+         return func() int {
+           x++
+           return x * x
+         }
+       }
+
+       func main() {
+         f := squares()
+         fmt.Println(f()) // "1"
+         fmt.Println(f()) // "4"
+         fmt.Println(f()) // "9"
+         fmt.Println(f()) // "16"
+       }
+     < src..
+
+
+#    The function @c(squares) returns another function, of type @c[func() int]. A
+#    call to @c(squares) creates a local variable @c(x) and returns an anonymous
+#    function that, each time it is called, increments @c(x) and returns its
+#    square. A second call to @c(squares) would create a second variable @c(x) and
+#    return a new anonymous function which increments that variable.
+   La funcion @c(squares) devuelve otra funcion, de tipo @c[func() int]. Una
+   llamada a @c(squares) crea una variable local @c(x) y devuelve una funcion
+   anonima que, cada vez que se llama, incrementa @c(x) y devuelve su
+   cuadrado. Una segunda llamada a @c(squares) crearia una segunda variable
+   @c(x) y devolvera una nueva funcion anonima que incremente esa variable.
+
+#    The @c(squares) example demonstrates that function values are not just code
+#    but can have state.  The anonymous inner function can access and update the
+#    local variables of the enclosing function @c(squares). These hidden variable
+#    references are why we classify functions as reference types and why function
+#    values are not comparable. Function values like these are implemented using a
+#    technique called @e(closures), and Go programmers often use this term for
+#    function values.
+   El ejemplo @c(squares) demuestra que los valores de funcion no son solo
+   codigo, sino que pueden tener estado. La funcion anonima interna puede
+   acceder y actualizar las variables locales dentro de la funcion @c(squares).
+   Estas referencias de variables ocultas son el por que clasificamos a las
+   funciones como tipos de referencia y motivo de que los valores de las
+   funciones no sean comparables. Los valores de funcion como estos se
+   implementan utilizando una tecnica llamada @e(closures), y los programadores
+   Go a menudo utilizan este termino para los valores de la funcion.
+
+#    Here again we see an example where the lifetime of a variable is not
+#    determined by its scope: the variable @c(x) exists after @c(squares) has
+#    returned within @c(main), even though @c(x) is hidden inside @c(f).
+   Aqui de nuevo vemos un ejemplo donde el tiempo de vida de una variable no
+   esta determinada por su ambito de aplicacion: la variable @c(x) existe
+   despues del retorno de @c(squares) dentro de @c(main), aunque @c(x) este
+   oculta dentro de @c(f).
+
+#    As a somewhat academic example of anonymous functions, consider the problem
+#    of computing a sequence of computer science courses that satisfies the
+#    prerequisite requirements of each one. The prerequisites are given in the
+#    @c(prereqs) table below, which is a mapping from each course to the list of
+#    courses that must be completed before it.
+   Como un ejemplo un tanto academico de funciones anonimas, considere el
+   problema de calcular una secuencia de los cursos de ciencias de la
+   computacion que satisfagan los requisitos previos de cada uno. Los
+   prerequisitos se dan en la tabla @c(prereqs) de abajo, que es un mapeo de
+   cada curso a la lista de cursos que se deben completar antes de ella.
+
+#    ..figure > @l(gopl.io/ch5/toposort/main.go<>gopl.io/ch5/toposort)
+   ..figure > @l(gopl.io/ch5/toposort/main.go<>gopl.io/ch5/toposort)
+
+#      ..src > go
+#        // prereqs maps computer science courses to their prerequisites.
+#        var prereqs = map[string][]string{
+#          "algorithms": {"data structures"},
+#          "calculus":   {"linear algebra"},
+#
+#          "compilers": {
+#            "data structures",
+#            "formal languages",
+#            "computer organization",
+#          },
+#
+#          "data structures":       {"discrete math"},
+#          "databases":             {"data structures"},
+#          "discrete math":         {"intro to programming"},
+#          "formal languages":      {"discrete math"},
+#          "networks":              {"operating systems"},
+#          "operating systems":     {"data structures", "computer organization"},
+#          "programming languages": {"data structures", "computer organization"},
+#        }
+#      < src..
+     ..src > go
+       // prereqs asigna cursos de ciencia de la computacion a sus prerequisitos.
+       var prereqs = map[string][]string{
+         "algoritmos": {"estructura de datos"},
+         "calculo":   {"algebra lineal"},
+
+         "compiladores": {
+           "estructura de datos",
+           "lenguajes formales",
+           "organizacion de computadoras",
+         },
+
+         "estructura de datos":       {"matematicas discretas"},
+         "bases de datos":            {"estructura de datos"},
+         "matematicas discretas":     {"introduccion a la programacion"},
+         "lenguajes formales":        {"matematicas discretas"},
+         "redes":                     {"sitemas operativos"},
+         "sistemas operativos":       {"estructura de datos", "organizacion de computadoras"},
+         "lenguajes de programacion": {"estructura de datos", "organizacion de computadoras"},
+       }
+     < src..
+
+
+#    This kind of problem is known as topological sorting. Conceptually, the
+#    prerequisite information forms a directed graph with a node for each course
+#    and edges from each course to the courses that it depends on. The graph is
+#    acyclic: there is no path from a course that leads back to itself. We can
+#    compute a valid sequence using depth-first search through the graph with the
+#    code below :
+   Este tipo de problema se conoce como clasificacion topologica.
+   Conceptualmente, la informacion de los requisitos previos forma un grafico
+   dirigido con un nodo para cada curso y los bordes de cada curso a los cursos
+   de los que depende. El grafico es aciclico: no hay camino de un curso que
+   vuelva a si mismo. Podemos calcular una secuencia valida usando la busqueda
+   de profundidad en el grafico con el siguiente codigo:
+
+#    ..src > go
+#      func main() {
+#        for i, course := range topoSort(prereqs) {
+#          fmt.Printf("%d:\t%s\n", i+1, course)
+#        }
+#      }
+#
+#      func topoSort(m map[string][]string) []string {
+#        var order []string
+#        seen := make(map[string]bool)
+#        var visitAll func(items []string)
+#
+#        visitAll = func(items []string) {
+#          for _, item := range items {
+#            if !seen[item] {
+#              seen[item] = true
+#              visitAll(m[item])
+#              order = append(order, item)
+#            }
+#          }
+#        }
+#
+#        var keys []string
+#        for key := range m {
+#          keys = append(keys, key)
+#        }
+#
+#        sort.Strings(keys)
+#        visitAll(keys)
+#        return order
+#      }
+#    < src..
+   ..src > go
+     func main() {
+       for i, course := range topoSort(prereqs) {
+         fmt.Printf("%d:\t%s\n", i+1, course)
+       }
+     }
+
+     func topoSort(m map[string][]string) []string {
+       var order []string
+       seen := make(map[string]bool)
+       var visitAll func(items []string)
+
+       visitAll = func(items []string) {
+         for _, item := range items {
+           if !seen[item] {
+             seen[item] = true
+             visitAll(m[item])
+             order = append(order, item)
+           }
+         }
+       }
+
+       var keys []string
+       for key := range m {
+         keys = append(keys, key)
+       }
+
+       sort.Strings(keys)
+       visitAll(keys)
+       return order
+     }
+   < src..
+
+
+#    When an anonymous function requires recursion, as in this example, we must
+#    first declare a variable, and then assign the anonymous function to that
+#    variable. Had these two steps been combined in the declaration, the function
+#    literal would not be within the scope of the variable @c(visitAll) so it
+#    would have no way to call itself recursively:
+   Cuando una funcion anonima requiere recursion, como en este ejemplo, primero
+   debemos declarar una variable, y luego asignar la funcion anonima a esa
+   variable. Si estos dos pasos estuvieran combinados en la declaracion, la
+   funcion literal no estaria dentro del alcance de la variable @c(visitAll) por
+   lo que no tendria ninguna manera de llamarse a si misma de forma recursiva:
+
+#    ..src > go
+#      visitAll := func(items []string) {
+#        // ...
+#        visitAll(m[item]) // compile error: undefined: visitAll
+#        // ...
+#      }
+#    < src..
+   ..src > go
+     visitAll := func(items []string) {
+       // ...
+       visitAll(m[item]) // compile error: undefined: visitAll
+       // ...
+     }
+   < src..
+
+#    The output of the @$(toposort) program is shown below. It is deterministic,
+#    an often-desirable property that doesn’t always come for free. Here, the
+#    values of the @c(prereqs) map are slices, not more maps, so their iteration
+#    order is deterministic, and we sorted the keys of @c(prereqs) before making
+#    the initial calls to @c(visitAll).
+   La salida del programa @$(toposort) se muestra a continuacion. Es
+   determinista, una propiedad a menudo deseable que no siempre viene de forma
+   gratuita. En este caso, los valores del mapa @c(prereqs) son slices, no mas
+   mapas, por lo que su orden de iteracion es determinista, y ordenamos las
+   llaves de @c(prereqs) antes de hacer las llamadas iniciales a @c(visitAll) .
+
+#    ..pre >
+#      1:      intro to programming
+#      2:      discrete math
+#      3:      data structures
+#      4:      algorithms
+#      5:      linear algebra
+#      6:      calculus
+#      7:      formal languages
+#      8:      computer organization
+#      9:      compilers
+#      10:     databases
+#      11:     operating systems
+#      12:     networks
+#      13:     programming languages
+#    < pre..
+   ..pre >
+     1:      introduccion a la programacion
+     2:      matematicas discretas
+     3:      estructura de datos
+     4:      algoritmos
+     5:      algebra lineal
+     6:      calculo
+     7:      lenguajes formales
+     8:      organizacion de computadoras
+     9:      compiladores
+     10:     bases de datos
+     11:     sistemas operativos
+     12:     redes
+     13:     Lenguajes de programacion
+   < pre..
+
+#    Let’s return to our @c(findLinks) example. We’ve moved the link-extraction
+#    function @c(links.Extract) to its own package, since we’ll use it again in
+#    @l(#Chapter 8). We replaced the @c(visit) function with an anonymous function
+#    that appends to the @c(links) slice directly, and used @c(forEachNode) to
+#    handle the traversal. Since @c(Extract) needs only the @c(pre) function, it
+#    passes @c(nil) for the @c(post) argument.
+   Volvamos a nuestro ejemplo @c(findLinks). Hemos movido la funcion de
+   extraccion de enlaces @c(links.Extract) a su propio paquete, ya que la
+   usaremos de nuevo en el @l(#Capitulo 8). Hemos sustituido la funcion
+   @c(visit) con una funcion anonima que agrega directamente los @c(links) al
+   slice, y utilizamos @c(forEachNode) para manejar el recorrido. Ya que
+   @c(Extract) solo necesita la funcion @c(pre), se pasa @c(nil) para el
+   argumento @c(post).
+
+#    ..figure > @l(gopl.io/ch5/links/links.go<>gopl.io/ch5/links)
+   ..figure > @l(gopl.io/ch5/links/links.go<>gopl.io/ch5/links)
+
+#      ..src > go
+#        // Package links provides a link-extraction function.
+#        package links
+#
+#        import (
+#          "fmt"
+#          "net/http"
+#
+#          "golang.org/x/net/html"
+#        )
+#
+#        // Extract makes an HTTP GET request to the specified URL, parses
+#        // the response as HTML, and returns the links in the HTML document.
+#        func Extract(url string) ([]string, error) {
+#          resp, err := http.Get(url)
+#          if err != nil {
+#            return nil, err
+#          }
+#          if resp.StatusCode != http.StatusOK {
+#            resp.Body.Close()
+#            return nil, fmt.Errorf("getting %s: %s", url, resp.Status)
+#          }
+#
+#          doc, err := html.Parse(resp.Body)
+#          resp.Body.Close()
+#          if err != nil {
+#            return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
+#          }
+#
+#          var links []string
+#          visitNode := func(n *html.Node) {
+#            if n.Type == html.ElementNode && n.Data == "a" {
+#              for _, a := range n.Attr {
+#                if a.Key != "href" {
+#                  continue
+#                }
+#                link, err := resp.Request.URL.Parse(a.Val)
+#                if err != nil {
+#                  continue // ignore bad URLs
+#                }
+#                links = append(links, link.String())
+#              }
+#            }
+#          }
+#          forEachNode(doc, visitNode, nil)
+#          return links, nil
+#        }
+#      < src..
+     ..src > go
+       // El paquete links proporciona una funcion de extraccion de links.
+       package links
+
+       import (
+         "fmt"
+         "net/http"
+
+         "golang.org/x/net/html"
+       )
+
+       // Extract hace una peticion HTTP GET a la URL especificada, analiza
+       // la respuesta como HTML, y regresa el enlace en el documento HTML.
+       func Extract(url string) ([]string, error) {
+         resp, err := http.Get(url)
+         if err != nil {
+           return nil, err
+         }
+         if resp.StatusCode != http.StatusOK {
+           resp.Body.Close()
+           return nil, fmt.Errorf("getting %s: %s", url, resp.Status)
+         }
+
+         doc, err := html.Parse(resp.Body)
+         resp.Body.Close()
+         if err != nil {
+           return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
+         }
+
+         var links []string
+         visitNode := func(n *html.Node) {
+           if n.Type == html.ElementNode && n.Data == "a" {
+             for _, a := range n.Attr {
+               if a.Key != "href" {
+                 continue
+               }
+               link, err := resp.Request.URL.Parse(a.Val)
+               if err != nil {
+                 continue // ignora URLs incorrectas
+               }
+               links = append(links, link.String())
+             }
+           }
+         }
+         forEachNode(doc, visitNode, nil)
+         return links, nil
+       }
+     < src..
+
+
+#    Instead of appending the raw @c(href) attribute value to the @c(links) slice,
+#    this version parses it as a URL relative to the base URL of the document,
+#    @c(resp.Request.URL). The resulting @c(link) is in absolute form, suitable
+#    for use in a call to @c(http.Get).
+   En lugar de añadir el atributo @c(href) en bruto al slice @c(links), esta
+   version lo analiza como una direccion URL relativa a la URL base del
+   documento, @c(resp.Request.URL). El enlace resultante esta en formato
+   absoluta, adecuado para su uso en una llamada a @c(http.Get).
+
+#    Crawling the web is, at its heart, a problem of graph traversal. The
+#    @c(topoSort) example showed a depth-first traversal; for our web crawler,
+#    we’ll use breadth-first traversal, at least initially. In @l(#Chapter 8),
+#    we’ll explore concurrent traversal.
+   El rastreador web es, en su corazon, un problema de grafico transversal. El
+   ejemplo @c(topoSort) mostra un recorrido en profundidad; Para nuestro
+   rastreador web, vamos a utilizar la anchura de primera transversal, al menos
+   inicialmente. En el @l(#Capitulo 8), vamos a explorar el recorrido
+   concurrente.
+
+#    The function below encapsulates the essence of a breadth-first traversal. The
+#    caller provides an initial list @c(worklist) of items to visit and a function
+#    value @c(f) to call for each item. Each item is identified by a string. The
+#    function @c(f) returns a list of new items to append to the worklist. The
+#    @c(breadthFirst) function returns when all items have been visited. It
+#    maintains a set of strings to ensure that no item is visited twice.
+   La siguiente funcion encapsula la esencia de un recorrido de
+   primer-anchura. El llamador proporciona una lista inicial @c(worklist) de
+   elementos a visitar y un valor de la funcion @c(f) a llamar para cada
+   elemento. Cada elemento se identifica mediante una cadena. La funcion @c(f)
+   devuelve una lista de elementos nuevos a añadir a la lista de trabajo. La
+   funcion @c(breadthFirst) regresa cuando todos los elementos han sido
+   visitados. Mantiene un conjunto de cadenas para garantizar que ningun
+   elemento se visita dos veces.
+
+#    ..figure > @l(gopl.io/ch5/findlinks3/findlinks.go<>gopl.io/ch5/findlinks3)
+   ..figure > @l(gopl.io/ch5/findlinks3/findlinks.go<>gopl.io/ch5/findlinks3)
+
+#      ..src > go
+#        // breadthFirst calls f for each item in the worklist.
+#        // Any items returned by f are added to the worklist.
+#        // f is called at most once for each item.
+#        func breadthFirst(f func(item string) []string, worklist []string) {
+#          seen := make(map[string]bool)
+#          for len(worklist) > 0 {
+#            items := worklist
+#            worklist = nil
+#            for _, item := range items {
+#              if !seen[item] {
+#                seen[item] = true
+#                worklist = append(worklist, f(item)...)
+#              }
+#            }
+#          }
+#        }
+#      < src..
+     ..src > go
+       // breadthFirst llama a f para cada elemento en worklist.
+       // Todos los elementos devueltos por f se agregan a worklist.
+       // f se llama como maximo una vez para cada elemento.
+       func breadthFirst(f func(item string) []string, worklist []string) {
+         seen := make(map[string]bool)
+         for len(worklist) > 0 {
+           items := worklist
+           worklist = nil
+           for _, item := range items {
+             if !seen[item] {
+               seen[item] = true
+               worklist = append(worklist, f(item)...)
+             }
+           }
+         }
+       }
+     < src..
+
+
+#    As we explained in passing in @l(#Chapter 3), the argument @"{@c[f(item)...]}
+#    causes all the items in the list returned by @c(f) to be appended to the
+#    worklist.
+   Como explicamos al pasar por el @l(#Capitulo 3), el argumento de
+   @"{@c[f(item)...]}  hace que todos los elementos de la lista devuelta por f
+   que se añadan a la lista de trabajo.
+
+#    In our crawler, items are URLs. The @c(crawl) function we’ll supply to
+#    @c(breadthFirst) prints the URL, extracts its links, and returns them so that
+#    they too are visited.
+   En nuestro rastreador, los elementos son URL. La funcion @c(crawl) que
+   suministramos a @c(breadthFirst) imprime la URL, extrae sus enlaces, y los
+   devuelve para que tambien se visiten..
+
+#    ..src > go
+#      func crawl(url string) []string {
+#        fmt.Println(url)
+#        list, err := links.Extract(url)
+#        if err != nil {
+#          log.Print(err)
+#        }
+#        return list
+#      }
+#    < src..
+   ..src > go
+     func crawl(url string) []string {
+       fmt.Println(url)
+       list, err := links.Extract(url)
+       if err != nil {
+         log.Print(err)
+       }
+       return list
+     }
+   < src..
+
+#    To start the crawler off, we’ll use the command-line arguments as the initial
+#    URLs.
+   Para iniciar el rastreador, utilizaremos los argumentos de la linea de
+   comandos como las URL iniciales.
+
+#    ..src > go
+#      func main() {
+#        // Crawl the web breadth-first,
+#        // starting from the command-line arguments.
+#        breadthFirst(crawl, os.Args[1:])
+#      }
+#    < src..
+   ..src > go
+     func main() {
+       // Rastrear la web la primer-anchura,
+       // partiendo de los argumentos de la linea de comandos.
+       breadthFirst(crawl, os.Args[1:])
+     }
+   < src..
+
+#    Let’s crawl the web starting from @c(https://golang.org). Here are some of
+#    the resulting links:
+   Vamos a rastrear la web desde @c(https://golang.org). Estos son algunos de
+   los enlaces resultantes:
+
+#    ..src > sh
+#      $ go build gopl.io/ch5/findlinks3
+#      $ ./findlinks3 https://golang.org
+#      https://golang.org/
+#      https://golang.org/doc/
+#      https://golang.org/pkg/
+#      https://golang.org/project/
+#      https://code.google.com/p/go-tour/
+#      https://golang.org/doc/code.html
+#      https://www.youtube.com/watch?v=XCsL89YtqCs
+#      http://research.swtch.com/gotour
+#      https://vimeo.com/53221560
+#    < src..
+   ..src > sh
+     $ go build gopl.io/ch5/findlinks3
+     $ ./findlinks3 https://golang.org
+     https://golang.org/
+     https://golang.org/doc/
+     https://golang.org/pkg/
+     https://golang.org/project/
+     https://code.google.com/p/go-tour/
+     https://golang.org/doc/code.html
+     https://www.youtube.com/watch?v=XCsL89YtqCs
+     http://research.swtch.com/gotour
+     https://vimeo.com/53221560
+   < src..
+
+#    The process ends when all reachable web pages have been crawled or the memory
+#    of the computer is exhausted.
+   El proceso finaliza cuando todas las paginas web alcanzables se han rastreado
+   o se ha agotado la memoria del equipo.
+
+#    @b(Exercise 5.10): Rewrite @c(topoSort) to use maps instead of slices and
+#    eliminate the initial sort.  Verify that the results, though
+#    nondeterministic, are valid topological orderings.
+   @b(Ejercicio 5.10): Vuelve a escribir @c(topoSort) para utilizar mapas en
+   lugar de slices y eliminar la clasificacion inicial. Verifique que los
+   resultados, aunque no deterministicos, sean ordenamientos topologicos
+   validos.
+
+#    @b(Exercise 5.11): The instructor of the linear algebra course decides that
+#    calculus is now a prerequisite. Extend the @c(topoSort) function to report
+#    cycles.
+   @b(Ejercicio 5.11): El instructor del curso de algebra lineal decide que
+   ahora es un requisito previo. Extender la funcion @c(topoSort) para reportar
+   ciclos.
+
+#    @b(Exercise 5.12): The @c(startElement) and @c(endElement) functions in
+#    @c(gopl.io/ch5/outline2) (@l(#Section 5.5<>§5.5)) share a global variable,
+#    @c(depth). Turn them into anonymous functions that share a variable local to
+#    the @c(outline) function.
+   @b(Ejercicio 5.12): Las funciones @c(startElement) y @c(endElement) en
+   @c(gopl.io/ch5/outline2) (@l(#Seccion 5.5<>§5.5)) comparten una variable
+   global, @c(depth). Conviertalas en funciones anonimas que compartan una
+   variable local de la funcion @c(outline).
+
+#    @b(Exercise 5.13): Modify @c(crawl) to make local copies of the pages it
+#    finds, creating directories as necessary. Don’t make copies of pages that
+#    come from a different domain. For example, if the original page comes from
+#    @l(https://golang.org<>golang.org), save all files from there, but exclude
+#    ones from @l(https://vimeo.com<>vimeo.com).
+   @b(Ejercicio 5.13): Modificar @c(crawl) para hacer copias locales de las
+   paginas que encuentre, la creando directorios segun sea necesario. No haga
+   copias de paginas que provengan de un dominio diferente. Por ejemplo, si la
+   pagina original proviene de @l(https://golang.org<>golang.org), guarda todos
+   los archivos de alli, pero excluyen los de @l(https://vimeo.com<>vimeo.com).
+
+#    @b(Exercise 5.14): Use the @c(breadthFirst) function to explore a different
+#    structure. For example, you could use the course dependencies from the
+#    @c(topoSort) example (a directed graph), the file system hierarchy on your
+#    computer (a tree), or a list of bus or subway routes downloaded from your
+#    city government’s web site (an undirected graph).
+   @b(Ejercicio 5.14): Usar la funcion @c(breadthFirst) para explorar una
+   estructura diferente. Por ejemplo, podria utilizar las dependencias de cursos
+   del ejemplo @c(topoSort) (un grafo dirigido), la jerarquia del sistema de
+   archivos en el ordenador (un arbol), o una lista de rutas de autobus o de
+   metro descargados desde el sitio web de su gobierno de la ciudad (un grafo no
+   dirigido).
+
+# *** Section 5.6.1 <> Caveat: Capturing Iteration Variables
+*** Seccion 5.6.1 <> Advertencia: Captura de Variables de Iteracion
+
+#     In this section, we’ll look at a pitfall of Go’s lexical scope rules that
+#     can cause surprising results.  We urge you to understand the problem before
+#     proceeding, because the trap can ensnare even experienced programmers.
+    En esta seccion, veremos una trampa de las reglas de alcance lexico de Go
+    que pueden causar resultados sorprendentes. Le recomendamos que comprenda el
+    problema antes de proceder, porque la trampa puede atrapar incluso a
+    programadores experimentados.
+
+#     Consider a program that must create a set of directories and later remove
+#     them. We can use a slice of function values to hold the clean-up
+#     operations. (For brevity, we have omitted all error handling in this
+#     example.)
+    Considere un programa que debe crear un conjunto de directorios y luego
+    eliminarlos. Podemos usar una porcion de valores de funcion para mantener
+    las operaciones de limpieza. (Para mayor brevedad, hemos omitido todo el
+    manejo de errores en este ejemplo.)
+
+#     ..src > go
+#       var rmdirs []func()
+#       for _, d := range tempDirs() {
+#         dir := d               // NOTE: necessary!
+#         os.MkdirAll(dir, 0755) // creates parent directories too
+#         rmdirs = append(rmdirs, func() {
+#           os.RemoveAll(dir)
+#         })
+#       }
+#
+#       // ...do some work...
+#
+#       for _, rmdir := range rmdirs {
+#         rmdir() // clean up
+#       }
+#     < src..
+    ..src > go
+      var rmdirs []func()
+      for _, d := range tempDirs() {
+        dir := d               // NOTA: necesario!
+        os.MkdirAll(dir, 0755) // tambien crea los directorios padre
+        rmdirs = append(rmdirs, func() {
+          os.RemoveAll(dir)
+        })
+      }
+
+      // ...algo de trabajo...
+
+      for _, rmdir := range rmdirs {
+        rmdir() // clean up
+      }
+    < src..
+
+#     You may be wondering why we assigned the loop variable @c(d) to a new local
+#     variable @c(dir) within the loop body, instead of just naming the loop
+#     variable @c(dir) as in this subtly incorrect variant:
+    Es posible que se pregunte por que asignamos la variable de bucle @c(d) a
+    una nueva variable local @c(dir) dentro del cuerpo del bucle, en lugar de
+    simplemente nombrar a la variable de bucle @c(dir) que en esta variante
+    sutil incorrectos:
+
+#     ..src > go
+#       var rmdirs []func()
+#       for _, dir := range tempDirs() {
+#         os.MkdirAll(dir, 0755)
+#         rmdirs = append(rmdirs, func() {
+#           os.RemoveAll(dir) // NOTE: incorrect!
+#         })
+#       }
+#     < src..
+    ..src > go
+      var rmdirs []func()
+      for _, dir := range tempDirs() {
+        os.MkdirAll(dir, 0755)
+        rmdirs = append(rmdirs, func() {
+          os.RemoveAll(dir) // NOTA: incorrecto!
+        })
+      }
+    < src..
+
+#     The reason is a consequence of the scope rules for loop variables. In the
+#     program immediately above, the @c(for) loop introduces a new lexical block
+#     in which the variable @c(dir) is declared. All function values created by
+#     this loop @"(capture) and share the same variable—an addressable storage
+#     location, not its value at that particular moment. The value of @c(dir) is
+#     updated in successive iterations, so by the time the cleanup functions are
+#     called, the @c(dir) variable has been updated several times by the
+#     now-completed @c(for) loop. Thus @c(dir) holds the value from the final
+#     iteration, and consequently all calls to @c(os.RemoveAll) will attempt to
+#     remove the same directory.
+    La razon es una consecuencia de las reglas de alcance para variables de
+    bucle. En el programa inmediatamente anterior, el bucle @c(for) introduce un
+    nuevo bloque lexico en el que se declara la variable @c(dir). Todos los
+    valores de la funcion creados por esta bucle @"(capturan) y comparten la
+    misma variable–Un lugar de almacenamiento direccionable, no su valor en ese
+    momento en particular. El valor de @c(dir) se actualiza en iteraciones
+    sucesivas, de manera que cuando las funciones de limpieza son llamados, la
+    variable @c(dir) ha sido actualizado varias veces por el ahora completado
+    bucle @c(for). Por lo tanto @c(dir) mantiene el valor de la iteracion final,
+    y por lo tanto todas las llamadas a @c(os.RemoveAll) intentaran eliminar el
+    mismo directorio.
+
+#     Frequently, the inner variable introduced to work around this
+#     problem—@c(dir) in our example—is given the exact same name as the outer
+#     variable of which it is a copy, leading to odd-looking but crucial variable
+#     declarations like this:
+    Con frecuencia, la variable interna introducido para evitar este
+    problema–@c(dir) en nuestro ejemplo–se le da exactamente el mismo nombre que
+    la variable externa de la que es una copia, lo que lleva a las declaraciones
+    de variables de aspecto extraño pero cruciales como este:
+
+#     ..src > go
+#       for _, dir := range tempDirs() {
+#         dir := dir // declares inner dir, initialized to outer dir
+#         // ...
+#       }
+#     < src..
+    ..src > go
+      for _, dir := range tempDirs() {
+        dir := dir // declara dir interno, inicializado a dir externo
+        // ...
+      }
+    < src..
+
+#     The risk is not unique to @c(range)-based @c(for) loops. The loop in the
+#     example below suffers from the same problem due to unintended capture of the
+#     index variable @c(i).
+    El riesgo no es unica para bucles @c(for) basados en @c(range). El bucle en
+    el siguiente ejemplo adolece del mismo problema debido a la captura no
+    intencionada de la variable de indice @c(i).
+
+#     ..src > go
+#       var rmdirs []func()
+#       dirs := tempDirs()
+#       for i := 0; i < len(dirs); i++ {
+#         os.MkdirAll(dirs[i], 0755) // OK
+#         rmdirs = append(rmdirs, func() {
+#           os.RemoveAll(dirs[i]) // NOTE: incorrect!
+#         })
+#       }
+#     < src..
+    ..src > go
+      var rmdirs []func()
+      dirs := tempDirs()
+      for i := 0; i < len(dirs); i++ {
+        os.MkdirAll(dirs[i], 0755) // OK
+        rmdirs = append(rmdirs, func() {
+          os.RemoveAll(dirs[i]) // NOTA: incorrecto!
+        })
+      }
+    < src..
+
+#     The problem of iteration variable capture is most often encountered when
+#     using the @c(go) statement (@l(#Chapter 8)) or with @c(defer) (which we will
+#     see in a moment) since both may delay the execution of a function value
+#     until after the loop has finished. But the problem is not inherent to @c(go)
+#     or @c(defer).
+    El problema de la iteracion de captura variable se encuentran mas a menudo
+    cuando se utiliza la sentencia @c(go) (@l(#Capitulo 8)) o con @c(defer) (que
+    veremos en un momento), ya que ambos pueden retrasar la ejecucion de un
+    valor de funcion hasta despues de que el bucle ha finalizado. Pero el
+    problema no es inherente a @c(go) o @c(defer).
+
+# ** Section 5.7 <> Variadic Functions
+** Seccion 5.7 <> Funciones Variadic
+
+#    A @e(variadic function) is one that can be called with varying numbers of
+#    arguments. The most familiar examples are @c(fmt.Printf) and its
+#    variants. @c(Printf) requires one fixed argument at the beginning, then
+#    accepts any number of subsequent arguments.
+   Una @e(funcion variadic) es uno que se puede llamar con un numero de
+   argumentos variable. Los ejemplos mas conocidos son @c(fmt.Printf) y sus
+   variantes. @c(Printf) requiere un argumento fijo al principio, luego acepta
+   cualquier numero de argumentos posteriores.
+
+#    To declare a variadic function, the type of the final parameter is preceded
+#    by an ellipsis, @"(@c(...)), which indicates that the function may be called with
+#    any number of arguments of this type.
+   Para declarar una funcion variadic, el tipo del parametro final va precedida
+   por una elipsis, @"(@c(...)), que indica que la funcion puede ser llamada con
+   cualquier numero de argumentos de este tipo.
+
+#    ..figure > @l(gopl.io/ch5/sum/main.go<>gopl.io/ch5/sum)
+   ..figure > @l(gopl.io/ch5/sum/main.go<>gopl.io/ch5/sum)
+
+#      ..src > go
+#        func sum(vals ...int) int {
+#          total := 0
+#          for _, val := range vals {
+#            total += val
+#          }
+#          return total
+#        }
+#      < src..
+     ..src > go
+       func sum(vals ...int) int {
+         total := 0
+         for _, val := range vals {
+           total += val
+         }
+         return total
+       }
+     < src..
+
+
+#    The @c(sum) function above returns the sum of zero or more @c(int)
+#    arguments. Within the body of the function, the type of @c(vals) is an
+#    @c([]int) slice. When @c(sum) is called, any number of values may be provided
+#    for its @c(vals) parameter.
+   La funcion @c(sum) anterior devuelve la suma de cero o mas argumentos
+   @c(int). Dentro del cuerpo de la funcion, el tipo de @c(vals) es un slice
+   @c([]int). Cuando llame a @c(sum), cualquier numero de valores puede ser
+   proporcionado pora su parametro @c(vals).
+
+#    ..src > go
+#      fmt.Println(sum())           // "0"
+#      fmt.Println(sum(3))          // "3"
+#      fmt.Println(sum(1, 2, 3, 4)) // "10"
+#    < src..
+   ..src > go
+     fmt.Println(sum())           // "0"
+     fmt.Println(sum(3))          // "3"
+     fmt.Println(sum(1, 2, 3, 4)) // "10"
+   < src..
+
+#    Implicitly, the caller allocates an array, copies the arguments into it, and
+#    passes a slice of the entire array to the function. The last call above thus
+#    behaves the same as the call below, which shows how to invoke a variadic
+#    function when the arguments are already in a slice: place an ellipsis after
+#    the final argument.
+   Implicitamente, el llamador asigna un arreglo, copia los argumentos en ell y
+   pasa un slice de toda la arreglo a la funcion. La llamada anterior se
+   comporta de la misma manera que la llamada que se muestra a continuacion, que
+   muestra como invocar una funcion variadica cuando los argumentos ya estan en
+   un slice: coloca una elipsis despues del argumento final.
+
+#    ..src > go
+#      values := []int{1, 2, 3, 4}
+#      fmt.Println(sum(values...)) // "10"
+#    < src..
+   ..src > go
+     values := []int{1, 2, 3, 4}
+     fmt.Println(sum(values...)) // "10"
+   < src..
+
+#    Although the @c(...int) parameter behaves like a slice within the function
+#    body, the type of a variadic function is distinct from the type of a function
+#    with an ordinary slice parameter.
+   Aunque el parametro @c(...int) se comporta como una slice dentro del cuerpo
+   de la funcion, el tipo de una funcion variadic es distinto del tipo de una
+   funcion con un parametro slice ordinario.
+
+#    ..src > go
+#      func f(...int) {}
+#      func g([]int)  {}
+#
+#      fmt.Printf("%T\n", f) // "func(...int)"
+#      fmt.Printf("%T\n", g) // "func([]int)"
+#    < src..
+   ..src > go
+     func f(...int) {}
+     func g([]int)  {}
+
+     fmt.Printf("%T\n", f) // "func(...int)"
+     fmt.Printf("%T\n", g) // "func([]int)"
+   < src..
+
+#    Variadic functions are often used for string formatting. The @c(errorf)
+#    function below constructs a formatted error message with a line number at the
+#    beginning. The suffix @c(f) is a widely followed naming convention for
+#    variadic functions that accept a @c(Printf)-style format string.
+   Las funciones variadic se utilizan a menudo para el formato de la
+   secuencia. La funcion @c(errorf) a continuacion construye un mensaje de error
+   con formato con un numero de linea en el principio. El sufijo @c(f) es una
+   convencion de nomenclatura ampliamente seguido para funciones variadic que
+   aceptan una cadena de formato de estilo @c(Printf).
+
+#    ..src > go
+#      func errorf(linenum int, format string, args ...interface{}) {
+#        fmt.Fprintf(os.Stderr, "Line %d: ", linenum)
+#        fmt.Fprintf(os.Stderr, format, args...)
+#        fmt.Fprintln(os.Stderr)
+#      }
+#
+#      linenum, name := 12, "count"
+#      errorf(linenum, "undefined: %s", name) // "Line 12: undefined: count"
+#    < src..
+   ..src > go
+     func errorf(linenum int, format string, args ...interface{}) {
+       fmt.Fprintf(os.Stderr, "Line %d: ", linenum)
+       fmt.Fprintf(os.Stderr, format, args...)
+       fmt.Fprintln(os.Stderr)
+     }
+
+     linenum, name := 12, "count"
+     errorf(linenum, "undefined: %s", name) // "Linea 12: sin definir: count"
+   < src..
+
+#    The @c(interface{}) type means that this function can accept any values at
+#    all for its final arguments, as we’ll explain in @l(#Chapter 7).
+   El tipo @c(interface{}) significa que esta funcion puede aceptar cualquier
+   valor en absoluto para sus argumentos finales, como explicaremos en el
+   @l(#Capitulo 7).
+
+#    @b(Exercise 5.15): Write variadic functions @c(max) and @c(min), analogous to
+#    @c(sum). What should these functions do when called with no arguments? Write
+#    variants that require at least one argument.
+   @b(Ejercicio 5.15): Escribir funciones variadic @c(max) y @c(min), analoga a
+   @c(sum). ¿Que deben hacer estas funciones cuando se llaman sin argumentos?
+   Escribir variantes que requieren al menos un argumento.
+
+#    @b(Exercise 5.16): Write a variadic version of @c(strings.Join).
+   @b(Ejercicio 5.16): Escribir una version variadic @c(de strings.Join) .
+
+#    @b(Exercise 5.17): Write a variadic function @c(ElementsByTagName) that,
+#    given an HTML node tree and zero or more names, returns all the elements that
+#    match one of those names. Here are two example calls:
+   @b(Ejercicio 5.17): Escribir una funcion variadic @c(ElementsByTagName) que, dado
+   un arbol de nodos HTML y cero o mas nombres, devuelve todos los elementos que
+   coinciden con uno de esos nombres. Aqui hay dos ejemplos de llamadas:
+
+#    ..src > go
+#      func ElementsByTagName(doc *html.Node, name ...string) []*html.Node
+#
+#      images := ElementsByTagName(doc, "img")
+#      headings := ElementsByTagName(doc, "h1", "h2", "h3", "h4")
+#    < src..
+   ..src > go
+     func ElementsByTagName(doc *html.Node, name ...string) []*html.Node
+
+     images := ElementsByTagName(doc, "img")
+     headings := ElementsByTagName(doc, "h1", "h2", "h3", "h4")
+   < src..
+
+# ** Section 5.8 <> Deferred Function Calls
+** Seccion 5.8 <> Llamadas de Funcion Diferida
+
+#    Our @c(findLinks) examples used the output of @c(http.Get) as the input to
+#    @c(html.Parse). This works well if the content of the requested URL is indeed
+#    HTML, but many pages contain images, plain text, and other file
+#    formats. Feeding such files into an HTML parser could have undesirable
+#    effects.
+   Nuestros ejemplos @c(findLinks) utilizan la salida de @c(http.Get) como la
+   entrada de @c(html.Parse). Esto funciona bien si el contenido de la URL
+   solicitada es de hecho HTML, pero muchas paginas contienen imagenes, texto
+   sin formato y otros formatos de archivo. La alimentacion de estos archivos en
+   un analizador HTML podria tener efectos no deseados.
+
+#    The program below fetches an HTML document and prints its title. The
+#    @c(title) function inspects the @c(Content-Type) header of the server’s
+#    response and returns an error if the document is not HTML.
+   El siguiente programa recupera un documento HTML e imprime su titulo. La
+   funcion @c(title) inspecciona la cabecera @c(Content-Type) de la respuesta
+   del servidor y devuelve un error si el documento no es HTML.
+
+#    ..figure > @l(gopl.io/ch5/title1/title.go<>gopl.io/ch5/title1)
+   ..figure > @l(gopl.io/ch5/title1/title.go<>gopl.io/ch5/title1)
+
+#      ..src > go
+#        func title(url string) error {
+#          resp, err := http.Get(url)
+#          if err != nil {
+#            return err
+#          }
+#
+#          // Check Content-Type is HTML (e.g., "text/html; charset=utf-8").
+#          ct := resp.Header.Get("Content-Type")
+#          if ct != "text/html" && !strings.HasPrefix(ct, "text/html;") {
+#            resp.Body.Close()
+#            return fmt.Errorf("%s has type %s, not text/html", url, ct)
+#          }
+#
+#          doc, err := html.Parse(resp.Body)
+#          resp.Body.Close()
+#          if err != nil {
+#            return fmt.Errorf("parsing %s as HTML: %v", url, err)
+#          }
+#
+#          visitNode := func(n *html.Node) {
+#            if n.Type == html.ElementNode && n.Data == "title" &&
+#              n.FirstChild != nil {
+#              fmt.Println(n.FirstChild.Data)
+#            }
+#          }
+#          forEachNode(doc, visitNode, nil)
+#          return nil
+#        }
+#      < src..
+     ..src > go
+       func title(url string) error {
+         resp, err := http.Get(url)
+         if err != nil {
+           return err
+         }
+
+         // Comprueba que Content-Type sea HTML (e.g., "text/html; charset=utf-8").
+         ct := resp.Header.Get("Content-Type")
+         if ct != "text/html" && !strings.HasPrefix(ct, "text/html;") {
+           resp.Body.Close()
+           return fmt.Errorf("%s has type %s, not text/html", url, ct)
+         }
+
+         doc, err := html.Parse(resp.Body)
+         resp.Body.Close()
+         if err != nil {
+           return fmt.Errorf("parsing %s as HTML: %v", url, err)
+         }
+
+         visitNode := func(n *html.Node) {
+           if n.Type == html.ElementNode && n.Data == "title" &&
+             n.FirstChild != nil {
+             fmt.Println(n.FirstChild.Data)
+           }
+         }
+         forEachNode(doc, visitNode, nil)
+         return nil
+       }
+     < src..
+
+
+#    Here’s a typical session, slightly edited to fit:
+   Aqui esta una sesion tipica, ligeramente editada para encajar:
+
+#    ..src > sh
+#      $ go build gopl.io/ch5/title1
+#      $ ./title1 http://gopl.io
+#      The Go Programming Language
+#      $ ./title1 https://golang.org/doc/effective_go.html
+#      Effective Go - The Go Programming Language
+#      $ ./title1 https://golang.org/doc/gopher/frontpage.png
+#      title: https://golang.org/doc/gopher/frontpage.png
+#          has type image/png, not text/html
+#    < src..
+   ..src > sh
+     $ go build gopl.io/ch5/title1
+     $ ./title1 http://gopl.io
+     The Go Programming Language
+     $ ./title1 https://golang.org/doc/effective_go.html
+     Effective Go - The Go Programming Language
+     $ ./title1 https://golang.org/doc/gopher/frontpage.png
+     title: https://golang.org/doc/gopher/frontpage.png
+         has type image/png, not text/html
+   < src..
+
+#    Observe the duplicated @c[resp.Body.Close()] call, which ensures that
+#    @c(title) closes the network connection on all execution paths, including
+#    failures. As functions grow more complex and have to handle more errors, such
+#    duplication of clean-up logic may become a maintenance problem. Let’s see how
+#    Go’s novel @c(defer) mechanism makes things simpler.
+   Observe la llamada duplicada @c[resp.Body.Close()], que asegura que @c(title)
+   se cierre la conexion de red en todas las rutas de ejecucion, incluyendo las
+   fallas. A medida que las funciones se vuelven mas complejas y tienen que
+   manejar mas errores, tal duplicacion de la logica de limpieza puede
+   convertirse en un problema de mantenimiento. Veamos como el nuevo mecanismo
+   @c(defer) de Go hace las cosas mas sencillas.
+
+#    Syntactically, a @c(defer) statement is an ordinary function or method call
+#    prefixed by the keyword @c(defer). The function and argument expressions are
+#    evaluated when the statement is executed, but the actual call is @e(deferred)
+#    until the function that contains the @c(defer) statement has finished,
+#    whether normally, by executing a return statement or falling off the end, or
+#    abnormally, by panicking. Any number of calls may be deferred; they are
+#    executed in the reverse of the order in which they were deferred.
+   Sintacticamente, una sentencia @c(defer) es una funcion ordinaria o una
+   llamada a un metodo con la palabra clave @c(defer) como prefijo. Las
+   expresiones de funcion y los argumentos se evaluan cuando se ejecuta la
+   instruccion, pero la llamada real se aplaza hasta que la funcion que contiene
+   la declaracion @c(defer) ha terminado, ya sea ejecutando una instruccion de
+   retorno o llegando al final, o anormalmente, por un panico. Cualquier numero
+   de llamadas puede ser diferido; se ejecutan en el orden inverso en que fueron
+   aplazadas.
+
+#    A @c(defer) statement is often used with paired operations like open and
+#    close, connect and disconnect, or lock and unlock to ensure that resources
+#    are released in all cases, no matter how complex the control flow. The right
+#    place for a @c(defer) statement that releases a resource is immediately after
+#    the resource has been successfully acquired. In the @c(title) function below,
+#    a single deferred call replaces both previous calls to @c[resp.Body.Close()]:
+   Una sentencia @c(defer) se utiliza a menudo con operaciones pareadas como
+   abrir y cerrar, conectar y desconectar o bloquear y desbloquear para
+   garantizar que los recursos se liberan en todos los casos, independientemente
+   de la complejidad del flujo de control. El lugar adecuado para una sentencia
+   @c(defer) que libera un recurso es inmediatamente despues de que el recurso
+   se ha adquirido con exito. En la funcion @c(title) a continuacion, una sola
+   llamada diferida sustituye a las dos llamadas anteriores de
+   @c[resp.Body.Close()]:
+
+#    ..figure > @l(gopl.io/ch5/title2/title.go<>gopl.io/ch5/title2)
+   ..figure > @l(gopl.io/ch5/title2/title.go<>gopl.io/ch5/title2)
+
+#      ..src > go
+#        func title(url string) error {
+#          resp, err := http.Get(url)
+#          if err != nil {
+#            return err
+#          }
+#          defer resp.Body.Close()
+#
+#          ct := resp.Header.Get("Content-Type")
+#          if ct != "text/html" && !strings.HasPrefix(ct, "text/html;") {
+#            return fmt.Errorf("%s has type %s, not text/html", url, ct)
+#          }
+#
+#          doc, err := html.Parse(resp.Body)
+#          if err != nil {
+#            return fmt.Errorf("parsing %s as HTML: %v", url, err)
+#          }
+#
+#          // ...print doc's title element...
+#
+#          return nil
+#        }
+#      < src..
+     ..src > go
+       func title(url string) error {
+         resp, err := http.Get(url)
+         if err != nil {
+           return err
+         }
+         defer resp.Body.Close()
+
+         ct := resp.Header.Get("Content-Type")
+         if ct != "text/html" && !strings.HasPrefix(ct, "text/html;") {
+           return fmt.Errorf("%s has type %s, not text/html", url, ct)
+         }
+
+         doc, err := html.Parse(resp.Body)
+         if err != nil {
+           return fmt.Errorf("parsing %s as HTML: %v", url, err)
+         }
+
+         // ...imprimir los elementos title del documento...
+
+         return nil
+       }
+     < src..
+
+#    The same pattern can be used for other resources beside network connections,
+#    for instance to close an open file:
+   El mismo patron se puede utilizar para otros recursos ademas de las
+   conexiones de red, por ejemplo para cerrar un archivo abierto:
+
+#    ..figure > @c(io/ioutil)
+   ..figure > @c(io/ioutil)
+
+#      ..src > go
+#        package ioutil
+#
+#        func ReadFile(filename string) ([]byte, error) {
+#          f, err := os.Open(filename)
+#          if err != nil {
+#            return nil, err
+#          }
+#          defer f.Close()
+#          return ReadAll(f)
+#        }
+#      < src..
+     ..src > go
+       package ioutil
+
+       func ReadFile(filename string) ([]byte, error) {
+         f, err := os.Open(filename)
+         if err != nil {
+           return nil, err
+         }
+         defer f.Close()
+         return ReadAll(f)
+       }
+     < src..
+
+
+#    or to unlock a mutex (@l(#Section 9.2<>§9.2)):
+   o para desbloquear un mutex (@l(#Seccion 9.2<>§9.2)):
+
+#    ..src > go
+#      var mu sync.Mutex
+#      var m = make(map[string]int)
+#
+#      func lookup(key string) int {
+#        mu.Lock()
+#        defer mu.Unlock()
+#        return m[key]
+#      }
+#    < src..
+   ..src > go
+     var mu sync.Mutex
+     var m = make(map[string]int)
+
+     func lookup(key string) int {
+       mu.Lock()
+       defer mu.Unlock()
+       return m[key]
+     }
+   < src..
+
+#    The @c(defer) statement can also be used to pair @"(on entry) and @"(on exit)
+#    actions when debugging a complex function. The @c(bigSlowOperation) function
+#    below calls @c(trace) immediately, which does the @"(on entry) action then
+#    returns a function value that, when called, does the corresponding @"(on
+#    exit) action. By deferring a call to the returned function in this way, we
+#    can instrument the entry point and all exit points of a function in a single
+#    statement and even pass values, like the @c(start) time, between the two
+#    actions. But don’t forget the final parentheses in the @c(defer) statement,
+#    or the @"(on entry) action will happen on exit and the on-exit action won’t
+#    happen at all!
+   La sentencia @c(defer) tambien se puede utilizar para emparejar acciones de
+   @"(entrada) y @"(salida) al depurar una funcion compleja. A continuacion la
+   funcion @c(bigSlowOperation) llama inmediatamente a @c(trace), lo que la hace
+   una accion de @"(entrada) que devuelve un valor de funcion que, cuando se le
+   llama, hace la accion de @"(salida).  Al diferir una llamada a la funcion
+   devuelta de esta manera, podemos instrumentar el punto de entrada y todos los
+   puntos de salida de una funcion en una sola declaracion, e incluso pasar
+   valores, como el tiempo de inicion @c(start), entre las dos acciones. Pero no
+   se olvide de los parentesis finales en el sentencia @c(defer), o la accion de
+   @"(entrada) ocurrira en la salida y la accion en la salida no ocurrira en
+   absoluto!
+
+#    ..figure > @l(gopl.io/ch5/trace/main.go<>gopl.io/ch5/trace)
+   ..figure > @l(gopl.io/ch5/trace/main.go<>gopl.io/ch5/trace)
+
+#      ..src > go
+#        func bigSlowOperation() {
+#          defer trace("bigSlowOperation")() // don't forget the extra parentheses
+#          // ...lots of work...
+#          time.Sleep(10 * time.Second)      // simulate slow operation by sleeping
+#        }
+#
+#        func trace(msg string) func() {
+#          start := time.Now()
+#          log.Printf("enter %s", msg)
+#          return func() { log.Printf("exit %s (%s)", msg, time.Since(start)) }
+#        }
+#      < src..
+     ..src > go
+       func bigSlowOperation() {
+         defer trace("bigSlowOperation")() // no olvide los parentesis adicionales
+         // ...mucho trabajo...
+         time.Sleep(10 * time.Second)      // simula el funcionamiento lento durmiendo
+       }
+
+       func trace(msg string) func() {
+         start := time.Now()
+         log.Printf("enter %s", msg)
+         return func() { log.Printf("exit %s (%s)", msg, time.Since(start)) }
+       }
+     < src..
+
+
+#    Each time @c(bigSlowOperation) is called, it logs its entry and exit and the
+#    elapsed time between them. (We used @c(time.Sleep) to simulate a slow
+#    operation.)
+   Cada vez @c(bigSlowOperation) se llama, registra su entrada y salida y el
+   tiempo transcurrido entre ellos. (Utilizamos @c(time.Sleep) para simular una
+   operacion lenta.)
+
+#    ..src > sh
+#      $ go build gopl.io/ch5/trace
+#      $ ./trace
+#      2015/11/18 09:53:26 enter bigSlowOperation
+#      2015/11/18 09:53:36 exit bigSlowOperation (10.000589217s)
+#    < src..
+   ..src > sh
+     $ go build gopl.io/ch5/trace
+     $ ./trace
+     2015/11/18 09:53:26 enter bigSlowOperation
+     2015/11/18 09:53:36 exit bigSlowOperation (10.000589217s)
+   < src..
+
+#    Deferred functions run @e(after) return statements have updated the function’s
+#    result variables.  Because an anonymous function can access its enclosing
+#    function’s variables, including named results, a deferred anonymous function
+#    can observe the function’s results.
+   Las funciones diferidas se ejecutan despues de las declaraciones de retorno
+   han actualizado las variables de resultado de la funcion. Debido a que una
+   funcion anonima puede acceder a las variables de su funcion de inclusion,
+   incluidos los resultados con nombra, una funcion anonima diferida puede
+   observar los resultados de la funcion.
+
+#    Consider the function @c(double):
+   Considere la funcion @c(doble):
+
+#    ..src > go
+#      func double(x int) int {
+#        return x + x
+#      }
+#    < src..
+   ..src > go
+     func doble(x int) int {
+       return x + x
+     }
+   < src..
+
+#    By naming its result variable and adding a @c(defer) statement, we can make
+#    the function print its arguments and results each time it is called.
+   Al nombrar a su variable de resultado y agregar una sentecia @c(defer),
+   podemos hacer que la funcion imprimir sus argumentos y resultados cada vez
+   que se llame.
+
+#    ..src > go
+#      func double(x int) (result int) {
+#        defer func() { fmt.Printf("double(%d) = %d\n", x, result) }()
+#        return x + x
+#      }
+#
+#      _ = double(4)
+#      // Output:
+#      // "double(4) = 8"
+#    < src..
+   ..src > go
+     func doble(x int) (resultado int) {
+       defer func() { fmt.Printf("doble(%d) = %d\n", x, resultado) }()
+       return x + x
+     }
+
+     _ = double(4)
+     // Salida:
+     // "doble(4) = 8"
+   < src..
+
+#    This trick is overkill for a function as simple as @c(double) but may be useful
+#    in functions with many return statements.
+   Este truco es exesivo para una funcion tan simple como @c(doble), pero puede
+   ser util en funciones con muchas declaraciones de retorno.
+
+#    A deferred anonymous function can even change the values that the enclosing
+#    function returns to its caller:
+   Una funcion anonima diferida puede incluso cambiar los valores que la funcion
+   devuelve a su interlocutor:
+
+#    ..src > go
+#      func triple(x int) (result int) {
+#        defer func() { result += x }()
+#        return double(x)
+#      }
+#
+#      fmt.Println(triple(4)) // "12"
+#    < src..
+   ..src > go
+     func triple(x int) (result int) {
+       defer func() { result += x }()
+       return doble(x)
+     }
+
+     fmt.Println(triple(4)) // "12"
+   < src..
+
+#    Because deferred functions aren’t executed until the very end of a function’s
+#    execution, a @c(defer) statement in a loop deserves extra scrutiny. The code
+#    below could run out of file descriptors since no file will be closed until
+#    all files have been processed:
+   Dado que las funciones diferidos no se ejecutan hasta el final de la
+   ejecucion de una funcion, una declaracion @c(defer) en un bucle merece un
+   escrutinio adicional. El codigo siguiente podria quedar sin los descriptores
+   de archivo ya que ningun archivo se cerrara hasta que todos los archivos se
+   hayan procesado:
+
+#    ..src > go
+#      for _, filename := range filenames {
+#        f, err := os.Open(filename)
+#        if err != nil {
+#          return err
+#        }
+#        defer f.Close() // NOTE: risky; could run out of file descriptors
+#        // ...process f...
+#      }
+#    < src..
+   ..src > go
+     for _, filename := range filenames {
+       f, err := os.Open(filename)
+       if err != nil {
+         return err
+       }
+       defer f.Close() // NOTA: arriesgado; podria quedarse sin los descriptores de archivo
+       // ...procesando f...
+     }
+   < src..
+
+#    One solution is to move the loop body, including the @c(defer) statement,
+#    into another function that is called on each iteration.
+   Una solucion es mover el cuerpo del bucle, incluyendo la declaracion
+   @c(defer), a otra funcion que se llame en cada iteracion.
+
+#    ..src > go
+#      for _, filename := range filenames {
+#        if err := doFile(filename); err != nil {
+#          return err
+#        }
+#      }
+#
+#      func doFile(filename string) error {
+#        f, err := os.Open(filename)
+#        if err != nil {
+#          return err
+#        }
+#        defer f.Close()
+#        // ...process f...
+#      }
+#    < src..
+   ..src > go
+     for _, filename := range filenames {
+       if err := doFile(filename); err != nil {
+         return err
+       }
+     }
+
+     func doFile(filename string) error {
+       f, err := os.Open(filename)
+       if err != nil {
+         return err
+       }
+       defer f.Close()
+       // ...procesando f...
+     }
+   < src..
+
+#    The example below is an improved @$(fetch) program (@l(#Section 1.5<>§1.5))
+#    that writes the HTTP response to a local file instead of to the standard
+#    output. It derives the file name from the last component of the URL path,
+#    which it obtains using the @c(path.Base) function.
+   El siguiente ejemplo es una mejora del programa @$(fetch) (@l(#Seccion
+   1.5<>§1.5)) que escribe la respuesta HTTP a un archivo local en lugar de a la
+   salida estandar. Deriva el nombre del archivo del el ultimo componente de la
+   ruta URL, que obtiene utilizando la funcion @c(path.Base).
+
+#    ..figure > @l(gopl.io/ch5/fetch/main.go<>gopl.io/ch5/fetch)
+   ..figure > @l(gopl.io/ch5/fetch/main.go<>gopl.io/ch5/fetch)
+
+#      ..src > go
+#        // Fetch downloads the URL and returns the
+#        // name and length of the local file.
+#        func fetch(url string) (filename string, n int64, err error) {
+#          resp, err := http.Get(url)
+#          if err != nil {
+#            return "", 0, err
+#          }
+#          defer resp.Body.Close()
+#
+#          local := path.Base(resp.Request.URL.Path)
+#          if local == "/" {
+#            local = "index.html"
+#          }
+#          f, err := os.Create(local)
+#          if err != nil {
+#            return "", 0, err
+#          }
+#          n, err = io.Copy(f, resp.Body)
+#          // Close file, but prefer error from Copy, if any.
+#          if closeErr := f.Close(); err == nil {
+#            err = closeErr
+#          }
+#          return local, n, err
+#        }
+#      < src..
+     ..src > go
+       // Fetch descarga la URL y regresa el rombre
+       // y la longitud del archivo local.
+       func fetch(url string) (filename string, n int64, err error) {
+         resp, err := http.Get(url)
+         if err != nil {
+           return "", 0, err
+         }
+         defer resp.Body.Close()
+
+         local := path.Base(resp.Request.URL.Path)
+         if local == "/" {
+           local = "index.html"
+         }
+         f, err := os.Create(local)
+         if err != nil {
+           return "", 0, err
+         }
+         n, err = io.Copy(f, resp.Body)
+         // Close file, but prefer error from Copy, if any.
+         if closeErr := f.Close(); err == nil {
+           err = closeErr
+         }
+         return local, n, err
+       }
+     < src..
+
+
+#    The deferred call to @c(resp.Body.Close) should be familiar by now. It’s
+#    tempting to use a second deferred call, to @c(f.Close), to close the local
+#    file, but this would be subtly wrong because @c(os.Create) opens a file for
+#    writing, creating it as needed. On many file systems, notably NFS, write
+#    errors are not reported immediately but may be postponed until the file is
+#    closed. Failure to check the result of the close operation could cause
+#    serious data loss to go unnoticed.  However, if both @c(io.Copy) and
+#    @c(f.Close) fail, we should prefer to report the error from @c(io.Copy) since
+#    it occurred first and is more likely to tell us the root cause.
+   La llamada diferida a @c(resp.Body.Close) deberia resultar familiar por
+   ahora. Es tentador utilizar una segunda llamada diferida, a @c(f.Close), para
+   cerrar el archivo local, pero esto seria sutilmente incorrecto porque
+   @c(os.Create) abre un archivo para escribir, crear, segun sea necesario. En
+   muchos sistemas de archivos, notablemente NFS, los errores de escritura no se
+   informan inmediatamente pero se pueden posponer hasta que se cierre el
+   archivo. Si no se comprueba el resultado de la operacion de cierre, la
+   perdida de datos graves podria pasar desapercibida. Sin embargo, si ambos
+   @c(io.Copy) y @c(f.Close) fallan, debemos preferir reportar el error de
+   @c(io.Copy) desde que ocurre por primera vez y es mas probable que nos diga
+   la causa raiz.
+
+#    @b(Exercise 5.18): Without changing its behavior, rewrite the @c(fetch)
+#    function to use @c(defer) to close the writable file.
+   @b(Ejercicio 5.18): Sin cambiar su comportamiento, reescriba la funcion
+   @c(fetch) utilizando @c(defer) para cerrar el archivo de escritura.
+
+# ** Section 5.9 <> Panic
+** Seccion 5.9 <> Panico
+
+#    Go’s type system catches many mistakes at compile time, but others, like an
+#    out-of-bounds array access or nil pointer dereference, require checks at run
+#    time. When the Go runtime detects these mistakes, it @e(panics).
+   El sistema de tipado de Go captura muchos errores en tiempo de compilacion,
+   pero otros, como un acceso a un arreglo fuera de limites o una desreferencia
+   de puntero nulo, requieren comprobaciones en tiempo de ejecucion. Cuando go
+   detecta errores en tiempo de ejecucion, entra en @e(panico).
+
+#    During a typical panic, normal execution stops, all deferred function calls
+#    in that goroutine are executed, and the program crashes with a log
+#    message. This log message includes the @e(panic value), which is usually an
+#    error message of some sort, and, for each goroutine, a @e(stack Trace)
+#    showing the stack of function calls that were active at the time of the
+#    panic. This log message often has enough information to diagnose the root
+#    cause of the problem without running the program again, so it should always
+#    be included in a bug report about a panicking program.
+   Durante un panico tipico, la ejecucion normal se detiene, todas las llamadas
+   de funcion diferida en esa gorutina se ejecutan, y el programa se bloquea con
+   un mensaje de registro. Este mensaje de registro incluye el @e(valor de
+   panico), que suele ser un mensaje de error de algun tipo, y, para cada
+   goroutine, un @e(seguimiento de pila) que muestra la pila de llamadas a
+   funciones que estaban activas en el momento del panico. Este mensaje de
+   registro a menudo tiene suficiente informacion para diagnosticar la causa
+   raiz del problema sin ejecutar el programa de nuevo, por lo que siempre debe
+   incluirse en un informe de error acerca de un programa de panico.
+
+#    Not all panics come from the runtime. The built-in @c(panic) function may be
+#    called directly ; it accepts any value as an argument. A panic is often the
+#    best thing to do when some @"(impossible) situation happens, for instance,
+#    execution reaches a case that logically can’t happen:
+   No todos los panicos provienen del tiempo de ejecucion. La funcion nativa
+   @c(panic) se puede llamar directamente; acepta cualquier valor como
+   argumento. Un panico es a menudo lo mejor que puede hacer cuando ocurre
+   alguna situacion @"(imposible), por ejemplo, la ejecucion llega a un caso que
+   logicamente, no puede suceder:
+
+#    ..src > go
+#      switch s := suit(drawCard()); s {
+#      case "Spades":   // ...
+#      case "Hearts":   // ...
+#      case "Diamonds": // ...
+#      case "Clubs":    // ...
+#      default:
+#        panic(fmt.Sprintf("invalid suit %q", s)) // Joker?
+#      }
+#    < src..
+   ..src > go
+     switch s := suit(drawCard()); s {
+     case "Spades":   // ...
+     case "Hearts":   // ...
+     case "Diamonds": // ...
+     case "Clubs":    // ...
+     default:
+       panic(fmt.Sprintf("invalid suit %q", s)) // Joker?
+     }
+   < src..
+
+#    It’s good practice to assert that the preconditions of a function hold, but
+#    this can easily be done to excess. Unless you can provide a more informative
+#    error message or detect an error sooner, there is no point asserting a
+#    condition that the runtime will check for you.
+   Es una buena practica afirmar que las precondiciones de una funcion se
+   mantienen, pero esto puede hacerse facilmente en exceso. A menos que pueda
+   proporcionar un mensaje de error mas informativo o detectar un error antes,
+   no tiene sentido afirmar una condicion que el tiempo de ejecucion comprobara
+   por usted.
+
+#    ..src > go
+#      func Reset(x *Buffer) {
+#        if x == nil {
+#          panic("x is nil") // unnecessary!
+#        }
+#        x.elements = nil
+#      }
+#    < src..
+   ..src > go
+     func Reset(x *Buffer) {
+       if x == nil {
+         panic("x is nil") // innecesario!
+       }
+       x.elements = nil
+     }
+   < src..
+
+#    Although Go’s panic mechanism resembles exceptions in other languages, the
+#    situations in which panic is used are quite different. Since a panic causes
+#    the program to crash, it is generally used for grave errors, such as a
+#    logical inconsistency in the program; diligent programmers consider any crash
+#    to be proof of a bug in their code. In a robust program, @"(expected) errors,
+#    the kind that arise from incorrect input, misconfiguration, or failing I/O,
+#    should be handled gracefully; they are best dealt with using @c(error)
+#    values.
+   Aunque el mecanismo de panico de Go se parece a las excepciones de otros
+   lenguajes, las situaciones en las que se utiliza el panico son muy
+   diferentes. Puesto que un panico hace que el programa se bloquee,
+   generalmente se usa para errores graves, como una inconsistencia logica en el
+   programa; Los programadores diligentes consideran cualquier accidente como
+   prueba de un error en su codigo. En un programa robusto, los errores
+   @"(esperados), el tipo que surgen de una entrada incorrecta, mala
+   configuracion, o un defecto de E/S, deben manejarse con gracia; se tratan
+   mejor con el uso de valores de @c(error).
+
+#    Consider the function @c(regexp.Compile), which compiles a regular expression
+#    into an efficient form for matching. It returns an @c(error) if called with
+#    an ill-formed pattern, but checking this error is unnecessary and burdensome
+#    if the caller knows that a particular call cannot fail. In such cases, it’s
+#    reasonable for the caller to handle an error by panicking, since it is
+#    believed to be impossible.
+   Considere la funcion @c(regexp.Compile), que compila una expresion regular en
+   una forma eficiente para la coincidencia. Se devuelve un @c(error) si se
+   llama con un patron mal formado, pero la comprobacion de este error es
+   innecesaria y onerosa si la persona que llama sabe que una llamada en
+   particular no puede fallar. En tales casos, es razonable que el llamador
+   maneje un error con un panico, ya que se cree que es imposible.
+
+#    Since most regular expressions are literals in the program source code, the
+#    @c(regexp) package provides a wrapper function @c(regexp.MustCompile) that
+#    does this check:
+   Como la mayoria de las expresiones regulares son literales en el codigo
+   fuente del programa, la paquete @c(regexp) proporciona una funcion de
+   envoltura @c(regexp.MustCompile) que hace esta comprobacion:
+
+#    ..src > go
+#      package regexp
+#
+#      func Compile(expr string) (*Regexp, error) { /* ... */ }
+#
+#      func MustCompile(expr string) *Regexp {
+#        re, err := Compile(expr)
+#        if err != nil {
+#          panic(err)
+#        }
+#        return re
+#      }
+#    < src..
+   ..src > go
+     package regexp
+
+     func Compile(expr string) (*Regexp, error) { /* ... */ }
+
+     func MustCompile(expr string) *Regexp {
+       re, err := Compile(expr)
+       if err != nil {
+         panic(err)
+       }
+       return re
+     }
+   < src..
+
+#    The wrapper function makes it convenient for clients to initialize a
+#    package-level variable with a compiled regular expression, like this:
+   La funcion de envoltura hace que sea conveniente para los clientes
+   inicializar una variable de nivel de paquete con una expresion regular
+   compilada, como esta:
+
+#    ..src > go
+#      var httpSchemeRE = regexp.MustCompile(`^https?:`) // "http:" or "https:"
+#    < src..
+   ..src > go
+     var httpSchemeRE = regexp.MustCompile(`^https?:`) // "http:" or "https:"
+   < src..
+
+#    Of course, @c(MustCompile) should not be called with untrusted input
+#    values. The @c(Must) prefix is a common naming convention for functions of
+#    this kind, like @c(template.Must) in @l(#Section 4.6).
+   Por supuesto, @c(MustCompile) no debe ser llamada con valores de entrada no
+   confiables. El prefijo @c(Must) es una convencion de nomenclatura comun para
+   este tipo de funciones, como @c(template.Must) en la @l(#Seccion 4.6).
+
+#    When a panic occurs, all deferred functions are run in reverse order,
+#    starting with those of the topmost function on the stack and proceeding up to
+#    @c(main), as the program below demonstrates:
+   Cuando se produce una situacion de panico, todas las funciones diferidas se
+   ejecutan en orden inverso, comenzando con las funciones en lo mas alto de la
+   pila y procediendo hasta @c(main), como muestra el siguiente programa:
+
+#    ..figure > @l(gopl.io/ch5/defer1/defer.go<>gopl.io/ch5/defer1)
+   ..figure > @l(gopl.io/ch5/defer1/defer.go<>gopl.io/ch5/defer1)
+
+#      ..src > go
+#        func main() {
+#          f(3)
+#        }
+#
+#        func f(x int) {
+#          fmt.Printf("f(%d)\n", x+0/x) // panics if x == 0
+#          defer fmt.Printf("defer %d\n", x)
+#          f(x - 1)
+#        }
+#      < src..
+     ..src > go
+       func main() {
+         f(3)
+       }
+
+       func f(x int) {
+         fmt.Printf("f(%d)\n", x+0/x) // panics if x == 0
+         defer fmt.Printf("defer %d\n", x)
+         f(x - 1)
+       }
+     < src..
+
+#    When run, the program prints the following to the standard output:
+   Cuando se ejecuta, el programa imprime lo siguiente en la salida estandar:
+
+#    ..pre >
+#      f(3)
+#      f(2)
+#      f(1)
+#      defer 1
+#      defer 2
+#      defer 3
+   ..pre >
+     f(3)
+     f(2)
+     f(1)
+     defer 1
+     defer 2
+     defer 3
+
+#    A panic occurs during the call to @c[f(0)], causing the three deferred calls
+#    to @c(fmt.Printf) to run.  Then the runtime terminates the program, printing
+#    the panic message and a stack dump to the standard error stream (simplified
+#    for clarity):
+   Un panico se produce durante la llamada a @c[f(0)], provocando que se
+   ejecuten las tres llamadas diferidas a @c(fmt.Printf). A continuacion, el
+   tiempo de ejecucion finaliza el programa, imprimiendo el mensaje de panico y
+   un volcado de pila en el flujo de error estandar (simplificado para mayor
+   claridad):
+
+#    ..pre >
+#       panic: runtime error: integer divide by zero
+#       main.f(0)
+#               src/gopl.io/ch5/defer1/defer.go:14
+#       main.f(1)
+#               src/gopl.io/ch5/defer1/defer.go:16
+#       main.f(2)
+#               src/gopl.io/ch5/defer1/defer.go:16
+#
+#       main.f(3)
+#               src/gopl.io/ch5/defer1/defer.go:16
+#       main.main()
+#               src/gopl.io/ch5/defer1/defer.go:10
+#    < pre..
+   ..pre >
+      panic: runtime error: integer divide by zero
+      main.f(0)
+              src/gopl.io/ch5/defer1/defer.go:14
+      main.f(1)
+              src/gopl.io/ch5/defer1/defer.go:16
+      main.f(2)
+              src/gopl.io/ch5/defer1/defer.go:16
+
+      main.f(3)
+              src/gopl.io/ch5/defer1/defer.go:16
+      main.main()
+              src/gopl.io/ch5/defer1/defer.go:10
+   < pre..
+
+#    As we will see soon, it is possible for a function to recover from a panic so
+#    that it does not terminate the program.
+   Como veremos mas adelante, es posible que una funcion se recupere de un
+   panico para que no termine el programa.
+
+#    For diagnostic purposes, the @c(runtime) package lets the programmer dump the
+#    stack using the same machinery. By deferring a call to @c(printStack) in
+#    @c(main),
+   Por propositod de diagnostico, el paquete @c(runtime) permite al programador
+   volcar la pila utilizando la misma maquinaria. Al diferir una llamada a
+   @c(printStack) en @c(main),
+
+#    ..figure > @l(gopl.io/ch5/defer2/defer.go<>gopl.io/ch5/defer2)
+   ..figure > @l(gopl.io/ch5/defer2/defer.go<>gopl.io/ch5/defer2)
+
+#      ..src > go
+#        func main() {
+#          defer printStack()
+#          f(3)
+#        }
+#
+#        func printStack() {
+#          var buf [4096]byte
+#          n := runtime.Stack(buf[:], false)
+#          os.Stdout.Write(buf[:n])
+#        }
+#      < src..
+     ..src > go
+       func main() {
+         defer printStack()
+         f(3)
+       }
+
+       func printStack() {
+         var buf [4096]byte
+         n := runtime.Stack(buf[:], false)
+         os.Stdout.Write(buf[:n])
+       }
+     < src..
+
+
+#    the following additional text (again simplified for clarity) is printed to
+#    the standard output:
+   El siguiente texto adicional (simplificado de nuevo para mayor claridad) se
+   imprime a la salida estandar:
+
+#    ..pre >
+#       goroutine 1 [running]:
+#       main.printStack()
+#         src/gopl.io/ch5/defer2/defer.go:20
+#       main.f(0)
+#         src/gopl.io/ch5/defer2/defer.go:27
+#       main.f(1)
+#         src/gopl.io/ch5/defer2/defer.go:29
+#       main.f(2)
+#         src/gopl.io/ch5/defer2/defer.go:29
+#       main.f(3)
+#         src/gopl.io/ch5/defer2/defer.go:29
+#       main.main()
+#         src/gopl.io/ch5/defer2/defer.go:15
+#    < pre..
+   ..pre >
+      goroutine 1 [running]:
+      main.printStack()
+        src/gopl.io/ch5/defer2/defer.go:20
+      main.f(0)
+        src/gopl.io/ch5/defer2/defer.go:27
+      main.f(1)
+        src/gopl.io/ch5/defer2/defer.go:29
+      main.f(2)
+        src/gopl.io/ch5/defer2/defer.go:29
+      main.f(3)
+        src/gopl.io/ch5/defer2/defer.go:29
+      main.main()
+        src/gopl.io/ch5/defer2/defer.go:15
+   < pre..
+
+
+#    Readers familiar with exceptions in other languages may be surprised that
+#    @c(runtime.Stack) can print information about functions that seem to have
+#    already been @"(unwound.) Go’s panic mechanism runs the deferred functions
+#    @c(before) it unwinds the stack.
+   Los lectores familiarizados con excepciones en otros lenguajes pueden
+   sorprenderse de que @c(runtime.Stack) pueda imprimir informacion sobre
+   funciones que parecen haber sido @"(desenrolladas). El Mecanismo de panico de
+   Go ejecuta las funciones diferidos antes de desenrollar la pila.
+
+# ** Section 5.10 <> Recover
+** Seccion 5.10 <> Recover
+
+#    Giving up is usually the right response to a panic, but not always. It might
+#    be possible to recover in some way, or at least clean up the mess before
+#    quitting. For example, a web server that encounters an unexpected problem
+#    could close the connection rather than leave the client hanging, and during
+#    development, it might report the error to the client too.
+   Desistir es generalmente la respuesta correcta a un panico, pero no
+   siempre. Podria ser posible recuperarse de alguna manera, o al menos limpiar
+   el lio antes de marcharse. Por ejemplo, un servidor web que encuentra un
+   problema inesperado podria cerrar la conexion en lugar de dejar al cliente
+   colgado y, durante el desarrollo, podria informar el error al cliente
+   tambien.
+
+#    If the built-in @c(recover) function is called within a deferred function and
+#    the function containing the @c(defer) statement is panicking, @c(recover)
+#    ends the current state of panic and returns the panic value. The function
+#    that was panicking does not continue where it left off but returns
+#    normally. If @c(recover) is called at any other time, it has no effect and
+#    returns @c(nil).
+   Si la funcion nativa @c(recover) se llama dentro de una funcion diferida y la
+   funcion que contiene la sentencia @c(defer) es presa del panico, @c(recover)
+   termina el actual estado de panico y devuelve el valor de panico. La funcion
+   que estaba en panico no continua donde lo dejo pero devuelve normalmente. Si
+   @c(recover) se llama en cualquier otro momento, no tiene ningun efecto y
+   devuelve @c(nil).
+
+#    To illustrate, consider the development of a parser for a language. Even when
+#    it appears to be working well, given the complexity of its job, bugs may
+#    still lurk in obscure corner cases. We might prefer that, instead of
+#    crashing, the parser turns these panics into ordinary parse errors, perhaps
+#    with an extra message exhorting the user to file a bug report.
+   Para ilustrar, considere el desarrollo de un analizador para un
+   lenguaje. Incluso cuando parece estar funcionando bien, dada la complejidad
+   de su trabajo, los bichos todavia pueden acechar en esquinas
+   oscuras. Podriamos preferir que, en lugar de fallar, el analizador convierta
+   estos panicos en errores comunes de analisis, quizas con un mensaje extra
+   exhortando al usuario a presentar un informe de error.
+
+#    ..src > go
+#      func Parse(input string) (s *Syntax, err error) {
+#        defer func() {
+#          if p := recover(); p != nil {
+#            err = fmt.Errorf("internal error: %v", p)
+#          }
+#        }()
+#        // ...parser...
+#      }
+#    < src..
+   ..src > go
+     func Parse(input string) (s *Syntax, err error) {
+       defer func() {
+         if p := recover(); p != nil {
+           err = fmt.Errorf("internal error: %v", p)
+         }
+       }()
+       // ...analizador...
+     }
+   < src..
+
+#    The deferred function in @c(Parse) recovers from a panic, using the panic
+#    value to construct an error message; a fancier version might include the
+#    entire call stack using @c(runtime.Stack). The deferred function then assigns
+#    to the @c(err) result, which is returned to the caller.
+   La funcion diferida en @c(Parse) se recupera de una situacion de panico,
+   utilizando el valor de panico para construir un mensaje de error; una version
+   mas elegante podria incluir toda la pila de llamadas usando @c(runtime.Stack).
+   Luego la funcion diferida, asigna @c(err) al resultado, que se devuelve al
+   llamador.
+
+#    Recovering indiscriminately from panics is a dubious practice because the
+#    state of a package’s variables after a panic is rarely well defined or
+#    documented. Perhaps a critical update to a data structure was incomplete, a
+#    file or network connection was opened but not closed, or a lock was acquired
+#    but not released. Furthermore, by replacing a crash with, say, a line in a
+#    log file, indiscriminate recovery may cause bugs to go unnoticed.
+   La recuperacion indiscriminada de los panicos es una practica dudosa porque
+   el estado de las variables de un paquete despues de un panico raramente esta
+   bien definido o documentado. Quizas una actualizacion critica de una
+   estructura de datos estaba incompleta, se abrio una conexion de archivo o de
+   red pero no se cerro o se obtuvo un bloqueo pero no se libero. Ademas, al
+   reemplazar un bloqueo con, por ejemplo, una linea en un archivo de registro,
+   la recuperacion indiscriminada puede hacer que los errores pasen
+   desapercibidos.
+
+#    Recovering from a panic within the same package can help simplify the
+#    handling of complex or unexpected errors, but as a general rule, you should
+#    not attempt to recover from another package’s panic. Public APIs should
+#    report failures as @c(errors). Similarly, you should not recover from a panic
+#    that may pass through a function you do not maintain, such as a
+#    caller-provided callback, since you cannot reason about its safety.
+   La recuperacion de un panico dentro del mismo paquete puede ayudar a
+   simplificar el manejo de errores complejos o inesperados, pero como regla
+   general, no debe intentar recuperarse del panico de otro paquete. Las APIs
+   publicas deben informar de fallos como @c(errores). Del mismo modo, no debe
+   recuperarse de un panico que puede pasar a traves de una funcion que no
+   mantiene, como una llamador de devolucion de lllamada, ya que no puede
+   razonar sobre su seguridad.
+
+#    For example, the @c(net/http) package provides a web server that dispatches
+#    incoming requests to user-provided handler functions. Rather than let a panic
+#    in one of these handlers kill the process, the server calls @c(recover),
+#    prints a stack trace, and continues serving. This is convenient in practice,
+#    but it does risk leaking resources or leaving the failed handler in an
+#    unspecified state that could lead to other problems.
+   Por ejemplo, el paquete @c(net/http) proporciona un servidor web que envia
+   las solicitudes entrantes a funciones de controlador proporcionados por el
+   usuario. En lugar de permitir que un panico en uno de estos controladores
+   elimine el proceso, el servidor llama a @c(recover), imprime un seguimiento
+   de la pila, y sigue atendiendo. Esto es conveniente en la practica, pero se
+   corre el riesgo de perder recursos o dejar al manejador fallido en un estado
+   no especificado que podria conducir a otros problemas.
+
+#    For all the above reasons, it’s safest to recover selectively if at all. In
+#    other words, recover only from panics that were intended to be recovered
+#    from, which should be rare. This intention can be encoded by using a
+#    distinct, unexported type for the panic value and testing whether the value
+#    returned by @c(recover) has that type. (We’ll see one way to do this in the
+#    next example.) If so, we report the panic as an ordinary @c(error); if not,
+#    we call @c(panic) with the same value to resume the state of panic.
+   Por todas las razones anteriores, es mas seguro recuperarse selectivamente si
+   es necesario. En otras palabras, recuperar solo de los panicos que estaban
+   destinados a ser recuperados, lo que deberia ser raro. Esta intencion puede
+   ser codificado mediante el uso de un tipo distinto, sin exportar para el
+   valor de panico y probar si el valor devuelto por @c(recover) tiene ese
+   tipo. (Veremos una manera de hacer esto en el siguiente ejemplo.) Si es asi,
+   el informamos el panico como un error ordinario; si no, que llamamos a
+   @c(panic) con el mismo valor para reanudar el estado de panico.
+
+#    The example below is a variation on the @$(title) program that reports an
+#    error if the HTML document contains multiple @c(<title>) elements. If so, it
+#    aborts the recursion by calling @c(panic) with a value of the special type
+#    @c(bailout).
+   El ejemplo siguiente es una variacion sobre el programa @$(title) que informa
+   de un error si el documento HTML contiene multiples elementos @c(<title>). Si
+   es asi, se aborta la recursividad llamando a @c(panic) con un valor del tipo
+   especial @c(bailout).
+
+#    ..figure > @l(gopl.io/ch5/title3/title.go<>gopl.io/ch5/title3)
+   ..figure > @l(gopl.io/ch5/title3/title.go<>gopl.io/ch5/title3)
+
+#      ..src > go
+#        // soleTitle returns the text of the first non-empty title element
+#        // in doc, and an error if there was not exactly one.
+#        func soleTitle(doc *html.Node) (title string, err error) {
+#          type bailout struct{}
+#
+#          defer func() {
+#            switch p := recover(); p {
+#            case nil:
+#              // no panic
+#            case bailout{}:
+#              // "expected" panic
+#              err = fmt.Errorf("multiple title elements")
+#            default:
+#              panic(p) // unexpected panic; carry on panicking
+#            }
+#          }()
+#
+#          // Bail out of recursion if we find more than one non-empty title.
+#          forEachNode(doc, func(n *html.Node) {
+#            if n.Type == html.ElementNode && n.Data == "title" &&
+#              n.FirstChild != nil {
+#              if title != "" {
+#                panic(bailout{}) // multiple title elements
+#              }
+#              title = n.FirstChild.Data
+#            }
+#          }, nil)
+#          if title == "" {
+#            return "", fmt.Errorf("no title element")
+#          }
+#          return title, nil
+#        }
+#      < src..
+     ..src > go
+       // soleTitle regresa el siguiente texto del primer elemento title no vacio
+       // en doc, y un error si no existiera exactamente uno.
+       func soleTitle(doc *html.Node) (title string, err error) {
+         type bailout struct{}
+
+         defer func() {
+           switch p := recover(); p {
+           case nil:
+             // sin panico
+           case bailout{}:
+             // panico "esperado"
+             err = fmt.Errorf("multiple title elements")
+           default:
+             panic(p) // panico inersperado; continuar el panico
+           }
+         }()
+
+         // Bail out de recursion si encontramos mas de un titulo no vacio.
+         forEachNode(doc, func(n *html.Node) {
+           if n.Type == html.ElementNode && n.Data == "title" &&
+             n.FirstChild != nil {
+             if title != "" {
+               panic(bailout{}) // multiples elementos titulo
+             }
+             title = n.FirstChild.Data
+           }
+         }, nil)
+         if title == "" {
+           return "", fmt.Errorf("no title element")
+         }
+         return title, nil
+       }
+     < src..
+
+
+#    The deferred handler function calls @c(recover), checks the panic value, and
+#    reports an ordinary error if the value was @c(bailout{}). All other non-nil
+#    values indicate an unexpected panic, in which case the handler calls
+#    @c(panic) with that value, undoing the effect of @c(recover) and resuming the
+#    original state of panic. (This example does somewhat violate our advice about
+#    not using panics for @"(expected) errors, but it provides a compact
+#    illustration of the mechanics.)
+   La funcion diferida que llama a @c(recover), comprueba el valor de panico, e
+   informa de un error ordinario si el valor era @c(bailout{}). Todos los demas
+   valores no nulos indican un panico inesperados, en cuyo caso el controlador
+   llama a @c(panic) con ese valor, deshace el efecto de @c(recover) y reanuda
+   el estado original de panico. (Este ejemplo viola algo nuestro consejo acerca
+   de no usar panicos para errores @"(esperados), pero proporciona una
+   ilustracion compacta de la mecanica).
+
+#    From some conditions there is no recovery. Running out of memory, for
+#    example, causes the Go runtime to terminate the program with a fatal error.
+   De algunas condiciones no hay recuperacion. La falta de memoria, por ejemplo,
+   provoca en tiempo de ejecucion que el programa termine con un error grave.
+
+#    @b(Exercise 5.19): Use @c(panic) and @c(recover) to write a function that
+#    contains no @c(return) statement yet returns a non-zero value.
+   @b(Ejercicio 5.19): Utilice @c(panic) y @c(recover) para escribir una funcion
+   que no contenga ninguna sentencia @c(return) y devuelva un valor distinto de
+   cero.
+
+# * Chapter 6 <> Methods
+* Capitulo 6 <> Metodos

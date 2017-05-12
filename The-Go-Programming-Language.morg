@@ -7186,6 +7186,7 @@
      func hypot(x, y float64) float64 {
        return math.Sqrt(x*x + y*y)
      }
+
      fmt.Println(hypot(3, 4)) // "5"
    < src..
 
@@ -7363,8 +7364,8 @@
    To descend the tree for a node @c(n), @c(visit) recursively calls itself for
    each of @c(n)’s children, which are held in the @c(FirstChild) linked list.
 
-   Let’s run findlinks on the Go home page, piping the output of @c(fetch)
-   (@l(#Section 1.5<>§1.5)) to the input of @c(findlinks). We’ve edited the
+   Let’s run @$(findlinks) on the Go home page, piping the output of @$(fetch)
+   (@l(#Section 1.5<>§1.5)) to the input of @$(findlinks). We’ve edited the
    output slightly for brevity.
 
    ..src > sh
@@ -7418,7 +7419,7 @@
 
 
    Note one subtlety: although @c(outline) @"(pushes) an element on @c(stack),
-   there is no corresponding pop. When outline calls itself recursively, the
+   there is no corresponding pop. When @c(outline) calls itself recursively, the
    callee receives a copy of @c(stack). Although the callee may append elements
    to this slice, modifying its underlying array and perhaps even allocating a
    new array, it doesn’t modify the initial elements that are visible to the
@@ -7457,7 +7458,7 @@
    the order of a gigabyte.  This lets us use recursion safely and without
    worrying about overflow.
 
-   @b(Exercise 5.1): Change the @c(findlinks) program to traverse the
+   @b(Exercise 5.1): Change the @$(findlinks) program to traverse the
    @c(n.FirstChild) linked list using recursive calls to @c(visit) instead of a
    loop.
 
@@ -7479,9 +7480,9 @@
    computational result and an error value or boolean that indicates whether the
    computation worked. The next example shows how to write one of our own.
 
-   The program below is a variation of @c(findlinks) that makes the HTTP request
-   itself so that we no longer need to run @c(fetch). Because the HTTP and
-   parsing operations can fail, @c(findLinks) declares two results: the list of
+   The program below is a variation of @$(findlinks) that makes the HTTP request
+   itself so that we no longer need to run @$(fetch). Because the HTTP and
+   parsing operations can fail, @$(findLinks) declares two results: the list of
    discovered links and an error. Incidentally, the HTML parser can usually
    recover from bad input and construct a document containing error nodes, so
    @c(Parse) rarely fails; when it does, it’s typically due to underlying I/O
@@ -7640,7 +7641,7 @@
 
    Some functions always succeed at their task. For example,
    @c(strings.Contains) and @c(strconv.FormatBool) have well-defined results for
-   all possible argument values and cannot fail— barring catastrophic and
+   all possible argument values and cannot fail—barring catastrophic and
    unpredictable scenarios like running out of memory, where the symptom is far
    from the cause and from which there’s little hope of recovery.
 
@@ -7718,8 +7719,8 @@
     First, and most common, is to @e(propagate) the error, so that a failure in
     a subroutine becomes a failure of the calling routine. We saw examples of
     this in the @c(findLinks) function of @l(#Section 5.3). If the call to
-    @c(http.Get) fails, findLinks returns the HTTP error to the caller without
-    further ado:
+    @c(http.Get) fails, @c(findLinks) returns the HTTP error to the caller
+    without further ado:
 
     ..src > go
       resp, err := http.Get(url)
@@ -7914,7 +7915,7 @@
     < src..
 
     The caller can detect this condition using a simple comparison, as in the
-    loop below, which reads runes from the standard input. (The @c(charcount)
+    loop below, which reads runes from the standard input. (The @$(charcount)
     program in @l(#Section 4.3) provides a more complete example.)
 
     ..src > go
@@ -8058,7 +8059,7 @@
      forEachNode(doc, startElement, endElement)
    < src..
 
-   we get a more elaborate variation on the output of our earlier @c(outline)
+   we get a more elaborate variation on the output of our earlier @$(outline)
    program:
 
    ..src > sh
@@ -8401,7 +8402,7 @@
      }
    < src..
 
-   Let’s crawl the web starting from @l(https://golang.org). Here are some of
+   Let’s crawl the web starting from @c(https://golang.org). Here are some of
    the resulting links:
 
    ..src > sh
@@ -8500,7 +8501,7 @@
     remove the same directory.
 
     Frequently, the inner variable introduced to work around this
-    problem—@c(dir) in our example— is given the exact same name as the outer
+    problem—@c(dir) in our example—is given the exact same name as the outer
     variable of which it is a copy, leading to odd-looking but crucial variable
     declarations like this:
 
@@ -8610,7 +8611,7 @@
    all for its final arguments, as we’ll explain in @l(#Chapter 7).
 
    @b(Exercise 5.15): Write variadic functions @c(max) and @c(min), analogous to
-   sum. What should these functions do when called with no arguments? Write
+   @c(sum). What should these functions do when called with no arguments? Write
    variants that require at least one argument.
 
    @b(Exercise 5.16): Write a variadic version of @c(strings.Join).
@@ -8781,7 +8782,7 @@
        func bigSlowOperation() {
          defer trace("bigSlowOperation")() // don't forget the extra parentheses
          // ...lots of work...
-         time.Sleep(10 * time.Second) // simulate slow operation by sleeping
+         time.Sleep(10 * time.Second)      // simulate slow operation by sleeping
        }
 
        func trace(msg string) func() {
@@ -8808,7 +8809,7 @@
    function’s variables, including named results, a deferred anonymous function
    can observe the function’s results.
 
-   Consider the function double:
+   Consider the function @c(double):
 
    ..src > go
      func double(x int) int {
@@ -8881,7 +8882,7 @@
      }
    < src..
 
-   The example below is an improved @c(fetch) program (@l(#Section 1.5<>§1.5))
+   The example below is an improved @$(fetch) program (@l(#Section 1.5<>§1.5))
    that writes the HTTP response to a local file instead of to the standard
    output. It derives the file name from the last component of the URL path,
    which it obtains using the @c(path.Base) function.
@@ -8996,6 +8997,7 @@
 
    ..src > go
      package regexp
+
      func Compile(expr string) (*Regexp, error) { /* ... */ }
 
      func MustCompile(expr string) *Regexp {
@@ -9163,7 +9165,7 @@
    not attempt to recover from another package’s panic. Public APIs should
    report failures as @c(errors). Similarly, you should not recover from a panic
    that may pass through a function you do not maintain, such as a
-   callerprovided callback, since you cannot reason about its safety.
+   caller-provided callback, since you cannot reason about its safety.
 
    For example, the @c(net/http) package provides a web server that dispatches
    incoming requests to user-provided handler functions. Rather than let a panic
@@ -9180,7 +9182,7 @@
    next example.) If so, we report the panic as an ordinary @c(error); if not,
    we call @c(panic) with the same value to resume the state of panic.
 
-   The example below is a variation on the @c(title) program that reports an
+   The example below is a variation on the @$(title) program that reports an
    error if the HTML document contains multiple @c(<title>) elements. If so, it
    aborts the recursion by calling @c(panic) with a value of the special type
    @c(bailout).
