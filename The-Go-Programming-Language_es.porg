@@ -17334,3 +17334,1816 @@
 
 # * Chapter 6 <> Methods
 * Capitulo 6 <> Metodos
+
+#   Since the early 1990s, object-oriented programming (OOP) has been the dominant
+#   programming paradigm in industry and education, and nearly all widely used
+#   languages developed since then have included support for it. Go is no
+#   exception.
+  Desde principios de los noventa, la programacion orientada a objetos (OOP) ha
+  sido el paradigma de programacion dominante en la industria y la educacion, y
+  casi todos las lenguajes ampliamente utilizadas desarrolladas desde entonces
+  han incluido el soporte para ello. Go no es una excepcion.
+
+#   Although there is no universally accepted definition of object-oriented
+#   programming, for our purposes, an @e(object) is simply a value or variable
+#   that has methods, and a @e(method) is a function associated with a particular
+#   type. An object-oriented program is one that uses methods to express the
+#   properties and operations of each data structure so that clients need not
+#   access the object’s representation directly.
+  Aunque no existe una definicion universalmente aceptada de la programacion
+  orientada a objetos, para nuestros propositos, un @e(objeto) es simplemente un
+  valor o variable que tiene metodos, y un metodo es una funcion asociada a un
+  tipo particular. Un programa orientado a objetos es aquel que utiliza metodos
+  para expresar las propiedades y operaciones de cada estructura de datos de
+  modo que los clientes no necesitan acceder directamente a la representacion
+  del objeto.
+
+#   In earlier chapters, we have made regular use of methods from the standard
+#   library, like the @c(Seconds) method of type @c(time.Duration):
+  En los capitulos anteriores, hemos hecho uso regular de metodos de la libreria
+  estandar, como el metodo @c(Seconds) del tipo @c(time.Duration):
+
+#   ..src > go
+#     const day = 24 * time.Hour
+#     fmt.Println(day.Seconds()) // "86400"
+#   < src..
+  ..src > go
+    const day = 24 * time.Hour
+    fmt.Println(day.Seconds()) // "86400"
+  < src..
+
+#   and we defined a method of our own in @l(#Section 2.5), a @c(String) method
+#   for the @c(Celsius) type:
+  y definimos un metodo de propia en la @l(#Seccion 2.5), una metodo @c(String)
+  para el Tipo @c(Celsius):
+
+#   ..src > go
+#     func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }
+#   < src..
+  ..src > go
+    func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }
+  < src..
+
+#   In this chapter, the first of two on object-oriented programming, we’ll show
+#   how to define and use methods effectively. We’ll also cover two key principles
+#   of object-oriented programming, @e(encapsulation) and @e(composition).
+  En este capitulo, el primero de dos en la programacion orientada a objetos,
+  mostraremos como definir y utilizar metodos de manera eficaz. Tambien vamos a
+  cubrir dos principios fundamentales de la programacion orientada a objetos,
+  encapsulacion y composicion.
+
+# ** Section 6.1 <> Method Declarations
+** Seccion 6.1 <> Declaracion de Metodos
+
+#    A method is declared with a variant of the ordinary function declaration in
+#    which an extra parameter appears before the function name. The parameter
+#    attaches the function to the type of that parameter.
+   Se declara un metodo con una variante de la declaracion de funcion ordinaria
+   en la que aparece un parametro extra antes del nombre de la funcion. El
+   parametro asigna la funcion al tipo de ese parametro.
+
+#    Let’s write our first method in a simple package for plane geometry:
+   Vamos a escribir nuestro primer metodo en un simple paquete de geometria
+   plana:
+
+#    ..figure > @l(gopl.io/ch6/geometry/geometry.go<>gopl.io/ch6/geometry)
+   ..figure > @l(gopl.io/ch6/geometry/geometry.go<>gopl.io/ch6/geometry)
+
+#      ..src > go
+#        package geometry
+#
+#        import "math"
+#
+#        type Point struct{ X, Y float64 }
+#
+#        // traditional function
+#        func Distance(p, q Point) float64 {
+#          return math.Hypot(q.X-p.X, q.Y-p.Y)
+#        }
+#
+#        // same thing, but as a method of the Point type
+#        func (p Point) Distance(q Point) float64 {
+#          return math.Hypot(q.X-p.X, q.Y-p.Y)
+#        }
+#      < src..
+     ..src > go
+       package geometria
+
+       import "math"
+
+       type Punto struct{ X, Y float64 }
+
+       // funcion tradicional
+       func Distancia(p, q Punto) float64 {
+         return math.Hypot(q.X-p.X, q.Y-p.Y)
+       }
+
+       // lo mismo, pero como un metodo del tipo Punto
+       func (p Punto) Distancia(q Punto) float64 {
+         return math.Hypot(q.X-p.X, q.Y-p.Y)
+       }
+     < src..
+
+#    The extra parameter @c(p) is called the method’s @e(receiver), a legacy from
+#    early object-oriented languages that described calling a method as @"(sending
+#    a message to an object.)
+   El parametro extra @c(p) se denomina el @e(receptor) del metodo, un legado de
+   los primeros lenguajes orientados a objetos que describen la llamada a un
+   metodo como @"(el envio de un mensaje a un objeto).
+
+#    In Go, we don’t use a special name like @c(this) or @c(self) for the
+#    receiver; we choose receiver names just as we would for any other
+#    parameter. Since the receiver name will be frequently used, it’s a good idea
+#    to choose something short and to be consistent across methods. A common
+#    choice is the first letter of the type name, like @c(p) For @c(Point).
+   En Go, no utilizamos un nombre especial como @c(this) o @c(self) para el
+   receptor; Elegimos los nombres de los receptores tal como lo hariamos para
+   cualquier otro parametro. Pusto que el nombre del receptor se utilizara con
+   frecuencia, es una buena idea elegir algo corto y ser coherente entre los
+   metodos. Una opcion comun es la primer letra del nombre del tipo, como @c(p)
+   por @c(Point).
+
+#    In a method call, the receiver argument appears before the method name. This
+#    parallels the declaration, in which the receiver parameter appears before the
+#    method name.
+   En una llamada al metodo, el argumento del receptor aparece antes del nombre
+   del metodo. Esto es paralelo a la declaracion, en la que el parametro del
+   receptor aparece antes del nombre del metodo.
+
+#    ..src > go
+#      p := Point{1, 2}
+#      q := Point{4, 6}
+#      fmt.Println(Distance(p, q)) // "5", function call
+#      fmt.Println(p.Distance(q))  // "5", method call
+#    < src..
+   ..src > go
+     p := Punto{1, 2}
+     q := Punto{4, 6}
+     fmt.Println(Distancia(p, q)) // "5", llamada a funcion
+     fmt.Println(p.Distancia(q))  // "5", llamada a metodo
+   < src..
+
+#    There’s no conflict between the two declarations of functions called
+#    @c(Distance) above. The first declares a package-level function called
+#    @c(geometry.Distance). The second declares a method of the type @c(Point), so
+#    its name is @c(Point.Distance).
+   No hay conflicto entre las dos declaraciones de funcion llamadas @c(Distancia)
+   anteriores. La primera declara una funcion de nivel paquete llamada
+   @c(geometria.Distancia). La segunda declara un procedimiento del tipo @c(Punto), por
+   lo que su nombre es @c(Punto.Distancia).
+
+#    The expression @c(p.Distance) is called a @e(selector), because it selects
+#    the appropriate @c(Distance) method for the receiver @c(p) of type
+#    @c(Point). Selectors are also used to select fields of struct types, as in
+#    @c(p.X). Since methods and fields inhabit the same name space, declaring a
+#    method @c(X) on the struct type @c(Point) would be ambiguous and the compiler
+#    will reject it.
+   La expresion @c(p.Distancia) se denomina un @e(selector), porque selecciona
+   el metodo apropiado @c(Distancia) para el receptor @c(p) de tipo @c(Punto).
+   Los selectores tambien se utilizan para seleccionar los campos de un tipo
+   estructura, como en @c(p.X). Dado que los metodos y campos habitan el mismo
+   espacio de nombres, si declara un metodo @c(X) para el tipo de estructura
+   @c(Punto) seria ambiguo y el compilador lo rechazara.
+
+#    Since each type has its own name space for methods, we can use the name
+#    @c(Distance) for other methods so long as they belong to different
+#    types. Let’s define a type @c(Path) that represents a sequence of line
+#    segments and give it a @c(Distance) method too.
+   Debido a que cada tipo tiene su propio espacio de nombres para los metodos,
+   podemos usar el nombre @c(Distancia) para otros metodos, siempre y cuando
+   pertenecen a diferentes tipos. Vamos a definir un tipo @c(Ruta) que
+   representa una secuencia de segmentos de linea y a darle un metodo
+   @c(Distancia) tambien.
+
+#    ..src > go
+#      // A Path is a journey connecting the points with straight lines.
+#      type Path []Point
+#
+#      // Distance returns the distance traveled along the path.
+#      func (path Path) Distance() float64 {
+#        sum := 0.0
+#        for i := range path {
+#          if i > 0 {
+#            sum += path[i-1].Distance(path[i])
+#          }
+#        }
+#        return sum
+#      }
+#    < src..
+   ..src > go
+     // Una Ruta es un caminoA que conecta los puntos con lineas reactas.
+     type Ruta []Punto
+
+     // Distancia devuelve la distancia recorrida a lo largo de la Ruta.
+     func (ruta Ruta) Distancia() float64 {
+       sum := 0.0
+       for i := range ruta {
+         if i > 0 {
+           sum += ruta[i-1].Distancia(ruta[i])
+         }
+       }
+       return sum
+     }
+   < src..
+
+#    @c(Path) is a named slice type, not a struct type like @c(Point), yet we can
+#    still define methods for it.  In allowing methods to be associated with any
+#    type, Go is unlike many other object-oriented languages. It is often
+#    convenient to define additional behaviors for simple types such as numbers,
+#    strings, slices, maps, and sometimes even functions. Methods may be declared
+#    on any named type defined in the same package, so long as its underlying type
+#    is neither a pointer nor an interface.
+   @c(Ruta) es un tipo de slice con nombre, no un tipo de estructura como
+   @c(Punto), sin embargo, podemos definir metodos para el. Al permitir que los
+   metodos se asocien con cualquier tipo, Go es diferente de muchos otros
+   lenguajes orientados a objetos. A menudo es conveniente definir
+   comportamientos adicionales para tipos simples como numeros, cadenas, slices,
+   mapas, y a veces, incluso funciones. Los metodos pueden ser declarados en
+   cualquier tipo con nombre definido en el mismo paquete, siempre y cuando su
+   tipo subyacente no sea un puntero ni una interfaz.
+
+#    The two @c(Distance) methods have different types. They’re not related to
+#    each other at all, though @c(Path.Distance) uses @c(Point.Distance)
+#    internally to compute the length of each segment that connects adjacent
+#    points.
+   Las dos metodos @c(Distancia) tienen diferentes tipos. No estan relacionados
+   entre si en absoluto, aunque @c(Ruta.Distancia) utiliza a @c(Punto.Distancia)
+   internamente para calcular la longitud de cada segmento que une los puntos
+   adyacentes.
+
+#    Let’s call the new method to compute the perimeter of a right triangle:
+   Vamos a llamar al nuevo metodo para calcular el perimetro de un triangulo
+   rectangulo:
+
+#    ..cols >
+   ..cols >
+
+#      ..src > go
+#        perim := Path{
+#          {1, 1},
+#          {5, 1},
+#          {5, 4},
+#          {1, 1},
+#        }
+#        fmt.Println(perim.Distance()) // "12"
+#      < src..
+     ..src > go
+       perim := Ruta{
+         {1, 1},
+         {5, 1},
+         {5, 4},
+         {1, 1},
+       }
+       fmt.Println(perim.Distancia()) // "12"
+     < src..
+
+#      ::
+     ::
+
+#      ..img > img/perim.Distance.jpg
+     ..img > img/perim.Distance.jpg
+
+
+#    In the two calls above to methods named @c(Distance), the compiler determines
+#    which function to call based on both the method name and the type of the
+#    receiver. In the first, @c(path[i-1]) has type @c(Point) so
+#    @c(Point.Distance) is called; in the second, @c(perim) has type @c(Path), so
+#    @c(Path.Distance) is called.
+   En las dos llamadas anterior a metodos con nombre @c(Distancia), el
+   compilador determina que funcion debe llamar basandose tanto en el nombre del
+   metodo y el tipo de receptor. En el primero, @c(ruta[i-1]) tiene tipo
+   @c(Punto), asi que se llama a @c(Punto.Distancia); en el segundo, @c(perim)
+   tiene el tipo Ruta, por lo que se llama a @c(Ruta.Distancia).
+
+#    All methods of a given type must have unique names, but different types can
+#    use the same name for a method, like the @c(Distance) methods for @c(Point)
+#    and @c(Path); there’s no need to qualify function names (for example,
+#    @c(PathDistance)) to disambiguate. Here we see the first benefit to using
+#    methods over ordinary functions: method names can be shorter. The benefit is
+#    magnified for calls originating outside the package, since they can use the
+#    shorter name @e(and) omit the package name:
+   Todos los metodos de un tipo dado deben tener nombres unicos, pero diferentes
+   tipos pueden utilizar el mismo nombre para un metodo, al igual que los
+   metodos @c(Distancia) para @c(Punto) y @c(Ruta); no hay necesidad de
+   calificar los nombres de funcion (por ejemplo, @c(RutaDistancia)) para
+   eliminar la ambigüedad. Aqui vemos el primer beneficio al usar metodos sobre
+   funciones ordinarias: los nombres de metodos pueden ser mas cortos. El
+   beneficio se magnifica para las llamadas que se originan fuera del paquete,
+   ya que pueden utilizar el nombre mas corto y omitir el nombre del paquete:
+
+#    ..src > go
+#      import "gopl.io/ch6/geometry"
+#
+#      perim := geometry.Path{{1, 1}, {5, 1}, {5, 4}, {1, 1}}
+#      fmt.Println(geometry.PathDistance(perim)) // "12", standalone function
+#      fmt.Println(perim.Distance())             // "12", method of geometry.Path
+#    < src..
+   ..src > go
+     import "gopl.io/ch6/geometry"
+
+     perim := geometry.Path{{1, 1}, {5, 1}, {5, 4}, {1, 1}}
+     fmt.Println(geometry.PathDistance(perim)) // "12", funcion independiente
+     fmt.Println(perim.Distance())             // "12", metodo de geometry.Path
+   < src..
+
+# ** Section 6.2 <> Methods with a Pointer Receiver
+** Seccion 6.2 <> Metodos con un Receptor de Puntero
+
+#    Because calling a function makes a copy of each argument value, if a function
+#    needs to update a variable, or if an argument is so large that we wish to
+#    avoid copying it, we must pass the address of the variable using a
+#    pointer. The same goes for methods that need to update the receiver variable:
+#    we attach them to the pointer type, such as @c(*Point).
+   Ya que llamar a una funcion crea una copia de cada valor de argumento, si una
+   funcion necesita actualizar una variable, o si un argumento es tan grande que
+   queremos evitar copiarlo, debemos pasar la direccion de la variable usando un
+   puntero. Lo mismo ocurre con los metodos que necesitan actualizar la variable
+   del receptor: los adjudicamos al tipo como puntero, como @c(*Point).
+
+#    ..src > go
+#      func (p *Point) ScaleBy(factor float64) {
+#        p.X *= factor
+#        p.Y *= factor
+#      }
+#    < src..
+   ..src > go
+     func (p *Point) ScaleBy(factor float64) {
+       p.X *= factor
+       p.Y *= factor
+     }
+   < src..
+
+#    The name of this method is @c[(*Point).ScaleBy]. The parentheses are
+#    necessary ; without them, the expression would be parsed as
+#    @c[*(Point.ScaleBy)].
+   El nombre de este metodo es @c[(*Point).ScaleBy]. Los parentesis son necesarios;
+   sin ellos, la expresion se analiza como @c[*(Point.ScaleBy)].
+
+#    In a realistic program, convention dictates that if any method of @c(Point)
+#    has a pointer receiver, then @e(all) methods of @c(Point) should have a
+#    pointer receiver, even ones that don’t strictly need it.  We’ve broken this
+#    rule for @c(Point) so that we can show both kinds of method.
+   En un programa realista, la convencion dicta que si cualquier metodo de
+   @c(Point) tiene un receptor puntero, entonces todos los metodos de @c(Point)
+   deben tener un receptor puntero, incluso los que no lo necesitan
+   estrictamente. Hemos roto esta regla para @c(Point) de modo que podamos
+   mostrar ambos tipos de metodo.
+
+#    Named types (@c(Point)) and pointers to them @c[(*Point)] are the only types
+#    that may appear in a receiver declaration. Furthermore, to avoid ambiguities,
+#    method declarations are not permitted on named types that are themselves
+#    pointer types:
+   Tipos con nombre (@c(Point)) y punteros a ellos @c[(*Point)] son los unicos
+   tipos que pueden aparecer en una declaracion receptor. Ademas, para evitar
+   ambigüedades, las declaraciones de metodos no estan permitidas en tipos con
+   nombre que son ellos mismos tipos de puntero:
+
+#    ..src > go
+#      type P *int
+#      func (P) f() { /* ... */ } // compile error: invalid receiver type
+#    < src..
+   ..src > go
+     type P *int
+     func (P) f() { /* ... */ } // error de compilacion: tipo de receptor invalido
+   < src..
+
+#    The @c[(*Point).ScaleBy] method can be called by providing a @c(*Point)
+#    receiver, like this:
+   El metodo @c[(*Point).ScaleBy] se puede llamar al proporcionar un receptor
+   @c(*Point), asi:
+
+#    ..src > go
+#      r := &Point{1, 2}
+#      r.ScaleBy(2)
+#      fmt.Println(*r) // "{2, 4}"
+#    < src..
+   ..src > go
+     r := &Point{1, 2}
+     r.ScaleBy(2)
+     fmt.Println(*r) // "{2, 4}"
+   < src..
+
+#    or this:
+   o asi:
+
+#    ..src > go
+#      p := Point{1, 2}
+#      pptr := &p
+#      pptr.ScaleBy(2)
+#      fmt.Println(p) // "{2, 4}"
+#    < src..
+   ..src > go
+     p := Point{1, 2}
+     pptr := &p
+     pptr.ScaleBy(2)
+     fmt.Println(p) // "{2, 4}"
+   < src..
+
+#    or this:
+   o asi:
+
+#    ..src > go
+#      p := Point{1, 2}
+#      (&p).ScaleBy(2)
+#      fmt.Println(p) // "{2, 4}"
+#    < src..
+   ..src > go
+     p := Point{1, 2}
+     (&p).ScaleBy(2)
+     fmt.Println(p) // "{2, 4}"
+   < src..
+
+#    But the last two cases are ungainly. Fortunately, the language helps us
+#    here. If the receiver @c(p) is a @e(variable) of type @c(Point) but the
+#    method requires a @c(*Point) receiver, we can use this shorthand:
+   Pero los dos ultimos casos son desagradables. Afortunadamente, el lenguaje
+   nos ayuda aqui. Si el receptor @c(p) es una variable de tipo @c(Point), pero
+   el metodo requiere un receptor @c(*Point), podemos emplear esta abreviatura:
+
+#    ..src > go
+#      p.ScaleBy(2)
+#    < src..
+   ..src > go
+     p.ScaleBy(2)
+   < src..
+
+#    and the compiler will perform an implicit @c(&p) on the variable. This works
+#    only for variables, including struct fields like @c(p.X) and array or slice
+#    elements like @c(perim[0]). We cannot call a @c(*Point) method on a
+#    non-addressable @c(Point) receiver, because there’s no way to obtain the
+#    address of a temporary value.
+   y el compilador realizara un @c(&p) implicito sobre la variable. Esto solo
+   funciona para las variables, incluyendo los campos de la estructura como
+   @c(p.X) y elementos de la arreglo o slice como @c(perim[0]). No podemos
+   llamar a un metodo @c(*Point) en un receptor @c(Point) no direccionable,
+   porque no hay manera de obtener la direccion de un valor temporal.
+
+#    ..src > go
+#      Point{1, 2}.ScaleBy(2) // compile error: can't take address of Point literal
+#    < src..
+   ..src > go
+     Point{1, 2}.ScaleBy(2) // compile error: can't take address of Point literal
+   < src..
+
+#    But we @e(can) call a @c(Point) method like @c(Point.Distance) with a
+#    @c(*Point) receiver, because there is a way to obtain the value from the
+#    address: just load the value pointed to by the receiver. The compiler inserts
+#    an implicit @c(*) operation for us. These two function calls are equivalent:
+   Sin embargo, podemos llamar a un metodo @c(Point) como @c(Point.Distance) con
+   un receptor @c(*Point), porque hay una manera de obtener el valor de la
+   direccion: solo tiene que cargar el valor apuntado por el receptor. El
+   compilador inserta una operacion @c(*) implicita por nosotros. Estas dos
+   llamadas de funcion son equivalentes:
+
+#    ..src > go
+#      pptr.Distance(q)
+#      (*pptr).Distance(q)
+#    < src..
+   ..src > go
+     pptr.Distance(q)
+     (*pptr).Distance(q)
+   < src..
+
+#    Let’s summarize these three cases again, since they are a frequent point of
+#    confusion. In every valid method call expression, exactly one of these three
+#    statements is true.
+   Vamos a resumir estos tres casos de nuevo, ya que son un punto frecuente de
+   confusion. En cada expresion de llamada de metodo valida, exactamente una de
+   estas tres sentencias es verdadera.
+
+#    Either the receiver argument has the same type as the receiver parameter, for
+#    example both have type @c(T) or both have type @c(*T):
+   O bien el argumento receptor tiene el mismo tipo que el parametro del
+   receptor, por ejemplo ambos tienen tipo @c(T) o ambos tienen tipo @c(*T):
+
+#    ..src > go
+#      Point{1, 2}.Distance(q) //  Point
+#      pptr.ScaleBy(2)         // *Point
+#    < src..
+   ..src > go
+     Point{1, 2}.Distance(q) //  Point
+     pptr.ScaleBy(2)         // *Point
+   < src..
+
+#    Or the receiver argument is a @e(variable) of type @c(T) and the receiver
+#    parameter has type @c(*T). The compiler implicitly takes the address of the
+#    variable:
+   O el argumento de receptor es una variable de tipo @c(T) y el parametro receptor
+   tiene tipo @c(*T). El compilador toma implicitamente la direccion de la
+   variable:
+
+#    ..src > go
+#      p.ScaleBy(2) // implicit (&p)
+#    < src..
+   ..src > go
+     p.ScaleBy(2) // implicit (&p)
+   < src..
+
+#    Or the receiver argument has type @c(*T) and the receiver parameter has type
+#    @c(T). The compiler implicitly dereferences the receiver, in other words,
+#    loads the value:
+   O el argumento receptor tiene tipo @c(*T) y el parametro receptor tiene tipo
+   @c(T). El compilador dereferencia implicitamente al receptor, en otras
+   palabras, carga el valor:
+
+#    ..src > go
+#      pptr.Distance(q) // implicit (*pptr)
+#    < src..
+   ..src > go
+     pptr.Distance(q) // implicit (*pptr)
+   < src..
+
+#    If all the methods of a named type @c(T) have a receiver type of @c(T) itself
+#    (not @c(*T)), it is safe to copy instances of that type; calling any of its
+#    methods necessarily makes a copy. For example, @c(time.Duration) values are
+#    liberally copied, including as arguments to functions. But if any method has
+#    a pointer receiver, you should avoid copying instances of @c(T) because doing
+#    so may violate internal invariants. For example, copying an instance of
+#    @c(bytes.Buffer) would cause the original and the copy to alias (@l(#Section
+#    2.3.2<>§2.3.2)) the same underlying array of bytes. Subsequent method calls
+#    would have unpredictable effects.
+   Si todos los metodos de un tipo con nombre @c(T) tienen un tipo de receptor
+   @c(T) en si (no @c(*T)), es seguro copiar las instancias de ese tipo; Llamar
+   a cualquiera de sus metodos necesariamente hace una copia. Por ejemplo, los
+   valores @c(time.Duration) se copian liberalmente, incluyendo como argumentos
+   a las funciones. Pero si cualquier metodo tiene un receptor de puntero, se
+   debe evitar copiar instancas de @c(T), ya que hacerlo puede violar
+   invariantes internos. Por ejemplo, copiar una instancia de @c(bytes.Buffer)
+   haria que el original y la copia como alias (@l(#Seccion 2.3.2<>§2.3.2))
+   tubieran el mismo arreglo subyacente de bytes. Las llamadas de metodo
+   subsiguientes tendrian efectos impredecibles.
+
+# *** Section 6.2.1 <> Nil Is a Valid Receiver Value
+*** Seccion 6.2.1 <> Nil es un Valor de Receptor Valido
+
+#     Just as some functions allow nil pointers as arguments, so do some methods
+#     for their receiver, especially if @c(nil) is a meaningful zero value of the
+#     type, as with maps and slices. In this simple linked list of integers,
+#     @c(nil) represents the empty list:
+    Al igual que algunas funciones permiten punteros nulos como argumentos,
+    tambien lo hacen algunos metodos para su receptor, especialmente si @c(nil)
+    es un valor cero significativo del tipo, al igual que con los mapas y los
+    slices. En esta sencilla lista enlazada de numeros enteros, @c(nil)
+    representa la lista vacia:
+
+#     ..src > go
+#       // An IntList is a linked list of integers.
+#       // A nil *IntList represents the empty list.
+#       type IntList struct {
+#         Value int
+#         Tail *IntList
+#       }
+#
+#       // Sum returns the sum of the list elements.
+#       func (list *IntList) Sum() int {
+#         if list == nil {
+#           return 0
+#         }
+#         return list.Value + list.Tail.Sum()
+#       }
+#     < src..
+    ..src > go
+      // Un IntList es una lista enlazada de enteros.
+      // Un nil *IntList representa la lista vacia.
+      type IntList struct {
+        Value int
+        Tail *IntList
+      }
+
+      // Sum regresa la suma de la lista de elementos.
+      func (list *IntList) Sum() int {
+        if list == nil {
+          return 0
+        }
+        return list.Value + list.Tail.Sum()
+      }
+    < src..
+
+#     When you define a type whose methods allow @c(nil) as a receiver value, it’s
+#     worth pointing this out explicitly in its documentation comment, as we did
+#     above.
+    Cuando se define un tipo cuyos metodos permiten @c(nil) como valor receptor,
+    vale la pena señalar esto explicitamente en su comentario de documentacion,
+    como lo hicimos arriba.
+
+#     Here’s part of the definition of the @c(Values) type from the @c(net/url)
+#     package:
+    Aqui esta parte de la definicion del tipo @c(Values) del paquete @c(net/url):
+
+#     ..figure > @c(net/url)
+    ..figure > @c(net/url)
+
+#       ..src > go
+#         package url
+#
+#         // Values maps a string key to a list of values.
+#         type Values map[string][]string
+#
+#         // Get returns the first value associated with the given key,
+#         // or "" if there are none.
+#         func (v Values) Get(key string) string {
+#           if vs := v[key]; len(vs) > 0 {
+#             return vs[0]
+#           }
+#           return ""
+#         }
+#
+#         // Add adds the value to key.
+#         // It appends to any existing values associated with key.
+#         func (v Values) Add(key, value string) {
+#           v[key] = append(v[key], value)
+#         }
+#       < src..
+      ..src > go
+        package url
+
+        // Values map asigna clave de cadena a una lista de valores.
+        type Values map[string][]string
+
+        // Get devuelve el primer valor asociado con la clave dada,
+        // o "" si no hay nada.
+        func (v Values) Get(key string) string {
+          if vs := v[key]; len(vs) > 0 {
+            return vs[0]
+          }
+          return ""
+        }
+
+        // Add agrega el valor a la clave.
+        // Se añade a cualquier valor existente asociado con la clave.
+        func (v Values) Add(key, value string) {
+          v[key] = append(v[key], value)
+        }
+      < src..
+
+
+#     It exposes its representation as a map but also provides methods to simplify
+#     access to the map, whose values are slices of strings—it’s a @e(multimap).
+#     Its clients can use its intrinsic operators (@c(make), slice literals,
+#     @c(m[key]), and so on), or its methods, or both, as they prefer:
+    Expone su representacion como un mapa, pero tambien proporciona metodos para
+    simplificar el acceso al mapa, cuyos valores son slices de cadenas–es un
+    @e(mapa multiple). Sus clientes pueden utilizar sus operadores intrinsecos
+    (@c(make), slice literales, @c(m[key]), etc.), o sus metodos, o ambos, como
+    prefiera:
+
+#     ..figure > @l(gopl.io/ch6/urlvalues/main.go<>gopl.io/ch6/urlvalues)
+    ..figure > @l(gopl.io/ch6/urlvalues/main.go<>gopl.io/ch6/urlvalues)
+
+#       ..src > go
+#         m := url.Values{"lang": {"en"}} // direct construction
+#         m.Add("item", "1")
+#         m.Add("item", "2")
+#
+#         fmt.Println(m.Get("lang")) // "en"
+#         fmt.Println(m.Get("q"))    // ""
+#         fmt.Println(m.Get("item")) // "1"      (first value)
+#         fmt.Println(m["item"])     // "[1 2]"  (direct map access)
+#
+#         m = nil
+#         fmt.Println(m.Get("item")) // ""
+#         m.Add("item", "3")         // panic: assignment to entry in nil map
+#       < src..
+      ..src > go
+        m := url.Values{"lang": {"en"}} // construccion directa
+        m.Add("item", "1")
+        m.Add("item", "2")
+
+        fmt.Println(m.Get("lang")) // "en"
+        fmt.Println(m.Get("q"))    // ""
+        fmt.Println(m.Get("item")) // "1"      (primer valor)
+        fmt.Println(m["item"])     // "[1 2]"  (acceso directo al mapa)
+
+        m = nil
+        fmt.Println(m.Get("item")) // ""
+        m.Add("item", "3")         // panico: asignacion a ingresar en un mapa nil
+      < src..
+
+
+#     In the final call to @c(Get), the @c(nil) receiver behaves like an empty map. We
+#     could equivalently have written it as @c[Values(nil).Get("item"))], but
+#     @c[nil.Get("item")] will not compile because the type of @c(nil) has not
+#     been determined. By contrast, the final call to @c(Add) panics as it tries
+#     to update a nil map.
+    En la llamada final a @c(Get), el receptor @c(nil) se comporta como un mapa
+    vacio. Podriamos haberlo escrito como @c[Values(nil).Get("item")], pero
+    @c[nil.Get("item")] no se compilara porque el tipo @c(nil) no se ha
+    determinado. Por el contrario, la llamada final a @c(Add) proboca un panico,
+    ya que trata de actualizar un mapa nil.
+
+#     Because @c(url.Values) is a map type and a map refers to its key/value pairs
+#     indirectly, any updates and deletions that @c(url.Values.Add) makes to the
+#     map elements are visible to the caller. However, as with ordinary functions,
+#     any changes a method makes to the reference itself, like setting it to
+#     @c(nil) or making it refer to a different map data structure, will not be
+#     reflected in the caller.
+    Debido a que @c(url.Values) es un tipo de mapa y un mapa se refiere a sus
+    pares clave/valor indirectamente, las actualizaciones y supresiones que
+    @c(url.Values.Add) hace a los elementos del mapa son visibles para el
+    llamador. Sin embargo, al igual que con las funciones ordinarias, los
+    cambios que un metodo hace a la propia referencia, como establecerlo en
+    @c(nil) o hacer que se refiera a una estructura de mapa de datos diferente,
+    no se reflejaran en el llamador.
+
+# ** Section 6.3 <> Composing Types by Struct Embedding
+** Seccion 6.3 <> Composicion de Tipos por Estructuras Enbebidas
+
+#    Consider the type @c(ColoredPoint):
+   Considere el tipo @c(ColoredPoint):
+
+#    ..figure > @l(gopl.io/ch6/coloredpoint/main.go<>gopl.io/ch6/coloredpoint)
+   ..figure > @l(gopl.io/ch6/coloredpoint/main.go<>gopl.io/ch6/coloredpoint)
+
+#      ..src > go
+#        import "image/color"
+#
+#        type Point struct{ X, Y float64 }
+#
+#        type ColoredPoint struct {
+#          Point
+#          Color color.RGBA
+#        }
+#      < src..
+     ..src > go
+       import "image/color"
+
+       type Point struct{ X, Y float64 }
+
+       type ColoredPoint struct {
+         Point
+         Color color.RGBA
+       }
+     < src..
+
+
+#    We could have defined @c(ColoredPoint) as a struct of three fields, but
+#    instead we @e(embedded) a @c(Point) to provide the @c(X) and @c(Y) fields. As
+#    we saw in @l(#Section 4.4.3), embedding lets us take a syntactic shortcut to
+#    defining a @c(ColoredPoint) that contains all the fields of @c(Point), plus
+#    some more. If we want, we can select the fields of @c(ColoredPoint) that were
+#    contributed by the embedded @c(Point) without mentioning @c(Point):
+   Podriamos haber definido @c(ColoredPoint) como una estructura de tres campos,
+   pero en su lugar, @e(enbebimos) un @c(Point) para proporcionar los campos
+   @c(X) e @c(Y). Como vimos en la @l(#Seccion 4.4.3), la incrustacion nos
+   permite tomar un atajo sintactico para definir un tipo @c(ColoredPoint) que
+   contiene todos los campos de @c(Point), ademas de un poco mas. Si queremos,
+   podemos seleccionar los campos de @c(ColoredPoint) que fueron aportados por
+   el @c(Point) embebido sin mencionar a @c(Point):
+
+#    ..src > go
+#      var cp ColoredPoint
+#      cp.X = 1
+#      fmt.Println(cp.Point.X) // "1"
+#      cp.Point.Y = 2
+#      fmt.Println(cp.Y)       // "2"
+#    < src..
+   ..src > go
+     var cp ColoredPoint
+     cp.X = 1
+     fmt.Println(cp.Point.X) // "1"
+     cp.Point.Y = 2
+     fmt.Println(cp.Y)       // "2"
+   < src..
+
+#    A similar mechanism applies to the @e(methods) of @c(Point). We can call
+#    methods of the embedded @c(Point) field using a receiver of type
+#    @c(ColoredPoint), even though @c(ColoredPoint) has no declared methods:
+   Un mecanismo similar se aplica a los @e(metodos) de @c(Point). Podemos llamar
+   a los metodos del enbebido @c(Point) utilizando un receptor de tipo
+   @c(ColoredPoint), a pesar de que @c(ColoredPoint) no tiene metodos
+   declarados:
+
+#    ..src > go
+#      red := color.RGBA{255, 0, 0, 255}
+#      blue := color.RGBA{0, 0, 255, 255}
+#      var p = ColoredPoint{Point{1, 1}, red}
+#      var q = ColoredPoint{Point{5, 4}, blue}
+#      fmt.Println(p.Distance(q.Point)) // "5"
+#      p.ScaleBy(2)
+#      q.ScaleBy(2)
+#      fmt.Println(p.Distance(q.Point)) // "10"
+#    < src..
+   ..src > go
+     red := color.RGBA{255, 0, 0, 255}
+     blue := color.RGBA{0, 0, 255, 255}
+     var p = ColoredPoint{Point{1, 1}, red}
+     var q = ColoredPoint{Point{5, 4}, blue}
+     fmt.Println(p.Distance(q.Point)) // "5"
+     p.ScaleBy(2)
+     q.ScaleBy(2)
+     fmt.Println(p.Distance(q.Point)) // "10"
+   < src..
+
+#    The methods of @c(Point) have been @e(promoted) to @c(ColoredPoint). In this
+#    way, embedding allows complex types with many methods to be built up by the
+#    @e(composition) of several fields, each providing a few methods.
+   Los metodos de @c(Point) han sido @e(promovidos) a @c(ColoredPoint). De esta
+   manera, la incrustacion permite tipos complejos con muchos metodos que se
+   construiran por la composicion de varios campos, cada uno proporcionando unos
+   pocos metodos.
+
+#    Readers familiar with class-based object-oriented languages may be tempted to
+#    view @c(Point) as a base class and @c(ColoredPoint) as a subclass or derived
+#    class, or to interpret the relationship between these types as if a
+#    @c(ColoredPoint) @"(is a) @c(Point). But that would be a mistake. Notice the
+#    calls to @c(Distance) above. @c(Distance) has a parameter of type @c(Point),
+#    and @c(q) is not a @c(Point), so although @c(q) does have an embedded field of
+#    that type, we must explicitly select it. Attempting to pass @c(q) would be an
+#    error:
+   Los lectores familiarizados con lenguajes orientados a objetos basados en
+   clases pueden ser tentados a ver @c(Point) como una clase base y
+   @c(ColoredPoint) como una subclase o clase derivada, o a interpretar la
+   relacion entre estos tipos como si @c(ColoredPoint) @"(es un) @c(Point). Pero
+   eso seria un error. Observe las llamadas a @c(Distance) arriba. @c(Distance)
+   tiene un parametro de tipo @c(Point), ya que @c(q) no es un @c(Point), asi
+   que aunque @c(q) tiene un campo enbebido de ese tipo, debemos seleccionarlo
+   explicitamente. Si intenta pasar @c(q) seria un error:
+
+#    ..src > go
+#      p.Distance(q) // compile error: cannot use q (ColoredPoint) as Point
+#    < src..
+   ..src > go
+     p.Distance(q) // error de compilacion: no se puede utilizar q (ColoredPoint) como Point
+   < src..
+
+#    A @c(ColoredPoint) is not a @c(Point), but it @"(has a) @c(Point), and it has
+#    two additional methods @c(Distance) and @c(ScaleBy) promoted from @c(Point).
+#    If you prefer to think in terms of implementation, the embedded field
+#    instructs the compiler to generate additional wrapper methods that delegate
+#    to the declared methods, equivalent to these:
+   Un @c(ColoredPoint) no es un @c(Point), pero @"(tiene un) @c(Point), y tiene
+   dos metodos adicionales @c(Distance) y @c(ScaleBy) promocionados desde
+   @c(Point). Si prefiere pensar en terminos de implementacion, el campo
+   enbebido instruye al compilador a generar metodos de envoltura adicionales
+   que delegan en los metodos declarados, equivalentes a los siguientes:
+
+#    ..src > go
+#      func (p ColoredPoint) Distance(q Point) float64 {
+#        return p.Point.Distance(q)
+#      }
+#
+#      func (p *ColoredPoint) ScaleBy(factor float64) {
+#        p.Point.ScaleBy(factor)
+#      }
+#    < src..
+   ..src > go
+     func (p ColoredPoint) Distance(q Point) float64 {
+       return p.Point.Distance(q)
+     }
+
+     func (p *ColoredPoint) ScaleBy(factor float64) {
+       p.Point.ScaleBy(factor)
+     }
+   < src..
+
+#    When @c(Point.Distance) is called by the first of these wrapper methods, its
+#    receiver value is @c(p.Point), not @c(p), and there is no way for the method
+#    to access the @c(ColoredPoint) in which the @c(Point) is embedded.
+   Cuando @c(Point.Distance) es llamado por el primero de estos metodos de
+   envoltura, su valor receptor es @c(p.Point), no @c(p), y no hay manera de que
+   el metodo accededa a @c(ColoredPoint) en el que @c(Point) esta enbebido.
+
+#    The type of an anonymous field may be a @e(pointer) to a named type, in which
+#    case fields and methods are promoted indirectly from the pointed-to
+#    object. Adding another level of indirection lets us share common structures
+#    and vary the relationships between objects dynamically. The declaration of
+#    @c(ColoredPoint) below embeds a @c(*Point):
+   El tipo de un campo anonimo puede ser un @e(puntero) a un tipo con nombre, en
+   cuyo caso los campos y metodos se promueven indirectamente del puntero al
+   objeto. Agregar otro nivel de indireccion nos permite compartir estructuras
+   comunes y variar las relaciones entre los objetos dinamicamente. La
+   declaracion de @c(ColoredPoint) a continuacion incorpora un @c(*Point):
+
+#    ..src > go
+#      type ColoredPoint struct {
+#        *Point
+#        Color color.RGBA
+#      }
+#
+#      p := ColoredPoint{&Point{1, 1}, red}
+#      q := ColoredPoint{&Point{5, 4}, blue}
+#      fmt.Println(p.Distance(*q.Point)) // "5"
+#      q.Point = p.Point                 // p and q now share the same Point
+#      p.ScaleBy(2)
+#      fmt.Println(*p.Point, *q.Point)   // "{2 2} {2 2}"
+#    < src..
+   ..src > go
+     type ColoredPoint struct {
+       *Point
+       Color color.RGBA
+     }
+
+     p := ColoredPoint{&Point{1, 1}, red}
+     q := ColoredPoint{&Point{5, 4}, blue}
+     fmt.Println(p.Distance(*q.Point)) // "5"
+     q.Point = p.Point                 // ahora p y q comparten el mismo Point
+     p.ScaleBy(2)
+     fmt.Println(*p.Point, *q.Point)   // "{2 2} {2 2}"
+   < src..
+
+#    A struct type may have more than one anonymous field. Had we declared
+#    @c(ColoredPoint) as
+   Un tipo de estructura puede tener mas de un campo anonimo. Si hubieramos
+   declarado @c(ColoredPoint) como
+
+#    ..src > go
+#      type ColoredPoint struct {
+#        Point
+#        color.RGBA
+#      }
+#    < src..
+   ..src > go
+     type ColoredPoint struct {
+       Point
+       color.RGBA
+     }
+   < src..
+
+#    then a value of this type would have all the methods of @c(Point), all the
+#    methods of @c(RGBA), and any additional methods declared on @c(ColoredPoint)
+#    directly. When the compiler resolves a selector such as @c(p.ScaleBy) to a
+#    method, it first looks for a directly declared method named @c(ScaleBy), then
+#    for methods promoted once from @c(ColoredPoint)’s embedded fields, then for
+#    methods promoted twice from embedded fields within @c(Point) and @c(RGBA),
+#    and so on. The compiler reports an error if the selector was ambiguous
+#    because two methods were promoted from the same rank.
+   entonces un valor de este tipo tendria todos los metodos de @c(Point), todos
+   los metodos de @c(RGBA), y cualesquiera otros metodos declarados en
+   @c(ColoredPoint) directamente. Cuando el compilador resuelve un selector como
+   @c(p.ScaleBy) a un metodo, primero se busca un metodo llamado directamente
+   declarada @c(ScaleBy), luego, para los metodos promovidos de campos
+   incrustados en @c(ColoredPoint), luego, para los metodos promovidos dos veces
+   de campos incrustados dentro @c(Point) y @c(RGBA), y asi sucesivamente. El
+   compilador informa de un error si el selector es ambiguo porque se
+   promocionaron dos metodos desde el mismo rango.
+
+#    Methods can be declared only on named types (like @c(Point)) and pointers to
+#    them (@c[*Point]), but thanks to embedding, it’s possible and sometimes
+#    useful for @e(unnamed) struct types to have methods too.
+   Los metodos pueden ser declaradas solo en tipos con nombre (como @c(Point)) y
+   punteros a ellos (@c(*Point)), pero gracias al embedido, es posible y, a
+   veces util que los tipos de estructura @e(sin nombre) tambien tengan metodos.
+
+#    Here’s a nice trick to illustrate. This example shows part of a simple cache
+#    implemented using two package-level variables, a mutex (@l(#Section
+#    9.2<>§9.2)) and the map that it guards:
+   Aqui hay un buen truco para ilustrarlo. Este ejemplo muestra parte de una
+   cache simple implementada usando dos variables a nivel de paquete, un mutex
+   (@l(#Seccion 9.2<>§9.2)) y el mapa que lo protege:
+
+#    ..src > go
+#      var (
+#        mu sync.Mutex // guards mapping
+#        mapping = make(map[string]string)
+#      )
+#
+#      func Lookup(key string) string {
+#        mu.Lock()
+#        v := mapping[key]
+#        mu.Unlock()
+#        return v
+#      }
+#    < src..
+   ..src > go
+     var (
+       mu sync.Mutex // protege a mapping
+       mapping = make(map[string]string)
+     )
+
+     func Lookup(key string) string {
+       mu.Lock()
+       v := mapping[key]
+       mu.Unlock()
+       return v
+     }
+   < src..
+
+#    The version below is functionally equivalent but groups together the two
+#    related variables in a single package-level variable, @c(cache):
+   La version de abajo es funcionalmente equivalente pero agrupa a las dos
+   variables relacionadas en una unica variable de nivel de paquete, @c(cache):
+
+#    ..src > go
+#      var cache = struct {
+#        sync.Mutex
+#        mapping map[string]string
+#      } {
+#        mapping: make(map[string]string),
+#      }
+#
+#      func Lookup(key string) string {
+#        cache.Lock()
+#        v := cache.mapping[key]
+#        cache.Unlock()
+#        return v
+#      }
+#    < src..
+   ..src > go
+     var cache = struct {
+       sync.Mutex
+       mapping map[string]string
+     } {
+       mapping: make(map[string]string),
+     }
+
+     func Lookup(key string) string {
+       cache.Lock()
+       v := cache.mapping[key]
+       cache.Unlock()
+       return v
+     }
+   < src..
+
+#    The new variable gives more expressive names to the variables related to the
+#    cache, and because the @c(sync.Mutex) field is embedded within it, its
+#    @c(Lock) and @c(Unlock) methods are promoted to the unnamed struct type,
+#    allowing us to lock the @c(cache) with a self-explanatory syntax.
+   La nueva variable da nombres mas expresivos a las variables relacionadas con
+   la @c(cache), y debido a que el campo @c(sync.Mutex) esta enbebido dentro de
+   ella, su metodos @c(Lock) y @c(Unlock) se promueven al tipo de estructura sin
+   nombre, lo que nos permite bloquear la @c(cache) con una sintaxis auto
+   explicativa.
+
+# ** Section 6.4 <> Method Values and Expressions
+** Seccion 6.4 <> Valores y Expresiones de los Metodos
+
+#    Usually we select and call a method in the same expression, as in
+#    @c[p.Distance()], but it’s possible to separate these two operations. The
+#    selector @c(p.Distance) yields a @e(method value), a function that binds a
+#    method (@c[Point.Distance]) to a specific receiver value @c(p). This function
+#    can then be invoked without a receiver value; it needs only the non-receiver
+#    arguments.
+   Normalmente seleccionamos y llamamos a un metodo en la misma expresion, como
+   en @c[p.Distance()], pero es posible separar estas dos operaciones. El
+   selector @c(p.Distance) produce un @e(valor de metodo), una funcion une un
+   metodo (@c[Point.Distance]) a un valor de receptor especifico @c(p). Esta
+   funcion puede entonces ser invocada sin un valor de receptor; Solo necesita
+   los argumentos del no receptor.
+
+#    ..src > go
+#      p := Point{1, 2}
+#      q := Point{4, 6}
+#
+#      distanceFromP := p.Distance        // method value
+#      fmt.Println(distanceFromP(q))      // "5"
+#      var origin Point                   // {0, 0}
+#      fmt.Println(distanceFromP(origin)) // "2.23606797749979", √5
+#
+#      scaleP := p.ScaleBy // method value
+#      scaleP(2)           // p becomes (2, 4)
+#      scaleP(3)           //      then (6, 12)
+#      scaleP(10)          //      then (60, 120)
+#    < src..
+   ..src > go
+     p := Point{1, 2}
+     q := Point{4, 6}
+
+     distanceFromP := p.Distance        // volor del metodo
+     fmt.Println(distanceFromP(q))      // "5"
+     var origin Point                   // {0, 0}
+     fmt.Println(distanceFromP(origin)) // "2.23606797749979", √5
+
+     scaleP := p.ScaleBy // valor del metodo
+     scaleP(2)           // p se vuelve (2, 4)
+     scaleP(3)           //       luego (6, 12)
+     scaleP(10)          //       luego (60, 120)
+   < src..
+
+#    Method values are useful when a package’s API calls for a function value, and
+#    the client’s desired behavior for that function is to call a method on a
+#    specific receiver. For example, the function @c(time.AfterFunc) calls a
+#    function value after a specified delay. This program uses it to launch the
+#    rocket @c(r) after 10 seconds:
+   Los valores de metodo son utiles cuando la API de un paquete solicita un
+   valor de funcion y el comportamiento deseado del cliente para esa funcion es
+   llamar a un metodo en un receptor especifico. Por ejemplo, la funcion
+   @c(time.AfterFunc) llama a un valor de funcion despues de un retardo
+   especificado. Este programa lo utiliza para lanzar el cohete @c(r) despues de
+   10 segundos:
+
+#    ..src > go
+#      type Rocket struct { /* ... */ }
+#      func (r *Rocket) Launch() { /* ... */ }
+#
+#      r := new(Rocket)
+#      time.AfterFunc(10 * time.Second, func() { r.Launch() })
+#    < src..
+   ..src > go
+     type Rocket struct { /* ... */ }
+     func (r *Rocket) Launch() { /* ... */ }
+
+     r := new(Rocket)
+     time.AfterFunc(10 * time.Second, func() { r.Launch() })
+   < src..
+
+#    The method value syntax is shorter:
+   La sintaxis del valor del metodo es mas corta:
+
+#    ..src > go
+#      time.AfterFunc(10 * time.Second, r.Launch)
+#    < src..
+   ..src > go
+     time.AfterFunc(10 * time.Second, r.Launch)
+   < src..
+
+#    Related to the method value is the @e(method expression). When calling a
+#    method, as opposed to an ordinary function, we must supply the receiver in a
+#    special way using the selector syntax. A method expression, written @c(T.f)
+#    or @c[(*T).f] where @c(T) is a type, yields a function value with a regular
+#    first parameter taking the place of the receiver, so it can be called in the
+#    usual way.
+   En relacion con el valor del metodo es la @e(expresion del metodo). Al llamar
+   a un metodo, a diferencia de una funcion ordinaria, debemos suministrar al
+   receptor de una manera especial usando la sintaxis del selector. Una
+   expresion de metodo, escrita @c(T.f) o @c[(*T).f] donde @c(T) es un tipo,
+   produce un valor de funcion con un primer parametro tomando el lugar del
+   receptor, por lo que puede ser llamado de la manera habitual.
+
+#    ..src > go
+#      p := Point{1, 2}
+#      q := Point{4, 6}
+#
+#      distance := Point.Distance   // method expression
+#      fmt.Println(distance(p, q))  // "5"
+#      fmt.Printf("%T\n", distance) // "func(Point, Point) float64"
+#
+#      scale := (*Point).ScaleBy
+#      scale(&p, 2)
+#      fmt.Println(p)            // "{2 4}"
+#      fmt.Printf("%T\n", scale) // "func(*Point, float64)"
+#    < src..
+   ..src > go
+     p := Point{1, 2}
+     q := Point{4, 6}
+
+     distance := Point.Distance   // expresion del metodo
+     fmt.Println(distance(p, q))  // "5"
+     fmt.Printf("%T\n", distance) // "func(Point, Point) float64"
+
+     scale := (*Point).ScaleBy
+     scale(&p, 2)
+     fmt.Println(p)            // "{2 4}"
+     fmt.Printf("%T\n", scale) // "func(*Point, float64)"
+   < src..
+
+#    Method expressions can be helpful when you need a value to represent a choice
+#    among several methods belonging to the same type so that you can call the
+#    chosen method with many different receivers. In the following example, the
+#    variable @c(op) represents either the addition or the subtraction method of
+#    type @c(Point), and @c(Path.TranslateBy) calls it for each point in the
+#    @c(Path):
+   Las expresiones de metodo pueden ser utiles cuando se necesita un valor para
+   representar una eleccion entre varios metodos pertenecientes al mismo tipo
+   para que pueda llamar al metodo elegido con muchos receptores diferentes. En
+   el siguiente ejemplo, la variable @c(op) representa el metodo de suma o resta
+   del tipo @c(Point), y @c(Path.TranslateBy) lo llama para cada punto en
+   @c(Path):
+
+#    ..src > go
+#      type Point struct{ X, Y float64 }
+#
+#      func (p Point) Add(q Point) Point { return Point{p.X + q.X, p.Y + q.Y} }
+#      func (p Point) Sub(q Point) Point { return Point{p.X - q.X, p.Y - q.Y} }
+#
+#      type Path []Point
+#
+#      func (path Path) TranslateBy(offset Point, add bool) {
+#        var op func(p, q Point) Point
+#        if add {
+#          op = Point.Add
+#        } else {
+#          op = Point.Sub
+#        }
+#        for i := range path {
+#          // Call either path[i].Add(offset) or path[i].Sub(offset).
+#          path[i] = op(path[i], offset)
+#        }
+#      }
+#    < src..
+   ..src > go
+     type Point struct{ X, Y float64 }
+
+     func (p Point) Add(q Point) Point { return Point{p.X + q.X, p.Y + q.Y} }
+     func (p Point) Sub(q Point) Point { return Point{p.X - q.X, p.Y - q.Y} }
+
+     type Path []Point
+
+     func (path Path) TranslateBy(offset Point, add bool) {
+       var op func(p, q Point) Point
+       if add {
+         op = Point.Add
+       } else {
+         op = Point.Sub
+       }
+       for i := range path {
+         // llama en cada path[i].Add(offset) o path[i].Sub(offset).
+         path[i] = op(path[i], offset)
+       }
+     }
+   < src..
+
+# ** Section 6.5 <> Example: Bit Vector Type
+** Seccion 6.5 <> Ejemplo: Tipo de Vector de Bits
+
+#    Sets in Go are usually implemented as a @c(map[T]bool), where @c(T) is the
+#    element type. A set represented by a map is very flexible but, for certain
+#    problems, a specialized representation may outperform it. For example, in
+#    domains such as dataflow analysis where set elements are small non-negative
+#    integers, sets have many elements, and set operations like union and
+#    intersection are common, a @e(bit vector) is ideal.
+   Los conjuntos en Go se implementan generalmente como un @c(map[T]bool), donde
+   @c(T) es el tipo del elemento. Un conjunto representado por un mapa es muy
+   flexible pero, para ciertos problemas, una representacion especializada puede
+   superarla. Por ejemplo, en dominios tales como el analisis de flujo de datos
+   donde los elementos del conjunto son pequeños numeros enteros no negativos,
+   los conjuntos tienen muchos elementos, y las operaciones de conjunto como
+   union e interseccion son comunes, un vector de bits es ideal.
+
+#    A bit vector uses a slice of unsigned integer values or @"(words,) each bit
+#    of which represents a possible element of the set. The set contains @m(i) if
+#    the @m(i)-th bit is set. The following program demonstrates a simple bit
+#    vector type with three methods:
+   Un vector de bits utiliza una slice de valores o @"(palabras) de enteros sin
+   signo, cada bit de los cuales representa un posible elemento del conjunto. El
+   conjunto contiene @c(i) si se establece el enesimo bit. El siguiente programa
+   muestra un tipo de vector de bits simple con tres metodos:
+
+#    ..figure > @l(gopl.io/ch6/intset/intset.go<>gopl.io/ch6/intset)
+   ..figure > @l(gopl.io/ch6/intset/intset.go<>gopl.io/ch6/intset)
+
+#      ..src > go
+#        // An IntSet is a set of small non-negative integers.
+#        // Its zero value represents the empty set.
+#        type IntSet struct {
+#          words []uint64
+#        }
+#
+#        // Has reports whether the set contains the non-negative value x.
+#        func (s *IntSet) Has(x int) bool {
+#          word, bit := x/64, uint(x%64)
+#          return word < len(s.words) && s.words[word]&(1<<bit) != 0
+#        }
+#
+#        // Add adds the non-negative value x to the set.
+#        func (s *IntSet) Add(x int) {
+#          word, bit := x/64, uint(x%64)
+#          for word >= len(s.words) {
+#            s.words = append(s.words, 0)
+#          }
+#          s.words[word] |= 1 << bit
+#        }
+#
+#        // UnionWith sets s to the union of s and t.
+#        func (s *IntSet) UnionWith(t *IntSet) {
+#          for i, tword := range t.words {
+#            if i < len(s.words) {
+#              s.words[i] |= tword
+#            } else {
+#              s.words = append(s.words, tword)
+#            }
+#          }
+#        }
+#      < src..
+     ..src > go
+       // un IntSet es us conjunto pequeño de enteros no negativos.
+       // El valor cero representa un conjunto vacio.
+       type IntSet struct {
+         words []uint64
+       }
+
+       // Has Informa cuando el conjunto contiene valores x no negativos.
+       func (s *IntSet) Has(x int) bool {
+         word, bit := x/64, uint(x%64)
+         return word < len(s.words) && s.words[word]&(1<<bit) != 0
+       }
+
+       // Add agrega el valor x no negativo al conjunto.
+       func (s *IntSet) Add(x int) {
+         word, bit := x/64, uint(x%64)
+         for word >= len(s.words) {
+           s.words = append(s.words, 0)
+         }
+         s.words[word] |= 1 << bit
+       }
+
+       // UnionWith establece s a la union de s y t.
+       func (s *IntSet) UnionWith(t *IntSet) {
+         for i, tword := range t.words {
+           if i < len(s.words) {
+             s.words[i] |= tword
+           } else {
+             s.words = append(s.words, tword)
+           }
+         }
+       }
+     < src..
+
+
+#    Since each word has 64 bits, to locate the bit for @c(x), we use the quotient
+#    @c(x/64) as the word index and the remainder @c(x%64) as the bit index within
+#    that word. The @c(UnionWith) operation uses the bitwise OR operator @c(|) to
+#    compute the union 64 elements at a time. (We’ll revisit the choice of 64-bit
+#    words in Exercise 6.5.)
+   Ya que cada palabra tiene 64 bits, para localizar el bit para @c(x), se
+   utiliza el cociente @c(x/64) como el indice de la palabra y el resto @c(x%64)
+   como el indice de bit dentro de esa palabra. La operacion @c(UnionWith)
+   utiliza el operador binario OR @c(|) Para calcular la union de 64 elementos a
+   la vez. (Vamos a revisar la eleccion de palabras de 64 bits en el Ejercicio
+   6.5.)
+
+#    This implementation lacks many desirable features, some of which are posed as
+#    exercises below, but one is hard to live without: way to print an @c(IntSet)
+#    as a string. Let’s give it a @c(String) method as we did with @c(Celsius) in
+#    @l(#Section 2.5):
+   Esta aplicacion carece de muchas caracteristicas deseables, algunas de las
+   cuales se plantean como ejercicios, pero es dificil vivir sin : una forma de
+   imprimir un @c(IntSet) como una cadena. Vamos a darle una String metodo como
+   lo hicimos con @c(Celsius) en la @l(#Seccion 2.5):
+
+#    ..src > go
+#      // String returns the set as a string of the form "{1 2 3}".
+#      func (s *IntSet) String() string {
+#        var buf bytes.Buffer
+#        buf.WriteByte('{')
+#        for i, word := range s.words {
+#          if word == 0 {
+#            continue
+#          }
+#          for j := 0; j < 64; j++ {
+#            if word&(1<<uint(j)) != 0 {
+#              if buf.Len() > len("{") {
+#                buf.WriteByte(' ')
+#              }
+#              fmt.Fprintf(&buf, "%d", 64*i+j)
+#            }
+#          }
+#        }
+#        buf.WriteByte('}')
+#        return buf.String()
+#      }
+#    < src..
+   ..src > go
+     // String regresa el conjunto como una cadena de la forma "{1 2 3}".
+     func (s *IntSet) String() string {
+       var buf bytes.Buffer
+       buf.WriteByte('{')
+       for i, word := range s.words {
+         if word == 0 {
+           continue
+         }
+         for j := 0; j < 64; j++ {
+           if word&(1<<uint(j)) != 0 {
+             if buf.Len() > len("{") {
+               buf.WriteByte(' ')
+             }
+             fmt.Fprintf(&buf, "%d", 64*i+j)
+           }
+         }
+       }
+       buf.WriteByte('}')
+       return buf.String()
+     }
+   < src..
+
+#    Notice the similarity of the @c(String) method above with @c(intsToString) in
+#    @l(#Section 3.5.4); @c(bytes.Buffer) is often used this way in @c(String)
+#    methods. The @c(fmt) package treats types with a @c(String) method specially
+#    so that values of complicated types can display themselves in a userfriendly
+#    manner. Instead of printing the raw representation of the value (a struct in
+#    this case), @c(fmt) calls the @c(String) method. The mechanism relies on
+#    interfaces and type assertions, which we’ll explain in @l(#Chapter 7).
+   Note la similitud del metodo anterior @c(String) con @c(intsToString) en la
+   @l(#Seccion 3.5.4); @c(bytes.Buffer) se utiliza a menudo de esta manera en
+   metodos @c(String). El paquete @c(fmt) maneja tipos con un metodo @c(String)
+   especialmente para que los valores de los tipos complicados se puedan mostrar
+   de una manera amigable para el usuario. En lugar de imprimir la
+   representacion del valor en bruto (una estructura en este caso), @c(fmt)
+   llama al metodo @c(String). El mecanismo se basa en interfaces y tipo de
+   afirmaciones, que vamos a explicar en el @l(#Capitulo 7).
+
+#    We can now demonstrate @c(IntSet) in action:
+   Ahora podemos demostrar @c(IntSet) en accion:
+
+#    ..src > go
+#      var x, y IntSet
+#      x.Add(1)
+#      x.Add(144)
+#      x.Add(9)
+#      fmt.Println(x.String()) // "{1 9 144}"
+#
+#      y.Add(9)
+#      y.Add(42)
+#      fmt.Println(y.String()) // "{9 42}"
+#
+#      x.UnionWith(&y)
+#      fmt.Println(x.String()) // "{1 9 42 144}"
+#
+#      fmt.Println(x.Has(9), x.Has(123)) // "true false"
+#    < src..
+   ..src > go
+     var x, y IntSet
+     x.Add(1)
+     x.Add(144)
+     x.Add(9)
+     fmt.Println(x.String()) // "{1 9 144}"
+
+     y.Add(9)
+     y.Add(42)
+     fmt.Println(y.String()) // "{9 42}"
+
+     x.UnionWith(&y)
+     fmt.Println(x.String()) // "{1 9 42 144}"
+
+     fmt.Println(x.Has(9), x.Has(123)) // "true false"
+   < src..
+
+#    A word of caution: we declared @c(String) and @c(Has) as methods of the
+#    pointer type @c(*IntSet) not out of necessity, but for consistency with the
+#    other two methods, which need a pointer receiver because they assign to
+#    @c(s.words). Consequently, an @c(IntSet) @e(value) does not have a @c(String)
+#    method, occasionally leading to surprises like this:
+   Una palabra de precaucion: declaramos @c(String) y @c(Has) como metodos del
+   tipo de puntero @c(*IntSet) no por necesidad, sino por coherencia con los
+   otros dos metodos, los cuales necesitan un receptor puntero porque asignan a
+   @c(s.words). En consecuencia, un valor @c(IntSet) no tiene una metodo
+   @c(String), en ocasiones, conduce a sorpresas como esta:
+
+#    ..src > go
+#      fmt.Println(&x)         // "{1 9 42 144}"
+#      fmt.Println(x.String()) // "{1 9 42 144}"
+#      fmt.Println(x)          // "{[4398046511618 0 65536]}"
+#    < src..
+   ..src > go
+     fmt.Println(&x)         // "{1 9 42 144}"
+     fmt.Println(x.String()) // "{1 9 42 144}"
+     fmt.Println(x)          // "{[4398046511618 0 65536]}"
+   < src..
+
+#    In the first case, we print an @c(*IntSet) pointer, which does have a
+#    @c(String) method. In the second case, we call @c[String()] on an @c(IntSet)
+#    variable; the compiler inserts the implicit @c(&) operation, giving us a
+#    pointer, which has the @c(String) method. But in the third case, because the
+#    @c(IntSet) value does not have a @c(String) method, @c(fmt.Println) prints
+#    the representation of the struct instead. It’s important not to forget the
+#    @c(&) operator. Making @c(String) a method of @c(IntSet), not @c(*IntSet),
+#    might be a good idea, but this is a case-by-case judgment.
+   En el primer caso, Imprimimos un puntero @c(*IntSet), que tiene un metodo
+   @c(String). En el segundo caso, que llamamos a @c[String()] en una variable
+   @c(IntSet); el compilador inserta la operacion @c(&) implicita, que nos da un
+   puntero, que tiene el metodo @c(String). Sin embargo, en el tercer caso,
+   debido a que el valor @c(IntSet) no tiene un metodo @c(String), fmt.Println
+   imprime la representacion de la estructura en su lugar. Es importante no
+   olvidar el operador @c(&). Hacer @c(String) un metodo de @c(IntSet), no
+   @c(*IntSet), podria ser una buena idea, pero esto es un juicio caso por caso.
+
+#    @b(Exercise 6.1): Implement these additional methods:
+   @b(Ejercicio 6.1): Implementar estos metodos adicionales:
+
+#    ..src > go
+#      func (*IntSet) Len() int      // return the number of elements
+#      func (*IntSet) Remove(x int)  // remove x from the set
+#      func (*IntSet) Clear()        // remove all elements from the set
+#      func (*IntSet) Copy() *IntSet // return a copy of the set
+#    < src..
+   ..src > go
+     func (*IntSet) Len() int      // regresa el numero de elementos
+     func (*IntSet) Remove(x int)  // elimina x del conjunto
+     func (*IntSet) Clear()        // elimina todos los elementos del conjunto
+     func (*IntSet) Copy() *IntSet // regresa una copia del conjunto
+   < src..
+
+#    @b(Exercise 6.2): Define a variadic @c[(*IntSet).AddAll(...int)] method that
+#    allows a list of values to be added, such as @c[s.AddAll(1, 2, 3)].
+   @b(Ejercicio 6.2): Definir una metodo variadic @c[(*IntSet).AddAll(...int)]
+   que permita añadir una lista de valores, como @c[s.AddAll(1, 2, 3)].
+
+#    @b(Exercise 6.3): @c[(*IntSet).UnionWith] computes the union of two sets
+#    using @c(|), the word-parallel bitwise OR operator. Implement methods for
+#    @c(IntersectWith), @c(DifferenceWith), and @c(SymmetricDifference) for the
+#    corresponding set operations. (The symmetric difference of two sets contains
+#    the elements present in one set or the other but not both.)
+   @b(Ejercicio 6.3): @c[(*IntSet).UnionWith] calcula la union de dos conjuntos
+   utilizando @c(|), el operador OR binario. Implementar metodos para
+   @c(IntersectWith), @c(DifferenceWith), y @c(SymmetricDifference) para las
+   operaciones de conjuntos correspondientes. (La diferencia simetrica de dos
+   conjuntos contiene los elementos presentes en un conjunto o el otro, pero no
+   ambos.)
+
+#    @b(Exercise 6.4): Add a method @c(Elems) that returns a slice containing the
+#    elements of the set, suitable for iterating over with a @c(range) loop.
+   @b(Ejercicio 6.4): añadir un metodo @c(Elems) que devuelve una slice que
+   contiene los elementos del conjunto, apto para iterar sobre el con una bucle
+   @c(range).
+
+#    @b(Exercise 6.5): The type of each word used by @c(IntSet) is @c(uint64), but
+#    64-bit arithmetic may be inefficient on a 32-bit platform. Modify the program
+#    to use the @c(uint) type, which is the most efficient unsigned integer type
+#    for the platform. Instead of dividing by 64, define a constant holding the
+#    effective size of @c(uint) in bits, 32 or 64. You can use the perhaps
+#    too-clever expression @c[32 << (^uint(0) >> 63)] for this purpose.
+   @b(Ejercicio 6.5): El tipo de cada palabra usada por @c(IntSet) es
+   @c(uint64), pero la aritmetica de 64 bits puede ser ineficiente en una
+   plataforma de 32 bits. Modificar el programa para usar el tipo @c(uint), que
+   es el tipo entero sin signo mas eficiente para la plataforma. En lugar de
+   dividir por 64, definir una constante que almacene el tamaño efectivo de
+   @c(uint) en bits, 32 o 64. Se puede utilizar la expresion tal vez demasiado
+   inteligente @c[32 << (^uint(0) >> 63)] para este proposito.
+
+# ** Section 6.6 <> Encapsulation
+** Seccion 6.6 <> Encapsulacion
+
+#    A variable or method of an object is said to be @e(encapsulated) if it is
+#    inaccessible to clients of the object. Encapsulation, sometimes called
+#    @e(information hiding), is a key aspect of object-oriented programming.
+   Se dice que una variable o metodo de un objeto esta encapsulado si es
+   inaccesible para los clientes del objeto. La encapsulacion, a veces llamado
+   ocultacion de la informacion, es un aspecto clave de la programacion
+   orientada a objetos.
+
+#    Go has only one mechanism to control the visibility of names: capitalized
+#    identifiers are exported from the package in which they are defined, and
+#    uncapitalized names are not. The same mechanism that limits access to members
+#    of a package also limits access to the fields of a struct or the methods of a
+#    type. As a consequence, to encapsulate an object, we must make it a struct.
+   Go solo tiene un mecanismo para controlar la visibilidad de los nombres: los
+   identificadores en mayusculas se exportan desde el paquete en el que estan
+   definidos y los nombres no capitalizados no. El mismo mecanismo que limita el
+   acceso a los miembros de un paquete tambien limita el acceso a los campos de
+   una estructura o los metodos de un tipo. Como consecuencia, para encapsular
+   un objeto, debemos hacer que sea una estructura.
+
+#    That’s the reason the @c(IntSet) type from the previous section was declared as a
+#    struct type even though it has only a single field:
+   Esa es la razon por la que el tipo @c(IntSet) de la seccion anterior fue
+   declarado como un tipo de estructura a pesar de que solo tiene un unico
+   campo:
+
+#    ..src > go
+#      type IntSet struct {
+#        words []uint64
+#      }
+#    < src..
+   ..src > go
+     type IntSet struct {
+       words []uint64
+     }
+   < src..
+
+#    We could instead define @c(IntSet) as a slice type as follows, though of
+#    course we’d have to replace each occurrence of @c(s.words) by @c(*s) in its
+#    methods:
+   En cambio podriamos definir @c(IntSet) como un tipo de slice de la siguiente
+   manera, aunque por supuesto tendriamos que sustituir cada ocurrencia de
+   @c(s.words) por @c(*s) en sus metodos:
+
+#    ..src > go
+#      type IntSet []uint64
+#    < src..
+   ..src > go
+     type IntSet []uint64
+   < src..
+
+#    Although this version of @c(IntSet) would be essentially equivalent, it would
+#    allow clients from other packages to read and modify the slice directly. Put
+#    another way, whereas the expression @c(*s) could be used in any package,
+#    @c(s.words) may appear only in the package that defines @c(IntSet).
+   Aunque esta version de @c(IntSet) esencialmente seria equivalente, permitiria
+   a clientes de otros paquetes leer y modificar el slice directamente. Dicho de
+   otra manera, mientras que la expresion @c(*s) se podrian utilizar en
+   cualquier paquete, @c(s.words) solo puede aparecer en el paquete que define
+   @c(IntSet).
+
+#    Another consequence of this name-based mechanism is that the unit of
+#    encapsulation is the package, not the type as in many other languages. The
+#    fields of a struct type are visible to all code within the same
+#    package. Whether the code appears in a function or a method makes no
+#    difference.
+   Otra consecuencia de este mecanismo basado en el nombre es que la unidad de
+   encapsulacion es el paquete, no el tipo como en muchos otros lenguajes. Los
+   campos de un tipo de estructura son visibles para todo el codigo dentro del
+   mismo paquete. Si el codigo aparece en una funcion o un metodo no hace
+   ninguna diferencia.
+
+#    Encapsulation provides three benefits. First, because clients cannot directly
+#    modify the object’s variables, one need inspect fewer statements to
+#    understand the possible values of those variables.
+   La encapsulacion proporciona tres beneficios. En primer lugar, debido a que
+   los clientes no pueden modificar directamente las variables del objeto, es
+   necesario inspeccionar menos enunciados para comprender los valores posibles
+   de esas variables.
+
+#    Second, hiding implementation details prevents clients from depending on
+#    things that might change, which gives the designer greater freedom to evolve
+#    the implementation without breaking API compatibility.
+   En segundo lugar, ocultar los detalles de la implementacion impide que los
+   clientes dependan de las cosas que podrian cambiar, lo que le da al diseñador
+   mayor libertad para evolucionar la implementacion sin romper la
+   compatibilidad de la API.
+
+#    As an example, consider the @c(bytes.Buffer) type. It is frequently used to
+#    accumulate very short strings, so it is a profitable optimization to reserve
+#    a little extra space in the object to avoid memory allocation in this common
+#    case. Since @c(Buffer) is a struct type, this space takes the form of an
+#    extra field of type @c([64]byte) with an uncapitalized name. When this field
+#    was added, because it was not exported, clients of @c(Buffer) outside the
+#    @c(bytes) package were unaware of any change except improved
+#    performance. @c(Buffer) and its @c(Grow) method are shown below, simplified
+#    for clarity :
+   Como ejemplo, considere el tipo @c(bytes.Buffer) tipo. Se utiliza con
+   frecuencia para acumular cadenas muy cortas, por lo que es una optimizacion
+   rentable para reservar un poco mas de espacio en el objeto para evitar la
+   asignacion de memoria en este caso comun. Ya que @c(Buffer) es un tipo
+   @c(struct), este espacio tiene la forma de un campo adicional de tipo
+   @c([64]byte) con un nombre en minusculas. Cuando se añadio este campo, ya que
+   no se exporto, los clientes de @c(Buffer) fuera del paquete @c(bytes) no eran
+   conscientes de ningun cambio, excepto un rendimiento mejorado. @c(Buffer) y
+   su metodo @c(Grow) se muestran a continuacion, simplificado para mayor
+   claridad:
+
+#    ..src > go
+#      type Buffer struct {
+#        buf     []byte
+#        initial [64]byte
+#        /* ... */
+#      }
+#
+#      // Grow expands the buffer's capacity, if necessary,
+#      // to guarantee space for another n bytes. [...]
+#      func (b *Buffer) Grow(n int) {
+#        if b.buf == nil {
+#          b.buf = b.initial[:0] // use preallocated space initially
+#        }
+#        if len(b.buf)+n > cap(b.buf) {
+#          buf := make([]byte, b.Len(), 2*cap(b.buf) + n)
+#          copy(buf, b.buf)
+#          b.buf = buf
+#        }
+#      }
+#    < src..
+   ..src > go
+     type Buffer struct {
+       buf     []byte
+       initial [64]byte
+       /* ... */
+     }
+
+     // Grow apmlia la capacidad del buffer, si es necesario,
+     // para garantizar espacio por otron n bytes. [...]
+     func (b *Buffer) Grow(n int) {
+       if b.buf == nil {
+         b.buf = b.initial[:0] // use preallocated space initially
+       }
+       if len(b.buf)+n > cap(b.buf) {
+         buf := make([]byte, b.Len(), 2*cap(b.buf) + n)
+         copy(buf, b.buf)
+         b.buf = buf
+       }
+     }
+   < src..
+
+#    The third benefit of encapsulation, and in many cases the most important, is
+#    that it prevents clients from setting an object’s variables
+#    arbitrarily. Because the object’s variables can be set only by functions in
+#    the same package, the author of that package can ensure that all those
+#    functions maintain the object’s internal invariants. For example, the
+#    @c(Counter) type below permits clients to increment the counter or to reset
+#    it to zero, but not to set it to some arbitrary value:
+   El tercer beneficio de la encapsulacion, y en muchos casos el mas importante,
+   es que impide que los clientes establezcan arbitrariamente las variables de
+   un objeto. Debido a que las variables del objeto solo pueden ser definidas
+   por funciones en el mismo paquete, el autor de ese paquete puede garantizar
+   que todas esas funciones mantengan las invariantes internas del objeto. Por
+   ejemplo, el tipo @c(Counter) continuacion permite a los clientes incrementar
+   el contador o reestablecerlo a cero, pero no ponerlo en un valor arbitrario:
+
+#    ..src > go
+#      type Counter struct { n int }
+#
+#      func (c *Counter) N() int     { return c.n }
+#      func (c *Counter) Increment() { c.n++ }
+#      func (c *Counter) Reset()     { c.n = 0 }
+#    < src..
+   ..src > go
+     type Counter struct { n int }
+
+     func (c *Counter) N() int     { return c.n }
+     func (c *Counter) Increment() { c.n++ }
+     func (c *Counter) Reset()     { c.n = 0 }
+   < src..
+
+#    Functions that merely access or modify internal values of a type, such as the
+#    methods of the @c(Logger) type from @c(log) package, below, are called
+#    @e(getters) and @e(setters). However, when naming a getter method, we usually
+#    omit the @c(Get) prefix. This preference for brevity extends to all methods,
+#    not just field accessors, and to other redundant prefixes as well, such as
+#    @c(Fetch), @c(Find), and @c(Lookup).
+   Las Funciones que simplemente acceso o modifican los valores internos de un
+   tipo, como los metodos del tipo @c(Logger) del paquete @c(log), a
+   continuacion, se denominan @e(getters) (optenedores) y @e(setters)
+   (definidores). Sin embargo, al nombrar a un metodo getter, por lo general
+   omitimos el prefijo @c(Get). Esta preferencia por razones de brevedad se
+   extiende a todos los metodos, no solo a los accesores de campo, y para otros
+   prefijos redundantes, asi como @c(Fetch), @c(Find), y @c(Lookup).
+
+#    ..src > go
+#      package log
+#
+#      type Logger struct {
+#        flags  int
+#        prefix string
+#        // ...
+#      }
+#
+#      func (l *Logger) Flags() int
+#      func (l *Logger) SetFlags(flag int)
+#      func (l *Logger) Prefix() string
+#      func (l *Logger) SetPrefix(prefix string)
+#    < src..
+   ..src > go
+     package log
+
+     type Logger struct {
+       flags  int
+       prefix string
+       // ...
+     }
+
+     func (l *Logger) Flags() int
+     func (l *Logger) SetFlags(flag int)
+     func (l *Logger) Prefix() string
+     func (l *Logger) SetPrefix(prefix string)
+   < src..
+
+#    Go style does not forbid exported fields. Of course, once exported, a field
+#    cannot be unexported without an incompatible change to the API, so the
+#    initial choice should be deliberate and should consider the complexity of the
+#    invariants that must be maintained, the likelihood of future changes, and the
+#    quantity of client code that would be affected by a change.
+   El stilo de Go no prohibe exportar los campos. Por supuesto, una vez
+   exportado, un campo no puede ser exportado sin un cambio incompatible a la
+   API, por lo que la eleccion inicial debe ser deliberada y debe considerar la
+   complejidad de los invariantes que deben mantenerse, la probabilidad de
+   cambios futuros y la cantidad del codigo cliente que se veria afectado por un
+   cambio.
+
+#    Encapsulation is not always desirable. By revealing its representation as an
+#    @c(int64) number of nanoseconds, @c(time.Duration) lets us use all the usual
+#    arithmetic and comparison operations with durations, and even to define
+#    constants of this type:
+   La encapsulacion no siempre es deseable. Al revelar su representacion como un
+   numero @c(int64) de nanosegundos, @c(time.Duration) nos permite usar todas
+   las operaciones aritmeticas y de comparacion con duraciones habituales, e
+   incluso para definir constantes de este tipo:
+
+#    ..src > go
+#      const day = 24 * time.Hour
+#      fmt.Println(day.Seconds()) // "86400"
+#    < src..
+   ..src > go
+     const day = 24 * time.Hour
+     fmt.Println(day.Seconds()) // "86400"
+   < src..
+
+#    As another example, contrast @c(IntSet) with the @c(geometry.Path) type from
+#    the beginning of this chapter. @c(Path) was defined as a slice type, allowing
+#    its clients to construct instances using the slice literal syntax, to iterate
+#    over its points using a range loop, and so on, whereas these operations are
+#    denied to clients of @c(IntSet).
+   Como otro ejemplo, contraste @c(IntSet) con el tipo @c(geometry.Path) al
+   principio de este capitulo. @c(Path) se definio como un tipo de slice,
+   permitiendo a sus clientes construir instancias utilizando la sintaxis
+   literal de slice, para iterar sobre sus puntos usando un bucle de rango, y
+   asi sucesivamente, mientras que estas operaciones se le niegan a los clientes
+   de @c(IntSet).
+
+#    Here’s the crucial difference: @c(geometry.Path) is intrinsically a sequence
+#    of points, no more and no less, and we don’t foresee adding new fields to it,
+#    so it makes sense for the @c(geometry) package to reveal that @c(Path) is a
+#    slice. In contrast, an @c(IntSet) merely happens to be represented as a
+#    @c([]uint64) slice. It could have been represented using @c([]uint), or
+#    something completely different for sets that are sparse or very small, and it
+#    might perhaps benefit from additional features like an extra field to record
+#    the number of elements in the set. For these reasons, it makes sense for
+#    @c(IntSet) to be opaque.
+   Esta es la diferencia fundamental: @c(geometry.Path) es intrinsecamente una
+   secuencia de puntos, ni mas ni menos, y no prevemos la adicion de nuevos
+   campos a la misma, asi que tiene sentido para el paquete @c(geometry) revelar
+   que @c(Path) es un slice. En contraste, un @c(IntSet) simplemente pasa a ser
+   representado como un slice @c([]uint64). Podria haber sido representado
+   mediante @c([]uint), o algo completamente diferente para los conjuntos que
+   son escasos o muy pequeños, y que tal vez podrian beneficiarse de
+   caracteristicas adicionales como un campo adicional para registrar el numero
+   de elementos en el conjunto. Por estas razones, tiene sentido que @c(IntSet)
+   sea opaco.
+
+#    In this chapter, we learned how to associate methods with named types, and
+#    how to call those methods. Although methods are crucial to object-oriented
+#    programming, they’re only half the picture. To complete it, we need
+#    @e(interfaces), the subject of the next chapter.
+   En este capitulo, aprendimos como asociar metodos con tipos con nombre y como
+   llamar a esos metodos. Aunque los metodos son cruciales para la programacion
+   orientada a objetos, son solo la mitad de la imagen. Para completarla,
+   necesitamos @e(interfaces), el tema del proximo capitulo.
+
+# * Chapter 7 <> Interfaces
+* Capitulo 7 <> Interfaces

@@ -9589,8 +9589,9 @@
         }
       < src..
 
+
     It exposes its representation as a map but also provides methods to simplify
-    access to the map, whose values are slices of strings—it’s a @c(multimap).
+    access to the map, whose values are slices of strings—it’s a @e(multimap).
     Its clients can use its intrinsic operators (@c(make), slice literals,
     @c(m[key]), and so on), or its methods, or both, as they prefer:
 
@@ -9612,9 +9613,9 @@
       < src..
 
 
-    In the final call to @c(Get), the nil receiver behaves like an empty map. We
-    could equivalently have written it as @c[Values(nil).Get("item"))], but
-    @c[nil.Get("item")] will not compile because the type of @c(nil) has not
+    In the final call to @c(Get), the @c(nil) receiver behaves like an empty
+    map. We could equivalently have written it as @c[Values(nil).Get("item"))],
+    but @c[nil.Get("item")] will not compile because the type of @c(nil) has not
     been determined. By contrast, the final call to @c(Add) panics as it tries
     to update a nil map.
 
@@ -9637,8 +9638,8 @@
        type Point struct{ X, Y float64 }
 
        type ColoredPoint struct {
-               Point
-               Color color.RGBA
+         Point
+         Color color.RGBA
        }
      < src..
 
@@ -9655,7 +9656,7 @@
      cp.X = 1
      fmt.Println(cp.Point.X) // "1"
      cp.Point.Y = 2
-     fmt.Println(cp.Y) // "2"
+     fmt.Println(cp.Y)       // "2"
    < src..
 
    A similar mechanism applies to the @e(methods) of @c(Point). We can call
@@ -9682,9 +9683,9 @@
    class, or to interpret the relationship between these types as if a
    @c(ColoredPoint) @"(is a) @c(Point). But that would be a mistake. Notice the
    calls to @c(Distance) above. @c(Distance) has a parameter of type @c(Point),
-   and q is not a @c(Point), so although @c(q) does have an embedded field of
-   that type, we must explicitly select it. Attempting to pass @c(q) would be an
-   error:
+   and @c(q) is not a @c(Point), so although @c(q) does have an embedded field
+   of that type, we must explicitly select it. Attempting to pass @c(q) would be
+   an error:
 
    ..src > go
      p.Distance(q) // compile error: cannot use q (ColoredPoint) as Point
