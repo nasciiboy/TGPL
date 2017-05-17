@@ -10649,3 +10649,2821 @@
    necesitamos @e(interfaces), el tema del proximo capitulo.
 
 * Capitulo 7 <> Interfaces
+
+  Los tipos de interfaz expresan generalizaciones o abstracciones sobre los
+  comportamientos de otros tipos. Al generalizar, las interfaces nos permiten
+  escribir funciones que son mas flexibles y adaptables porque no estan
+  vinculadas a los detalles de una implementacion en particular.
+
+  Muchos lenguajes orientados a objetos tienen alguna nocion de interfaces, pero
+  lo que hace las interfaces de Go sean tan distintivas es que se @e(satisfacen
+  de manera implicita). En otras palabras, no hay necesidad de declarar todas
+  las interfaces que satisface un tipo determinado en concreto; Basta con poseer
+  los metodos necesarios. Este diseño le permite crear nuevas interfaces que
+  sean satisfechas por tipos concretos existentes sin cambiar los tipos
+  existentes, lo cual es particularmente util para tipos definidos en paquetes
+  que no controla.
+
+  En este capitulo, comenzaremos examinando la mecanica basica de los tipos de
+  interfaz y sus valores. En el camino, estudiaremos varias interfaces
+  importantes de la libreria estandar. Muchos programas Go hacen uso intensivo
+  de interfaces estandar como lo hacen con sus propios. Por ultimo, examinaremos
+  los @e(tipos de aserciones) (@l(#Seccion 7.10<>§7.10)) y @e(switches de tipo)
+  (@l(#Seccion 7.13<>§7.13)) y veremos como permiten un tipo diferente de
+  generalidad.
+
+** Seccion 7.1 <> Interfaces como Contratos
+
+   Todos los tipos que hemos visto hasta ahora han sido @e(tipos concretos). Un
+   tipo concreto especifica la representacion exacta de sus valores y expone las
+   operaciones intrinsecas de esa representacion, como la aritmetica para
+   numeros, o indexacion, @c(append), y @c(range) para slices. Un tipo concreto
+   tambien puede proporcionar comportamientos adicionales a traves de sus
+   metodos. Cuando se tiene un valor de un tipo concreto, usted sabe exactamente
+   lo que es y lo que puede hacer con el.
+
+   Hay otro tipo en Go llama un @e(tipo de interfaz). Una interfaz es un tipo
+   abstracto. No expone la representacion o estructura interna de sus valores,
+   ni el conjunto de operaciones basicas que soporta; Revela solo algunos de sus
+   metodos. Cuando se tiene un valor de un tipo interfaz, que no saben nada de
+   lo que es; solo se sabe lo que puede hacer, o mas exactamente, que
+   comportamientos son proporcionados por sus metodos.
+
+   A lo largo del libro, hemos estado utilizando dos funciones similares para el
+   formateo de cadenas: @c(fmt.Printf), que escribe el resultado a la salida
+   estandar (un archivo), y @c(fmt.Sprintf), que devuelve el resultado como un
+   @c(string). Seria lamentable que la parte dificil, el formato del resultado,
+   tuviera que ser duplicado debido a estas diferencias superficiales en la
+   forma en que el resultado se utiliza. Gracias a las interfaces, no lo
+   hace. Ambas funciones son, en efecto, envolturas alrededor de una tercer
+   funcion, @c(fmt.Fprintf), que es agnostico acerca de lo que ocurre con el
+   resultado que calcula:
+
+   ..src > go
+     package fmt
+
+     func Fprintf(w io.Writer, format string, args ...interface{}) (int, error)
+
+     func Printf(format string, args ...interface{}) (int, error) {
+       return Fprintf(os.Stdout, format, args...)
+     }
+
+     func Sprintf(format string, args ...interface{}) string {
+       var buf bytes.Buffer
+       Fprintf(&buf, format, args...)
+       return buf.String()
+     }
+   < src..
+
+   El prefijo @c(F) de @c(Fprintf) significa @e(file) (archivo) e indica que la
+   salida formateada se debe escribir en el fichero proporcionado como primer
+   argumento. En el caso de @c(Printf), el argumento, @c(os.Stdout), es un
+   @c(*os.File). En el caso @c(Sprintf), sin embargo, el argumento no es un
+   archivo, aunque se asemeja superficialmente a uno: @c(&buf) es un puntero a
+   un bufer de memoria a la que se pueden escribir bytes.
+
+   El primer parametro de @c(Fprintf) no es un archivo cualquiera. Es un
+   @c(io.Writer), que es un tipo de interfaz con la siguiente declaracion:
+
+   ..src > go
+     package io
+
+     // Writer es la interfaz que envuelve el metodo de escritura basico.
+     type Writer interface {
+       // Write escribe len(p) bytes de p en el flujo de datos subyacentes.
+       // Devuelve el numero de bytes escritos de p (0 <= n <= len(p))
+       // y cualquier error encontrado que causo un paro temprano en la escritura.
+       // Write debe regresar un error no-nil si devulve n < len(p).
+       // Write no debe modificar los datol del slice, ni siquier temporalmente.
+       //
+       // Las imprementaciones no deben retener a p.
+       Write(p []byte) (n int, err error)
+     }
+   < src..
+
+   La interfaz @c(io.Writer) define el contrato entre @c(Fprintf) y sus
+   interlocutores. Por un lado, el contrato requiere que el llamador proporcione
+   un valor de un tipo concreto como @c(*os.File) o @c(*bytes.Buffer) que tiene
+   un metodo denominado @c(Write) con la firma y el comportamiento apropiado.
+   Por otra parte, el contrato garantiza que @c(Fprintf) hara su trabajo dando
+   cualquier valor que satisfaga la interfaz @c(io.Writer). @c(Fprintf) no puede
+   asumir que se esta escribiendo en un archivo o en la memoria, solo que se
+   puede llamar a @c(Write).
+
+   Ya que @c(fmt.Fprintf) no asume nada acerca de la representacion del valor y
+   se basa unicamente en los comportamientos garantizados por el contrato
+   @c(io.Writer), podemos pasar con seguridad un valor concreto de cualquier
+   tipo que satisfaga @c(io.Writer) como primer argumento de
+   @c(fmt.Fprintf). Esta libertad para sustituir un tipo por otro que satisface
+   la misma interfaz se denomina @e(sustituibilidad), y es una caracteristica de
+   la programacion orientada a objetos.
+
+   Vamos a probar esto usando un nuevo tipo. A continuacion el metodo @c(Write)
+   del tipo @c(*ByteCounter) simplemente cuenta los bytes escritos antes de
+   descartarlos. (La conversion se requiere para hacer que los tipos de
+   @c[len(p)] y @c(*c) coincidan en la sentencia de asignacion @c(+=).)
+
+   ..figure > @l(gopl.io/ch7/bytecounter/main.go<>gopl.io/ch7/bytecounter)
+
+     ..src > go
+       type ByteCounter int
+
+       func (c *ByteCounter) Write(p []byte) (int, error) {
+         *c += ByteCounter(len(p)) // convert int to ByteCounter
+         return len(p), nil
+       }
+     < src..
+
+
+   Puesto que @c(*ByteCounter) satisface el contrato @c(io.Writer), podemos
+   pasarlo a @c(Fprintf), que hace su formato de cadenas ajeno a este cambio;
+   @c(ByteCounter) acumula correctamente la longitud del resultado.
+
+   ..src > go
+     var c ByteCounter
+     c.Write([]byte("hello"))
+     fmt.Println(c) // "5", = len("hello")
+
+     c = 0          // reinicia el contador
+     var name = "Dolly"
+     fmt.Fprintf(&c, "hello, %s", name)
+     fmt.Println(c) // "12", = len("hello, Dolly")
+   < src..
+
+   Ademas de @c(io.Writer), hay otra interfaz de gran importancia para el
+   paquete @c(fmt). @c(Fprintf) y @c(Fprintln) proporcionan una forma para que
+   los tipos controles como se imprimen sus valores. En la @l(#Seccion 2.5),
+   definimos un metodo @c(String) para el tipo @c(Celsius) de modo que las
+   temperaturas se impriman como @c("100°C"), y en la @l(#Seccion 6.5) hemos
+   equipado a @c(*IntSet) con un metodo @c(String) de modo que los conjuntos
+   fueran renderizados utilizando la notacion de conjuntos tradicional como
+   @c("{1 2 3}"). La declaracion de un metodo @c(String) hace que un tipo
+   satisfaga una de las interfaces mas utilizados de todas, @c(fmt.Stringer):
+
+   ..src > go
+     package fmt
+
+     // El metodo String se utiliza para imprimr los valores recividos
+     // como un operando de cualquier formato que acepte una cadena
+     // o una impresion sin formato como Print.
+     type Stringer interface {
+       String() string
+     }
+   < src..
+
+   Vamos a explicar como el paquete @c(fmt) descubre que valores satisfacen esta
+   interfaz en la @l(#Seccion 7.10).
+
+   @b(Ejercicio 7.1): Haciendo uso de las ideas de @c(ByteCounter), implementar
+   contadores para lineas y palabras. Puedes encontrar util @c(bufio.ScanWords).
+
+   @b(Ejercicio 7.2): Escribir una funcion @c(CountingWriter) con la firma de
+   abajo que, pasando un @c(io.Writer), devuelva un nuevo @c(Writer) que
+   envuelva el original, y un puntero a una variable @c(int64) que contenga en
+   cualquier momento el numero de bytes escritos en el nuevo @c(Writer) .
+
+   ..src > go
+     func CountingWriter(w io.Writer) (io.Writer, *int64)
+   < src..
+
+   @b(Ejercicio 7.3): Escribir un metodo @c(String) para el tipo @c(*tree) de
+   @c(gopl.io/ch4/treesort) (@l(#Seccion 4.4<>§4.4)) que revela la secuencia de
+   valores en el arbol.
+
+** Seccion 7.2 <> Tipos de Interfaz
+
+   Un tipo de interfaz especifica un conjunto de metodos que un tipo de concreto
+   debe poseer para ser considerado una instancia de esa interfaz.
+
+   El tipo @c(io.Writer) es una de las interfaces mas utilizados, ya que
+   proporciona una abstraccion de todos los tipos a los que se pueden escribir
+   bytes, que incluye archivos, buffers de memoria, conexiones de red, clientes
+   HTTP, archivadores, hashers, etc. El paquete @c(io) define muchas otras
+   interfaces utiles. Un @c(Reader) representa cualquier tipo del que se puede
+   leer bytes, y un @c(Closer) es cualquier valor que se puede cerrar, como un
+   archivo o una conexion de red. (Por ahora probablemente has notado la
+   convencion de nomenclatura para muchas de las interfaces de metodo unico de
+   Go).
+
+   ..src > go
+     package io
+
+     type Reader interface {
+       Read(p []byte) (n int, err error)
+     }
+
+     type Closer interface {
+       Close() error
+     }
+   < src..
+
+   Mirando mas lejos, encontramos declaraciones de nuevos tipos de interfaz como
+   combinaciones de los ya existentes. He aqui dos ejemplos:
+
+   ..src > go
+     type ReadWriter interface {
+       Reader
+       Writer
+     }
+
+     type ReadWriteCloser interface {
+       Reader
+       Writer
+       Closer
+     }
+   < src..
+
+   La sintaxis utilizada, se asemeja al enbebido de estructuras, nos permite
+   nombrar otra interfaz como una abreviatura para escribir todos sus
+   metodos. Esto se conoce denomina como @e(embeber) una interfaz. Podriamos
+   haber escrito @c(io.ReadWriter) sin enbeberla, aunque de manera menos
+   sucinta, como aqui:
+
+   ..src > go
+     type ReadWriter interface {
+       Read(p []byte) (n int, err error)
+       Write(p []byte) (n int, err error)
+     }
+   < src..
+
+   o incluso utilizando una mezcla de los dos estilos:
+
+   ..src > go
+     type ReadWriter interface {
+       Read(p []byte) (n int, err error)
+       Writer
+     }
+   < src..
+
+   Las tres declaraciones tienen el mismo efecto. El orden en que aparecen los
+   metodos es irrelevante. Todo lo que importa es el conjunto de metodos.
+
+   @b(Ejercicio 7.4): La funcion @c(strings.NewReader) devuelve un valor que
+   satisface la interfaz @c(io.Reader) (y otras) mediante la lectura de su
+   argumento, una cadena. Implementa tu mismo una version simple de
+   @c(NewReader), y utilizala para hacer que el analizador de HTML (@l(#Seccion
+   5.2<>§5.2)) tome la entrada de una cadena.
+
+   @b(Ejercicio 7.5): La funcion @c(LimitReader) en el paquete @c(io) acepta un
+   @c(io.Reader) @c(r) y un numero de bytes @c(n), y devuelve otro @c(Reader)
+   que lee desde @c(r) pero reporta una condicion de fin de archivo despues de
+   @c(n) bytes. Implementalo.
+
+   ..src > go
+     func LimitReader(r io.Reader, n int64) io.Reader
+   < src..
+
+** Seccion 7.3 <> Satisfaccion de la Interfaz
+
+   Un tipo satisface una interfaz si posee todos los metodos que la interfaz
+   requiere. Por ejemplo, un @c(*os.File) satisface @c(io.Reader), @c(Writer),
+   @c(Closer), y @c(ReadWriter). Un @c(*bytes.Buffer) satisface @c(Reader),
+   @c(Writer), y @c(ReadWriter), pero no satisfacer @c(Closer), ya que no tiene
+   un metodo @c(Close). Como una abreviatura, los programadores de Go a menudo
+   dicen que un tipo concreto @"(es un) tipo de interfaz en particular, lo que
+   significa que satisface la interfaz. Por ejemplo, un @c(*bytes.Buffer) es un
+   @c(io.Writer); un @c(*os.File) es un @c(io.ReadWriter).
+
+   La regla de asignabilidad (@l(#Seccion 2.4.2<>§2.4.2)) para interfaces es muy
+   simple: una expresion puede ser asignada a una interfaz solo si su tipo se
+   ajusta a la interfaz. Asi que:
+
+   ..src > go
+     var w io.Writer
+     w = os.Stdout           // OK: *os.File tiene metodo Write
+     w = new(bytes.Buffer)   // OK: *bytes.Buffer tiene metodo Write
+     w = time.Second         // error de compilacion: time.Duration carece de metodo Write
+
+     var rwc io.ReadWriteCloser
+     rwc = os.Stdout         // OK: *os.File tiene metodos Read, Write, Close
+     rwc = new(bytes.Buffer) // error de compilacion: *bytes.Buffer carece de metodo Close
+   < src..
+
+   Esta regla se aplica incluso cuando el lado derecho es en si mismo una
+   interfaz:
+
+   ..src > go
+     w = rwc                 // OK: io.ReadWriteCloser tiene metodo Write
+     rwc = w                 // error de compilacion: io.Writer carece de metodo Close
+   < src..
+
+   Como @c(ReadWriter) y @c(ReadWriteCloser) incluyen todos los metodos de
+   @c(Writer), cualquier tipo que satisface @c(ReadWriter) o @c(ReadWriteCloser)
+   satisface @c(Writer) necesariamente.
+
+   Antes de ir mas lejos, debemos explicar una sutileza en lo que significa para
+   un tipo tener un metodo. Recuerde de la @l(#Seccion 6.2) que para cada tipo
+   concreto llamado @c(T), algunos de sus metodos tienen un receptor de tipo
+   @c(T), mientras que otros requieren un puntero @c(*T). Recordemos tambien que
+   es legal para llamar a un metodo @c(*T) en un argumento de tipo @c(T),
+   siempre y cuando el argumento sea una variable; El compilador toma
+   implicitamente su direccion. Pero esto es mero azucar sintactico: un valor de
+   tipo @c(T) no posee todos los metodos que tiene un puntero @c(*T), y como
+   resultado podria satisfacer menos interfaces.
+
+   Un ejemplo lo hara claro. El metodo @c(String) del tipo @c(IntSet) de la
+   @l(#Seccion 6.5) requiere un receptor puntero, asi que no podemos llamar a
+   ese metodo en un valor @c(IntSet) no direccionable:
+
+   ..src > go
+     type IntSet struct { /* ... */ }
+     func (*IntSet) String() string
+
+     var _ = IntSet{}.String() // error de compilacion: String requiere un receptor *intSet
+   < src..
+
+   pero podemos decir que es una variables @c(IntSet):
+
+   ..src > go
+     var s IntSet
+     var _ = s.String() // OK: s es una variable y &s tiene el metodo String
+   < src..
+
+   Sin embargo, puesto que solamente @c(*IntSet) tiene un metodo @c(String),
+   solamente @c(*IntSet) satisface la interfaz @c(fmt.Stringer):
+
+   ..src > go
+     var _ fmt.Stringer = &s // OK
+     var _ fmt.Stringer = s  // error de compilacion: IntSet carece de metodo String
+   < src..
+
+   La @l(#Seccion 12.8) incluye un programa que imprime los metodos de un valor
+   arbitrario, y la herramienta @$(godoc -analysis=type) (@l(#Seccion
+   10.7.4<>§10.7.4)) muestra los metodos de cada tipo y la relacion entre las
+   interfaces y tipos concretos.
+
+   Como un sobre que envuelve y oculta la carta que contiene, una interfaz
+   envuelve y oculta el tipo concreto y el valor que contiene. Solo los metodos
+   revelados por el tipo de interfaz pueden ser llamados, incluso si el tipo
+   concreto tiene otros:
+
+   ..src > go
+     os.Stdout.Write([]byte("hello")) // OK: *os.File tiene el metodo Write
+     os.Stdout.Close()                // OK: *os.File tiene el metodo Close
+
+     var w io.Writer
+     w = os.Stdout
+     w.Write([]byte("hello")) // OK: io.Writer tiene el metodo Write
+     w.Close()                // compile error: io.Writer carece del metodo Close
+   < src..
+
+   Una interfaz con mas metodos, como @c(io.ReadWriter), nos dice mas acerca de
+   los valores que contiene, y coloca mayores demandas sobre los tipos que la
+   implementan, que un interfaz con un menos metodos como @c(io.Reader).
+   Entonces, que hace el tipo @c(interface{}), que no tiene ningun metodo en
+   absoluto, nos cuenta sobre los tipos concretos que lo satisfacen?
+
+   Eso es correcto: nada. Esto puede parecer inutil, pero en realidad el tipo
+   @c(interface{}), que se denomina el tipo de @e(interfaz vacia), es
+   indispensable. Debido a que el tipo de interfaz vacia no impone exigencias a
+   los tipos que lo satisfacen, podemos asignar @e(cualquier) valor a la
+   interfaz vacia.
+
+   ..src > go
+     var any interface{}
+     any = true
+     any = 12.34
+     any = "hello"
+     any = map[string]int{"one": 1}
+     any = new(bytes.Buffer)
+   < src..
+
+   A pesar de que no ser obvio, hemos utilizando el tipo de interfaz vacia desde
+   el primer ejemplo en este libro, porque es lo que permite que funciones como
+   @c(fmt.Println), o @c(errorf) en la @l(#Seccion 5.7), acepten argumentos de
+   cualquier tipo.
+
+   Por supuesto, despues de crear un valor @c(interface{}) que contiene un valor
+   booleano, float, string, mapa, puntero, o de cualquier otro tipo, no podemos
+   hacer nada directamente con el valor que posee ya que la interfaz no tiene
+   metodos. Necesitamos una forma de recuperar el valor nuevamente. Veremos como
+   hacerlo utilizando un @e(tipo de asercion) en la @l(#Seccion 7.10).
+
+   Dado que la satisfaccion de la interfaz depende solo de los metodos de los
+   dos tipos implicados, no hay necesidad de declarar la relacion entre un tipo
+   concreto y las interfaces que satisface. Dicho esto, ocasionalmente es util
+   documentar y afirmar la relacion cuando se pretende, pero no se aplica de
+   otro modo por el programa. La declaracion a continuacion afirma en tiempo de
+   compilacion que un valor de tipo @c(*bytes.Buffer) satisface @c(io.Writer):
+
+   ..src > go
+     // *bytes.Buffer debe satirfacer io.Writer
+     var w io.Writer = new(bytes.Buffer)
+   < src..
+
+   No tenemos que asignar una nueva variable, ya que cualquier valor de tipo
+   @c(*bytes.Buffer) lo hara, incluso @c(nil), que escribimos como
+   @c[(*bytes.Buffer)(nil)] mediante una conversion explicita. Y ya que nunca
+   intentamos referirnos a @c(w), podemos sustituirlo por el identificador en
+   blanco. Juntos, estos cambios nos dan esta variante mas frugal:
+
+   ..src > go
+     // *bytes.Buffer debe satisfacer io.Writer
+     var _ io.Writer = (*bytes.Buffer)(nil)
+   < src..
+
+   Los tipos de interfaces no-vacios como io.Writer suelen ser satisfechos por
+   un tipo de puntero, sobre todo cuando uno o mas de los metodos de interfaz
+   implica algun tipo de mutacion en el receptor, como la hace el metodo
+   @c(Write). Un puntero a una estructura es un tipo de metodo especialmente comun.
+
+   Pero los tipos de puntero no son de ninguna manera los unicos tipos que
+   satisfacen las interfaces, e incluso las interfaces con los metodos mutator
+   pueden ser satisfechas por uno de los otros tipos de referencia de Go. Hemos
+   visto ejemplos de tipos de slice con metodos (@c(geometry.Path), @l(#Seccion
+   6.1<>§6.1)) y tipos de mapas con metodos (@c(url.Values), @l(#Seccion
+   6.2.1<>§6.2.1)), y mas adelante veremos un tipo de funcion con metodos
+   (@c(http.HandlerFunc), @l(#Seccion 7.7<>§7.7)). Incluso los tipos basicos
+   pueden satisfacer interfaces; como vimos en la @l(#Seccion 7.4), @c(time.Duration)
+   satisface @c(fmt.Stringer).
+
+   Un tipo concreto puede satisfacer muchas interfaces no relacionadas.
+   Considere un programa que organiza o vende artefactos culturales
+   digitalizados como musica, peliculas y libros. Podria definir el siguiente
+   conjunto de tipos concretos:
+
+   ..pre >
+     Album
+     Book
+     Movie
+     Magazine
+     Podcast
+     TVEpisode
+     Track
+
+   Podemos expresar cada abstraccion de interes como una interfaz. Algunas
+   propiedades son comunes a todos los artefactos, como un titulo, una fecha de
+   creacion y una lista de creadores (autores o artistas).
+
+   ..src > go
+     type Artifact interface {
+       Title() string
+       Creators() []string
+       Created() time.Time
+     }
+   < src..
+
+   Otras propiedades estan restringidas a ciertos tipos de artefactos. Las
+   propiedades de @c(printed_word) solo son relevantes para libros y revistas,
+   mientras que solo las peliculas y episodios de television tienen una
+   resolucion de pantalla.
+
+   ..src > go
+     type Text interface {
+       Pages() int
+       Words() int
+       PageSize() int
+     }
+
+     type Audio interface {
+       Stream() (io.ReadCloser, error)
+       RunningTime() time.Duration
+       Format() string // e.g., "MP3", "WAV"
+     }
+
+     type Video interface {
+       Stream() (io.ReadCloser, error)
+       RunningTime() time.Duration
+       Format() string // e.g., "MP4", "WMV"
+       Resolution() (x, y int)
+     }
+   < src..
+
+   Estas interfaces no son sino una forma util de agrupar tipos concretos
+   relacionados y expresar las facetas que comparten en comun. Podemos descubrir
+   otras agrupaciones mas tarde. Por ejemplo, si descubrimos que necesitamos
+   manejar elementos de @c(Audio) y @c(Video) de la misma manera, podemos
+   definir una interfaz @c(Streamer) para representar sus aspectos comunes sin
+   cambiar ninguna declaracion de tipos existentes.
+
+   ..src > go
+     type Streamer interface {
+       Stream() (io.ReadCloser, error)
+       RunningTime() time.Duration
+       Format() string
+     }
+   < src..
+
+   Cada agrupacion de tipos concretos basados ​​en sus comportamientos compartidos
+   puede expresarse como un tipo de interfaz. A diferencia de los lenguajes
+   basados ​​en clases, en los que el conjunto de interfaces satisfecho por una
+   clase es explicito, en Go podemos definir nuevas abstracciones o agrupaciones
+   de interes cuando las necesitamos, sin modificar la declaracion del tipo
+   concreto. Esto es particularmente util cuando el tipo concreto proviene de un
+   paquete escrito por un autor diferente. Por supuesto, es necesario que haya
+   puntos comunes subyacentes en los tipos concretos.
+
+** Seccion 7.4 <> Analizar Banderas con @c(flag.Value)
+
+   En esta seccion, vamos a ver como otro interfaz estandar, @c(flag.Value), nos
+   ayuda a definir nuevas notaciones de opciones de linea de comandos. Considere
+   el programa a continuacion, que duerme durante un periodo de tiempo
+   especificado.
+
+   ..figure > @l(gopl.io/ch7/sleep/sleep.go<>gopl.io/ch7/sleep)
+
+     ..src > go
+       var period = flag.Duration("period", 1*time.Second, "sleep period")
+
+       func main() {
+         flag.Parse()
+         fmt.Printf("Sleeping for %v...", *period)
+         time.Sleep(*period)
+         fmt.Println()
+       }
+     < src..
+
+
+   Antes de que se vaya a dormir imprime el periodo de tiempo. El paquete
+   @c(fmt) llama al metodo @c(String) de @c(time.Duration) para imprimir el
+   periodo no como un numero de nanosegundos, sino en una notacion facil de
+   usar:
+
+   ..src > sh
+     $ go build gopl.io/ch7/sleep
+     $ ./sleep
+     Sleeping for 1s...
+   < src..
+
+   Por defecto, el periodo de sueño es de un segundo, pero se puede controlar a
+   traves de la bandera de linea de comandos @c(-period). La funcion
+   @c(flag.Duration) crea una variable de tipo bandera @c(time.Duration) y
+   permite al usuario especificar la duracion en una variedad de formatos
+   faciles de usar, incluyendo la misma notacion que imprime el metodo
+   @c(String). Esta simetria de diseño conduce a una interfaz de usuario
+   agradable.
+
+   ..src > sh
+     $ ./sleep -period 50ms
+     Sleeping for 50ms...
+     $ ./sleep -period 2m30s
+     Sleeping for 2m30s...
+     $ ./sleep -period 1.5h
+     Sleeping for 1h30m0s...
+     $ ./sleep -period "1 day"
+     invalid value "1 day" for flag -period: time: invalid duration 1 day
+   < src..
+
+   Debido a que las banderas de valor de duracion son tan utiles, esta
+   caracteristica esta integrada en el paquete @c(flag), pero es facil de
+   definir nuevas notaciones bandera para nuestros propios tipos de datos. Solo
+   necesitamos definir un tipo que satisfaga la interfaz @c(flag.Value), cuya
+   declaracion es la siguiente:
+
+   ..src > go
+     package flag
+
+     // Value es la interfaz con el valor almacenado en un indicador.
+     type Value interface {
+       String() string
+       Set(string) error
+     }
+   < src..
+
+   El metodo @c(String) formatea el valor de la bandera para su uso en los
+   mensajes de ayuda de linea de comandos; Asi, cada @c(flag.Value) es tambien
+   un @c(fmt.Stringer). El metodo @c(Set) analiza su argumento de cadena y
+   actualiza el valor del indicador. En efecto, el metodo @c(Set) es el inverso
+   del metodo @c(String), y es una buena practica para que puedan utilizar la
+   misma notacion.
+
+   Vamos a definir un tipo @c(celsiusFlag) que permite una temperatura que se
+   especifica en @c(Celsius) o en @c(Fahrenheit) con una conversion
+   apropiada. Observe que @c(celsiusFlag) incorpora un@c(Celsius) (@l(#Seccion
+   2.5<>§2.5)), consiguiendo asi un metodo @c(String) de forma gratuita. Para
+   satisfacer @c(flag.Value), solo tenemos que declarar el metodo @c(Set):
+
+   ..figure > @l(gopl.io/ch7/tempconv/tempconv.go<>gopl.io/ch7/tempconv)
+
+     ..src > go
+       // *celsiusFlag satisface la interfaz flag.Value.
+       type celsiusFlag struct{ Celsius }
+
+       func (f *celsiusFlag) Set(s string) error {
+         var unit string
+         var value float64
+         fmt.Sscanf(s, "%f%s", &value, &unit) // no es necesario comprobar el error
+         switch unit {
+         case "C", "°C":
+           f.Celsius = Celsius(value)
+           return nil
+         case "F", "°F":
+           f.Celsius = FToC(Fahrenheit(value))
+           return nil
+         }
+         return fmt.Errorf("invalid temperature %q", s)
+       }
+     < src..
+
+
+   La llamada a @c(fmt.Sscanf) analiza un numero de coma flotante (@c[value]) y
+   una cadena (@c[unit]) de la entrada @c(s). Aunque por lo general se debe
+   comprobar el resultado error de @c(Sscanf), en este caso, no lo necesitamos
+   porque si habia un problema, ningun caso coincidira con el @c(swich).
+
+   La funcion @c(CelsiusFlag) a continuacion de lo envuelve todo. Al llamador,
+   devuelve un puntero al campo @c(Celsius) enbebido dentro de la variable @c(f)
+   de @c(celsiusFlag). El campo @c(Celsius) es la variable que sera actualizada
+   por el metodo @c(Set) durante el procesamiento de banderas. La llamada a
+   @c(Var) agrega la bandera al conjunto de banderas de linea de comando, la
+   variable global @c(flag.CommandLine). Los programas con interfaces de linea
+   de comandos inusualmente complejos pueden tener varias variables de este
+   tipo. La llamada a @c(Var) asigna un argumento @c(*celsiusFlag) a un
+   parametro @c(flag.Value), haciendo que el compilador compruebe que
+   @c(*celsiusFlag) tiene los metodos necesarios.
+
+   ..src > go
+     // CelsiusFlag define una bandera Celsius con el nombre especificado,
+     // valor predeterminado, y uso, y devuelve la direccion de la variable flag.
+     // El argumento flag debe tener una cantidad y una unidad, por ejemplo, "100C".
+     func CelsiusFlag(name string, value Celsius, usage string) *Celsius {
+       f := celsiusFlag{value}
+       flag.CommandLine.Var(&f, name, usage)
+       return &f.Celsius
+     }
+   < src..
+
+   Ahora podemos empezar a usar la nueva bandera en nuestros programas:
+
+   ..figure > @l(gopl.io/ch7/tempflag/tempflag.go<>gopl.io/ch7/tempflag)
+
+
+     ..src > go
+       var temp = tempconv.CelsiusFlag("temp", 20.0, "the temperature")
+
+       func main() {
+         flag.Parse()
+         fmt.Println(*temp)
+       }
+     < src..
+
+
+   Aqui hay una sesion tipica:
+
+   ..src > sh
+     $ go build gopl.io/ch7/tempflag
+     $ ./tempflag
+     20°C
+     $ ./tempflag -temp -18C
+     -18°C
+     $ ./tempflag -temp 212°F
+     100°C
+     $ ./tempflag -temp 273.15K
+     invalid value "273.15K" for flag -temp: invalid temperature "273.15K"
+     Usage of ./tempflag:
+       -temp value
+             the temperature (default 20°C)
+     $ ./tempflag -help
+     Usage of ./tempflag:
+       -temp value
+             the temperature (default 20°C)
+   < src..
+
+
+   @b(Ejercicio 7.6): Añadir soporte para temperaturas Kelvin a @c(tempflag).
+
+   @b(Ejercicio 7.7): Explicar por que el mensaje de ayuda contiene @c(°C)
+   cuando el valor por defecto de @c(20.0) no.
+
+** Seccion 7.5 <> Valores de Interfaz
+
+   Conceptualmente, un valor de un tipo de interfaz, o el valor de la interfaz,
+   tiene dos componentes, un tipo concreto y un valor de ese tipo. Estos se
+   llaman @e(tipo dinamico) de la interfaz y el @e(valor dinamico).
+
+   Para un lenguaje de tipo estatico como Go, los tipos son un concepto de
+   compilacion, por lo que un tipo no es un valor. En nuestro modelo conceptual,
+   un conjunto de valores denominados @e(descriptores de tipo) proporcionan
+   informacion sobre cada tipo, como su nombre y metodos. En un valor de
+   interfaz, el componente de tipo esta representado por el descriptor de tipo
+   apropiado.
+
+   En las siguientes cuatro declaraciones, la variable @c(w) toma tres valores
+   diferentes. (Los valores inicial y final son los mismos.)
+
+   ..src > go
+     var w io.Writer
+     w = os.Stdout
+     w = new(bytes.Buffer)
+     w = nil
+   < src..
+
+   Echemos un vistazo mas de cerca el valor y el comportamiento dinamico de
+   @c(w) despues de cada declaracion. La primera sentencia declara a @c(w):
+
+   ..src > go
+     var w io.Writer
+   < src..
+
+   En Go, las variables siempre se inicializan en un valor bien definido, y las
+   interfaces no son la excepcion. El valor cero para una interfaz tiene ambos
+   componentes de tipo y valor establecidos en @c(nil) (Figura 7.1).
+
+   ..figure > Figura 7.1. Una interfaz de valor nil.
+
+     ..art >
+              w
+              ┏━━━━━━━━━━━━┓
+        tipo  ┃    nil     ┃
+              ┣━━━━━━━━━━━━┫
+       valor  ┃    nil     ┃
+              ┗━━━━━━━━━━━━┛
+     < art..
+
+   Un valor de interfaz se describe como @c(nil) o no @c(nil) basado en su tipo
+   dinamico, por lo que este es un valor de interfaz nil. Puede probar si un
+   valor de interfaz es nil usando @c(w == nil) o @c(w != nil). Llamar a
+   cualquier metodo de un valor de interfaz nil causa un panico:
+
+   ..src > go
+     w.Write([]byte("hello")) // panico: desreferencia de puntero nil
+   < src..
+
+   La segunda instruccion asigna un valor de tipo @c(*os.File) a @c(w):
+
+   ..src > go
+     w = os.Stdout
+   < src..
+
+   Esta asignacion implica una conversion implicita de un tipo concreto para un
+   tipo de interfaz, y es equivalente a la conversion explicita
+   @c[io.Writer(os.Stdout)]. Una conversion de este tipo, ya sea explicita o
+   implicita, captura el tipo y el valor de su operando. Tipo dinamico del valor
+   de la interfaz se establece en el descriptor de tipo para el tipo de puntero
+   @c(*os.File), y su valor dinamico contiene una copia de @c(os.Stdout), que es
+   un puntero a la variable @c(os.File) que representa la salida estandar del
+   proceso (Figura 7.2).
+
+   ..figure > Figura 7.2. Un valor de interfaz contiene un puntero @c(*os.File).
+
+     ..img  > img/Figure-7.2.jpg
+
+
+   Llamar al metodo @c(Write) en un valor de interfaz que contiene un puntero
+   @c(*os.File) hace que se llama al metodo @c[(*os.File).Write]. La llamada
+   imprime @c("hello").
+
+   ..src > go
+     w.Write([]byte("hello")) // "hello"
+   < src..
+
+   En general, no podemos saber en tiempo de compilacion cual sera el tipo
+   dinamico de un valor interfaz, por lo que una llamada a traves de una
+   interfaz debe utilizar el @e(envio dinamico). En lugar de una llamada
+   directa, el compilador debe generar codigo para obtener la direccion del
+   metodo con nombre @c(Write) desde el descriptor de tipos, y luego, realizar
+   una llamada indirecta a esa direccion. El argumento del receptor de la
+   llamada es una copia del valor dinamico de la interfaz, @c(os.Stdout). El
+   efecto es como si hubieramos hecho esta llamada directamente:
+
+   ..src > go
+     os.Stdout.Write([]byte("hello")) // "hello"
+   < src..
+
+   La tercera instruccion asigna un valor de tipo @c(*bytes.Buffer) al valor de
+   la interfaz:
+
+   ..src > go
+     w = new(bytes.Buffer)
+   < src..
+
+   El tipo dinamico es ahora @c(*bytes.Buffer) y el valor dinamico es un puntero
+   a al buffer recien asignado (Figura 7.3).
+
+   ..figure > Figura 7.3. Un valor de interfaz que contiene un puntero @c(*bytes.Buffer)..
+
+     ..img  > img/Figure-7.3.jpg
+
+
+   Una llamada al metodo @c(Write) utiliza el mismo mecanismo que antes:
+
+   ..src > go
+     w.Write([]byte("hello")) // escribe "hello" en bytes.Buffer
+   < src..
+
+   Esta vez, el tipo de descriptor es @c(*bytes.Buffer), por lo que se llama al
+   metodo @c[(*bytes.Buffer).Write] con la direccion del buffer como el valor
+   del parametro de receptor. La llamada agrega @c("hello") al buffer.
+
+   Por ultimo, la cuarta instruccion asigna @c(nil) al valor de la interfaz:
+
+   ..src > go
+     w = nil
+   < src..
+
+   Esto restablece sus dos componentes a @c(nil), restaurando @c(w) al mismo
+   estado que cuando fue declarado, que se muestra en la Figura 7.1.
+
+   Un valor de interfaz puede contener valores dinamicos arbitrariamente
+   grandes. Por ejemplo, el tipo @c(time.Time), que representa un instante en el
+   tiempo, es un tipo struct con varios campos no exportadas. Si creamos un
+   valor de interfaz de ella,
+
+   ..src > go
+     var x interface{} = time.Now()
+   < src..
+
+   El resultado podria ser similar al de la Figura 7.4. Conceptualmente, el
+   valor dinamico siempre se ajusta dentro del valor de la interfaz, no importa
+   cuan grande sea su tipo. (Esto es solo un modelo conceptual, una
+   implementacion realista es muy diferente.)
+
+   ..figure > Figura 7.4. Un valor de interfaz que contiene una estructura @c(time.Time).
+
+     ..img  > img/Figure-7.4.jpg
+
+
+   Los valores de interfaz se pueden comparar usando @c(==) y @c(!=). Dos
+   valores de la interfaz son iguales si ambos son nil, o si sus tipos dinamicos
+   son identicos y sus valores dinamicos son iguales de acuerdo con el
+   comportamiento usual de @c(==) para ese tipo. Dado que los valores de
+   interfaz son comparables, pueden utilizarse como las claves de un mapa o como
+   el operando de una instruccion @c(switch).
+
+   Sin embargo, si se comparan dos valores de interfaz y tienen el mismo tipo
+   dinamico, pero ese tipo no es comparable (por ejemplo, un slice), entonces la
+   comparacion falla con un panico:
+
+   ..src > go
+     var x interface{} = []int{1, 2, 3}
+     fmt.Println(x == x) // panico: comparacion de tipo incompatible []int
+   < src..
+
+   En este sentido, los tipos de interfaz son inusuales. Otros tipos son
+   comparables de forma segura (como tipos basicos y punteros) o no son
+   comparables en absoluto (como slices, mapas y funciones), pero cuando se
+   comparan valores de interfaz o tipos agregados que contienen valores de
+   interfaz, debemos estar conscientes del potencial de una panico. Un riesgo
+   similar existe cuando se utilizan interfaces como claves de mapa u operandos
+   de conmutador. Solo compare valores de interfaz si esta seguro de que
+   contienen valores dinamicos de tipos comparables.
+
+   Cuando se manejan errores o durante la depuracion, a menudo es util informar
+   el tipo dinamico de un valor de interfaz. Para ello, utilizamos el verbo
+   @c(%T) del paquete @c(fmt):
+
+   ..src > go
+     var w io.Writer
+     fmt.Printf("%T\n", w) // "<nil>"
+
+     w = os.Stdout
+     fmt.Printf("%T\n", w) // "*os.File"
+
+     w = new(bytes.Buffer)
+     fmt.Printf("%T\n", w) // "*bytes.Buffer"
+   < src..
+
+   Internamente, @c(fmt) utiliza la reflexion para obtener el nombre del tipo
+   dinamico de la interfaz. Veremos la reflexion en el @l(#Capitulo 12).
+
+*** Seccion 7.5.1 <> Advertencia: Una interfaz que Contiene un Puntero Nil es No-Nil
+
+    Un valor de interfaz nil, que no contiene ningun valor, no es el mismo que
+    un valor de interfaz que contiene un puntero que pasa a ser nil. Esta sutil
+    distincion crea una trampa en la que cada programador de Go se ha tropezado.
+
+    Considere el programa a continuacion. Con @c(debug) establecido en @c(true), la
+    funcion @c(main) recoge la salida de la funcion @c(f) en un @c(bytes.Buffer).
+
+    ..src > go
+      const debug = true
+
+      func main() {
+        var buf *bytes.Buffer
+        if debug {
+          buf = new(bytes.Buffer) // Habilitar la recopilacion de la salida
+        }
+        f(buf)                    // NOTA: sutilmente incorrecto!
+        if debug {
+          // ...use buf...
+        }
+      }
+
+      // Si out no es nil, la salida se escribe en este.
+      func f(out io.Writer) {
+        // ...hacer algo...
+        if out != nil {
+          out.Write([]byte("done!\n"))
+        }
+      }
+    < src..
+
+    Podriamos esperar que el cambio de @c(debug) a @c(false) podria desactivar
+    la recoleccion de la salida, pero en realidad hace que el programa entre en
+    panico durante la llamada @c(out.Write):
+
+    ..src > go
+      if out != nil {
+        out.Write([]byte("done!\n")) // panico: desreferencia de puntero nil
+      }
+    < src..
+
+    Cuando @c(main) llamada a @c(f), asigna un puntero nil del tipo
+    @c(*bytes.Buffer) al parametro @c(out), por lo que el valor dinamico de
+    @c(out) es @c(nil). Sin embargo, su tipo dinamico es @c(*bytes.Buffer), lo
+    que significa que @c(out) es una interfaz no-nil que contiene un valor de
+    puntero nulo (Figura 7.5), por lo que la comprobacion defensiva @c(out !=
+    nil) sigue siendo verdadero.
+
+    ..figure > Figura 7.5. Una interfaz no-nil que contiene un puntero nil.
+
+      ..art >
+              w
+              ┏━━━━━━━━━━━━━━━━━┓
+         type ┃  *bytes.Buffer  ┃
+              ┣━━━━━━━━━━━━━━━━━┫
+        value ┃       nil       ┃
+              ┗━━━━━━━━━━━━━━━━━┛
+      < art..
+
+
+    Como antes, el mecanismo de envio dinamico determina que
+    @c[(*bytes.Buffer).Write] debe ser llamado pero esta vez con un valor
+    receptor que es nil. Para algunos tipos, como @c(*os.File), nil es un
+    receptor valido (@l(#Seccion 6.2.1<>§6.2.1)), pero @c(*bytes.Buffer) no esta
+    entre ellos. El metodo se llama, pero entra en panico al intentar acceder al
+    bufer.
+
+    El problema es que aunque un puntero @c(*bytes.Buffer) nulo tiene los
+    metodos necesarios para satisfacer la interfaz, no satisface los requisitos
+    de comportamiento de la interfaz. En particular, la llamada viola la
+    condicion implicita de @c[(*bytes.Buffer).Write] de que receptor no sea nil,
+    por lo que la asignacion de puntero nulo a la interfaz fue un error. La
+    solucion es cambiar el tipo de @c(buf) en @c(main) a @c(io.Writer) ,
+    evitando de ese modo la asignacion del valor disfuncional a la interfaz en
+    el primer lugar:
+
+    ..src > go
+      var buf io.Writer
+      if debug {
+        buf = new(bytes.Buffer) // Habilitar la recopilacion de la salida
+      }
+      f(buf) // OK
+    < src..
+
+    Ahora que hemos cubierto la mecanica de los valores de interfaz, echemos un
+    vistazo a algunas de las interfaces mas importantes de la libreria estandar.
+    En las tres siguientes secciones, veremos como se utilizan las interfaces
+    para ordenacion, para servir en la web y gestionar errores.
+
+** Seccion 7.6 <> Ordenacion con @c(sort.Interface)
+
+   Al igual que el formateo de cadenas, la ordenacion es una operacion
+   frecuentemente utilizada en muchos programas. Aunque un Quicksort minimo se
+   puede escribir en unas 15 lineas, una implementacion robusta es mucho mas
+   larga, y no es el tipo de codigo que deberiamos escribir de nuevo o copiar
+   cada vez que lo necesitamos.
+
+   Afortunadamente, el paquete @c(sort) provee in situ la ordenacion de
+   cualquier sequencia de acuerdo con cualquier funcion de ordenacion. Su diseño
+   es bastante inusual. En muchos lenguajes, el algoritmo de ordenacion esta
+   asociado con el tipo de datos de la secuencia, mientras que la funcion de
+   ordenacion esta asociada con el tipo de los elementos. Por el contrario, la
+   funcion @c(sort.Sort) de Go, no asume nada sobre de la representacion de la
+   secuencia o de sus elementos. En su lugar, utiliza una interfaz,
+   @c(sort.Interface), para especificar el contrato entre el algoritmo de
+   ordenacion generica y cada tipo de secuencia que puede ser ordenada. Una
+   implementacion de esta interfaz determina tanto la representacion concreta de
+   la secuencia, que es a menudo un slice, y el orden deseado de sus elementos.
+
+   Un algoritmo de ordenacion in situ necesita tres cosas–la longitud de la
+   secuencia, una forma de comparar dos elementos, y una manera de intercambiar
+   dos elementos–por lo que son los tres metodos de @c(sort.Interface):
+
+   ..src > go
+     package sort
+
+     type Interface interface {
+       Len() int
+       Less(i, j int) bool // i, j son indices de la sequencia de elementos
+       Swap(i, j int)
+     }
+   < src..
+
+   Para ordenar cualquier secuencia, es necesario definir un tipo que implemente
+   estos tres metodos, luego, aplicar @c(sort.Sort) a una instancia de ese
+   tipo. Como quizas el ejemplo mas simple, considere clasificar un slice de
+   cadenas. El nuevo tipo @c(StringSlice) y sus metodos @c(Len), @c(Less), y
+   @c(Swap) se muestran a continuacion.
+
+   ..src > go
+     type StringSlice []string
+
+     func (p StringSlice) Len() int           { return len(p) }
+     func (p StringSlice) Less(i, j int) bool { return p[i] < p[j] }
+     func (p StringSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+   < src..
+
+   Ahora podemos ordenar una slice de strings, @c(names), convirtiendo el slice
+   a un @c(StringSlice) como aqui:
+
+   ..src > go
+     sort.Sort(StringSlice(names))
+   < src..
+
+   La conversion produce un valor de slice con la misma longitud, capacidad, y
+   arreglo subyacente como @c(names), pero con un tipo que tiene los tres
+   metodos necesarios para la clasificacion.
+
+   Ordenar un slice de strings es tan comun que el paquete sort proporciona el
+   tipo @c(StringSlice), asi como una funcion llamada @c(Strings) por lo que la
+   llamada anterior se puede simplificar a @c[sort.Strings(names)].
+
+   La tecnica aqui se adapta facilmente a otros ordenes de clasificacion, por
+   ejemplo, para ignorar mayusculas o caracteres especiales. (El programa Go que
+   ordena los terminos del indice y el numero de paginas de este libro hace
+   esto, con una logica adicional para los numeros romanos.) Para una ordenacion
+   mas complicada, usamos la misma idea, pero con estructuras de datos mas
+   complicadas o implementaciones mas complicadas de los metodos
+   @c(sort.Interface).
+
+   Nuestro ejemplo de ejecucion para la clasificacion sera una lista de
+   reproduccion de musica, mostrada como una tabla. Cada pista es una sola fila
+   y cada columna es un atributo de esa pista, como artista, titulo y tiempo de
+   ejecucion. Imagine que una interfaz grafica de usuario presenta la tabla y
+   que al hacer clic en la cabecera de una columna, la lista de reproduccion se
+   clasifica por ese atributo; Haciendo clic en la misma columna, vuelve a
+   invertir el orden. Echemos un vistazo a lo que podria suceder en respuesta a
+   cada clic.
+
+   La siguiente variable @c(tracks) contiene una lista de reproduccion. (Uno de
+   los autores se disculpa por los gustos musicales del otro autor.) Cada
+   elemento es indirecto, un puntero a un @c(Track). Aunque el codigo de abajo
+   funcionaria si almacenamos los @c(Tracks) directamente, la funcion de
+   clasificacion intercambiara muchos pares de elementos, por lo que se
+   ejecutara mas rapido si cada elemento es un puntero, que es una sola palabra
+   de la maquina, en lugar de un @c(Track) completo , lo que podrian ser ocho o
+   mas palabras.
+
+   ..figure > @l(gopl.io/ch7/sorting/main.go<>gopl.io/ch7/sorting)
+
+     ..src > go
+       type Track struct {
+         Title  string
+         Artist string
+         Album  string
+         Year   int
+         Length time.Duration
+       }
+
+       var tracks = []*Track{
+         {"Go", "Delilah", "From the Roots Up", 2012, length("3m38s")},
+         {"Go", "Moby", "Moby", 1992, length("3m37s")},
+         {"Go Ahead", "Alicia Keys", "As I Am", 2007, length("4m36s")},
+         {"Ready 2 Go", "Martin Solveig", "Smash", 2011, length("4m24s")},
+       }
+
+       func length(s string) time.Duration {
+         d, err := time.ParseDuration(s)
+         if err != nil {
+           panic(s)
+         }
+         return d
+       }
+     < src..
+
+
+   La funcion @c(printTracks) imprime la lista de reproduccion como una
+   tabla. Una pantalla grafica seria mejor, pero esta pequeña rutina utiliza el
+   paquete @c(text/tabwriter) para producir una tabla cuyas columnas estan
+   perfectamente alineadas y rellenas, como se muestra a continuacion. Observe
+   que @c(*tabwriter.Writer) satisface @c(io.Writer). Recoge cada pieza de datos
+   escrita en ella; su metodo @c(Flush) da formato a toda la tabla y lo escribe
+   en @c(os.Stdout).
+
+   ..src > go
+     func printTracks(tracks []*Track) {
+       const format = "%v\t%v\t%v\t%v\t%v\t\n"
+       tw := new(tabwriter.Writer).Init(os.Stdout, 0, 8, 2, ' ', 0)
+       fmt.Fprintf(tw, format, "Title", "Artist", "Album", "Year", "Length")
+       fmt.Fprintf(tw, format, "-----", "------", "-----", "----", "------")
+       for _, t := range tracks {
+         fmt.Fprintf(tw, format, t.Title, t.Artist, t.Album, t.Year, t.Length)
+       }
+       tw.Flush() // calculate column widths and print table
+     }
+   < src..
+
+   Para ordenar la lista de reproduccion por el campo @c(Artist), definimos un
+   nuevo tipo de slice con los necesarios metodos @c(Len), @c(Less), y @c(Swap),
+   analogos a lo que hicimos para @c(StringSlice).
+
+   ..src > go
+     type byArtist []*Track
+     func (x byArtist) Len() int           { return len(x) }
+     func (x byArtist) Less(i, j int) bool { return x[i].Artist < x[j].Artist }
+     func (x byArtist) Swap(i, j int)      { x[i], x[j] = x[j], x[i] }
+   < src..
+
+   Para llamar a la rutina de ordenacion generica, primero debemos convertir
+   @c(tracks) al nuevo tipo, @c(byArtist), que define el orden:
+
+   ..src > go
+     sort.Sort(byArtist(tracks))
+   < src..
+
+   Despues de ordenar el slice por artista, la salida de @c(printTracks) es
+
+   ..pre >
+     Title       Artist          Album              Year  Length
+     -----       ------          -----              ----  ------
+     Go Ahead    Alicia Keys     As I Am            2007  4m36s
+     Go          Delilah         From the Roots Up  2012  3m38s
+     Ready 2 Go  Martin Solveig  Smash              2011  4m24s
+     Go          Moby            Moby               1992  3m37s
+   < pre..
+
+
+   Si el usuario solicita @"(ordenar por artista) una segunda vez, vamos a
+   resolver los tracks en orden inverso. No tenemos que definir un nuevo tipo
+   @c(byReverseArtist) con un metodo @c(Less) invertido, ya que el paquete
+   @c(sort) proporciona una funcion @c(Reverse) que transforma cualquier orden a
+   su inversa.
+
+   ..src > go
+     sort.Sort(sort.Reverse(byArtist(tracks)))
+   < src..
+
+   Despues de la ordenacin inversa del slice por artista, la salida de
+   @c(printTracks) es
+
+   ..pre >
+     Title       Artist          Album              Year  Length
+     -----       ------          -----              ----  ------
+     Go          Moby            Moby               1992  3m37s
+     Ready 2 Go  Martin Solveig  Smash              2011  4m24s
+     Go          Delilah         From the Roots Up  2012  3m38s
+     Go Ahead    Alicia Keys     As I Am            2007  4m36s
+   < pre..
+
+
+   La funcion @c(sort.Reverse) merece un vistazo mas de cerca, ya que utiliza la
+   composicion (@l(#Seccion 6.3<>§6.3)), que es una idea importante. El paquete
+   @c(sort) define un tipo no exportado @c(reverse), que es una estructura que
+   enbebe un @c(sort.Interface). El metodo @c(Less) de @c(reverse) llama al
+   @c(Less) del varol enbebido @c(sort.Interface), pero con los indices
+   invertidos, invirtiendo el orden de los resultados.
+
+   ..src > go
+     package sort
+
+     type reverse struct{ Interface } // that is, sort.Interface
+
+     func (r reverse) Less(i, j int) bool { return r.Interface.Less(j, i) }
+
+     func Reverse(data Interface) Interface { return reverse{data} }
+   < src..
+
+   @c(Len) y @c(Swap), los otros dos metodos de @c(reverse), son proporcionados
+   implicitamente por el valor original @c(sort.Interface) porque es un campo
+   enbebido. La funcion exportada @c(Reverse) devuelve una instancia del tipo
+   @c(reverse) que contiene el valor original @c(sort.Interface).
+
+   Para ordenar por una columna diferente, hay que definir un nuevo tipo, como
+   @c(byYear):
+
+   ..src > go
+     type byYear []*Track
+
+     func (x byYear) Len() int           { return len(x) }
+     func (x byYear) Less(i, j int) bool { return x[i].Year < x[j].Year }
+     func (x byYear) Swap(i, j int)      { x[i], x[j] = x[j], x[i] }
+   < src..
+
+   Despues de ordenamos los @c(tracks) por año usando
+   @c[sort.Sort(byYear(tracks))], @c(printTracks) muestra una lista cronologica:
+
+   ..pre >
+     Title       Artist          Album              Year  Length
+     -----       ------          -----              ----  ------
+     Go          Moby            Moby               1992  3m37s
+     Go Ahead    Alicia Keys     As I Am            2007  4m36s
+     Ready 2 Go  Martin Solveig  Smash              2011  4m24s
+     Go          Delilah         From the Roots Up  2012  3m38s
+   < pre..
+
+   Para cada tipo de slice y cada funcion de ordenacion necesitamos, declarar
+   una nueva implementacion de @c(sort.Interface). Como se puede ver, los
+   metodos @c(Len) y @c(Swap) tienen definiciones identicas para todos los tipos
+   de slice. En el siguiente ejemplo, el tipo concreto @c(customSort) combina un
+   slice con una funcion, permitiendo definir un nuevo orden de clasificacion
+   escribiendo unicamente la funcion de comparacion. Por cierto, los tipos
+   concretos que implementan @c(sort.Interface) no siempre son slices;
+   @c(customSort) es un tipo struct.
+
+   ..src > go
+     type customSort struct {
+       t    []*Track
+       less func(x, y *Track) bool
+     }
+
+     func (x customSort) Len() int           { return len(x.t) }
+     func (x customSort) Less(i, j int) bool { return x.less(x.t[i], x.t[j]) }
+     func (x customSort) Swap(i, j int)      { x.t[i], x.t[j] = x.t[j], x.t[i] }
+   < src..
+
+   Vamos a definir una funcion de ordenamiento de multiples niveles cuya clave
+   de ordenacion principal es @c(Title), cuya clave secundaria es @c(Year), y
+   cuya clave terciaria es el tiempo de ejecucion, @c(Length). Aqui esta la
+   llamada a @c(Sort) usando una funcion de ordenacion anonima:
+
+   ..src > go
+     sort.Sort(customSort{tracks, func(x, y *Track) bool {
+       if x.Title != y.Title {
+         return x.Title < y.Title
+       }
+       if x.Year != y.Year {
+         return x.Year < y.Year
+       }
+       if x.Length != y.Length {
+         return x.Length < y.Length
+       }
+       return false
+     }})
+   < src..
+
+   Y aqui esta el resultado. Observe que el empate entre las dos pistas
+   tituladas @"(Go) se rompe en favor de la mas antigua.
+
+   ..pre >
+     Title       Artist          Album              Year  Length
+     -----       ------          -----              ----  ------
+     Go          Moby            Moby               1992  3m37s
+     Go          Delilah         From the Roots Up  2012  3m38s
+     Go Ahead    Alicia Keys     As I Am            2007  4m36s
+     Ready 2 Go  Martin Solveig  Smash              2011  4m24s
+   < pre..
+
+   Aunque la clasificacion de una secuencia de longitud @m(n) requiere @m[O(n
+   log n)] operaciones de comparacion, probar si una secuencia ya esta ordenada
+   requiere al menos @m(n-1) comparaciones. La funcion @c(IsSorted) del paquete
+   @c(sort) comprueba esto para nosotros. Al igual que @c(sort.Sort), abstrae
+   tanto la secuencia y su funcion de ordenacion utilizando @c(sort.Interface),
+   pero nunca llama al metodo @c(Swap): Este codigo muestra las funciones
+   @c(IntsAreSorted) y @c(Ints) y el tipo @c(IntSlice):
+
+   ..src > go
+     values := []int{3, 1, 4, 1}
+     fmt.Println(sort.IntsAreSorted(values)) // "false"
+     sort.Ints(values)
+     fmt.Println(values)                     // "[1 1 3 4]"
+     fmt.Println(sort.IntsAreSorted(values)) // "true"
+     sort.Sort(sort.Reverse(sort.IntSlice(values)))
+     fmt.Println(values)                     // "[4 3 1 1]"
+     fmt.Println(sort.IntsAreSorted(values)) // "false"
+   < src..
+
+
+   Por conveniencia, el paquete @c(sort) proporciona versiones de sus funciones
+   y tipos especializados para c([]int), @c([]string), y @c([]float64) usando
+   sus ordenamientos naturales. Para otros tipos, como @c([]int64) o @c([]uint),
+   estamos por nuestra cuenta, aunque el camino es corto.
+
+   @b(Ejercicio 7.8): Muchas interfaces graficas de usuario proporcionan un
+   widget de tabla con ordenacion de multiple nivel: la clave de ordenacion
+   principal es la primer columna, la segunda clae de ordenacion es la segunda
+   columna, y asi sucesivamente. Defina una implementacion de @c(sort.Interface)
+   para utilizar con dicha tabla. Compare este enfoque con repetidos
+   ordenamientos utilizando @c(sort.Stable).
+
+   @b(Ejercicio 7.9): Utilice el paquete @c(html/template) (@l(#Seccion
+   4.6<>§4.6)) para reemplazar @c(printTracks) con una funcion que muestre los
+   tracks como una tabla HTML. Utilice la solucion del ejercicio anterior para
+   organizar que cada clic en un encabezado de columna haga una solicitud HTTP
+   para ordenar la tabla.
+
+   @b(Ejercicio 7.10): El tipo @c(sort.Interface) se puede adaptar a otros
+   usos. Escriba una funcion @c[IsPalindrome(s sort.Interface) bool] que informe
+   si la secuencia @c(s) es un palindromo, es decir, la inversion de la
+   secuencia no lo cambiaria. Suponga que los elementos en los indices @c(i) y
+   @c(j) son iguales si @c[!s.Less(i, j) && !s.Less(j, i)].
+
+** Seccion 7.7 <> La Interfaz @c(http.Handler)
+
+   En el capitulo 1 , vimos una idea de como utilizar el paquete @c(net/http)
+   para implementar clientes web (@l(#Seccion 1.5<>§1.5)) y servidores
+   (@l(#Seccion 1.7<>§1.7)). En esta seccion, vamos a ver mas de cerca la API
+   del servidor, cuyo fundamento es la interfaz @c(http.Handler):
+
+   ..figure > @c(net/http)
+
+     ..src > go
+       package http
+
+       type Handler interface {
+         ServeHTTP(w ResponseWriter, r *Request)
+       }
+
+       func ListenAndServe(address string, h Handler) error
+     < src..
+
+   La función @c(ListenAndServe) requiere una dirección de servidor, como
+   @c("localhost:8000"), y una instancia de la interfaz @c(Handler) a la que
+   todas las solicitudes deben enviarse. Se ejecuta para siempre, o hasta que el
+   servidor falla (o no se inicia) con un error, que siempre devuelve no-nil.
+
+   Imagine un sitio de comercio electronico con una base de datos de los
+   articulos a la venta con sus precios en dolares. El siguiente programa
+   muestra la implementacion imaginable mas sencilla. Modelos del inventario
+   como un tipo de mapa, @c(database) , a la que ha adjuntado un metodo
+   @c(ServeHTTP) para que satisfaga la interfaz @c(http.Handler). El controlador
+   se extiende sobre el mapa e imprime los elementos.
+
+   ..figure > @l(gopl.io/ch7/http1/main.go<>gopl.io/ch7/http1)
+
+     ..src > go
+       func main() {
+         db := database{"shoes": 50, "socks": 5}
+         log.Fatal(http.ListenAndServe("localhost:8000", db))
+       }
+
+       type dollars float32
+
+       func (d dollars) String() string { return fmt.Sprintf("$%.2f", d) }
+
+       type database map[string]dollars
+
+       func (db database) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+         for item, price := range db {
+           fmt.Fprintf(w, "%s: %s\n", item, price)
+         }
+       }
+     < src..
+
+
+   Si iniciamos el servidor,
+
+   ..src > sh
+     $ go build gopl.io/ch7/http1
+     $ ./http1 &
+   < src..
+
+   luego conectamos con el con el programa @$(fetch) de la @l(#Seccion 1.5) (o
+   con un navegador web, si lo prefiere), obtenemos el siguiente resultado:
+
+   ..src > sh
+     $ go build gopl.io/ch1/fetch
+     $ ./fetch http://localhost:8000
+     shoes: $50.00
+     socks: $5.00
+   < src..
+
+   Hasta ahora, el servidor solo puede enumerar su inventario completo y lo hara
+   para cada solicitud, independientemente de la URL. Un servidor mas realista
+   define varias URL diferentes, cada una desencadenando un comportamiento
+   diferente. Vamos a llamar al comportamiento existente @c(/list) y añadamos
+   otra que se llame @c(/price) que informa el precio de un solo articulo,
+   especificado como un parametro de la peticion, por ejemplo @c(/price?item=socks).
+
+   ..figure > @l(gopl.io/ch7/http2/main.go<>gopl.io/ch7/http2)
+
+     ..src > go
+       func (db database) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+         switch req.URL.Path {
+         case "/list":
+           for item, price := range db {
+             fmt.Fprintf(w, "%s: %s\n", item, price)
+           }
+         case "/price":
+           item := req.URL.Query().Get("item")
+           price, ok := db[item]
+           if !ok {
+             w.WriteHeader(http.StatusNotFound) // 404
+             fmt.Fprintf(w, "no such item: %q\n", item)
+             return
+           }
+           fmt.Fprintf(w, "%s\n", price)
+         default:
+           w.WriteHeader(http.StatusNotFound)  // 404
+           fmt.Fprintf(w, "no such page: %s\n", req.URL)
+         }
+       }
+     < src..
+
+
+   Ahora el controlador decide que logica hay que usar basado en el componente
+   de la ruta de la URL, @c(req.URL.Path). Si el controlador no reconoce la
+   ruta, se informa de un error HTTP al cliente llamando a
+   @c[w.WriteHeader(http.StatusNotFound)]; esto debe hacerse antes de escribir
+   cualquier texto a @c(w). (Por cierto, @c[http.ResponseWriter] es otra
+   interfaz. aumenta a @c(io.Writer) con metodos para enviar cabeceras de
+   respuesta HTTP.) De manera equivalente, podriamos utilizar la funcion de
+   utilidad @c(http.Error):
+
+   ..src > go
+     msg := fmt.Sprintf("no such page: %s\n", req.URL)
+     http.Error(w, msg, http.StatusNotFound) // 404
+   < src..
+
+   El argumento @c(/price) llama al metodo @c(Query) de la URL para analizar los
+   parametros de la peticion HTTP como un mapa, o mas precisamente, un mapa
+   multiple de tipo @c(url.Values) (@l(#Seccion 6.2.1<>§6.2.1)) del paquete
+   @c(net/url). A continuacion, busca el primer parametro @c(item) y mira su
+   precio. Si no se encontro el elemento, informa de un error.
+
+   He aqui una sesion de ejemplo con el nuevo servidor:
+
+   ..src > sh
+     $ go build gopl.io/ch7/http2
+     $ go build gopl.io/ch1/fetch
+     $ ./http2 &
+     $ ./fetch http://localhost:8000/list
+     shoes: $50.00
+     socks: $5.00
+     $ ./fetch http://localhost:8000/price?item=socks
+     $5.00
+     $ ./fetch http://localhost:8000/price?item=shoes
+     $50.00
+     $ ./fetch http://localhost:8000/price?item=hat
+     no such item: "hat"
+     $ ./fetch http://localhost:8000/help
+     no such page: /help
+   < src..
+
+   Obviamente podriamos seguir añadiendo casos a @c(ServeHTTP), pero en una
+   aplicacion real, es conveniente definir la logica para cada caso en una
+   funcion o un metodo independiente. Ademas, las URL relacionadas pueden
+   necesitar una logica similar; varios archivos de imagen pueden tener URLs de
+   tipo @c(/images/*.png), por ejemplo. Por estas razones, @c(net/http)
+   proporciona @c(ServeMux), una solicitud multiplexor, para simplificar la
+   asociacion entre las direcciones URL y manipuladores. @c(ServeMux) agrega una
+   coleccion de @c(http.Handlers) en un solo @c(http.Handler). Una vez mas,
+   vemos que los diferentes tipos que satisfacen la misma interfaz son
+   @e(sustituibles): el servidor web es capaz de consultar a cualquier
+   @c(http.Handler), independientemente del tipo concreto esta detras de el.
+
+   Para una aplicacion mas compleja, varios @c(ServeMuxes) pueden estar
+   compuestos para manejar requerimientos de secuenciacion mas intrincados. Go
+   no tiene un framework web canonico analogo a Rails de Ruby o a Django de
+   Python. Esto no quiere decir que tales frameworks no existan, pero los
+   bloques de construccion en la libreria estandar de Go son lo suficientemente
+   flexibles como para que los frameworks sean a menudo innecesarios. Ademas,
+   aunque los frameworks son convenientes en las primeras fases de un proyecto,
+   su complejidad adicional puede hacer que el mantenimiento a largo plazo sea
+   mas dificil.
+
+   En el siguiente programa, creamos un @c(ServeMux) y lo usamos para asociar
+   las direcciones URL con los controladores correspondientes para las
+   operaciones @c(/list) y @c(/price,) que se han dividido en metodos
+   separados. A continuacion, utilizamos @c(ServeMux) como el controlador
+   principal en la llamada a @c(ListenAndServe).
+
+   ..figure > @l(gopl.io/ch7/http3/main.go<>gopl.io/ch7/http3)
+
+     ..src > go
+       func main() {
+         db := database{"shoes": 50, "socks": 5}
+         mux := http.NewServeMux()
+         mux.Handle("/list", http.HandlerFunc(db.list))
+         mux.Handle("/price", http.HandlerFunc(db.price))
+         log.Fatal(http.ListenAndServe("localhost:8000", mux))
+       }
+
+       type database map[string]dollars
+
+       func (db database) list(w http.ResponseWriter, req *http.Request) {
+         for item, price := range db {
+           fmt.Fprintf(w, "%s: %s\n", item, price)
+         }
+       }
+
+       func (db database) price(w http.ResponseWriter, req *http.Request) {
+         item := req.URL.Query().Get("item")
+         price, ok := db[item]
+         if !ok {
+           w.WriteHeader(http.StatusNotFound) // 404
+           fmt.Fprintf(w, "no such item: %q\n", item)
+           return
+         }
+         fmt.Fprintf(w, "%s\n", price)
+       }
+     < src..
+
+
+   Centremonos en las dos llamadas a @c(mux.Handle) que registran los
+   manejadores. En la primera, @c(db.list) es un valor de metodo (@l(#Seccion
+   6.4<>§6.4)), es decir, un valor de tipo
+
+   ..src > go
+     func(w http.ResponseWriter, req *http.Request)
+   < src..
+
+   que, cuando se llama, invoca el metodo @c(database.list) con el valor
+   receptor @c(db). Asi que @c(db.list) es una funcion que implementa el
+   comportamiento manipulador, pero ya que no tiene metodos, no satisface la
+   interfaz @c(http.Handler) y no se puede pasar directamente a @c(mux.Handle).
+
+   La expresion @c[http.HandlerFunc(db.list)] es una conversion, no una llamada
+   de funcion, ya que @c(http.HandlerFunc) es un tipo. Tiene la siguiente
+   definicion:
+
+   ..figure > @c(net/http)
+
+     ..src > go
+       package http
+
+       type HandlerFunc func(w ResponseWriter, r *Request)
+
+       func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+         f(w, r)
+       }
+     < src..
+
+
+   @c(HandlerFunc) demuestra algunas caracteristicas inusuales del mecanismo de
+   interfaz de Go. Es un tipo de funcion que tiene metodos y satisface una
+   interfaz, @c(http.Handler). El comportamiento de su @c(ServeHTTP) metodo es
+   llamar a la funcion subyacente. @c(HandlerFunc) es, por tanto, un adaptador
+   que permite que un valor de funcion de satisfaga una interfaz, donde la
+   funcion y el unico metodo de la interfaz tienen la misma firma. En efecto,
+   este truco permite que un solo tipo, como @c(database) cumpla con la interfaz
+   @c(http.Handler) de varias maneras: una vez a traves de su @c(list) metodo,
+   una vez que a traves de su metodo @c(price), y asi sucesivamente.
+
+   Debido a que el registro de un manejador de esta manera es tan comun,
+   @c(ServeMux) tiene un metodo de conveniencia llamado @c(HandleFunc) que lo
+   hace por nosotros, por lo que podemos simplificar el codigo de registro del
+   manejador a esto:
+
+   ..figure > @l(gopl.io/ch7/http3a/main.go<>gopl.io/ch7/http3a)
+
+     ..src > go
+       mux.HandleFunc("/list", db.list)
+       mux.HandleFunc("/price", db.price)
+     < src..
+
+
+   Es facil ver desde el codigo anterior como uno podria construir un programa
+   en el que hay dos servidores web diferentes, escuchando en diferentes
+   puertos, definiendo diferentes URL y enviando a diferentes
+   manejadores. Simplemente construiriamos otro ServeMux y hariamos otra llamada
+   a @c(ListenAndServe), tal vez al mismo tiempo. Pero en la mayoria de los
+   programas, un servidor web es suficiente. Ademas, es tipico definir
+   manejadores HTTP a traves de muchos archivos de una aplicacion, y seria una
+   molestia si todos tuvieran que ser registrados de manera explicita con la
+   instancia de la aplicacion @c(ServeMux).
+
+   Asi que, por conveniencia, @c(net/http) proporciona unna instancia global
+   @c(ServeMux) llamada @c(DefaultServeMux) y funciones a nivel de paquete
+   llamadas @c(http.Handle) y @c(http.HandleFunc). Para utilizar
+   @c(DefaultServeMux) como manejador principal del servidor, no es necesario
+   pasarlo a @c(ListenAndServe); @c(nil) lo hara.
+
+   La funcion principal del servidor se puede simplificar a
+
+   ..figure > @l(gopl.io/ch7/http4/main.go<>gopl.io/ch7/http4)
+
+     ..src > go
+       func main() {
+         db := database{"shoes": 50, "socks": 5}
+         http.HandleFunc("/list", db.list)
+         http.HandleFunc("/price", db.price)
+         log.Fatal(http.ListenAndServe("localhost:8000", nil))
+       }
+     < src..
+
+
+   Por ultimo, un recordatorio importante: como mencionamos en la @l(#Seccion
+   1.7), el servidor web invoca cada manejador en una nueva goroutine, por lo
+   que los manipuladores deben tomar precauciones como el @e(bloqueo) al acceder
+   a variables de otras gorutinas, incluyendo otras solicitudes al mismo
+   manejador. Hablaremos de concurrencia en los proximos dos capitulos.
+
+   @b(Ejercicio 7.11) Agregar manejadores adicionales para que los clientes
+   pueden crear, leer, actualizar y eliminar entradas de @c(database). Por
+   ejemplo, una solicitud con formato @c(/update?item=socks&price=6) actualizara
+   el precio de un articulo en el inventario e informar un error si el elemento
+   no existe o si el precio no es valido. (Advertencia: este cambio introduce
+   actualizacion de variables concurrentes.)
+
+   @b(Ejercicio 7.12): Cambiar el manejador de @c(/list) para imprimir su salida
+   como una tabla HTML, no como texto. Puede que el paquete @c(html/template)
+   (@l(#Seccion 4.6<>§4.6)) sea util.
+
+** Seccion 7.8 <> La Interfaz @c(error)
+
+   Desde el comienzo de este libro, hemos estado usando y creando valores del
+   misterioso tipo predeclarado @c(error) sin explicar lo que realmente es. De
+   hecho, es solo un tipo de interfaz con un unico metodo que devuelve un
+   mensaje de error:
+
+   ..src > go
+     type error interface {
+       Error() string
+     }
+   < src..
+
+   La forma mas sencilla de crear un @c(error) es llamando a @c(errors.New,) que
+   devuelve un nuevo @c(error) para un mensaje de error dado. Todo el paquete
+   @c(errors) solo son cuatro lineas:
+
+   ..src > go
+     package errors
+
+     func New(text string) error { return &errorString{text} }
+
+     type errorString struct { text string }
+
+     func (e *errorString) Error() string { return e.text }
+   < src..
+
+   El tipo subyacente de @c(errorString) es una estructura, no una cadena, para
+   proteger su representacion de cambios involuntarios (o premeditados). Y la
+   razon de que el tipo de puntero sea @c(*errorString), no es solo
+   @c(errorString), para satisfacer la interfaz @c(error) es para que cada
+   llamada a @c(New) asigne una instancia de error distinta que no es igual a
+   ninguna otra. No queremos que un error distinguido como @c(io.EOF) sea igual
+   a o uno que simplemente contien el mismo mensaje.
+
+   ..src > go
+     fmt.Println(errors.New("EOF") == errors.New("EOF")) // "false"
+   < src..
+
+   Las llamadas a @c(errors.New) son relativamente poco frecuentes porque hay
+   una funcion de envoltura conveniente, @c(fmt.Errorf), que tambien hace
+   formateo de cadenas. Lo usamos varias veces en el @l(#Capitulo 5).
+
+   ..src > go
+     package fmt
+
+     import "errors"
+
+     func Errorf(format string, args ...interface{}) error {
+       return errors.New(Sprintf(format, args...))
+     }
+   < src..
+
+   Aunque @c(*errorString) puede ser el tipo mas sencillo de @c(error), esta
+   lejos de ser el unico. Por ejemplo, el paquete @c(syscall) proporciona la API
+   de llamadas a bajo nivel de Go. En muchas plataformas, define un tipo
+   numerico @c(Errno) que satisface @c(error), y en plataformas Unix, el metodo
+   @c(Errno) de @c(Error) realiza una busqueda en una tabla de cadenas, como se
+   muestra a continuacion:
+
+   ..src > go
+     package syscall
+
+     type Errno uintptr // codigos de error del sistema operativo
+
+     var errors = [...]string{
+       1: "operation not permitted",   // EPERM
+       2: "no such file or directory", // ENOENT
+       3: "no such process",           // ESRCH
+       // ...
+     }
+
+     func (e Errno) Error() string {
+       if 0 <= int(e) && int(e) < len(errors) {
+         return errors[e]
+       }
+       return fmt.Sprintf("errno %d", e)
+     }
+   < src..
+
+   La siguiente sentencia crea un valor de interfaz que contiene el valor
+   @c(Errno) 2, que significa la condicion POSIX @c(ENOENT):
+
+   ..src > go
+     var err error = syscall.Errno(2)
+     fmt.Println(err.Error()) // "el fichero o directorio no existe"
+     fmt.Println(err)         // "el fichero o directorio no existe"
+   < src..
+
+   El valor de @c(err) se muestra graficamente en la Figura 7.6.
+
+   ..figure > Figura 7.6. Un valor de interfaz que contiene un entero @c(syscall.Errno).
+
+     ..art >
+             err
+             ┏━━━━━━━━━━━━━━━━━┓
+        tipo ┃  syscall.Errno  ┃
+             ┣━━━━━━━━━━━━━━━━━┫
+       valor ┃        2        ┃
+             ┗━━━━━━━━━━━━━━━━━┛
+     < art..
+
+
+   @c(Errno) es una representacion eficiente de los errores de llamada del
+   sistema extraidos de un conjunto finito, y satisface la interfaz estandar
+   @c(error). Veremos otros tipos que satisfacen esta interfaz en la @l(#Seccion
+   7.11).
+
+** Seccion 7.9 <> Ejemplo: Evaluador de Expresiones
+
+   En esta seccion, crearemos un evaluador para expresiones aritmeticas
+   simples. Vamos a utilizar una interfaz, @c(Expr), para representar cualquier
+   expresion en este lenguaje. Por ahora, esta interfaz no necesita metodos,
+   pero agregaremos algunos mas tarde.
+
+   ..src > go
+     // Un Expr es una expresion aritmetica.
+     type Expr interface{}
+   < src..
+
+   Nuestro lenguaje de expresiones consiste en literales de punto flotante; los
+   operadores binarios @c(+), @c(-), @c(*) y @c(/); los operadores unarios
+   @c(-x) y @c(+x); llamadas de funcion @c[pow(x,y)], @c[sin(x)], y @c[sqrt(x)];
+   variables como @c(x) y @c(pi); Y por supuesto los parentesis y la precedencia
+   estandar de operadores. Todos los valores son del tipo @c(float64). Aqui hay
+   algunas expresiones de ejemplo:
+
+   ..src > go
+     sqrt(A / pi)
+     pow(x, 3) + pow(y, 3)
+     (F - 32) * 5 / 9
+   < src..
+
+   Los cinco tipos concretos de abajo representan tipos particulares de
+   expresiones. un @c(Var) representa una referencia a una variable. (Pronto
+   veremos por que se exporta.) Un @c(literal) representa una constante de coma
+   flotante. Los tipos @c(unary) y @c(binary) representan expresiones de
+   operador con uno o dos operandos, que pueden ser cualquier tipo de
+   @c(Expr). Un @c(call) es una llamada de funcion; restringiremos este campo
+   @c(fn) a @c(pow), @c(sin), o @c(sqrt).
+
+   ..figure > @l(gopl.io/ch7/eval/ast.go<>gopl.io/ch7/eval)
+
+     ..src > go
+       // Un Var identifica una variable, por ejemplo, x.
+       type Var string
+
+       // Un literal es un numero constante, por ejemplo, 3.141.
+       type literal float64
+
+       // Un unary representa una expresion de operador unario, por ejemplo, -x.
+       type unary struct {
+         op rune // one of '+', '-'
+         x  Expr
+       }
+
+       // Un binary representa una expresion de operador binario, por ejemplo, x+y.
+       type binary struct {
+         op   rune // one of '+', '-', '*', '/'
+         x, y Expr
+       }
+
+       // Un call representa una expresion de llamada a funcion, por ejemplo, sin(x).
+       type call struct {
+         fn   string // uno de "pow", "sin", "sqrt"
+         args []Expr
+       }
+     < src..
+
+
+   Para evaluar una expresion que contiene variables, necesitaremos un entorno
+   que asigne nombres de variables a valores:
+
+   ..src > go
+     type Env map[Var]float64
+   < src..
+
+   Tambien necesitaremos cada tipo de expresion para definir un metodo @c(Eval)
+   que devuelva el valor de la expresion en un entorno determinado. Puesto que
+   cada expresion debe proporcionar este metodo, lo añadimos a la interfaz
+   @c(Expr). El paquete exporta unicamente los tipos @c(Expr), @c(Env), y
+   @c(Var); Los clientes pueden utilizar el evaluador sin acceso a los otros
+   tipos de expresion.
+
+   ..src > go
+     type Expr interface {
+       // Eval devuelve el valor de este Expr en el entorno env.
+       Eval(env Env) float64
+     }
+   < src..
+
+   Los metodos concretos de @c(Eval) se muestran a continuacion. El metodo de
+   @c(Var) realiza una busqueda de entorno, que devuelve cero si la variable no
+   esta definida, y el metodo de @c(literal) simplemente devuelve el valor
+   literal.
+
+   ..src > go
+     func (v Var) Eval(env Env) float64 {
+       return env[v]
+     }
+
+     func (l literal) Eval(_ Env) float64 {
+       return float64(l)
+     }
+   < src..
+
+   Los metodos @c(Eval) de @c(unary) y @c(binary) evaluan de forma recursiva sus
+   operandos, luego aplican la operacion @c(op) a ellos. No consideramos
+   divisiones por cero o infinito como errores, ya que producen un resultado, no
+   finito. Finalmente, el metodo de @c(call) evalua los argumentos de la funcion
+   @c(pow), @c(sin), o @c(sqrt), y luego llama a la funcion correspondiente en
+   el paquete @c(math).
+
+   ..src > go
+     func (u unary) Eval(env Env) float64 {
+       switch u.op {
+       case '+':
+         return +u.x.Eval(env)
+       case '-':
+         return -u.x.Eval(env)
+       }
+       panic(fmt.Sprintf("unsupported unary operator: %q", u.op))
+     }
+
+     func (b binary) Eval(env Env) float64 {
+       switch b.op {
+       case '+':
+         return b.x.Eval(env) + b.y.Eval(env)
+       case '-':
+         return b.x.Eval(env) - b.y.Eval(env)
+       case '*':
+         return b.x.Eval(env) * b.y.Eval(env)
+       case '/':
+         return b.x.Eval(env) / b.y.Eval(env)
+       }
+       panic(fmt.Sprintf("unsupported binary operator: %q", b.op))
+     }
+
+     func (c call) Eval(env Env) float64 {
+       switch c.fn {
+       case "pow":
+         return math.Pow(c.args[0].Eval(env), c.args[1].Eval(env))
+       case "sin":
+         return math.Sin(c.args[0].Eval(env))
+       case "sqrt":
+         return math.Sqrt(c.args[0].Eval(env))
+       }
+       panic(fmt.Sprintf("unsupported function call: %s", c.fn))
+     }
+   < src..
+
+   Varios de estos metodos pueden fallar. Por ejemplo, una expresion @c(call)
+   podria tener una funcion desconocida o el numero incorrecto de argumentos.
+   Tambien es posible construir una expresion @c(unary) o @c(binary) con un
+   operador no valido como @c(!) o @c(<) (aunque la funcion @c(Parse) mencionada
+   a continuacion nunca hara esto). Estos errores hacen que @c(Eval) entre en
+   panico. Otros errores, la evaluacion de un @c(Var) no presente en el entorno,
+   simplemente hacen que @c(Eval) devuelva el resultado incorrecto. Todos estos
+   errores podrian ser detectados por la inspeccion de @c(Expr) antes de su
+   evaluacion. Ese sera el trabajo del metodo @c(Check), que mostraremos pronto,
+   pero primero vamos a probar @c(Eval).
+
+   La funcion @c(TestEval) a continuacion, es una prueba del evaluador. Utiliza
+   el paquete @c(testing), que explicaremos en el @l(#Capitulo 11), pero por
+   ahora es suficiente saber que llamar a @c(t.Errorf) informa de un error. La
+   funcion recorre una tabla de entradas que define tres expresiones y entornos
+   diferentes para cada una. La primer expresion calcula el radio de un circulo
+   dada su area @c(A), la segunda calcula la suma de los cubos de dos variables
+   @c(x) e @c(y), y la tercera convierte una temperatura @c(Fahrenheit) de @c(F)
+   a @c(Celsius).
+
+   ..src > go
+     func TestEval(t *testing.T) {
+       tests := []struct {
+         expr string
+         env  Env
+         want string
+       }{
+         {"sqrt(A / pi)", Env{"A": 87616, "pi": math.Pi}, "167"},
+         {"pow(x, 3) + pow(y, 3)", Env{"x": 12, "y": 1}, "1729"},
+         {"pow(x, 3) + pow(y, 3)", Env{"x": 9, "y": 10}, "1729"},
+         {"5 / 9 * (F - 32)", Env{"F": -40}, "-40"},
+         {"5 / 9 * (F - 32)", Env{"F": 32}, "0"},
+         {"5 / 9 * (F - 32)", Env{"F": 212}, "100"},
+       }
+       var prevExpr string
+       for _, test := range tests {
+         // Imprime expr solo cuando hay cambios.
+         if test.expr != prevExpr {
+           fmt.Printf("\n%s\n", test.expr)
+           prevExpr = test.expr
+         }
+         expr, err := Parse(test.expr)
+         if err != nil {
+           t.Error(err) // analiza error
+           continue
+         }
+         got := fmt.Sprintf("%.6g", expr.Eval(test.env))
+         fmt.Printf("\t%v => %s\n", test.env, got)
+         if got != test.want {
+           t.Errorf("%s.Eval() in %s = %q, want %q\n",
+             test.expr, test.env, got, test.want)
+         }
+       }
+     }
+   < src..
+
+   Para cada entrada en la tabla, la prueba analiza la expresion, la evalua en
+   el entorno e imprime el resultado. No tenemos espacio para mostrar la funcion
+   @c(Parse) aqui, pero lo encontrara si se descarga el paquete usando @$(go
+   get).
+
+   El comando @$(go test) (@l(#Seccion 11.1<>§11.1)) ejecuta las pruebas de un
+   paquete:
+
+   ..src > sh
+     $ go test -v gopl.io/ch7/eval
+   < src..
+
+   La bandera @c(-v) nos permite ver la salida impresa de la prueba, que
+   normalmente se suprime para una prueba exitosa como esta. Aqui esta la salida
+   de la prueba de las sentencias @c(fmt.Printf):
+
+   ..src > sh
+     sqrt(A / pi)
+         map[A:87616 pi:3.141592653589793] => 167
+
+     pow(x, 3) + pow(y, 3)
+         map[x:12 y:1] => 1729
+         map[x:9 y:10] => 1729
+
+     5 / 9 * (F - 32)
+         map[F:-40] => -40
+         map[F:32] => 0
+         map[F:212] => 100
+   < src..
+
+   Afortunadamente hasta ahora los datos de entrada han sido bien formados, pero
+   es poco probable que dure nuestra suerte. Incluso en los lenguajes
+   interpretados, es comun comprobar la sintaxis de errores @e(estaticos), es
+   decir, errores que pueden ser detectados sin ejecutar el programa. Al separar
+   los controles estaticos de los dinamicos, podemos detectar errores antes y
+   realizar muchas verificaciones solo una vez en lugar de cada vez que se
+   evalua una expresion.
+
+   Vamos a añadir otro metodo a la interfaz @c(Expr). El metodo @c(Check)
+   comprueba si hay errores estaticos en un arbol de sintaxis de
+   expresiones. Vamos a explicar su parametro @c(vars) en un momento.
+
+   ..src > go
+     type Expr interface {
+       Eval(env Env) float64
+       // Check informa errores en este Expr y agrega sus Vars al conjunto.
+       Check(vars map[Var]bool) error
+     }
+   < src..
+
+   El metodo concreto @c(Check) se muestran a continuacion. La evaluacion de
+   @c(literal) y @c(Var) no puede fallar, por lo que los metodos @c(Check) para
+   estos tipos devuelven @c(nil). Los metodos para @c(unary) y @c(binary)
+   primera verifican que el operador es valido, luego comprueban recursivamente
+   los operandos. Del mismo modo, el metodo para de @c(call) comprueba primero
+   que la funcion se conoce y tiene el numero correcto de argumentos, entonces,
+   de forma recursiva comprueba cada argumento.
+
+   ..src > go
+     func (v Var) Check(vars map[Var]bool) error {
+       vars[v] = true
+       return nil
+     }
+
+     func (literal) Check(vars map[Var]bool) error {
+       return nil
+     }
+
+     func (u unary) Check(vars map[Var]bool) error {
+       if !strings.ContainsRune("+-", u.op) {
+         return fmt.Errorf("unexpected unary op %q", u.op)
+       }
+       return u.x.Check(vars)
+     }
+
+     func (b binary) Check(vars map[Var]bool) error {
+       if !strings.ContainsRune("+-*/", b.op) {
+         return fmt.Errorf("unexpected binary op %q", b.op)
+       }
+       if err := b.x.Check(vars); err != nil {
+         return err
+       }
+       return b.y.Check(vars)
+     }
+
+     func (c call) Check(vars map[Var]bool) error {
+       arity, ok := numParams[c.fn]
+       if !ok {
+         return fmt.Errorf("unknown function %q", c.fn)
+       }
+       if len(c.args) != arity {
+         return fmt.Errorf("call to %s has %d args, want %d",
+           c.fn, len(c.args), arity)
+       }
+       for _, arg := range c.args {
+         if err := arg.Check(vars); err != nil {
+           return err
+         }
+       }
+       return nil
+     }
+
+     var numParams = map[string]int{"pow": 2, "sin": 1, "sqrt": 1}
+   < src..
+
+   Hemos listado una seleccion de entradas defectuosas y los errores que
+   provocan, en dos grupos. La funcion @c(Parse) (no se muestra) informa de
+   errores de sintaxis y la funcion @c(Check) de informes de errores semanticos.
+
+   ..pre >
+     x % 2             unexpected '%'
+     math.Pi           unexpected '.'
+     !true             unexpected '!'
+     "hello"           unexpected '"'
+
+     log(10)           unknown function "log"
+     sqrt(1, 2)        call to sqrt has 2 args, want 1
+   < pre..
+
+   El argumento de @c(Check), un conjunto de @c(Vars), acumula el conjunto de
+   nombres de variables que se encuentran dentro de la expresion. Cada una de
+   estas variables debe estar presente en el entorno para que la evaluacion
+   tenga exito. Este conjunto es, logicamente, el @e(resultado) de la llamar a
+   @c(Check), pero debido a que el metodo es recursivo, es mas conveniente para
+   @c(Check) llenar el conjunto pasandolo como parametro. El cliente debe
+   proporcionar un conjunto vacio en la llamada inicial.
+
+   En la @l(#Seccion 3.2), se represento una funcion @c[f(x,y)] que se establece
+   en tiempo de compilacion. Ahora que podemos analizar, comprobar y evaluar
+   expresiones en cadenas, podemos construir una aplicacion web que recibe una
+   expresion en tiempo de ejecucion del cliente y traza la superficie de esa
+   funcion. Podemos utilizar los @c(vars) establecidos para comprobar que la
+   expresion es una funcion de dos variables, @c(x) e @c(y)–tres, en realidad,
+   ya que proporcionamos @c(r), el radio, como una conveniencia. Y usaremos el
+   metodo @c(Check) para rechazar expresiones mal formadas antes de que comience
+   la evaluacion, de mono que no repitamos esas verificaciones durante las
+   40.000 evaluaciones (100×100 celulas, cada una con cuatro esquinas) de la
+   funcion que le sigue.
+
+   La funcion @c(parseAndCheck) combina estos pasos de analisis y comprobacion:
+
+   ..figure > @l(gopl.io/ch7/surface/surface.go<>gopl.io/ch7/surface)
+
+     ..src > go
+       import "gopl.io/ch7/eval"
+
+       func parseAndCheck(s string) (eval.Expr, error) {
+         if s == "" {
+           return nil, fmt.Errorf("empty expression")
+         }
+         expr, err := eval.Parse(s)
+         if err != nil {
+           return nil, err
+         }
+         vars := make(map[eval.Var]bool)
+         if err := expr.Check(vars); err != nil {
+           return nil, err
+         }
+         for v := range vars {
+           if v != "x" && v != "y" && v != "r" {
+             return nil, fmt.Errorf("undefined variable: %s", v)
+           }
+         }
+         return expr, nil
+       }
+     < src..
+
+
+   Para hacer de esto una aplicacion web, todo lo que necesitamos es la siguiente
+   funcion @c(plot), que tiene la firma familiar de un @c(http.HandlerFunc):
+
+   ..src > go
+     func plot(w http.ResponseWriter, r *http.Request) {
+       r.ParseForm()
+       expr, err := parseAndCheck(r.Form.Get("expr"))
+       if err != nil {
+         http.Error(w, "bad expr: "+err.Error(), http.StatusBadRequest)
+         return
+       }
+       w.Header().Set("Content-Type", "image/svg+xml")
+       surface(w, func(x, y float64) float64 {
+         r := math.Hypot(x, y) // distance from (0,0)
+         return expr.Eval(eval.Env{"x": x, "y": y, "r": r})
+       })
+     }
+   < src..
+
+   La funcion @c(plot) analiza y comprueba la expresion especificada en la
+   peticion HTTP y la utiliza para crear una funcion anonima de dos
+   variables. La funcion anonima tiene la misma firma que la funcion fija @c(f)
+   del programa de trazado de la superficie original, pero evalua la expresion
+   proporcionada por el usuario. El entorno define @c(x), @c(y), y el radio
+   @c(r). Finalmente, @c(plot) llama a @c(surface), que es solo la funcion
+   @c(main) de @c(gopl.io/ch3/surface), modificado para tomar la funcion de
+   trazar y la salida de @c(io.Writer) como parametros, en lugar de utilizar la
+   funcion fija @c(f) y @c(os.Stdout). La Figura 7.7 muestra tres superficies
+   producidas por el programa.
+
+   ..figure > Figura 7.7. Las superficies de tres funciones: (a)
+     @c[sin(-x)*pow(1.5,-r)]; (b) @c[pow(2,sin(y))*pow(2,sin(x))/12]; (c)
+     @c[sin(x*y/10)/10].
+
+     ..img  > img/Figure-7.7.a.jpg
+
+     ..img  > img/Figure-7.7.b.jpg
+
+     ..img  > img/Figure-7.7.c.jpg
+
+
+   @b(Ejercicio 7.13): Agregue una metodo @c(String) a @c(Expr) para imprimir el
+   arbol de sintaxis. Compruebe que los resultados, cuando se analiza de nuevo,
+   producen un arbol equivalente.
+
+   @b(Ejercicio 7.14): Definir un nuevo tipo concreto que satisfaga la interfaz
+   @c(Expr) y ofrece una nueva operacion como calcular el valor minimo de sus
+   operandos. Ya que la funcion @c(Parse) no crea instancias de este nuevo tipo,
+   para usarlo necesitara construir un arbol de sintaxis directamente (o
+   extender el analizador).
+
+   @b(Ejercicio 7.15): Escriba un programa que lee una sola expresion de la
+   entrada estandar, solicita al usuario que proporcione valores para las
+   variables, y luego  evalue la expresion en el medio ambiente
+   resultante. Maneje todos los errores con gracia.
+
+   @b(Ejercicio 7.16): Escribia un programa de calculadora basado en la web.
+
+** Seccion 7.10 <> Afirmacion de Tipo
+
+   Una @e(afirmacion de tipo) es una operacion aplicada a un valor de interfaz.
+   Sintacticamente, se ve como @c[x.(T)], donde @c(x) es una expresion de un
+   tipo de interfaz y @c[T] es un tipo, denominado el tipo @"(afirmado). Una
+   afirmacion de tipo comprueba que el tipo dinamico de su operando coincide con
+   el tipo declarado.
+
+   Hay dos posibilidades. En primer lugar, si el tipo afirmado @c(T) es un tipo
+   concreto, entonces la asercion de tipo comprueba si el tipo dinamico @c(x) es
+   @e(identico a) @c(T). Si esta comprobacion tiene exito, el resultado de la
+   afirmacion tipo es el valor dinamico @c(x), cuyo tipo es, por supuesto,
+   @c(T). En otras palabras, una afirmacion de tipo a un tipo concreto extrae el
+   valor concreto de su operando. Si la comprobacion falla, entonces la
+   operacion entra en panico. Por ejemplo:
+
+   ..src > go
+     var w io.Writer
+     w = os.Stdout
+     f := w.(*os.File)      // exito: f == os.Stdout
+     c := w.(*bytes.Buffer) // panico: interfaz contiene *os.File, no *bytes.Buffer
+   < src..
+
+   En segundo lugar, si en lugar del tipo afirmado @c(T) es un tipo de interfaz,
+   entonces, la afirmacion de tipo comprueba si el tipo dinamico @c(x)
+   @e(satisface) a @c(T). Si esta comprobacion tiene exito, el valor dinamico no
+   se extrae; el resultado sigue siendo un valor de interfaz con el mismo y
+   varol de componentes, pero el resultado tiene el tipo de interfaz @c(T). En
+   otras palabras, una asercion de tipo a un tipo de interfaz cambia el tipo de
+   la expresion, haciendo accesible un conjunto de metodos diferente (y
+   generalmente mas grande), pero conserva los componentes dinamicos de tipo y
+   valor dentro del valor de la interfaz.
+
+   Despues de la afirmacion del primer tipo a continuacion, tanto @c(w) y @c(rw)
+   contienen @c(os.Stdout) por lo que cada uno tiene un tipo dinamico de
+   @c(*os.File), pero @c(w), un @c(io.Writer), expone solo el metodo @c(Write)
+   del archivo, mientras que @c(rw) expone tambien su metodo @c(Read).
+
+   ..src > go
+     var w io.Writer
+     w = os.Stdout
+     rw := w.(io.ReadWriter) // exito: *os.File tiene tanto Read como Write
+
+     w = new(ByteCounter)
+     rw = w.(io.ReadWriter)  // panico: *ByteCounter no tiene metodo Read
+   < src..
+
+   No importa que tipo se afirmo, si el operando es un valor de interfaz nil, la
+   afirmacion de tipo falla. Rara vez se necesita una asercion de tipo a un tipo
+   de interfaz menos restrictivo (uno con menos metodos), ya que se comporta
+   como una asignacion, excepto en el caso nulo.
+
+   ..src > go
+     w = rw             // io.ReadWriter es asignable a io.Writer
+     w = rw.(io.Writer) // falla solo si rw == nil
+   < src..
+
+   A menudo no estamos seguros del tipo dinamico de un valor de interfaz, y nos
+   gustaria probar si es algun tipo particular. Si la afirmacion de tipo aparece
+   en una asignacion en la que se esperan dos resultados, como las siguientes
+   declaraciones, la operacion no entra en panico cuando se produce un error,
+   sino que devuelve un segundo resultado adicional, un booleano que indica
+   exito:
+
+   ..src > go
+     var w io.Writer = os.Stdout
+     f, ok := w.(*os.File)      // exito: ok, f == os.Stdout
+     b, ok := w.(*bytes.Buffer) // fallo: !ok, b == nil
+   < src..
+
+   El segundo resultado es asignado convencionalmente a una variable llamada
+   @c(ok). Si la operacion ha fallado, @c(ok) es falso, y el primer resultado es
+   igual al valor cero del tipo afirmado, que en este ejemplo es nil
+   @c(*bytes.Buffer).
+
+   El resultado @c(ok) a menudo se utiliza de inmediato para decidir que hacer a
+   continuacion. La forma extendida de la sentencia @c(if) hace esto muy compacto:
+
+   ..src > go
+     if f, ok := w.(*os.File); ok {
+       // ...use f...
+     }
+   < src..
+
+   Cuando el operando de una afirmacion de tipo es una variable, en lugar de
+   inventar otro nombre para la nueva variable local, a veces vera el nombre
+   original reutilizado, ocultando el original, asi:
+
+   ..src > go
+     if w, ok := w.(*os.File); ok {
+       // ...utilizar w...
+     }
+   < src..
+
+** Seccion 7.11 <> Discriminacion de Errores con Afirmaciones de Tipo
+
+   Consideremos el conjunto de errores devueltos por las operaciones de archivos
+   en el paquete @c(os). Las E/S pueden fallar por varias razones, pero tres
+   tipos de fallos a menudo deben manejarse de manera diferente: el archivo ya
+   existe (para las operaciones de creacion), el archivo no se encuentra (para
+   operaciones de lectura) y el permiso esta denegado. El paquete @c(os)
+   proporciona estas tres funciones de ayuda para clasificar el fallo indicado
+   por un determinado valor @c(error):
+
+   ..src > go
+     package os
+
+     func IsExist(err error) bool
+     func IsNotExist(err error) bool
+     func IsPermission(err error) bool
+   < src..
+
+   Una implementacion naïve de uno de estos predicados podria comprobar que el
+   mensaje de error contenga una cierta subcadena,
+
+   ..src > go
+     func IsNotExist(err error) bool {
+       // NOTA: no es robusto!
+       return strings.Contains(err.Error(), "file does not exist")
+     }
+   < src..
+
+   Pero debido a que la logica para manejar los errores de E/S puede variar de
+   una plataforma a otra, este enfoque no es robusto y el mismo fallo puede ser
+   reportado con una variedad de diferentes mensajes de error. La comprobacion
+   de subcadenas de mensajes de error puede ser util durante la prueba para
+   asegurarse de que las funciones fallan de la manera esperada, pero es
+   inadecuado para el codigo en produccion.
+
+   Un enfoque mas confiable es representar valores de error estructurados
+   utilizando un tipo especifico. El paquete OS define un tipo llamado
+   @c(PathError) para describir las fallas que implican una operacion en una
+   ruta de archivo, como @c(Open) o @c(Delete), y una variante llamada
+   @c(LinkError) para describir los frallos de las operaciones que implican dos
+   rutas de archivos, como @c(Symlink) y @c(Rename). Aqui esta @c(os.PathError):
+
+   ..src > go
+     package os
+
+     // PathError registra un error y la operacion y ruta de archivo que lo causo.
+     type PathError struct {
+       Op   string
+       Path string
+       Err  error
+     }
+
+     func (e *PathError) Error() string {
+       return e.Op + " " + e.Path + ": " + e.Err.Error()
+     }
+   < src..
+
+   La mayoria de los clientes no son conscientes de @c(PathError) y el manejo
+   con todos los errores de una manera uniforme llamando a sus metodos de
+   @c(Error). Aunque el metodo @c(Error) de @c(PathError) forma un mensaje
+   simplemente concatenando los campos, la estructura de @c(PathError) conserva
+   los componentes subyacentes del error. Los clientes que necesitan distinguir
+   un tipo de fallo de otro pueden usar una afirmacion de tipo para detectar el
+   tipo especifico del error; el tipo especifico proporciona mas detalle que una
+   simple cadena.
+
+   ..src > go
+     _, err := os.Open("/no/such/file")
+     fmt.Println(err) // "open /no/such/file: No such file or directory"
+     fmt.Printf("%#v\n", err)
+     // Salida:
+     // &os.PathError{Op:"open", Path:"/no/such/file", Err:0x2}
+   < src..
+
+   Asi funcionan las tres funciones auxiliares. Por ejemplo, @c(IsNotExist), que
+   se muestra a continuacion, informa si un error es igual a @c(syscall.ENOENT)
+   (@l(#Seccion 7.8<>§7.8)) o al error distinguido @c(os.ErrNotExist) (vea
+   @c(io.EOF) en la @l(#Seccion 5.4.2<>§5.4.2)), o es un @c(*PathError) cuyo
+   error subyacente es uno de esos dos.
+
+   ..src > go
+     import (
+       "errors"
+       "syscall"
+     )
+
+     var ErrNotExist = errors.New("file does not exist")
+
+     // IsNotExist regresa un booleano que indica si se conoce el error
+     // informa que no existe un archivo o directorio. Se satisface por
+     // ErrNotExist asi como algunos errores syscall.
+     func IsNotExist(err error) bool {
+       if pe, ok := err.(*PathError); ok {
+         err = pe.Err
+       }
+       return err == syscall.ENOENT || err == ErrNotExist
+     }
+   < src..
+
+   Y aqui esta en accion:
+
+   ..src > go
+     _, err := os.Open("/no/such/file")
+     fmt.Println(os.IsNotExist(err)) // "true"
+   < src..
+
+   Por supuesto, la estructura @c(PathError) se pierde pierde si el mensaje de
+   error se combina en una cadena mas grande, por ejemplo, mediante una llamada
+   a @c(fmt.Errorf). La discriminacion de errores se debe hacer generalmente
+   inmediatamente despues de la operacion fallida, antes de que un error se
+   propague al llamador.
+
+** Seccion 7.12 <> Consultar Comportamientos con Afirmaciones de Tipo de Interfaz
+
+   La siguiente logica es similar a la parte del servidor web @c(net/http)
+   responsable de escribir campos de cabecera HTTP como @c("Content-type:
+   text/html"). El @c(io.Writer) @c(w) representa la respuesta HTTP; Los bytes
+   escritos en el, se envian en ultima instancia a algun navegador web.
+
+   ..src > go
+     func writeHeader(w io.Writer, contentType string) error {
+       if _, err := w.Write([]byte("Content-Type: ")); err != nil {
+         return err
+       }
+       if _, err := w.Write([]byte(contentType)); err != nil {
+         return err
+       }
+       // ...
+     }
+   < src..
+
+   Debido a que el metodo @c(Write) requiere una slice de bytes, y el valor que
+   desea escribir es una cadena, se requiere una conversion @c{[]byte(...)}.
+   Esta conversion asigna memoria y hace una copia, pero la copia se tira casi
+   inmediatamente despues. Vamos a pretender que esta es una parte fundamental
+   del servidor web y que nuestro perfil ha revelado que esta asignacion de
+   memoria se esta ralentizando. ¿Podemos evitar asignar memoria aqui?
+
+   La interfaz @c(io.Writer) nos informa solo un hecho sobre el tipo concreto
+   que @c(w) almacena: que los bytes se pueden escribir en el. Si miramos detras
+   de cortinas del paquete @c(net/http), vemos que el tipo dinamico que @c(w)
+   tiene en este programa tambien tiene un metodo @c(WriteString) que permite
+   que las cadenas sean escritas eficientemente, evitando la necesidad de
+   asignar una copia temporal. (Esto puede parecer un disparo en la oscuridad,
+   pero una serie de tipos importantes que satisfacen @c(io.Writer) tambien
+   tienen un metodo @c(WriteString), incluyendo @c(*bytes.Buffer), @c(*os.File)
+   y @c(*bufio.Writer)).
+
+   No podemos asumir que un @c(w) @c(io.Writer) arbitrario tambien tiene el
+   metodo @c(WriteString). Pero podemos definir una nueva interfaz que tiene
+   solo este metodo y utilizar una afirmacion de tipo para probar si el tipo
+   dinamico de @c(w) satisface esta nueva interfaz.
+
+   ..src > go
+     // writeString escribe s a w.
+     // Si w tiene un metodo WriteString, se invoca en lugar de w.Write.
+     func writeString(w io.Writer, s string) (n int, err error) {
+       type stringWriter interface {
+         WriteString(string) (n int, err error)
+       }
+       if sw, ok := w.(stringWriter); ok {
+         return sw.WriteString(s) // evitar copia
+       }
+       return w.Write([]byte(s)) // almacena una copia temporal
+     }
+
+     func writeHeader(w io.Writer, contentType string) error {
+       if _, err := writeString(w, "Content-Type: "); err != nil {
+         return err
+       }
+       if _, err := writeString(w, contentType); err != nil {
+         return err
+       }
+       // ...
+     }
+   < src..
+
+   Para evitar repetirnos a nosotros mismos, hemos movido la comprobacion a la
+   funcion de utilidad @c(writeString), pero es tan util que la libreria
+   estandar la proporciona como @c(io.WriteString). Es la forma recomendada de
+   escribir una cadena a un @c(io.Writer).
+
+   Lo curioso en este ejemplo es que no existe una interfaz estandar que defina
+   el metodo @c(WriteString) y especifique su comportamiento requerido. Ademas,
+   si un tipo concreto satisface o no la interfaz @c(stringWriter) se determina
+   solo por sus metodos, y no por ninguna relacion declarada entre el y el tipo
+   de interfaz. Lo que esto significa es que la tecnica anterior se basa en la
+   suposicion de que @e(si) un tipo satisface la interfaz de abajo, @e(entonces)
+   @c[WriteString(s)] debe tener el mismo efecto que @c{Write([]byte(s))}.
+
+   ..src > go
+     interface {
+       io.Writer
+       WriteString(s string) (n int, err error)
+     }
+   < src..
+
+   Aunque @c(io.WriteString) documenta su suposicion, pocas funciones que la
+   llaman probablemente documenten que estas tambien hacen el mismo
+   supuesto. Definir un metodo de un tipo particular se toma como un
+   asentimiento implicito para un determinado contrato de comportamiento. Los
+   recien llegados a Go, especialmente aquellos de un fondo en lenguajes
+   fuertemente tipados, pueden encontrar esta falta de intencion explicita
+   inquietante, pero rara vez es un problema en la practica. Con la excepcion de
+   la interfaz vacia @c(interface{}), los tipos de interfaz rara vez son
+   satisfechas por coincidencia involuntaria.
+
+   La anterior funcion @c(writeString) utiliza una afirmacion de tipo para ver
+   si un valor de un tipo de interfaz general tambien satisface un tipo de
+   interfaz mas especifico, y de ser asi, se utiliza el comportamiento de la
+   interfaz especifica. Esta tecnica se puede poner en uso, sea o no la interfaz
+   a consultar estandar como @c(io.ReadWriter) o definida por el usuario como
+   @c(stringWriter).
+
+   Tambien es como @c(fmt.Fprintf) distingue valores que satisfacen @c(error) o
+   @c(fmt.Stringer) de todos los demas valores. Dentro de @c(fmt.Fprintf), hay
+   un paso que convierte un unico operando en una cadena, algo asi:
+
+   ..src > go
+     package fmt
+
+     func formatOneValue(x interface{}) string {
+       if err, ok := x.(error); ok {
+         return err.Error()
+       }
+       if str, ok := x.(Stringer); ok {
+         return str.String()
+       }
+       // ...all other types...
+     }
+   < src..
+
+   Si @c(x) satisface cualquiera de las dos interfaces, eso determina el formato
+   del valor. Si no, el caso por defecto maneja todos los demas tipos mas o
+   menos uniformemente usando la reflexion; vamos a averiguar como en el
+   @l(#Capitulo 12).
+
+   De nuevo, esto hace la suposicion de que cualquier tipo con un metodo
+   @c(String) satisface el contrato de comportamiento de @c(fmt.Stringer), que
+   es devolver una cadena adecuada para la impresion.
+
+** Seccion 7.13 <> Switches de Tipo
+
+   Las interfaces se utilizan en dos estilos distintos. En el primer estilo,
+   ejemplificado por @c(io.Reader), @c(io.Writer), @c(fmt.Stringer),
+   @c(sort.Interface), @c(http.Handler) y @c(error), los metodos de una interfaz
+   expresan las similitudes de los tipos concretos que satisfacen la interfaz,
+   pero ocultan los detalles de representacion y operaciones intrinsecas de esos
+   tipos concretos. El enfasis esta en los metodos, no en los tipos concretos.
+
+   El segundo estilo explota la capacidad de un valor interfaz para contener
+   valores de una variedad de tipos concretos y considera que la interfaz es la
+   @e(union) de esos tipos. Las afirmaciones de tipo se utilizan para
+   discriminar entre estos tipos dinamicamente y tratar cada caso de manera
+   diferente. En este estilo, el enfasis esta en los tipos concretos que
+   satisfacen la interfaz, no en los metodos de la interfaz (si de hecho tiene
+   alguno), y no se oculta la informacion. Vamos a describir interfaces
+   utilizadas de esta manera como los @e(uniones discriminadas).
+
+   Si esta familiarizado con la programacion orientada a objetos, es posible
+   reconocer estos dos estilos como @e(polimorfismo de subtipos) y el
+   @e(polimorfismo ad hoc), pero no necesita recordar esos terminos. Para el
+   resto de este capitulo, presentaremos ejemplos del segundo estilo.
+
+   La API de Go para consultar una base de datos SQL, como las de otros
+   lenguajes, nos permite separar de forma clara la parte fija de una consulta
+   de las partes variables. Un ejemplo de cliente podria tener este aspecto:
+
+   ..src > go
+     import "database/sql"
+
+     func listTracks(db sql.DB, artist string, minYear, maxYear int) {
+       result, err := db.Exec(
+         "SELECT * FROM tracks WHERE artist = ? AND ? <= year AND year <= ?",
+         artist, minYear, maxYear)
+       // ...
+     }
+   < src..
+
+   El metodo @c(Exec) reemplaza cada @c('?') en la cadena de consulta con un
+   literal SQL que denota el valor del argumento correspondiente, que puede ser
+   un valor booleano, un numero, una cadena, o @c(nil). La construccion de
+   consultas de esta manera ayuda a evitar ataques de inyeccion SQL, en el que
+   un adversario toma el control de la consulta mediante la explotacion de una
+   cita incorrecta de datos de entrada. Dentro de @c(Exec), podriamos encontrar
+   una funcion como la siguiente, que convierte cada valor de argumento para su
+   notacion SQL.
+
+   ..src > go
+     func sqlQuote(x interface{}) string {
+       if x == nil {
+         return "NULL"
+       } else if _, ok := x.(int); ok {
+         return fmt.Sprintf("%d", x)
+       } else if _, ok := x.(uint); ok {
+         return fmt.Sprintf("%d", x)
+       } else if b, ok := x.(bool); ok {
+         if b {
+           return "TRUE"
+         }
+         return "FALSE"
+       } else if s, ok := x.(string); ok {
+         return sqlQuoteString(s) // (no se muestra)
+       } else {
+         panic(fmt.Sprintf("unexpected type %T: %v", x, x))
+       }
+     }
+   < src..
+
+   Una sentencia @c(switch) simplifica una cadena @c(if)-@c(else) que realiza
+   una serie de pruebas de igualdad de valor. De forma analoga una sentencia
+   @c(switch de tipos) simplifica una cadena @c(if)-@c(else) de afirmaciones de
+   tipo.
+
+   En su forma mas simple, un switch de tipos se parece a una sentencia switch
+   ordinaria en la que el operando es @c[x.(type)]–esto es, literalmente, la
+   palabra clave @c(type)–y cada caso tiene uno o mas tipos. Un conmutador de
+   tipo habilita una ramificacion multidireccional basada en el tipo dinamico
+   del valor de la interfaz. El caso @c(nil) coincide si @c(x == nil), y el caso
+   @c(default) coincide si lo hace ningun otro caso. Un switch de tipos para
+   @c(sqlQuote) tendria estos casos:
+
+   ..src > go
+     switch x.(type) {
+     case nil:       // ...
+     case int, uint: // ...
+     case bool:      // ...
+     case string:    // ...
+     default:        // ...
+     }
+   < src..
+
+   Al igual que con una sentencia @c(switch) ordinaria (@l(#Seccion 1.8<>§1.8)),
+   los casos se consideran en orden y, cuando se encuentra una coincidencia, se
+   ejecuta el cuerpo del caso. El orden de los casos se vuelve significativo
+   cuando uno o mas tipos de casos son interfaces, ya que entonces existe la
+   posibilidad de que dos casos coincidan. La posicion del caso @c(default) en
+   relacion con los demas es irrelevante. no esta permitido @c(fallthrough).
+
+   Observe que en la funcion original, la logica de los casos @c(bool) y
+   @c(string) necesita acceso al valor extraido por la afirmacion tipo. Dado que
+   esto es tipico, la instruccion switch de tipo tiene una forma extendida que
+   enlaza el valor extraido con una nueva variable dentro de cada caso:
+
+   ..src > go
+     switch x := x.(type) { /* ... */ }
+   < src..
+
+   Aqui hemos llamado las nuevas variables @c(x) tambien; Como con las
+   aserciones de tipo, la reutilizacion de nombres de variables es comun. Al
+   igual que una instruccion @c(switch), un switch de tipo crea implicitamente
+   un bloque lexico, por lo que la declaracion de la nueva variable llamada
+   @c(x) no entra en conflicto con una variable @c(x) en un bloque externo. Cada
+   @c(case) tambien crea implicitamente un bloque lexico independiente.
+
+   Reescribiendo @c(sqlQuote) para utilizar la forma extendida de un switch de
+   tipo lo hace significativamente mas claro:
+
+   ..src > go
+     func sqlQuote(x interface{}) string {
+       switch x := x.(type) {
+       case nil:
+         return "NULL"
+       case int, uint:
+         return fmt.Sprintf("%d", x) // aqui x tiene tipo interface{}.
+       case bool:
+         if x {
+           return "TRUE"
+         }
+         return "FALSE"
+       case string:
+         return sqlQuoteString(x) // (no se muestra)
+       default:
+         panic(fmt.Sprintf("unexpected type %T: %v", x, x))
+       }
+     }
+   < src..
+
+   En esta version, dentro del bloque de cada caso de tipo unico, la variable
+   @c(x) tiene el mismo tipo que el caso. Por ejemplo, @c(x) tiene tipo @c(bool)
+   dentro del caso @c(bool) y @c(string) dentro del caso @c(string). En todos
+   los demas casos, @c(x) tiene el tipo (interfaz) del @c(switch) operante, que
+   es @c(interface{}) en este ejemplo. Cuando se requiere la misma accion para
+   varios casos, como @c(int) y @c(uint), el switch de tipo hace que sea facil
+   combinarlos.
+
+   Aunque @c(sqlQuote) acepta un argumento de cualquier tipo, la funcion solo se
+   ejecuta si el tipo del argumento coincide con uno de los casos en el switch
+   de tipo; de lo contrario, entra en panico con un mensaje de @"(tipo
+   inesperado). Aunque el tipo de @c(x) es @c(interface{}), lo consideramos una
+   union discriminada de @c(int), @c(uint), @c(bool), @c(string), y @c(nil).
+
+** Seccion 7.14 <> Ejemplo: Decodificacion XML Basada en Token
+
+   La @l(#Seccion 4.5) mostro como decodificar documentos JSON en estructuras de
+   datos Go con las funciones @c(Marshal) y @c(Unmarshal) del paquete
+   @c(encoding/json). El paquete @c(encoding/xml) proporciona una API similar.
+   Este enfoque es conveniente cuando queremos construir una representacion del
+   arbol de documentos, pero eso es innecesario para muchos programas. El
+   paquete @c(encoding/xml) tambien proporciona una API de bajo nivel @e(basada
+   en tokens) para decodificar XML. En el estilo basada en tokens, el analizador
+   consume la entrada y produce un flujo de tokens, principalmente de cuatro
+   tipos–@c(StartElement), @c(EndElement), @c(CharData), y @c(Comment)–cada uno
+   de los cuales es un tipo concreto en el paquete @c(encoding/xml). Cada
+   llamada a @c[(*xml.Decoder).Token] devuelve un token.
+
+   Las partes relevantes de la API se muestran aqui:
+
+   ..figure > @c(encoding/xml)
+
+     ..src > go
+       package xml
+
+       type Name struct {
+         Local string     // por ejemplo, "Title" o "id"
+       }
+
+       type Attr struct { // por ejemplo, name="value"
+         Name Name
+         Value string
+       }
+
+       // Un Token incluye StartElement, EndElement, CharData,
+       // y Comment, mas algunos tipos esotericos (no mostrados).
+       type Token interface{}
+       type StartElement struct { // por ejemplo, <name>
+         Name Name
+         Attr []Attr
+       }
+       type EndElement struct { Name Name } // por ejemplo, </name>
+       type CharData []byte                 // por ejemplo, <p>CharData</p>
+       type Comment []byte                  // por ejemplo, <!-- Comment -->
+
+       type Decoder struct{ /* ... */ }
+
+       func NewDecoder(io.Reader) *Decoder
+       func (*Decoder) Token() (Token, error) // regresa el sigiente token en la sequencia
+     < src..
+
+   La interfaz @c(Token), que no tiene metodos, es tambien un ejemplo de una
+   union discriminada. El proposito de una interfaz tradicional como
+   @c(io.Reader) es ocultar los detalles de los tipos concretos que lo
+   satisfagan para que se puedan crear las nuevas implementaciones; cada tipo
+   concreto es tratado uniformemente. Por el contrario, el conjunto de tipos
+   concretos que satisfacen una union discriminada es fijada por el diseño y
+   expuesto, no ocultado. Los tipos de union discriminados tienen pocos metodos;
+   las funciones que actuan sobre ellas se expresan como un conjunto de casos
+   utilizando un switch de tipo, con logica diferente en cada caso.
+
+   El programa @$(xmlselect) a continuacion, extrae e imprime el texto encontrado
+   bajo de ciertos elementos en un arbol de documentos XML. Usando la API
+   anterior, puede hacer su trabajo en un solo paso sobre la entrada sin
+   materializar el arbol.
+
+   ..figure > @l(gopl.io/ch7/xmlselect/main.go<>gopl.io/ch7/xmlselect)
+
+     ..src > go
+       // Xmlselect imprime el texto de los elemenos seleccionados de un documento XML.
+       package main
+
+       import (
+         "encoding/xml"
+         "fmt"
+         "io"
+         "os"
+         "strings"
+       )
+
+       func main() {
+         dec := xml.NewDecoder(os.Stdin)
+         var stack []string // stack de nombres de elementos
+         for {
+           tok, err := dec.Token()
+           if err == io.EOF {
+             break
+           } else if err != nil {
+             fmt.Fprintf(os.Stderr, "xmlselect: %v\n", err)
+             os.Exit(1)
+           }
+           switch tok := tok.(type) {
+           case xml.StartElement:
+             stack = append(stack, tok.Name.Local) // push
+           case xml.EndElement:
+             stack = stack[:len(stack)-1] // pop
+           case xml.CharData:
+             if containsAll(stack, os.Args[1:]) {
+               fmt.Printf("%s: %s\n", strings.Join(stack, " "), tok)
+             }
+           }
+         }
+       }
+
+       // containsAll informa si x contiene los elementos de y, en orden.
+       func containsAll(x, y []string) bool {
+         for len(y) <= len(x) {
+           if len(y) == 0 {
+             return true
+           }
+           if x[0] == y[0] {
+             y = y[1:]
+           }
+           x = x[1:]
+         }
+         return false
+       }
+     < src..
+
+
+   Cada vez que el bucle en @c(main) encuentra un @c(StartElement), empuja el
+   nombre del elemento en una pila, y para cada @c(EndElement) saca el nombre de
+   la pila. La API garantiza que la secuencia de tokens de @c(StartElement) y
+   @c(EndElement) se correspondan correctamente, incluso en documentos con
+   formato incorrecto. Los @c(Comments) se ignoran. Cuando @c(xmlselect)
+   encuentra un @c(CharData), imprime el texto solo si la pila contiene todos
+   los elementos nombrados por los argumentos de linea de comandos, en orden.
+
+   El siguiente comando imprime el texto de cualquier elemento @c(h2) que
+   aparezca debajo de dos niveles de elementos @c(div). Su entrada es la
+   especificacion XML, en un documento XML.
+
+   ..src > sh
+     $ go build gopl.io/ch1/fetch
+     $ ./fetch http://www.w3.org/TR/2006/REC-xml11-20060816 |
+         ./xmlselect div div h2
+     html body div div h2: 1 Introduction
+     html body div div h2: 2 Documents
+     html body div div h2: 3 Logical Structures
+     html body div div h2: 4 Physical Structures
+     html body div div h2: 5 Conformance
+     html body div div h2: 6 Notation
+     html body div div h2: A References
+     html body div div h2: B Definitions for Character Normalization
+     ...
+   < src..
+
+   @b(Ejercicio 7.17): Extiende @$(xmlselect) para que los elementos puedan ser
+   seleccionados no solo por su nombre, sino tambien por sus atributos, a la
+   manera de CSS, de modo que, por ejemplo, un elemento como @c(<div id="page"
+   class="wide">) podria ser seleccionado encontrando su @c(id) o @c(class) ,
+   asi como su nombre.
+
+   @b(Ejercicio 7.18): Utilizando el API decodificador basado en token, escribir
+   un programa que lea un documento XML arbitrario y construya un arbol de nodos
+   genericos que lo represente. Los nodos son de dos tipos: los nodos
+   @c(CharData) representan cadenas de texto, y los nodos @c(Element)
+   representan elementos con nombre y atributos. Cada nodo de elemento tiene un
+   slice de nodos secundarios.
+
+   Puede que las siguientes declaraciones sean utiles.
+
+   ..src > go
+     import "encoding/xml"
+
+     type Node interface{} // CharData or *Element
+
+     type CharData string
+
+     type Element struct {
+       Type     xml.Name
+       Attr     []xml.Attr
+       Children []Node
+     }
+   < src..
+
+** Seccion 7.15 <> Algunos Consejos
+
+   Al diseñar un nuevo paquete, los programadores novatos en Go a menudo
+   comienzan creando un conjunto de interfaces y solo mas tarde definen los
+   tipos concretos que los satisfacen. Este enfoque resulta en muchas
+   interfaces, cada una de las cuales tiene una sola implementacion. No lo
+   hagas. Tales interfaces son abstracciones innecesarias; Tambien tienen un
+   costo de tiempo de ejecucion. Puede restringir que metodos de un tipo o
+   campos de una estructura son visibles fuera de un paquete utilizando el
+   mecanismo de exportacion (@l(#Seccion 6.6<>§6.6)). Las interfaces solo son
+   necesarias cuando hay dos o mas tipos concretos que deben tratarse de manera
+   uniforme.
+
+   Hacemos una excepcion a esta regla cuando una interfaz es satisfecha por un
+   solo tipo concreto pero ese tipo no puede vivir en el mismo paquete que la
+   interfaz debido a sus dependencias. En ese caso, una interfaz es una buena
+   manera de desacoplar dos paquetes.
+
+   Debido a que las interfaces se usan en Go solo cuando estan satisfechas por
+   dos o mas tipos, necesariamente se abstraen de los detalles de cualquier
+   implementacion en particular. El resultado es interfaces mas pequeños con
+   pocos, metodos mas simples, a menudo, solo como uno con @c(io.Writer) o
+   @c(fmt.Stringer). Las interfaces pequeñas son mas faciles de satisfacer
+   cuando aparecen nuevos tipos. Una buena regla de oro para el diseño de
+   interfaces es @e(pedir solo lo que necesitas).
+
+   Esto concluye nuestro recorrido de metodos e interfaces. Go tiene un gran
+   soporte para el estilo de programacion orientado a objetos, pero esto no
+   significa que necesite usarlo exclusivamente. No todo debe ser un objeto; Las
+   funciones independientes tienen su lugar, al igual que los tipos de datos no
+   encapsulados. Observe que, en conjunto, los ejemplos en los primeros cinco
+   capitulos de este libro llaman no mas de dos docenas de metodos, como
+   @c(input.Scan), a diferencia de las llamadas de funcion ordinaria como
+   @c(fmt.Printf).
+
+* Capitulo 8 <> Gorutinas y Canales

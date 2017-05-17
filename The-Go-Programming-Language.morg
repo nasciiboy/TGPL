@@ -10312,7 +10312,7 @@
    for another that satisfies the same interface is called @e(substitutability),
    and is a hallmark of object-oriented programming.
 
-   Let’s test this out using a new type. The Write method of the
+   Let’s test this out using a new type. The @c(Write) method of the
    @c(*ByteCounter) type below merely counts the bytes written to it before
    discarding them. (The conversion is required to make the types of @c[len(p)]
    and @c(*c) match in the @c(+=) assignment statement.)
@@ -10537,7 +10537,7 @@
    < src..
 
    @l(#Section 12.8) includes a program that prints the methods of an arbitrary
-   value, and the godoc @c(-analysis=type) tool (@l(#Section 10.7.4<>§10.7.4))
+   value, and the @$(godoc -analysis=type) tool (@l(#Section 10.7.4<>§10.7.4))
    displays the methods of each type and the relationship between interfaces and
    concrete types.
 
@@ -11065,7 +11065,7 @@
         if debug {
           buf = new(bytes.Buffer) // enable collection of output
         }
-        f(buf) // NOTE: subtly incorrect!
+        f(buf)                    // NOTE: subtly incorrect!
         if debug {
           // ...use buf...
         }
@@ -11182,7 +11182,7 @@
      func (p StringSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
    < src..
 
-   Now we can sort a slice of strings, names, by converting the slice to a
+   Now we can sort a slice of strings, @c(names), by converting the slice to a
    @c(StringSlice) like this:
 
    ..src > go
@@ -11474,7 +11474,7 @@
        func ListenAndServe(address string, h Handler) error
      < src..
 
-@   The @c(ListenAndServe) function requires a server address, such as
+   The @c(ListenAndServe) function requires a server address, such as
    @c("localhost:8000"), and an instance of the @c(Handler) interface to which
    all requests should be dispatched. It runs forever, or until the server fails
    (or fails to start) with an error, always non-nil, which it returns.
@@ -11515,7 +11515,7 @@
      $ ./http1 &
    < src..
 
-   then connect to it with the @c(fetch) program from @l(#Section 1.5) (or a web
+   then connect to it with the @$(fetch) program from @l(#Section 1.5) (or a web
    browser if you prefer), we get the following output:
 
    ..src > sh
@@ -11550,7 +11550,7 @@
            }
            fmt.Fprintf(w, "%s\n", price)
          default:
-           w.WriteHeader(http.StatusNotFound) // 404
+           w.WriteHeader(http.StatusNotFound)  // 404
            fmt.Fprintf(w, "no such page: %s\n", req.URL)
          }
        }
@@ -12085,7 +12085,7 @@
    time an expression is evaluated.
 
    Let’s add another method to the @c(Expr) interface. The @c(Check) method
-   @c(checks) for static errors in an expression syntax tree. We’ll explain its
+   checks for static errors in an expression syntax tree. We’ll explain its
    @c(vars) parameter in a moment.
 
    ..src > go
@@ -12798,7 +12798,7 @@
    them are expressed as a set of cases using a type switch, with different
    logic in each case.
 
-   The @c(xmlselect) program below extracts and prints the text found beneath
+   The @$(xmlselect) program below extracts and prints the text found beneath
    certain elements in an XML document tree. Using the API above, it can do its
    job in a single pass over the input without ever materializing the tree.
 
@@ -12883,7 +12883,7 @@
      ...
    < src..
 
-   @b(Exercise 7.17): Extend @c(xmlselect) so that elements may be selected not
+   @b(Exercise 7.17): Extend @$(xmlselect) so that elements may be selected not
    just by name, but by their attributes too, in the manner of CSS, so that, for
    instance, an element like @c(<div id="page" class="wide">) could be selected
    by a matching @c(id) or @c(class) as well as its name.
@@ -18088,8 +18088,6 @@
      $ go test gopl.io/ch11/word2
      ok      gopl.io/ch11/word2        0.015s
    < src..
-
-
 
    This style of @e(table-driven) testing is very common in Go. It is
    straightforward to add new table entries as needed, and since the assertion

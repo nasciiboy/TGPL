@@ -5566,7 +5566,7 @@ defer 3</pre>
 </pre></div>
 <p>The <code>io.Writer</code> interface defines the contract between <code>Fprintf</code> and its callers. On the one hand, the contract requires that the caller provide a value of a concrete type like <code>*os.File</code> or <code>*bytes.Buffer</code> that has a method called <code>Write</code> with the appropriate signature and behavior.  On the other hand, the contract guarantees that <code>Fprintf</code> will do its job given any value that satisfies the <code>io.Writer</code> interface. <code>Fprintf</code> may not assume that it is writing to a file or to memory, only that it can call <code>Write</code>.</p>
 <p>Because <code>fmt.Fprintf</code> assumes nothing about the representation of the value and relies only on the behaviors guaranteed by the <code>io.Writer</code> contract, we can safely pass a value of any concrete type that satisfies <code>io.Writer</code> as the first argument to <code>fmt.Fprintf</code>. This freedom to substitute one type for another that satisfies the same interface is called <em>substitutability</em>, and is a hallmark of object-oriented programming.</p>
-<p>Let’s test this out using a new type. The Write method of the <code>*ByteCounter</code> type below merely counts the bytes written to it before discarding them. (The conversion is required to make the types of <code>len(p)</code> and <code>*c</code> match in the <code>+=</code> assignment statement.)</p>
+<p>Let’s test this out using a new type. The <code>Write</code> method of the <code>*ByteCounter</code> type below merely counts the bytes written to it before discarding them. (The conversion is required to make the types of <code>len(p)</code> and <code>*c</code> match in the <code>+=</code> assignment statement.)</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch7/bytecounter/main.go" >gopl.io/ch7/bytecounter</a></p>
 <div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">ByteCounter</span> <span class="kt">int</span>
@@ -5681,7 +5681,7 @@ defer 3</pre>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">_</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Stringer</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">s</span> <span class="c1">// OK</span>
 <span class="kd">var</span> <span class="nx">_</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Stringer</span> <span class="p">=</span> <span class="nx">s</span>  <span class="c1">// compile error: IntSet lacks String method</span>
 </pre></div>
-<p><a href="#Section-12.8" >Section 12.8</a> includes a program that prints the methods of an arbitrary value, and the godoc <code>-analysis=type</code> tool (<a href="#Section-10.7.4" >§10.7.4</a>) displays the methods of each type and the relationship between interfaces and concrete types.</p>
+<p><a href="#Section-12.8" >Section 12.8</a> includes a program that prints the methods of an arbitrary value, and the <code class="command" >godoc -analysis=type</code> tool (<a href="#Section-10.7.4" >§10.7.4</a>) displays the methods of each type and the relationship between interfaces and concrete types.</p>
 <p>Like an envelope that wraps and conceals the letter it holds, an interface wraps and conceals the concrete type and value that it holds. Only the methods revealed by the interface type may be called, even if the concrete type has others:</p>
 <div class="highlight"><pre><span></span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">))</span> <span class="c1">// OK: *os.File has Write method</span>
 <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>                <span class="c1">// OK: *os.File has Close method</span>
@@ -5960,7 +5960,7 @@ value ┃    nil     ┃
   <span class="k">if</span> <span class="nx">debug</span> <span class="p">{</span>
     <span class="nx">buf</span> <span class="p">=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span><span class="p">)</span> <span class="c1">// enable collection of output</span>
   <span class="p">}</span>
-  <span class="nx">f</span><span class="p">(</span><span class="nx">buf</span><span class="p">)</span> <span class="c1">// NOTE: subtly incorrect!</span>
+  <span class="nx">f</span><span class="p">(</span><span class="nx">buf</span><span class="p">)</span>                    <span class="c1">// NOTE: subtly incorrect!</span>
   <span class="k">if</span> <span class="nx">debug</span> <span class="p">{</span>
     <span class="c1">// ...use buf...</span>
   <span class="p">}</span>
@@ -6019,7 +6019,7 @@ value ┃       nil       ┃
 <span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="nx">StringSlice</span><span class="p">)</span> <span class="nx">Less</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">&lt;</span> <span class="nx">p</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">}</span>
 <span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="nx">StringSlice</span><span class="p">)</span> <span class="nx">Swap</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="kt">int</span><span class="p">)</span>      <span class="p">{</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">p</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">=</span> <span class="nx">p</span><span class="p">[</span><span class="nx">j</span><span class="p">],</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">}</span>
 </pre></div>
-<p>Now we can sort a slice of strings, names, by converting the slice to a <code>StringSlice</code> like this:</p>
+<p>Now we can sort a slice of strings, <code>names</code>, by converting the slice to a <code>StringSlice</code> like this:</p>
 <div class="highlight"><pre><span></span><span class="nx">sort</span><span class="p">.</span><span class="nx">Sort</span><span class="p">(</span><span class="nx">StringSlice</span><span class="p">(</span><span class="nx">names</span><span class="p">))</span>
 </pre></div>
 <p>The conversion yields a slice value with the same length, capacity, and underlying array as <code>names</code> but with a type that has the three methods required for sorting.</p>
@@ -6175,7 +6175,7 @@ Ready 2 Go  Martin Solveig  Smash              2011  4m24s</pre>
 <span class="kd">func</span> <span class="nx">ListenAndServe</span><span class="p">(</span><span class="nx">address</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">h</span> <span class="nx">Handler</span><span class="p">)</span> <span class="kt">error</span>
 </pre></div>
 </div>
-<p><code>&quot;localhost:8000&quot;</code>, and an instance of the <code>Handler</code> interface to which all requests should be dispatched. It runs forever, or until the server fails (or fails to start) with an error, always non-nil, which it returns.</p>
+<p>The <code>ListenAndServe</code> function requires a server address, such as <code>&quot;localhost:8000&quot;</code>, and an instance of the <code>Handler</code> interface to which all requests should be dispatched. It runs forever, or until the server fails (or fails to start) with an error, always non-nil, which it returns.</p>
 <p>Imagine an e-commerce site with a database mapping the items for sale to their prices in dollars. The program below shows the simplest imaginable implementation. It models the inventory as a map type, <code>database</code>, to which we’ve attached a <code>ServeHTTP</code> method so that it satisfies the <code>http.Handler</code> interface. The handler ranges over the map and prints the items.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch7/http1/main.go" >gopl.io/ch7/http1</a></p>
@@ -6201,7 +6201,7 @@ Ready 2 Go  Martin Solveig  Smash              2011  4m24s</pre>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch7/http1
 $ ./http1 <span class="p">&amp;</span>
 </pre></div>
-<p>then connect to it with the <code>fetch</code> program from <a href="#Section-1.5" >Section 1.5</a> (or a web browser if you prefer), we get the following output:</p>
+<p>then connect to it with the <code class="command" >fetch</code> program from <a href="#Section-1.5" >Section 1.5</a> (or a web browser if you prefer), we get the following output:</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch1/fetch
 $ ./fetch http://localhost:8000
 shoes: <span class="nv">$50</span>.00
@@ -6226,7 +6226,7 @@ socks: <span class="nv">$5</span>.00
     <span class="p">}</span>
     <span class="nx">fmt</span><span class="p">.</span><span class="nx">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&quot;%s\n&quot;</span><span class="p">,</span> <span class="nx">price</span><span class="p">)</span>
   <span class="k">default</span><span class="p">:</span>
-    <span class="nx">w</span><span class="p">.</span><span class="nx">WriteHeader</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusNotFound</span><span class="p">)</span> <span class="c1">// 404</span>
+    <span class="nx">w</span><span class="p">.</span><span class="nx">WriteHeader</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusNotFound</span><span class="p">)</span>  <span class="c1">// 404</span>
     <span class="nx">fmt</span><span class="p">.</span><span class="nx">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&quot;no such page: %s\n&quot;</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">URL</span><span class="p">)</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -6539,7 +6539,7 @@ pow<span class="o">(</span>x, <span class="m">3</span><span class="o">)</span> +
     map<span class="o">[</span>F:212<span class="o">]</span> <span class="o">=</span>&gt; <span class="m">100</span>
 </pre></div>
 <p>Fortunately the inputs so far have all been well formed, but our luck is unlikely to last. Even in interpreted languages, it is common to check the syntax for <em>static</em> errors, that is, mistakes that can be detected without running the program. By separating the static checks from the dynamic ones, we can detect errors sooner and perform many checks only once instead of each time an expression is evaluated.</p>
-<p>Let’s add another method to the <code>Expr</code> interface. The <code>Check</code> method <code>checks</code> for static errors in an expression syntax tree. We’ll explain its <code>vars</code> parameter in a moment.</p>
+<p>Let’s add another method to the <code>Expr</code> interface. The <code>Check</code> method checks for static errors in an expression syntax tree. We’ll explain its <code>vars</code> parameter in a moment.</p>
 <div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">Expr</span> <span class="kd">interface</span> <span class="p">{</span>
   <span class="nx">Eval</span><span class="p">(</span><span class="nx">env</span> <span class="nx">Env</span><span class="p">)</span> <span class="kt">float64</span>
   <span class="c1">// Check reports errors in this Expr and adds its Vars to the set.</span>
@@ -6931,7 +6931,7 @@ sqrt(1, 2)        call to sqrt has 2 args, want 1</pre>
 </pre></div>
 </div>
 <p>The <code>Token</code> interface, which has no methods, is also an example of a discriminated union. The purpose of a traditional interface like <code>io.Reader</code> is to hide details of the concrete types that satisfy it so that new implementations can be created; each concrete type is treated uniformly.  By contrast, the set of concrete types that satisfy a discriminated union is fixed by the design and exposed, not hidden. Discriminated union types have few methods; functions that operate on them are expressed as a set of cases using a type switch, with different logic in each case.</p>
-<p>The <code>xmlselect</code> program below extracts and prints the text found beneath certain elements in an XML document tree. Using the API above, it can do its job in a single pass over the input without ever materializing the tree.</p>
+<p>The <code class="command" >xmlselect</code> program below extracts and prints the text found beneath certain elements in an XML document tree. Using the API above, it can do its job in a single pass over the input without ever materializing the tree.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch7/xmlselect/main.go" >gopl.io/ch7/xmlselect</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// Xmlselect prints the text of selected elements of an XML document.</span>
@@ -6999,7 +6999,7 @@ html body div div h2: A References
 html body div div h2: B Definitions <span class="k">for</span> Character Normalization
 ...
 </pre></div>
-<p><b>Exercise 7.17</b>: Extend <code>xmlselect</code> so that elements may be selected not just by name, but by their attributes too, in the manner of CSS, so that, for instance, an element like <code>&lt;div id=&quot;page&quot; class=&quot;wide&quot;&gt;</code> could be selected by a matching <code>id</code> or <code>class</code> as well as its name.</p>
+<p><b>Exercise 7.17</b>: Extend <code class="command" >xmlselect</code> so that elements may be selected not just by name, but by their attributes too, in the manner of CSS, so that, for instance, an element like <code>&lt;div id=&quot;page&quot; class=&quot;wide&quot;&gt;</code> could be selected by a matching <code>id</code> or <code>class</code> as well as its name.</p>
 <p><b>Exercise 7.18</b>: Using the token-based decoder API, write a program that will read an arbitrary XML document and construct a tree of generic nodes that represents it. Nodes are of two kinds: <code>CharData</code> nodes represent text strings, and <code>Element</code> nodes represent named elements and their attributes. Each element node has a slice of child nodes.</p>
 <p>You may find the following declarations helpful.</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="s">&quot;encoding/xml&quot;</span>
