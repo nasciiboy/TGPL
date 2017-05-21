@@ -12972,26 +12972,26 @@
 
 ** Section 8.1 <> Goroutines
 
-   In Go, each concurrently executing activity is called a
-   @e(goroutine). Consider a program that has two functions, one that does some
-   computation and one that writes some output, and assume that neither function
-   calls the other. A sequential program may call one function and then call the
-   other, but in a @e(concurrent) program with two or more goroutines, calls to
+   In Go, each concurrently executing activity is called a @e(goroutine).
+   Consider a program that has two functions, one that does some computation and
+   one that writes some output, and assume that neither function calls the
+   other. A sequential program may call one function and then call the other,
+   but in a @e(concurrent) program with two or more goroutines, calls to
    @e(both) functions can be active at the same time. We’ll see such a program
    in a moment.
 
    If you have used operating system threads or threads in other languages, then
    you can assume for now that a goroutine is similar to a thread, and you’ll be
-   able to write correct programs.  The differences between threads and
+   able to write correct programs. The differences between threads and
    goroutines are essentially quantitative, not qualitative, and will be
    described in @l(#Section 9.8).
 
    When a program starts, its only goroutine is the one that calls the @c(main)
    function, so we call it the @e(main goroutine). New goroutines are created by
-   the go statement. Syntactically, a go statement is an ordinary function or
-   method call prefixed by the keyword @c(go). A @c(go) statement causes the
-   function to be called in a newly created goroutine. The @c(go) statement
-   itself completes immediately:
+   the @c(go) statement. Syntactically, a @c(go) statement is an ordinary
+   function or method call prefixed by the keyword @c(go). A @c(go) statement
+   causes the function to be called in a newly created goroutine. The @c(go)
+   statement itself completes immediately:
 
    ..src > go
      f()    // call f(); wait for it to return
@@ -13105,7 +13105,7 @@
 
    The @c(Listen) function creates a @c(net.Listener), an object that listens
    for incoming connections on a network port, in this case TCP port
-   @c(localhost:8000). The listener’s Accept method blocks until an incoming
+   @c(localhost:8000). The listener’s @c(Accept) method blocks until an incoming
    connection request is made, then returns a @c(net.Conn) object representing
    the connection.
 
@@ -13128,7 +13128,7 @@
    templates for many standard time formats, such as @c(time.RFC1123). The same
    mechanism is used in reverse when parsing a time using @c(time.Parse).
 
-   To connect to the server, we’ll need a client program such as @c(nc)
+   To connect to the server, we’ll need a client program such as @$(nc)
    (@"(netcat)), a standard utility program for manipulating network
    connections:
 
@@ -13145,8 +13145,8 @@
 
    The client displays the time sent by the server each second until we
    interrupt the client with Control-C, which on Unix systems is echoed as
-   @c(^C) by the shell. If @c(nc) or @c(netcat) is not installed on your system,
-   you can use @c(telnet) or this simple Go version of @c(netcat) that uses
+   @c(^C) by the shell. If @$(nc) or @$(netcat) is not installed on your system,
+   you can use @$(telnet) or this simple Go version of @$(netcat) that uses
    @c(net.Dial) to connect to a TCP server:
 
    ..figure > @l(gopl.io/ch8/netcat1/netcat.go<>gopl.io/ch8/netcat1)
@@ -13211,7 +13211,8 @@
        ^C
      < src..
 
-   The @c(killall) command is a Unix utility that kills all processes with the
+
+   The @$(killall) command is a Unix utility that kills all processes with the
    given name.
 
    The second client must wait until the first client is finished because the
@@ -13276,8 +13277,8 @@
      < src..
 
 
-   @b(Exercise 8.1): Modify @c(clock2) to accept a port number, and write a
-   program, @c(clockwall), that acts as a client of several clock servers at
+   @b(Exercise 8.1): Modify @$(clock2) to accept a port number, and write a
+   program, @$(clockwall), that acts as a client of several clock servers at
    once, reading the times from each one and displaying the results in a table,
    akin to the wall of clocks seen in some business offices. If you have access
    to geographically distributed computers, run instances remotely ; otherwise
@@ -13292,9 +13293,9 @@
 
 
    @b(Exercise 8.2): Implement a concurrent File Transfer Protocol (FTP)
-   server. The server should interpret commands from each client such as cd to
-   change directory, @$(ls) to list a directory, @$(get) to send the contents of
-   a file, and @c(close) to close the connection. You can use the standard
+   server. The server should interpret commands from each client such as @$(cd)
+   to change directory, @$(ls) to list a directory, @$(get) to send the contents
+   of a file, and @c(close) to close the connection. You can use the standard
    @$(ftp) command as the client, or write your own.
 
 ** Section 8.3 <> Example: Concurrent Echo Server
@@ -13312,8 +13313,8 @@
    < src..
 
    A more interesting echo server might simulate the reverberations of a real
-   echo, with the response loud at first ("@c(HELLO!)"), then moderate
-   ("@c(Hello!)")  after a delay, then quiet ("@c(hello!)") before fading to
+   echo, with the response loud at first (@c("HELLO!")), then moderate
+   (@c("Hello!"))  after a delay, then quiet (@c("hello!")) before fading to
    nothing, as in this version of @c(handleConn):
 
    ..figure > @l(gopl.io/ch8/reverb1/reverb.go<>gopl.io/ch8/reverb1)
@@ -13409,7 +13410,7 @@
      < src..
 
 
-   The arguments to the function started by go are evaluated when the go
+   The arguments to the function started by @c(go) are evaluated when the @c(go)
    statement itself is executed; thus @c[input.Text()] is evaluated in the main
    goroutine.  Now the echoes are concurrent and overlap in time:
 
@@ -13445,8 +13446,8 @@
    the connections between them. A channel is a communication mechanism that
    lets one goroutine send values to another goroutine. Each channel is a
    conduit for values of a particular type, called the channel’s @e(element
-   type). The type of a channel whose elements have type @c(int) is written chan
-   @c(int).
+   type). The type of a channel whose elements have type @c(int) is written
+   @c(chan int).
 
    To create a channel, we use the built-in @c(make) function:
 
@@ -13572,7 +13573,7 @@
     Before it returns, the background goroutine logs a message, then sends a
     value on the @c(done) channel. The main goroutine waits until it has
     received this value before returning. As a result, the program always logs
-    the "@c(done)" message before exiting.
+    the @c("done") message before exiting.
 
     Messages sent over channels have two important aspects. Each message has a
     value, but sometimes the fact of communication and the moment at which it
@@ -13581,16 +13582,16 @@
     is, its sole purpose is synchronization, we’ll emphasize this by using a
     channel whose element type is @c(struct{}), though it’s common to use a
     channel of @c(bool) or @c(int) for the same purpose since @c(done <- 1) is
-    shorter than done @c(<- struct{}{}).
+    shorter than @c(done <- struct{}{}).
 
-    @b(Exercise 8.3): In @c(netcat3), the interface value conn has the concrete
-    type @c(*net.TCPConn), which represents a TCP connection. A TCP connection
-    consists of two halves that may be closed independently using its
+    @b(Exercise 8.3): In @$(netcat3), the interface value @c(conn) has the
+    concrete type @c(*net.TCPConn), which represents a TCP connection. A TCP
+    connection consists of two halves that may be closed independently using its
     @c(CloseRead) and @c(CloseWrite) methods. Modify the main goroutine of
-    @c(netcat3) to close only the write half of the connection so that the
-    program will continue to print the final echoes from the @c(reverb1) server
+    @$(netcat3) to close only the write half of the connection so that the
+    program will continue to print the final echoes from the @$(reverb1) server
     even after the standard input has been closed.  (Doing this for the
-    @c(reverb2) server is harder; see Exercise 8.4.)
+    @$(reverb2) server is harder; see Exercise 8.4.)
 
 *** Section 8.4.2 <> Pipelines
 
@@ -13823,7 +13824,7 @@
     int). Conversions from bidirectional to unidirectional channel types are
     permitted in any assignment. There is no going back, however: once you have
     a value of a unidirectional type such as @c(chan<- int), there is no way to
-    obtain from it a value of type chan @c(int) that refers to the same channel
+    obtain from it a value of type @c(chan int) that refers to the same channel
     data structure.
 
 *** Section 8.4.4 <> Buffered Channels
@@ -13834,11 +13835,11 @@
     @c(string) values. Figure 8.2 is a graphical representation of @c(ch) and
     the channel to which it refers.
 
-    ..figure > Figure 8.2. An empty buffered channel.
+    ..src > go
+      ch = make(chan string, 3)
+    < src..
 
-      ..src > go
-        ch = make(chan string, 3)
-      < src..
+    ..figure > Figure 8.2. An empty buffered channel.
 
       ..img  > img/Figure-8.2.jpg
 
@@ -13887,11 +13888,11 @@
       fmt.Println(cap(ch)) // "3"
     < src..
 
-    When applied to a channel, the built-in len function returns the number of
-    elements currently buffered. Since in a concurrent program this information
-    is likely to be stale as soon as it is retrieved, its value is limited, but
-    it could conceivably be useful during fault diagnosis or performance
-    optimization.
+    When applied to a channel, the built-in @c(len) function returns the number
+    of elements currently buffered. Since in a concurrent program this
+    information is likely to be stale as soon as it is retrieved, its value is
+    limited, but it could conceivably be useful during fault diagnosis or
+    performance optimization.
 
     ..src > go
       fmt.Println(len(ch)) // "2"
@@ -13993,7 +13994,7 @@
    producing thumbnail-size images from a set of full-size ones. The
    @c(gopl.io/ch8/thumbnail) package provides an @c(ImageFile) function that can
    scale a single image. We won’t show its implementation but it can be
-   downloaded from @c(gopl.io).
+   downloaded from @l(http://www.gopl.io/<>gopl.io).
 
    ..figure > @l(gopl.io/ch8/thumbnail/thumbnail_test.go<>gopl.io/ch8/thumbnail)
 
@@ -14220,12 +14221,12 @@
 
    Note the asymmetry in the @c(Add) and @c(Done) methods. @c(Add), which
    increments the counter, must be called before the worker goroutine starts,
-   not within it; otherwise we would not be sure that the Add @e(happens before)
-   the @"(closer) goroutine calls @c(Wait). Also, @c(Add) takes a parameter, but
-   @c(Done) does not; it’s equivalent to @c[Add(-1)]. We use defer to ensure
-   that the counter is decremented even in the error case. The structure of the
-   code above is a common and idiomatic pattern for looping in parallel when we
-   don’t know the number of iterations.
+   not within it; otherwise we would not be sure that the @c(Add) @e(happens
+   before) the @"(closer) goroutine calls @c(Wait). Also, @c(Add) takes a
+   parameter, but @c(Done) does not; it’s equivalent to @c[Add(-1)]. We use
+   @c(defer) to ensure that the counter is decremented even in the error
+   case. The structure of the code above is a common and idiomatic pattern for
+   looping in parallel when we don’t know the number of iterations.
 
    The @c(sizes) channel carries each file size back to the main goroutine,
    which receives them using a @c(range) loop and computes the sum. Observe how
@@ -14240,17 +14241,18 @@
    function. The vertical lines represent goroutines. The thin segments indicate
    sleep, the thick segments activity. The diagonal arrows indicate events that
    synchronize one goroutine with another. Time flows down. Notice how the main
-   goroutine spends most of its time in the range loop asleep, waiting for a
+   goroutine spends most of its time in the @c(range) loop asleep, waiting for a
    worker to send a value or the closer to close the channel.
 
    ..figure > Figure 8.5. The sequence of events in @c(makeThumbnails6).
 
      ..img  > img/Figure-8.5.jpg
 
-   @b(Exercise 8.4): Modify the @c(reverb2) server to use a @c(sync.WaitGroup)
+
+   @b(Exercise 8.4): Modify the @$(reverb2) server to use a @c(sync.WaitGroup)
    per connection to count the number of active @c(echo) goroutines. When it
    falls to zero, close the write half of the TCP connection as described in
-   Exercise 8.3. Verify that your modified @c(netcat3) client from that exercise
+   Exercise 8.3. Verify that your modified @$(netcat3) client from that exercise
    waits for the final echoes of multiple concurrent shouts, even after the
    standard input has been closed.
 
@@ -14313,7 +14315,7 @@
    Notice that the crawl goroutine takes @c(link) as an explicit parameter to
    avoid the problem of loop variable capture we first saw in @l(#Section
    5.6.1). Also notice that the initial send of the command-line arguments to
-   the worklist must run in its own goroutine to avoid @c(deadlock), a stuck
+   the worklist must run in its own goroutine to avoid @e(deadlock), a stuck
    situation in which both the main goroutine and a crawler goroutine attempt to
    send to each other while neither is receiving. An alternative solution would
    be to use a buffered channel.
@@ -14332,8 +14334,7 @@
      https://golang.org/blog/
      ...
      2015/07/15 18:22:12 Get ...: dial tcp: lookup blog.golang.org: no such host
-     2015/07/15 18:22:12 Get ...: dial tcp 23.21.222.120:443: socket:
-                                                             too many open files
+     2015/07/15 18:22:12 Get ...: dial tcp 23.21.222.120:443: socket: too many open files
      ...
    < src..
 
@@ -14355,10 +14356,10 @@
    to the way a doorman at a crowded nightclub admits a guest only when some
    other guest leaves.
 
-   We can limit parallelism using a buffered channel of capacity n to model a
-   concurrency primitive called a @e(counting semaphore). Conceptually, each of
-   the @e(n) vacant slots in the channel buffer represents a token entitling the
-   holder to proceed. Sending a value into the channel acquires a token, and
+   We can limit parallelism using a buffered channel of capacity @e(n) to model
+   a concurrency primitive called a @e(counting semaphore). Conceptually, each
+   of the @e(n) vacant slots in the channel buffer represents a token entitling
+   the holder to proceed. Sending a value into the channel acquires a token, and
    receiving a value from the channel releases a token, creating a new vacant
    slot. This ensures that at most @e(n) sends can occur without an intervening
    receive.  (Although it might be more intuitive to treat @e(filled) slots in
@@ -14477,9 +14478,9 @@
      < src..
 
 
-   The crawler goroutines are all fed by the same channel, @e(unseenLinks). The
+   The crawler goroutines are all fed by the same channel, @c(unseenLinks). The
    main goroutine is responsible for de-duplicating items it receives from the
-   worklist, and then sending each unseen one over the @e(unseenLinks) channel
+   worklist, and then sending each unseen one over the @c(unseenLinks) channel
    to a crawler goroutine.
 
    The @c(seen) map is @e(confined) within the main goroutine; that is, it can
@@ -14509,7 +14510,7 @@
    pages should be altered as needed so that they refer to the mirrored page,
    not the original.
 
-** Section 8.7 <> Multiplexing with select
+** Section 8.7 <> Multiplexing with @c(select)
 
    The program below does the countdown for a rocket launch. The @c(time.Tick)
    function returns a channel on which it sends events periodically, acting like
@@ -14665,15 +14666,16 @@
    ..src > go
      ticker := time.NewTicker(1 * time.Second)
 
-     <-ticker.C // receive from the ticker's channel
+     <-ticker.C    // receive from the ticker's channel
 
      ticker.Stop() // cause the ticker's goroutine to terminate
    < src..
 
    Sometimes we want to try to send or receive on a channel but avoid blocking
-   if the channel is not ready—a @e(non-blocking) communication. A @e(select)
-   statement can do that too. A select may have a @e(default), which specifies
-   what to do when none of the other communications can proceed immediately.
+   if the channel is not ready—a @e(non-blocking) communication. A select
+   statement can do that too. A @c(select) may have a @e(default), which
+   specifies what to do when none of the other communications can proceed
+   immediately.
 
    The select statement below receives a value from the @c(abort) channel if
    there is one to receive; otherwise it does nothing. This is a non-blocking
@@ -14705,7 +14707,7 @@
    In this section, we’ll build a program that reports the disk usage of one or
    more directories specified on the command line, like the Unix @$(du)
    command. Most of its work is done by the @c(walkDir) function below, which
-   enumerates the entries of the director y @c(dir) using the @c(dirents) helper
+   enumerates the entries of the directory  @c(dir) using the @c(dirents) helper
    function.
 
    ..figure > @l(gopl.io/ch8/du1/main.go<>gopl.io/ch8/du1)
@@ -14743,7 +14745,7 @@
    size of the file in bytes.
 
    The main function, shown below, uses two goroutines. The background goroutine
-   calls @c(walkDir) for each director y specified on the command line and
+   calls @c(walkDir) for each directory  specified on the command line and
    finally closes the @c(fileSizes) channel. The main goroutine computes the sum
    of the file sizes it receives from the channel and finally prints the total.
 
@@ -14802,9 +14804,9 @@
    simply moving the @c(printDiskUsage) call into the loop would cause it to
    print thousands of lines of output.
 
-   The variant of @c(du) below prints the totals periodically, but only if the
+   The variant of @$(du) below prints the totals periodically, but only if the
    @c(-v) flag is specified since not all users will want to see progress
-   messages. The background goroutine that loops over roots remains
+   messages. The background goroutine that loops over @c(roots) remains
    unchanged. The main goroutine now uses a ticker to generate events every
    500ms, and a select statement to wait for either a file size message, in
    which case it updates the totals, or a tick event, in which case it prints
@@ -14846,10 +14848,9 @@
    Since the program no longer uses a @c(range) loop, the first @c(select) case
    must explicitly test whether the @c(fileSizes) channel has been closed, using
    the two-result form of receive operation. If the channel has been closed, the
-   program @c(breaks) out of the loop. The labeled @c(break) statement breaks
-   out of both the @c(select) and the @c(for) loop; an unlabeled @c(break) would
-   break out of only the @c(select), causing the loop to begin the next
-   iteration.
+   program breaks out of the loop. The labeled @c(break) statement breaks out of
+   both the @c(select) and the @c(for) loop; an unlabeled @c(break) would break
+   out of only the @c(select), causing the loop to begin the next iteration.
 
    The program now gives us a leisurely stream of updates:
 
@@ -14866,7 +14867,7 @@
 
    However, it still takes too long to finish. There’s no reason why all the
    calls to @c(walkDir) can’t be done concurrently, thereby exploiting
-   parallelism in the disk system. The third version of @c(du), below, creates a
+   parallelism in the disk system. The third version of @$(du), below, creates a
    new goroutine for each call to @c(walkDir). It uses a @c(sync.WaitGroup)
    (@l(#Section 8.5<>§8.5)) to count the number of calls to @c(walkDir) that are
    still active, and a closer goroutine to close the @c(fileSizes) channel when
@@ -14908,8 +14909,9 @@
 
 
    Since this program creates many thousands of goroutines at its peak, we have
-   to change dirents to use a counting semaphore to prevent it from opening too
-   many files at once, just as we did for the web crawler in @l(#Section 8.6):
+   to change @c(dirents) to use a counting semaphore to prevent it from opening
+   too many files at once, just as we did for the web crawler in @l(#Section
+   8.6):
 
    ..src > go
      // sema is a counting semaphore for limiting concurrency in dirents.
@@ -14949,8 +14951,8 @@
    goroutines, our count will be too small, and some goroutines will remain
    unaware of the cancellation. In general, it’s hard to know how many
    goroutines are working on our behalf at any given moment. Moreover, when a
-   goroutine receives a value from the abort channel, it consumes that value so
-   that other goroutines won’t see it. For cancellation, what we need is a
+   goroutine receives a value from the @c(abort) channel, it consumes that value
+   so that other goroutines won’t see it. For cancellation, what we need is a
    reliable mechanism to @e(broadcast) an event over a channel so that many
    goroutines can see it @e(as) it occurs and can later see that it @e(has)
    occurred.
@@ -14960,8 +14962,8 @@
    can exploit this to create a broadcast mechanism: don’t send a value on the
    channel, close it.
 
-   We can add cancellation to the du program from the previous section with a
-   few simple changes. First, we create a cancellation channel on which no
+   We can add cancellation to the @$(du) program from the previous section with
+   a few simple changes. First, we create a cancellation channel on which no
    values are ever sent, but whose closure indicates that it is time for the
    program to stop what it is doing. We also define a utility function,
    @c(cancelled), that checks or @e(polls) the cancellation state at the instant
@@ -14998,7 +15000,7 @@
 
    Now we need to make our goroutines respond to the cancellation. In the main
    goroutine, we add a third case to the select statement that tries to receive
-   from the done channel. The function returns if this case is ever selected,
+   from the @c(done) channel. The function returns if this case is ever selected,
    but before it returns it must first drain the @c(fileSizes) channel,
    discarding all values until the channel is closed. It does this to ensure
    that any active calls to @c(walkDir) can run to completion without getting
@@ -15083,7 +15085,7 @@
    calling @c[http.DefaultClient.Do(req)].
 
    @b(Exercise 8.11): Following the approach of @c(mirroredQuery) in @l(#Section
-   8.4.4), implement a variant of @c(fetch) that requests several URLs
+   8.4.4), implement a variant of @$(fetch) that requests several URLs
    concurrently. As soon as the first response arrives, cancel the other
    requests.
 
@@ -15171,8 +15173,8 @@
    it reads every line of text from the client, sending each line to the
    broadcaster over the global incoming message channel, prefixing each message
    with the identity of its sender. Once there is nothing more to read from the
-   client, handleConn announces the departure of the client over the @c(leaving)
-   channel and closes the connection.
+   client, @c(handleConn) announces the departure of the client over the
+   @c(leaving) channel and closes the connection.
 
    ..src > go
      func handleConn(conn net.Conn) {
@@ -17248,7 +17250,7 @@
               ...
     < pre..
 
-    @c(GOPATH) has three subdirectories. The src subdirector y holds source
+    @c(GOPATH) has three subdirectories. The src subdirectory  holds source
     code. Each package resides in a directory whose name relative to
     @c($GOPATH/src) is the package’s import path, such as
     @c(gopl.io/ch1/helloworld). Observe that a single @c(GOPATH) workspace

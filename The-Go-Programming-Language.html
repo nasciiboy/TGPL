@@ -133,7 +133,7 @@
 <span class="toc" ><a class="h4" href="#Section-8.4.4" >Buffered Channels</a></span>
 <span class="toc" ><a class="h3" href="#Section-8.5" >Looping in Parallel</a></span>
 <span class="toc" ><a class="h3" href="#Section-8.6" >Example: Concurrent Web Crawler</a></span>
-<span class="toc" ><a class="h3" href="#Section-8.7" >Multiplexing with select</a></span>
+<span class="toc" ><a class="h3" href="#Section-8.7" >Multiplexing with <code>select</code></a></span>
 <span class="toc" ><a class="h3" href="#Section-8.8" >Example: Concurrent Directory Traversal</a></span>
 <span class="toc" ><a class="h3" href="#Section-8.9" >Cancellation</a></span>
 <span class="toc" ><a class="h3" href="#Section-8.10" >Example: Chat Server</a></span>
@@ -7031,8 +7031,8 @@ html body div div h2: B Definitions <span class="k">for</span> Character Normali
 <h3 id="Section-8.1" >Goroutines</h3>
 <div class="hBody-3" >
 <p>In Go, each concurrently executing activity is called a <em>goroutine</em>. Consider a program that has two functions, one that does some computation and one that writes some output, and assume that neither function calls the other. A sequential program may call one function and then call the other, but in a <em>concurrent</em> program with two or more goroutines, calls to <em>both</em> functions can be active at the same time. We’ll see such a program in a moment.</p>
-<p>If you have used operating system threads or threads in other languages, then you can assume for now that a goroutine is similar to a thread, and you’ll be able to write correct programs.  The differences between threads and goroutines are essentially quantitative, not qualitative, and will be described in <a href="#Section-9.8" >Section 9.8</a>.</p>
-<p>When a program starts, its only goroutine is the one that calls the <code>main</code> function, so we call it the <em>main goroutine</em>. New goroutines are created by the go statement. Syntactically, a go statement is an ordinary function or method call prefixed by the keyword <code>go</code>. A <code>go</code> statement causes the function to be called in a newly created goroutine. The <code>go</code> statement itself completes immediately:</p>
+<p>If you have used operating system threads or threads in other languages, then you can assume for now that a goroutine is similar to a thread, and you’ll be able to write correct programs. The differences between threads and goroutines are essentially quantitative, not qualitative, and will be described in <a href="#Section-9.8" >Section 9.8</a>.</p>
+<p>When a program starts, its only goroutine is the one that calls the <code>main</code> function, so we call it the <em>main goroutine</em>. New goroutines are created by the <code>go</code> statement. Syntactically, a <code>go</code> statement is an ordinary function or method call prefixed by the keyword <code>go</code>. A <code>go</code> statement causes the function to be called in a newly created goroutine. The <code>go</code> statement itself completes immediately:</p>
 <div class="highlight"><pre><span></span><span class="nx">f</span><span class="p">()</span>    <span class="c1">// call f(); wait for it to return</span>
 <span class="k">go</span> <span class="nx">f</span><span class="p">()</span> <span class="c1">// create a new goroutine that calls f(); don&#39;t wait</span>
 </pre></div>
@@ -7111,10 +7111,10 @@ html body div div h2: B Definitions <span class="k">for</span> Character Normali
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>The <code>Listen</code> function creates a <code>net.Listener</code>, an object that listens for incoming connections on a network port, in this case TCP port <code>localhost:8000</code>. The listener’s Accept method blocks until an incoming connection request is made, then returns a <code>net.Conn</code> object representing the connection.</p>
+<p>The <code>Listen</code> function creates a <code>net.Listener</code>, an object that listens for incoming connections on a network port, in this case TCP port <code>localhost:8000</code>. The listener’s <code>Accept</code> method blocks until an incoming connection request is made, then returns a <code>net.Conn</code> object representing the connection.</p>
 <p>The <code>handleConn</code> function handles one complete client connection. In a loop, it writes the current time, <code>time.Now()</code>, to the client. Since <code>net.Conn</code> satisfies the <code>io.Writer</code> interface, we can write directly to it. The loop ends when the write fails, most likely because the client has disconnected, at which point <code>handleConn</code> closes its side of the connection using a deferred call to <code>Close</code> and goes back to waiting for another connection request.</p>
 <p>The <code>time.Time.Format</code> method provides a way to format date and time information by example. Its argument is a template indicating how to format a reference time, specifically <code>Mon Jan 2 03:04:05PM 2006 UTC-0700</code>. The reference time has eight components (day of the week, month, day of the month, and so on). Any collection of them can appear in the <code>Format</code> string in any order and in a number of formats; the selected components of the date and time will be displayed in the selected formats. Here we are just using the hour, minute, and second of the time. The <code>time</code> package defines templates for many standard time formats, such as <code>time.RFC1123</code>. The same mechanism is used in reverse when parsing a time using <code>time.Parse</code>.</p>
-<p>To connect to the server, we’ll need a client program such as <code>nc</code> (<q>netcat</q>), a standard utility program for manipulating network connections:</p>
+<p>To connect to the server, we’ll need a client program such as <code class="command" >nc</code> (<q>netcat</q>), a standard utility program for manipulating network connections:</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch8/clock1
 $ ./clock1 <span class="p">&amp;</span>
 $ nc localhost <span class="m">8000</span>
@@ -7124,7 +7124,7 @@ $ nc localhost <span class="m">8000</span>
 <span class="m">13</span>:58:57
 ^C
 </pre></div>
-<p>The client displays the time sent by the server each second until we interrupt the client with Control-C, which on Unix systems is echoed as <code>^C</code> by the shell. If <code>nc</code> or <code>netcat</code> is not installed on your system, you can use <code>telnet</code> or this simple Go version of <code>netcat</code> that uses <code>net.Dial</code> to connect to a TCP server:</p>
+<p>The client displays the time sent by the server each second until we interrupt the client with Control-C, which on Unix systems is echoed as <code>^C</code> by the shell. If <code class="command" >nc</code> or <code class="command" >netcat</code> is not installed on your system, you can use <code class="command" >telnet</code> or this simple Go version of <code class="command" >netcat</code> that uses <code>net.Dial</code> to connect to a TCP server:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/netcat1/netcat.go" >gopl.io/ch8/netcat1</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// Netcat1 is a read-only TCP client.</span>
@@ -7176,7 +7176,7 @@ $ ./netcat1
 </pre></div>
 </div>
 </div>
-<p>The <code>killall</code> command is a Unix utility that kills all processes with the given name.</p>
+<p>The <code class="command" >killall</code> command is a Unix utility that kills all processes with the given name.</p>
 <p>The second client must wait until the first client is finished because the server is <em>sequential</em>; it deals with only one client at a time. Just one small change is needed to make the server concurrent: adding the <code>go</code> keyword to the call to <code>handleConn</code> causes each call to run in its own goroutine.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/clock2/clock.go" >gopl.io/ch8/clock2</a></p>
@@ -7224,13 +7224,13 @@ $ ./netcat1
 </pre></div>
 </div>
 </div>
-<p><b>Exercise 8.1</b>: Modify <code>clock2</code> to accept a port number, and write a program, <code>clockwall</code>, that acts as a client of several clock servers at once, reading the times from each one and displaying the results in a table, akin to the wall of clocks seen in some business offices. If you have access to geographically distributed computers, run instances remotely ; otherwise run local instances on different ports with fake time zones.</p>
+<p><b>Exercise 8.1</b>: Modify <code class="command" >clock2</code> to accept a port number, and write a program, <code class="command" >clockwall</code>, that acts as a client of several clock servers at once, reading the times from each one and displaying the results in a table, akin to the wall of clocks seen in some business offices. If you have access to geographically distributed computers, run instances remotely ; otherwise run local instances on different ports with fake time zones.</p>
 <div class="highlight"><pre><span></span>$ <span class="nv">TZ</span><span class="o">=</span>US/Eastern    ./clock2 -port <span class="m">8010</span> <span class="p">&amp;</span>
 $ <span class="nv">TZ</span><span class="o">=</span>Asia/Tokyo    ./clock2 -port <span class="m">8020</span> <span class="p">&amp;</span>
 $ <span class="nv">TZ</span><span class="o">=</span>Europe/London ./clock2 -port <span class="m">8030</span> <span class="p">&amp;</span>
 $ clockwall <span class="nv">NewYork</span><span class="o">=</span>localhost:8010 <span class="nv">London</span><span class="o">=</span>localhost:8020 <span class="nv">Tokyo</span><span class="o">=</span>localhost:8030
 </pre></div>
-<p><b>Exercise 8.2</b>: Implement a concurrent File Transfer Protocol (FTP) server. The server should interpret commands from each client such as cd to change directory, <code class="command" >ls</code> to list a directory, <code class="command" >get</code> to send the contents of a file, and <code>close</code> to close the connection. You can use the standard <code class="command" >ftp</code> command as the client, or write your own.</p>
+<p><b>Exercise 8.2</b>: Implement a concurrent File Transfer Protocol (FTP) server. The server should interpret commands from each client such as <code class="command" >cd</code> to change directory, <code class="command" >ls</code> to list a directory, <code class="command" >get</code> to send the contents of a file, and <code>close</code> to close the connection. You can use the standard <code class="command" >ftp</code> command as the client, or write your own.</p>
 </div>
 <h3 id="Section-8.3" >Example: Concurrent Echo Server</h3>
 <div class="hBody-3" >
@@ -7240,7 +7240,7 @@ $ clockwall <span class="nv">NewYork</span><span class="o">=</span>localhost:801
   <span class="nx">c</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
 <span class="p">}</span>
 </pre></div>
-<p>A more interesting echo server might simulate the reverberations of a real echo, with the response loud at first (&quot;<code>HELLO!</code>&quot;), then moderate (&quot;<code>Hello!</code>&quot;)  after a delay, then quiet (&quot;<code>hello!</code>&quot;) before fading to nothing, as in this version of <code>handleConn</code>:</p>
+<p>A more interesting echo server might simulate the reverberations of a real echo, with the response loud at first (<code>&quot;HELLO!&quot;</code>), then moderate (<code>&quot;Hello!&quot;</code>)  after a delay, then quiet (<code>&quot;hello!&quot;</code>) before fading to nothing, as in this version of <code>handleConn</code>:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/reverb1/reverb.go" >gopl.io/ch8/reverb1</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">echo</span><span class="p">(</span><span class="nx">c</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Conn</span><span class="p">,</span> <span class="nx">shout</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">delay</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">)</span> <span class="p">{</span>
@@ -7309,7 +7309,7 @@ $ killall reverb1
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>The arguments to the function started by go are evaluated when the go statement itself is executed; thus <code>input.Text()</code> is evaluated in the main goroutine.  Now the echoes are concurrent and overlap in time:</p>
+<p>The arguments to the function started by <code>go</code> are evaluated when the <code>go</code> statement itself is executed; thus <code>input.Text()</code> is evaluated in the main goroutine.  Now the echoes are concurrent and overlap in time:</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch8/reverb2
 $ ./reverb2 <span class="p">&amp;</span>
 $ ./netcat2
@@ -7330,7 +7330,7 @@ $ killall reverb2
 </div>
 <h3 id="Section-8.4" >Channels</h3>
 <div class="hBody-3" >
-<p>If goroutines are the activities of a concurrent Go program, <em>channels</em> are the connections between them. A channel is a communication mechanism that lets one goroutine send values to another goroutine. Each channel is a conduit for values of a particular type, called the channel’s <em>element type</em>. The type of a channel whose elements have type <code>int</code> is written chan <code>int</code>.</p>
+<p>If goroutines are the activities of a concurrent Go program, <em>channels</em> are the connections between them. A channel is a communication mechanism that lets one goroutine send values to another goroutine. Each channel is a conduit for values of a particular type, called the channel’s <em>element type</em>. The type of a channel whose elements have type <code>int</code> is written <code>chan int</code>.</p>
 <p>To create a channel, we use the built-in <code>make</code> function:</p>
 <div class="highlight"><pre><span></span><span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span> <span class="c1">// ch has type &#39;chan int&#39;</span>
 </pre></div>
@@ -7380,9 +7380,9 @@ $ killall reverb2
 </pre></div>
 </div>
 <p>When the user closes the standard input stream, <code>mustCopy</code> returns and the main goroutine calls <code>conn.Close()</code>, closing both halves of the network connection. Closing the write half of the connection causes the server to see an end-of-file condition. Closing the read half causes the background goroutine’s call to <code>io.Copy</code> to return a <q>read from closed connection</q> error, which is why we’ve removed the error logging; Exercise 8.3 suggests a better solution. (Notice that the <code>go</code> statement calls a literal function, a common construction.)</p>
-<p>Before it returns, the background goroutine logs a message, then sends a value on the <code>done</code> channel. The main goroutine waits until it has received this value before returning. As a result, the program always logs the &quot;<code>done</code>&quot; message before exiting.</p>
-<p>Messages sent over channels have two important aspects. Each message has a value, but sometimes the fact of communication and the moment at which it occurs are just as important. We call messages <em>events</em> when we wish to stress this aspect. When the event carries no additional information, that is, its sole purpose is synchronization, we’ll emphasize this by using a channel whose element type is <code>struct{}</code>, though it’s common to use a channel of <code>bool</code> or <code>int</code> for the same purpose since <code>done &lt;- 1</code> is shorter than done <code>&lt;- struct{}{}</code>.</p>
-<p><b>Exercise 8.3</b>: In <code>netcat3</code>, the interface value conn has the concrete type <code>*net.TCPConn</code>, which represents a TCP connection. A TCP connection consists of two halves that may be closed independently using its <code>CloseRead</code> and <code>CloseWrite</code> methods. Modify the main goroutine of <code>netcat3</code> to close only the write half of the connection so that the program will continue to print the final echoes from the <code>reverb1</code> server even after the standard input has been closed.  (Doing this for the <code>reverb2</code> server is harder; see Exercise 8.4.)</p>
+<p>Before it returns, the background goroutine logs a message, then sends a value on the <code>done</code> channel. The main goroutine waits until it has received this value before returning. As a result, the program always logs the <code>&quot;done&quot;</code> message before exiting.</p>
+<p>Messages sent over channels have two important aspects. Each message has a value, but sometimes the fact of communication and the moment at which it occurs are just as important. We call messages <em>events</em> when we wish to stress this aspect. When the event carries no additional information, that is, its sole purpose is synchronization, we’ll emphasize this by using a channel whose element type is <code>struct{}</code>, though it’s common to use a channel of <code>bool</code> or <code>int</code> for the same purpose since <code>done &lt;- 1</code> is shorter than <code>done &lt;- struct{}{}</code>.</p>
+<p><b>Exercise 8.3</b>: In <code class="command" >netcat3</code>, the interface value <code>conn</code> has the concrete type <code>*net.TCPConn</code>, which represents a TCP connection. A TCP connection consists of two halves that may be closed independently using its <code>CloseRead</code> and <code>CloseWrite</code> methods. Modify the main goroutine of <code class="command" >netcat3</code> to close only the write half of the connection so that the program will continue to print the final echoes from the <code class="command" >reverb1</code> server even after the standard input has been closed.  (Doing this for the <code class="command" >reverb2</code> server is harder; see Exercise 8.4.)</p>
 </div>
 <h4 id="Section-8.4.2" >Pipelines</h4>
 <div class="hBody-4" >
@@ -7518,15 +7518,15 @@ $ killall reverb2
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>The call <code>counter(naturals)</code> implicitly converts <code>naturals</code>, a value of type <code>chan int</code>, to the type of the parameter, <code>chan&lt;- int</code>. The <code>printer(squares)</code> call does a similar implicit conversion to <code>&lt;-chan int</code>. Conversions from bidirectional to unidirectional channel types are permitted in any assignment. There is no going back, however: once you have a value of a unidirectional type such as <code>chan&lt;- int</code>, there is no way to obtain from it a value of type chan <code>int</code> that refers to the same channel data structure.</p>
+<p>The call <code>counter(naturals)</code> implicitly converts <code>naturals</code>, a value of type <code>chan int</code>, to the type of the parameter, <code>chan&lt;- int</code>. The <code>printer(squares)</code> call does a similar implicit conversion to <code>&lt;-chan int</code>. Conversions from bidirectional to unidirectional channel types are permitted in any assignment. There is no going back, however: once you have a value of a unidirectional type such as <code>chan&lt;- int</code>, there is no way to obtain from it a value of type <code>chan int</code> that refers to the same channel data structure.</p>
 </div>
 <h4 id="Section-8.4.4" >Buffered Channels</h4>
 <div class="hBody-4" >
 <p>A buffered channel has a queue of elements. The queue’s maximum size is determined when it is created, by the capacity argument to <code>make</code>. The statement below creates a buffered channel capable of holding three <code>string</code> values. Figure 8.2 is a graphical representation of <code>ch</code> and the channel to which it refers.</p>
-<div class="figure" >
-<p class="title">Figure 8.2. An empty buffered channel.</p>
 <div class="highlight"><pre><span></span><span class="nx">ch</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">string</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 </pre></div>
+<div class="figure" >
+<p class="title">Figure 8.2. An empty buffered channel.</p>
 <figure>
 <img src="img/Figure-8.2.jpg" />
 </figure>
@@ -7557,7 +7557,7 @@ $ killall reverb2
 <p>In the unlikely event that a program needs to know the channel’s buffer capacity, it can be obtained by calling the built-in <code>cap</code> function:</p>
 <div class="highlight"><pre><span></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nb">cap</span><span class="p">(</span><span class="nx">ch</span><span class="p">))</span> <span class="c1">// &quot;3&quot;</span>
 </pre></div>
-<p>When applied to a channel, the built-in len function returns the number of elements currently buffered. Since in a concurrent program this information is likely to be stale as soon as it is retrieved, its value is limited, but it could conceivably be useful during fault diagnosis or performance optimization.</p>
+<p>When applied to a channel, the built-in <code>len</code> function returns the number of elements currently buffered. Since in a concurrent program this information is likely to be stale as soon as it is retrieved, its value is limited, but it could conceivably be useful during fault diagnosis or performance optimization.</p>
 <div class="highlight"><pre><span></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">ch</span><span class="p">))</span> <span class="c1">// &quot;2&quot;</span>
 </pre></div>
 <p>After two more receive operations the channel is empty again, and a fourth would block:</p>
@@ -7586,7 +7586,7 @@ $ killall reverb2
 </div>
 <h3 id="Section-8.5" >Looping in Parallel</h3>
 <div class="hBody-3" >
-<p>In this section, we’ll explore some common concurrency patterns for executing all the iterations of a loop in parallel. We’ll consider the problem of producing thumbnail-size images from a set of full-size ones. The <code>gopl.io/ch8/thumbnail</code> package provides an <code>ImageFile</code> function that can scale a single image. We won’t show its implementation but it can be downloaded from <code>gopl.io</code>.</p>
+<p>In this section, we’ll explore some common concurrency patterns for executing all the iterations of a loop in parallel. We’ll consider the problem of producing thumbnail-size images from a set of full-size ones. The <code>gopl.io/ch8/thumbnail</code> package provides an <code>ImageFile</code> function that can scale a single image. We won’t show its implementation but it can be downloaded from <a href="http://www.gopl.io/" >gopl.io</a>.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/thumbnail/thumbnail_test.go" >gopl.io/ch8/thumbnail</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// ImageFile reads an image from infile and writes</span>
@@ -7733,16 +7733,16 @@ $ killall reverb2
   <span class="k">return</span> <span class="nx">total</span>
 <span class="p">}</span>
 </pre></div>
-<p>Note the asymmetry in the <code>Add</code> and <code>Done</code> methods. <code>Add</code>, which increments the counter, must be called before the worker goroutine starts, not within it; otherwise we would not be sure that the Add <em>happens before</em> the <q>closer</q> goroutine calls <code>Wait</code>. Also, <code>Add</code> takes a parameter, but <code>Done</code> does not; it’s equivalent to <code>Add(-1)</code>. We use defer to ensure that the counter is decremented even in the error case. The structure of the code above is a common and idiomatic pattern for looping in parallel when we don’t know the number of iterations.</p>
+<p>Note the asymmetry in the <code>Add</code> and <code>Done</code> methods. <code>Add</code>, which increments the counter, must be called before the worker goroutine starts, not within it; otherwise we would not be sure that the <code>Add</code> <em>happens before</em> the <q>closer</q> goroutine calls <code>Wait</code>. Also, <code>Add</code> takes a parameter, but <code>Done</code> does not; it’s equivalent to <code>Add(-1)</code>. We use <code>defer</code> to ensure that the counter is decremented even in the error case. The structure of the code above is a common and idiomatic pattern for looping in parallel when we don’t know the number of iterations.</p>
 <p>The <code>sizes</code> channel carries each file size back to the main goroutine, which receives them using a <code>range</code> loop and computes the sum. Observe how we create a closer goroutine that waits for the workers to finish before closing the <code>sizes</code> channel. These two operations, wait and close, must be concurrent with the loop over <code>sizes</code>. Consider the alternatives: if the wait operation were placed in the main goroutine before the loop, it would never end, and if placed after the loop, it would be unreachable since with nothing closing the channel, the loop would never terminate.</p>
-<p>Figure 8.5 illustrates the sequence of events in the <code>makeThumbnails6</code> function. The vertical lines represent goroutines. The thin segments indicate sleep, the thick segments activity. The diagonal arrows indicate events that synchronize one goroutine with another. Time flows down. Notice how the main goroutine spends most of its time in the range loop asleep, waiting for a worker to send a value or the closer to close the channel.</p>
+<p>Figure 8.5 illustrates the sequence of events in the <code>makeThumbnails6</code> function. The vertical lines represent goroutines. The thin segments indicate sleep, the thick segments activity. The diagonal arrows indicate events that synchronize one goroutine with another. Time flows down. Notice how the main goroutine spends most of its time in the <code>range</code> loop asleep, waiting for a worker to send a value or the closer to close the channel.</p>
 <div class="figure" >
 <p class="title">Figure 8.5. The sequence of events in <code>makeThumbnails6</code>.</p>
 <figure>
 <img src="img/Figure-8.5.jpg" />
 </figure>
 </div>
-<p><b>Exercise 8.4</b>: Modify the <code>reverb2</code> server to use a <code>sync.WaitGroup</code> per connection to count the number of active <code>echo</code> goroutines. When it falls to zero, close the write half of the TCP connection as described in Exercise 8.3. Verify that your modified <code>netcat3</code> client from that exercise waits for the final echoes of multiple concurrent shouts, even after the standard input has been closed.</p>
+<p><b>Exercise 8.4</b>: Modify the <code class="command" >reverb2</code> server to use a <code>sync.WaitGroup</code> per connection to count the number of active <code>echo</code> goroutines. When it falls to zero, close the write half of the TCP connection as described in Exercise 8.3. Verify that your modified <code class="command" >netcat3</code> client from that exercise waits for the final echoes of multiple concurrent shouts, even after the standard input has been closed.</p>
 <p><b>Exercise 8.5</b>: Take an existing CPU-bound sequential program, such as the Mandelbrot program of <a href="#Section-3.3" >Section 3.3</a> or the 3-D surface computation of <a href="#Section-3.2" >Section 3.2</a>, and execute its main loop in parallel using channels for communication. How much faster does it run on a multiprocessor machine? What is the optimal number of goroutines to use?</p>
 </div>
 <h3 id="Section-8.6" >Example: Concurrent Web Crawler</h3>
@@ -7781,7 +7781,7 @@ $ killall reverb2
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-<p>Notice that the crawl goroutine takes <code>link</code> as an explicit parameter to avoid the problem of loop variable capture we first saw in <a href="#Section-5.6.1" >Section 5.6.1</a>. Also notice that the initial send of the command-line arguments to the worklist must run in its own goroutine to avoid <code>deadlock</code>, a stuck situation in which both the main goroutine and a crawler goroutine attempt to send to each other while neither is receiving. An alternative solution would be to use a buffered channel.</p>
+<p>Notice that the crawl goroutine takes <code>link</code> as an explicit parameter to avoid the problem of loop variable capture we first saw in <a href="#Section-5.6.1" >Section 5.6.1</a>. Also notice that the initial send of the command-line arguments to the worklist must run in its own goroutine to avoid <em>deadlock</em>, a stuck situation in which both the main goroutine and a crawler goroutine attempt to send to each other while neither is receiving. An alternative solution would be to use a buffered channel.</p>
 <p>The crawler is now highly concurrent and prints a storm of URLs, but it has two problems.  The first problem manifests itself as error messages in the log after a few seconds of operation:</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch8/crawl1
 $ ./crawl1 http://gopl.io/
@@ -7792,13 +7792,12 @@ https://golang.org/doc/
 https://golang.org/blog/
 ...
 <span class="m">2015</span>/07/15 <span class="m">18</span>:22:12 Get ...: dial tcp: lookup blog.golang.org: no such host
-<span class="m">2015</span>/07/15 <span class="m">18</span>:22:12 Get ...: dial tcp <span class="m">23</span>.21.222.120:443: socket:
-                                                        too many open files
+<span class="m">2015</span>/07/15 <span class="m">18</span>:22:12 Get ...: dial tcp <span class="m">23</span>.21.222.120:443: socket: too many open files
 ...
 </pre></div>
 <p>The initial error message is a surprising report of a DNS lookup failure for a reliable domain.  The subsequent error message reveals the cause: the program created so many network connections at once that it exceeded the per-process limit on the number of open files, causing operations such as DNS lookups and calls to <code>net.Dial</code> to start failing.</p>
 <p>The program is <em>too</em> parallel. Unbounded parallelism is rarely a good idea since there is always a limiting factor in the system, such as the number of CPU cores for compute-bound workloads, the number of spindles and heads for local disk I/O operations, the bandwidth of the network for streaming downloads, or the serving capacity of a web service. The solution is to limit the number of parallel uses of the resource to match the level of parallelism that is available. A simple way to do that in our example is to ensure that no more than <em>n</em> calls to <code>links.Extract</code> are active at once, where <em>n</em> is comfortably less than the file descriptor limit—20, say. This is analogous to the way a doorman at a crowded nightclub admits a guest only when some other guest leaves.</p>
-<p>We can limit parallelism using a buffered channel of capacity n to model a concurrency primitive called a <em>counting semaphore</em>. Conceptually, each of the <em>n</em> vacant slots in the channel buffer represents a token entitling the holder to proceed. Sending a value into the channel acquires a token, and receiving a value from the channel releases a token, creating a new vacant slot. This ensures that at most <em>n</em> sends can occur without an intervening receive.  (Although it might be more intuitive to treat <em>filled</em> slots in the channel buffer as tokens, using vacant slots avoids the need to fill the channel buffer after creating it.) Since the channel element type is not important, we’ll use <em>struct{}</em>, which has size zero.</p>
+<p>We can limit parallelism using a buffered channel of capacity <em>n</em> to model a concurrency primitive called a <em>counting semaphore</em>. Conceptually, each of the <em>n</em> vacant slots in the channel buffer represents a token entitling the holder to proceed. Sending a value into the channel acquires a token, and receiving a value from the channel releases a token, creating a new vacant slot. This ensures that at most <em>n</em> sends can occur without an intervening receive.  (Although it might be more intuitive to treat <em>filled</em> slots in the channel buffer as tokens, using vacant slots avoids the need to fill the channel buffer after creating it.) Since the channel element type is not important, we’ll use <em>struct{}</em>, which has size zero.</p>
 <p>Let’s rewrite the <code>crawl</code> function so that the call to <em>links.Extract</em> is bracketed by operations to acquire and release a token, thus ensuring that at most 20 calls to it are active at one time.  It’s good practice to keep the semaphore operations as close as possible to the I/O operation they regulate.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/crawl2/findlinks.go" >gopl.io/ch8/crawl2</a></p>
@@ -7880,14 +7879,14 @@ https://golang.org/blog/
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>The crawler goroutines are all fed by the same channel, <em>unseenLinks</em>. The main goroutine is responsible for de-duplicating items it receives from the worklist, and then sending each unseen one over the <em>unseenLinks</em> channel to a crawler goroutine.</p>
+<p>The crawler goroutines are all fed by the same channel, <code>unseenLinks</code>. The main goroutine is responsible for de-duplicating items it receives from the worklist, and then sending each unseen one over the <code>unseenLinks</code> channel to a crawler goroutine.</p>
 <p>The <code>seen</code> map is <em>confined</em> within the main goroutine; that is, it can be accessed only by that goroutine. Like other forms of information hiding, confinement helps us reason about the correctness of a program. For example, local variables cannot be mentioned by name from outside the function in which they are declared; variables that do not escape (<a href="#Section-2.3.4" >§2.3.4</a>) from a function cannot be accessed from outside that function; and encapsulated fields of an object cannot be accessed except by the methods of that object. In all cases, information hiding helps to limit unintended interactions between parts of the program.</p>
 <p>Links found by <code>crawl</code> are sent to the worklist from a dedicated goroutine to avoid deadlock.</p>
 <p>To save space, we have not addressed the problem of termination in this example.</p>
 <p><b>Exercise 8.6</b>: Add depth-limiting to the concurrent crawler. That is, if the user sets <code>-depth=3</code>, then only URLs reachable by at most three links will be fetched.</p>
 <p><b>Exercise 8.7</b>: Write a concurrent program that creates a local mirror of a web site, fetching each reachable page and writing it to a directory on the local disk. Only pages within the original domain (for instance, <a href="https://golang.org" >golang.org</a>) should be fetched. URLs within mirrored pages should be altered as needed so that they refer to the mirrored page, not the original.</p>
 </div>
-<h3 id="Section-8.7" >Multiplexing with select</h3>
+<h3 id="Section-8.7" >Multiplexing with <code>select</code></h3>
 <div class="hBody-3" >
 <p>The program below does the countdown for a rocket launch. The <code>time.Tick</code> function returns a channel on which it sends events periodically, acting like a metronome. The value of each event is a timestamp, but it is rarely as interesting as the fact of its delivery.</p>
 <div class="figure" >
@@ -7979,11 +7978,11 @@ https://golang.org/blog/
 <p>The <code>Tick</code> function is convenient, but it’s appropriate only when the ticks will be needed throughout the lifetime of the application. Otherwise, we should use this pattern:</p>
 <div class="highlight"><pre><span></span><span class="nx">ticker</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">NewTicker</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
 
-<span class="o">&lt;-</span><span class="nx">ticker</span><span class="p">.</span><span class="nx">C</span> <span class="c1">// receive from the ticker&#39;s channel</span>
+<span class="o">&lt;-</span><span class="nx">ticker</span><span class="p">.</span><span class="nx">C</span>    <span class="c1">// receive from the ticker&#39;s channel</span>
 
 <span class="nx">ticker</span><span class="p">.</span><span class="nx">Stop</span><span class="p">()</span> <span class="c1">// cause the ticker&#39;s goroutine to terminate</span>
 </pre></div>
-<p>Sometimes we want to try to send or receive on a channel but avoid blocking if the channel is not ready—a <em>non-blocking</em> communication. A <em>select</em> statement can do that too. A select may have a <em>default</em>, which specifies what to do when none of the other communications can proceed immediately.</p>
+<p>Sometimes we want to try to send or receive on a channel but avoid blocking if the channel is not ready—a <em>non-blocking</em> communication. A select statement can do that too. A <code>select</code> may have a <em>default</em>, which specifies what to do when none of the other communications can proceed immediately.</p>
 <p>The select statement below receives a value from the <code>abort</code> channel if there is one to receive; otherwise it does nothing. This is a non-blocking receive operation; doing it repeatedly is called <em>polling</em> a channel.</p>
 <div class="highlight"><pre><span></span><span class="k">select</span> <span class="p">{</span>
 <span class="k">case</span> <span class="o">&lt;-</span><span class="nx">abort</span><span class="p">:</span>
@@ -7998,7 +7997,7 @@ https://golang.org/blog/
 </div>
 <h3 id="Section-8.8" >Example: Concurrent Directory Traversal</h3>
 <div class="hBody-3" >
-<p>In this section, we’ll build a program that reports the disk usage of one or more directories specified on the command line, like the Unix <code class="command" >du</code> command. Most of its work is done by the <code>walkDir</code> function below, which enumerates the entries of the director y <code>dir</code> using the <code>dirents</code> helper function.</p>
+<p>In this section, we’ll build a program that reports the disk usage of one or more directories specified on the command line, like the Unix <code class="command" >du</code> command. Most of its work is done by the <code>walkDir</code> function below, which enumerates the entries of the directory  <code>dir</code> using the <code>dirents</code> helper function.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/du1/main.go" >gopl.io/ch8/du1</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// walkDir recursively walks the file tree rooted at dir</span>
@@ -8026,7 +8025,7 @@ https://golang.org/blog/
 </pre></div>
 </div>
 <p>The <code>ioutil.ReadDir</code> function returns a slice of <code>os.FileInfo</code>—the same information that a call to <code>os.Stat</code> returns for a single file. For each subdirectory, <code>walkDir</code> recursively calls itself, and for each file, <code>walkDir</code> sends a message on the <code>fileSizes</code> channel. The message is the size of the file in bytes.</p>
-<p>The main function, shown below, uses two goroutines. The background goroutine calls <code>walkDir</code> for each director y specified on the command line and finally closes the <code>fileSizes</code> channel. The main goroutine computes the sum of the file sizes it receives from the channel and finally prints the total.</p>
+<p>The main function, shown below, uses two goroutines. The background goroutine calls <code>walkDir</code> for each directory  specified on the command line and finally closes the <code>fileSizes</code> channel. The main goroutine computes the sum of the file sizes it receives from the channel and finally prints the total.</p>
 <div class="highlight"><pre><span></span><span class="c1">// The du1 command computes the disk usage of the files in a directory.</span>
 <span class="kn">package</span> <span class="nx">main</span>
 
@@ -8074,7 +8073,7 @@ $ ./du1 <span class="nv">$HOME</span> /usr /bin /etc
 <span class="m">213201</span> files <span class="m">62</span>.7 GB
 </pre></div>
 <p>The program would be nicer if it kept us informed of its progress. However, simply moving the <code>printDiskUsage</code> call into the loop would cause it to print thousands of lines of output.</p>
-<p>The variant of <code>du</code> below prints the totals periodically, but only if the <code>-v</code> flag is specified since not all users will want to see progress messages. The background goroutine that loops over roots remains unchanged. The main goroutine now uses a ticker to generate events every 500ms, and a select statement to wait for either a file size message, in which case it updates the totals, or a tick event, in which case it prints the current totals. If the <code>-v</code> flag is not specified, the <code>tick</code> channel remains nil, and its case in the <code>select</code> is effectively disabled.</p>
+<p>The variant of <code class="command" >du</code> below prints the totals periodically, but only if the <code>-v</code> flag is specified since not all users will want to see progress messages. The background goroutine that loops over <code>roots</code> remains unchanged. The main goroutine now uses a ticker to generate events every 500ms, and a select statement to wait for either a file size message, in which case it updates the totals, or a tick event, in which case it prints the current totals. If the <code>-v</code> flag is not specified, the <code>tick</code> channel remains nil, and its case in the <code>select</code> is effectively disabled.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/du2/main.go" >gopl.io/ch8/du2</a></p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">verbose</span> <span class="p">=</span> <span class="nx">flag</span><span class="p">.</span><span class="nx">Bool</span><span class="p">(</span><span class="s">&quot;v&quot;</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="s">&quot;show verbose progress messages&quot;</span><span class="p">)</span>
@@ -8105,7 +8104,7 @@ $ ./du1 <span class="nv">$HOME</span> /usr /bin /etc
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Since the program no longer uses a <code>range</code> loop, the first <code>select</code> case must explicitly test whether the <code>fileSizes</code> channel has been closed, using the two-result form of receive operation. If the channel has been closed, the program <code>breaks</code> out of the loop. The labeled <code>break</code> statement breaks out of both the <code>select</code> and the <code>for</code> loop; an unlabeled <code>break</code> would break out of only the <code>select</code>, causing the loop to begin the next iteration.</p>
+<p>Since the program no longer uses a <code>range</code> loop, the first <code>select</code> case must explicitly test whether the <code>fileSizes</code> channel has been closed, using the two-result form of receive operation. If the channel has been closed, the program breaks out of the loop. The labeled <code>break</code> statement breaks out of both the <code>select</code> and the <code>for</code> loop; an unlabeled <code>break</code> would break out of only the <code>select</code>, causing the loop to begin the next iteration.</p>
 <p>The program now gives us a leisurely stream of updates:</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch8/du2
 $ ./du2 -v <span class="nv">$HOME</span> /usr /bin /etc
@@ -8116,7 +8115,7 @@ $ ./du2 -v <span class="nv">$HOME</span> /usr /bin /etc
 <span class="m">175931</span> files <span class="m">62</span>.2 GB
 <span class="m">213201</span> files <span class="m">62</span>.7 GB
 </pre></div>
-<p>However, it still takes too long to finish. There’s no reason why all the calls to <code>walkDir</code> can’t be done concurrently, thereby exploiting parallelism in the disk system. The third version of <code>du</code>, below, creates a new goroutine for each call to <code>walkDir</code>. It uses a <code>sync.WaitGroup</code> (<a href="#Section-8.5" >§8.5</a>) to count the number of calls to <code>walkDir</code> that are still active, and a closer goroutine to close the <code>fileSizes</code> channel when the counter drops to zero.</p>
+<p>However, it still takes too long to finish. There’s no reason why all the calls to <code>walkDir</code> can’t be done concurrently, thereby exploiting parallelism in the disk system. The third version of <code class="command" >du</code>, below, creates a new goroutine for each call to <code>walkDir</code>. It uses a <code>sync.WaitGroup</code> (<a href="#Section-8.5" >§8.5</a>) to count the number of calls to <code>walkDir</code> that are still active, and a closer goroutine to close the <code>fileSizes</code> channel when the counter drops to zero.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/du3/main.go" >gopl.io/ch8/du3</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
@@ -8150,7 +8149,7 @@ $ ./du2 -v <span class="nv">$HOME</span> /usr /bin /etc
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Since this program creates many thousands of goroutines at its peak, we have to change dirents to use a counting semaphore to prevent it from opening too many files at once, just as we did for the web crawler in <a href="#Section-8.6" >Section 8.6</a>:</p>
+<p>Since this program creates many thousands of goroutines at its peak, we have to change <code>dirents</code> to use a counting semaphore to prevent it from opening too many files at once, just as we did for the web crawler in <a href="#Section-8.6" >Section 8.6</a>:</p>
 <div class="highlight"><pre><span></span><span class="c1">// sema is a counting semaphore for limiting concurrency in dirents.</span>
 <span class="kd">var</span> <span class="nx">sema</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{},</span> <span class="mi">20</span><span class="p">)</span>
 
@@ -8168,9 +8167,9 @@ $ ./du2 -v <span class="nv">$HOME</span> /usr /bin /etc
 <div class="hBody-3" >
 <p>Sometimes we need to instruct a goroutine to stop what it is doing, for example, in a web server performing a computation on behalf of a client that has disconnected.</p>
 <p>There is no way for one goroutine to terminate another directly, since that would leave all its shared variables in undefined states. In the rocket launch program (<a href="#Section-8.7" >§8.7</a>) we sent a single value on a channel named <code>abort</code>, which the countdown goroutine interpreted as a request to stop itself. But what if we need to cancel two goroutines, or an arbitrary number?</p>
-<p>One possibility might be to send as many events on the <code>abort</code> channel as there are goroutines to cancel. If some of the goroutines have already terminated themselves, however, our count will be too large, and our sends will get stuck. On the other hand, if those goroutines have spawned other goroutines, our count will be too small, and some goroutines will remain unaware of the cancellation. In general, it’s hard to know how many goroutines are working on our behalf at any given moment. Moreover, when a goroutine receives a value from the abort channel, it consumes that value so that other goroutines won’t see it. For cancellation, what we need is a reliable mechanism to <em>broadcast</em> an event over a channel so that many goroutines can see it <em>as</em> it occurs and can later see that it <em>has</em> occurred.</p>
+<p>One possibility might be to send as many events on the <code>abort</code> channel as there are goroutines to cancel. If some of the goroutines have already terminated themselves, however, our count will be too large, and our sends will get stuck. On the other hand, if those goroutines have spawned other goroutines, our count will be too small, and some goroutines will remain unaware of the cancellation. In general, it’s hard to know how many goroutines are working on our behalf at any given moment. Moreover, when a goroutine receives a value from the <code>abort</code> channel, it consumes that value so that other goroutines won’t see it. For cancellation, what we need is a reliable mechanism to <em>broadcast</em> an event over a channel so that many goroutines can see it <em>as</em> it occurs and can later see that it <em>has</em> occurred.</p>
 <p>Recall that after a channel has been closed and drained of all sent values, subsequent receive operations proceed immediately, yielding zero values. We can exploit this to create a broadcast mechanism: don’t send a value on the channel, close it.</p>
-<p>We can add cancellation to the du program from the previous section with a few simple changes. First, we create a cancellation channel on which no values are ever sent, but whose closure indicates that it is time for the program to stop what it is doing. We also define a utility function, <code>cancelled</code>, that checks or <em>polls</em> the cancellation state at the instant it is called.</p>
+<p>We can add cancellation to the <code class="command" >du</code> program from the previous section with a few simple changes. First, we create a cancellation channel on which no values are ever sent, but whose closure indicates that it is time for the program to stop what it is doing. We also define a utility function, <code>cancelled</code>, that checks or <em>polls</em> the cancellation state at the instant it is called.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/du4/main.go" >gopl.io/ch8/du4</a></p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">done</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
@@ -8192,7 +8191,7 @@ $ ./du2 -v <span class="nv">$HOME</span> /usr /bin /etc
   <span class="nb">close</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span>
 <span class="p">}()</span>
 </pre></div>
-<p>Now we need to make our goroutines respond to the cancellation. In the main goroutine, we add a third case to the select statement that tries to receive from the done channel. The function returns if this case is ever selected, but before it returns it must first drain the <code>fileSizes</code> channel, discarding all values until the channel is closed. It does this to ensure that any active calls to <code>walkDir</code> can run to completion without getting stuck sending to <code>fileSizes</code>.</p>
+<p>Now we need to make our goroutines respond to the cancellation. In the main goroutine, we add a third case to the select statement that tries to receive from the <code>done</code> channel. The function returns if this case is ever selected, but before it returns it must first drain the <code>fileSizes</code> channel, discarding all values until the channel is closed. It does this to ensure that any active calls to <code>walkDir</code> can run to completion without getting stuck sending to <code>fileSizes</code>.</p>
 <div class="highlight"><pre><span></span><span class="k">for</span> <span class="p">{</span>
   <span class="k">select</span> <span class="p">{</span>
   <span class="k">case</span> <span class="o">&lt;-</span><span class="nx">done</span><span class="p">:</span>
@@ -8233,7 +8232,7 @@ $ ./du2 -v <span class="nv">$HOME</span> /usr /bin /etc
 <p>Now, when cancellation occurs, all the background goroutines quickly stop and the <code>main</code> function returns. Of course, when <code>main</code> returns, a program exits, so it can be hard to tell a main function that cleans up after itself from one that does not. There’s a handy trick we can use during testing: if instead of returning from <code>main</code> in the event of cancellation, we execute a call to <code>panic</code>, then the runtime will dump the stack of every goroutine in the program. If the main goroutine is the only one left, then it has cleaned up after itself. But if other goroutines remain, they may not have been properly cancelled, or perhaps they have been cancelled but the cancellation takes time; a little investigation may be worthwhile. The panic dump often contains sufficient information to distinguish these cases.</p>
 <p><b>Exercise 8.10</b>: HTTP requests may be cancelled by closing the optional <code>Cancel</code> channel in the <code>http.Request</code> struct. Modify the web crawler of <a href="#Section-8.6" >Section 8.6</a> to support cancellation.</p>
 <p>Hint: the <code>http.Get</code> convenience function does not give you an opportunity to customize a <code>Request</code>. Instead, create the request using <code>http.NewRequest</code>, set its <code>Cancel</code> field, then perform the request by calling <code>http.DefaultClient.Do(req)</code>.</p>
-<p><b>Exercise 8.11</b>: Following the approach of <code>mirroredQuery</code> in <a href="#Section-8.4.4" >Section 8.4.4</a>, implement a variant of <code>fetch</code> that requests several URLs concurrently. As soon as the first response arrives, cancel the other requests.</p>
+<p><b>Exercise 8.11</b>: Following the approach of <code>mirroredQuery</code> in <a href="#Section-8.4.4" >Section 8.4.4</a>, implement a variant of <code class="command" >fetch</code> that requests several URLs concurrently. As soon as the first response arrives, cancel the other requests.</p>
 </div>
 <h3 id="Section-8.10" >Example: Chat Server</h3>
 <div class="hBody-3" >
@@ -8288,7 +8287,7 @@ $ ./du2 -v <span class="nv">$HOME</span> /usr /bin /etc
 <span class="p">}</span>
 </pre></div>
 <p>The broadcaster listens on the global <code>entering</code> and <code>leaving</code> channels for announcements of arriving and departing <code>clients</code>. When it receives one of these events, it updates the clients set, and if the event was a departure, it closes the client’s outgoing message channel. The broadcaster also listens for events on the global <code>messages</code> channel, to which each client sends all its incoming messages. When the broadcaster receives one of these events, it broadcasts the message to every connected client.</p>
-<p>Now let’s look at the per-client goroutines. The <code>handleConn</code> function creates a new outgoing message channel for its client and announces the arrival of this client to the broadcaster over the <code>entering</code> channel. Then it reads every line of text from the client, sending each line to the broadcaster over the global incoming message channel, prefixing each message with the identity of its sender. Once there is nothing more to read from the client, handleConn announces the departure of the client over the <code>leaving</code> channel and closes the connection.</p>
+<p>Now let’s look at the per-client goroutines. The <code>handleConn</code> function creates a new outgoing message channel for its client and announces the arrival of this client to the broadcaster over the <code>entering</code> channel. Then it reads every line of text from the client, sending each line to the broadcaster over the global incoming message channel, prefixing each message with the identity of its sender. Once there is nothing more to read from the client, <code>handleConn</code> announces the departure of the client over the <code>leaving</code> channel and closes the connection.</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">handleConn</span><span class="p">(</span><span class="nx">conn</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Conn</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">string</span><span class="p">)</span> <span class="c1">// outgoing client messages</span>
   <span class="k">go</span> <span class="nx">clientWriter</span><span class="p">(</span><span class="nx">conn</span><span class="p">,</span> <span class="nx">ch</span><span class="p">)</span>
@@ -9338,7 +9337,7 @@ $ go get gopl.io/...
     pkg/
         darwin_amd64/
         ...</pre>
-<p><code>GOPATH</code> has three subdirectories. The src subdirector y holds source code. Each package resides in a directory whose name relative to <code>$GOPATH/src</code> is the package’s import path, such as <code>gopl.io/ch1/helloworld</code>. Observe that a single <code>GOPATH</code> workspace contains multiple version-control repositories beneath <span class="file" >src</span>, such as <code>gopl.io</code> or <code>golang.org</code>. The <span class="file" >pkg</span> subdirectory is where the build tools store compiled packages, and the <span class="file" >bin</span> subdirectory holds executable programs like <code>helloworld</code>.</p>
+<p><code>GOPATH</code> has three subdirectories. The src subdirectory  holds source code. Each package resides in a directory whose name relative to <code>$GOPATH/src</code> is the package’s import path, such as <code>gopl.io/ch1/helloworld</code>. Observe that a single <code>GOPATH</code> workspace contains multiple version-control repositories beneath <span class="file" >src</span>, such as <code>gopl.io</code> or <code>golang.org</code>. The <span class="file" >pkg</span> subdirectory is where the build tools store compiled packages, and the <span class="file" >bin</span> subdirectory holds executable programs like <code>helloworld</code>.</p>
 <p>A second environment variable, <code>GOROOT</code>, specifies the root directory of the Go distribution, which provides all the packages of the standard library. The directory structure beneath <code>GOROOT</code> resembles that of <code>GOPATH</code>, so, for example, the source files of the <code>fmt</code> package reside in the <span class="file" >$GOROOT/src/fmt</span> directory. Users never need to set <code>GOROOT</code> since, by default, the go tool will use the location where it was installed.</p>
 <p>The <code class="command" >go env</code> command prints the effective values of the environment variables relevant to the toolchain, including the default values for the missing ones. <code>GOOS</code> specifies the target operating system (for example, <code>android</code>, <code>linux</code>, <code>darwin</code>, or <code>windows</code>) and <code>GOARCH</code> specifies the target processor architecture, such as <code>amd64</code>, <code>386</code>, or <code>arm</code>. Although <code>GOPATH</code> is the only variable you must set, the others occasionally appear in our explanations.</p>
 <div class="highlight"><pre><span></span>$ go env
