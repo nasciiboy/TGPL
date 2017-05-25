@@ -148,7 +148,7 @@
 <span class="toc" ><a class="h3" href="#Section-9.8" >Goroutines and Threads</a></span>
 <span class="toc" ><a class="h4" href="#Section-9.8.1" >Growable Stacks</a></span>
 <span class="toc" ><a class="h4" href="#Section-9.8.2" >Goroutine Scheduling</a></span>
-<span class="toc" ><a class="h4" href="#Section-9.8.3" >GOMAXPROCS</a></span>
+<span class="toc" ><a class="h4" href="#Section-9.8.3" ><code>GOMAXPROCS</code></a></span>
 <span class="toc" ><a class="h4" href="#Section-9.8.4" >Goroutines Have No Identity</a></span>
 <span class="toc" ><a class="h2" href="#Chapter-10" >Packages and the Go Tool</a></span>
 <span class="toc" ><a class="h3" href="#Section-10.1" >Introduction</a></span>
@@ -8409,7 +8409,7 @@ A1r      0          ... = balance + amount
 B      100
 A1w    200          balance = ...
 A2  &quot;= 200&quot;</pre>
-<p>After <code>A1r</code>, the expression <em>balance + amount</em> evaluates to 200, so this is the value written during <code>A1w</code>, despite the intervening deposit. The final balance is only $200. The bank is $100 richer at Bob’s expense.</p>
+<p>After <code>A1r</code>, the expression <code>balance + amount</code> evaluates to 200, so this is the value written during <code>A1w</code>, despite the intervening deposit. The final balance is only $200. The bank is $100 richer at Bob’s expense.</p>
 <p>This program contains a particular kind of race condition called a <code>data race</code>. A data race occurs whenever two goroutines access the same variable concurrently and at least one of the accesses is a write.</p>
 <p>Things get even messier if the data race involves a variable of a type that is larger than a single machine word, such as an interface, a string, or a slice. This code updates <code>x</code> concurrently to two slices of different lengths:</p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">x</span> <span class="p">[]</span><span class="kt">int</span>
@@ -8492,7 +8492,7 @@ A2  &quot;= 200&quot;</pre>
 <span class="kd">func</span> <span class="nx">icer</span><span class="p">(</span><span class="nx">iced</span> <span class="kd">chan</span><span class="o">&lt;-</span> <span class="o">*</span><span class="nx">Cake</span><span class="p">,</span> <span class="nx">cooked</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="o">*</span><span class="nx">Cake</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">for</span> <span class="nx">cake</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">cooked</span> <span class="p">{</span>
     <span class="nx">cake</span><span class="p">.</span><span class="nx">state</span> <span class="p">=</span> <span class="s">&quot;iced&quot;</span>
-    <span class="nx">iced</span> <span class="o">&lt;-</span> <span class="nx">cake</span> <span class="c1">// icer never touches this cake again</span>
+    <span class="nx">iced</span> <span class="o">&lt;-</span> <span class="nx">cake</span>   <span class="c1">// icer never touches this cake again</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -8636,7 +8636,7 @@ A2  &quot;= 200&quot;</pre>
 </div>
 <h3 id="Section-9.4" >Memory Synchronization</h3>
 <div class="hBody-3" >
-<p>You may wonder why the Balance method needs mutual exclusion, either channel-based or mutex-based. After all, unlike <code>Deposit</code>, it consists only of a single operation, so there is no danger of another goroutine executing <q>in the middle</q> of it. There are two reasons we need a mutex. The first is that it’s equally important that <code>Balance</code> not execute in the middle of some other operation like <code>Withdraw</code>. The second (and more subtle) reason is that synchronization is about more than just the order of execution of multiple goroutines; synchronization also affects memory.</p>
+<p>You may wonder why the <code>Balance</code> method needs mutual exclusion, either channel-based or mutex-based. After all, unlike <code>Deposit</code>, it consists only of a single operation, so there is no danger of another goroutine executing <q>in the middle</q> of it. There are two reasons we need a mutex. The first is that it’s equally important that <code>Balance</code> not execute in the middle of some other operation like <code>Withdraw</code>. The second (and more subtle) reason is that synchronization is about more than just the order of execution of multiple goroutines; synchronization also affects memory.</p>
 <p>In a modern computer there may be dozens of processors, each with its own local cache of the main memory. For efficiency, writes to memory are buffered within each processor and flushed out to main memory only when necessary. They may even be committed to main memory in a different order than they were written by the writing goroutine. Synchronization primitives like channel communications and mutex operations cause the processor to flush out and commit all its accumulated writes so that the effects of goroutine execution up to that point are guaranteed to be visible to goroutines running on other processors.</p>
 <p>Consider the possible outputs of the following snippet of code:</p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span>
@@ -8660,7 +8660,7 @@ y:1 x:1</pre>
 <pre class="pre" >x:0 y:0
 y:0 x:0</pre>
 <p>but depending on the compiler, CPU, and many other factors, they can happen too. What possible interleaving of the four statements could explain them?</p>
-<p>Within a single goroutine, the effects of each statement are guaranteed to occur in the order of execution; goroutines are <em>sequentially consistent</em>. But in the absence of explicit synchronization using a channel or mutex, there is no guarantee that events are seen in the same order by all goroutines. Although goroutine A must observe the effect of the write <code>x = 1</code> before it reads the value of <code>y</code>, it does not necessarily observe the write to y done by goroutine B, so A may print a <em>stale</em> value of <code>y</code>.</p>
+<p>Within a single goroutine, the effects of each statement are guaranteed to occur in the order of execution; goroutines are <em>sequentially consistent</em>. But in the absence of explicit synchronization using a channel or mutex, there is no guarantee that events are seen in the same order by all goroutines. Although goroutine A must observe the effect of the write <code>x = 1</code> before it reads the value of <code>y</code>, it does not necessarily observe the write to <code>y</code> done by goroutine B, so A may print a <em>stale</em> value of <code>y</code>.</p>
 <p>It is tempting to try to understand concurrency as if it corresponds to <em>some</em> interleaving of the statements of each goroutine, but as the example above shows, this is not how a modern compiler or CPU works. Because the assignment and the <code>Print</code> refer to different variables, a compiler may conclude that the order of the two statements cannot affect the result, and swap them. If the two goroutines execute on different CPUs, each with its own cache, writes by one goroutine are not visible to the other goroutine’s <code>Print</code> until the caches are synchronized with main memory.</p>
 <p>All these concurrency problems can be avoided by the consistent use of simple, established patterns. Where possible, confine variables to a single goroutine; for all other variables, use mutual exclusion.</p>
 </div>
@@ -8736,8 +8736,8 @@ y:0 x:0</pre>
   <span class="k">return</span> <span class="nx">icon</span>
 <span class="p">}</span>
 </pre></div>
-<p>There are now two critical sections. The goroutine first acquires a reader lock, consults the map, then releases the lock. If an entry was found (the common case), it is returned. If no entry was found, the goroutine acquires a writer lock. There is no way to upgrade a shared lock to an exclusive one without first releasing the shared lock, so we must recheck the icons variable in case another goroutine already initialized it in the interim.</p>
-<p>The pattern above gives us greater concurrency but is complex and thus error-prone.  Fortunately, the <code>sync</code> package provides a specialized solution to the problem of one-time initialization: <code>sync.Once</code>. Conceptually, a <code>Once</code> consists of a mutex and a boolean variable that records whether initialization has taken place; the mutex guards both the boolean and the client’s data structures. The sole method, Do, accepts the initialization function as its argument. Let’s use Once to simplify the <code>Icon</code> function:</p>
+<p>There are now two critical sections. The goroutine first acquires a reader lock, consults the map, then releases the lock. If an entry was found (the common case), it is returned. If no entry was found, the goroutine acquires a writer lock. There is no way to upgrade a shared lock to an exclusive one without first releasing the shared lock, so we must recheck the <code>icons</code> variable in case another goroutine already initialized it in the interim.</p>
+<p>The pattern above gives us greater concurrency but is complex and thus error-prone.  Fortunately, the <code>sync</code> package provides a specialized solution to the problem of one-time initialization: <code>sync.Once</code>. Conceptually, a <code>Once</code> consists of a mutex and a boolean variable that records whether initialization has taken place; the mutex guards both the boolean and the client’s data structures. The sole method, Do, accepts the initialization function as its argument. Let’s use <code>Once</code> to simplify the <code>Icon</code> function:</p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">loadIconsOnce</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
 <span class="kd">var</span> <span class="nx">icons</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">image</span><span class="p">.</span><span class="nx">Image</span>
 
@@ -8876,14 +8876,15 @@ Found <span class="m">1</span> data race<span class="o">(</span>s<span class="o"
 FAIL    gopl.io/ch9/memo1   <span class="m">2</span>.393s
 </pre></div>
 <p>The reference to <code>memo.go:32</code> tells us that two goroutines have updated the <code>cache</code> map without any intervening synchronization. <code>Get</code> is not concurrency-safe: it has a data race.</p>
-<pre class="pre" >28  func (memo *Memo) Get(key string) (interface{}, error) {
-29  res, ok := memo.cache[key]
-30  if !ok {
-31  res.value, res.err = memo.f(key)
-32  memo.cache[key] = res
-33  }
-34  return res.value, res.err
-35  }</pre>
+<div class="highlight"><pre><span></span><span class="kd">func</span> <span class="p">(</span><span class="nx">memo</span> <span class="o">*</span><span class="nx">Memo</span><span class="p">)</span> <span class="nx">Get</span><span class="p">(</span><span class="nx">key</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kd">interface</span><span class="p">{},</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">res</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">memo</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+  <span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">err</span> <span class="p">=</span> <span class="nx">memo</span><span class="p">.</span><span class="nx">f</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span>
+    <span class="nx">memo</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="p">=</span> <span class="nx">res</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">err</span>
+<span class="p">}</span>
+</pre></div>
 <p>The simplest way to make the cache concurrency-safe is to use monitor-based synchronization. All we need to do is add a mutex to the <code>Memo</code>, acquire the mutex lock at the start of <code>Get</code>, and release it before <code>Get</code> returns, so that the two <code>cache</code> operations occur within the critical section:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch9/memo2/memo.go" >gopl.io/ch9/memo2</a></p>
@@ -8928,7 +8929,7 @@ FAIL    gopl.io/ch9/memo1   <span class="m">2</span>.393s
 </pre></div>
 </div>
 <p>The performance improves again, but now we notice that some URLs are being fetched twice.  This happens when two or more goroutines call <code>Get</code> for the same URL at about the same time.  Both consult the cache, find no value there, and then call the slow function <code>f</code>. Then both of them update the map with the result they obtained. One of the results is overwritten by the other.</p>
-<p>Ideally we’d like to avoid this redundant work. This feature is sometimes called <em>duplicate suppression</em>. In the version of <code>Memo</code> below, each map element is a pointer to an <code>entry</code> struct.  Each <code>entry</code> contains the memoized result of a call to the function <code>f</code>, as before, but it additionally contains a channel called ready. Just after the <code>entry</code>’s <code>result</code> has been set, this channel will be closed, to <em>broadcast</em> (<a href="#Section-8.9" >§8.9</a>) to any other goroutines that it is now safe for them to read the result from the entry.</p>
+<p>Ideally we’d like to avoid this redundant work. This feature is sometimes called <em>duplicate suppression</em>. In the version of <code>Memo</code> below, each map element is a pointer to an <code>entry</code> struct.  Each <code>entry</code> contains the memoized result of a call to the function <code>f</code>, as before, but it additionally contains a channel called <code>ready</code>. Just after the <code>entry</code>’s <code>result</code> has been set, this channel will be closed, to <em>broadcast</em> (<a href="#Section-8.9" >§8.9</a>) to any other goroutines that it is now safe for them to read the result from the entry.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch9/memo4/memo.go" >gopl.io/ch9/memo4</a></p>
 <div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">entry</span> <span class="kd">struct</span> <span class="p">{</span>
@@ -8970,7 +8971,7 @@ FAIL    gopl.io/ch9/memo1   <span class="m">2</span>.393s
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>A call to <code>Get</code> now involves acquiring the mutex lock that guards the <code>cache</code> map, looking in the map for a pointer to an existing <code>entry</code>, allocating and inserting a new <code>entry</code> if none was found, then releasing the lock. If there was an existing <code>entry</code>, its value is not necessarily ready yet—another goroutine could still be calling the slow function <code>f</code>—so the calling goroutine must wait for the entry’s <q>ready</q> condition before it reads the <code>entry</code>’s <code>result</code>. It does this by reading a value from the <code>ready</code> channel, since this operation blocks until the channel is closed.</p>
+<p>A call to <code>Get</code> now involves acquiring the mutex lock that guards the <code>cache</code> map, looking in the map for a pointer to an existing <code>entry</code>, allocating and inserting a new <code>entry</code> if none was found, then releasing the lock. If there was an existing <code>entry</code>, its value is not necessarily ready yet—another goroutine could still be calling the slow function <code>f</code>—so the calling goroutine must wait for the <code>entry</code>’s <q>ready</q> condition before it reads the <code>entry</code>’s <code>result</code>. It does this by reading a value from the <code>ready</code> channel, since this operation blocks until the channel is closed.</p>
 <p>If there was no existing <code>entry</code>, then by inserting a new <q>not ready</q> <code>entry</code> into the map, the current goroutine becomes responsible for invoking the slow function, updating the <code>entry</code>, and broadcasting the readiness of the new <code>entry</code> to any other goroutines that might (by then) be waiting for it.</p>
 <p>Notice that the variables <code>e.res.value</code> and <code>e.res.err</code> in the <code>entry</code> are shared among multiple goroutines. The goroutine that creates the <code>entry</code> sets their values, and other goroutines read their values once the <q>ready</q> condition has been broadcast. Despite being accessed by multiple goroutines, no mutex lock is necessary. The closing of the <code>ready</code> channel <em>happens before</em> any other goroutine receives the broadcast event, so the write to those variables in the first goroutine <em>happens before</em> they are read by subsequent goroutines. There is no data race.</p>
 <p>Our concurrent, duplicate-suppressing, non-blocking cache is complete.</p>
@@ -9052,7 +9053,7 @@ FAIL    gopl.io/ch9/memo1   <span class="m">2</span>.393s
 <p>A subsequent request for the same key finds the existing <code>entry</code> in the map, waits for the result to become ready, and sends the result through the response channel to the client goroutine that called <code>Get</code>. This is done by <code>(*entry).deliver</code>. The <code>call</code> and <code>deliver</code> methods must be called in their own goroutines to ensure that the monitor goroutine does not stop processing new requests.</p>
 <p>This example shows that it’s possible to build many concurrent structures using either of the two approaches—shared variables and locks, or communicating sequential processes— without excessive complexity.</p>
 <p>It’s not always obvious which approach is preferable in a given situation, but it’s worth knowing how they correspond. Sometimes switching from one approach to the other can make your code simpler.</p>
-<p><b>Exercise 9.3</b>: Extend the Func type and the <code>(*Memo).Get</code> method so that callers may provide an optional done channel through which they can cancel the operation (<a href="#Section-8.9" >§8.9</a>). The results of a cancelled <code>Func</code> call should not be cached.</p>
+<p><b>Exercise 9.3</b>: Extend the Func type and the <code>(*Memo).Get</code> method so that callers may provide an optional <code>done</code> channel through which they can cancel the operation (<a href="#Section-8.9" >§8.9</a>). The results of a cancelled <code>Func</code> call should not be cached.</p>
 </div>
 <h3 id="Section-9.8" >Goroutines and Threads</h3>
 <div class="hBody-3" >
@@ -9067,11 +9068,11 @@ FAIL    gopl.io/ch9/memo1   <span class="m">2</span>.393s
 <h4 id="Section-9.8.2" >Goroutine Scheduling</h4>
 <div class="hBody-4" >
 <p>OS threads are scheduled by the OS kernel. Every few milliseconds, a hardware timer interrupts the processor, which causes a kernel function called the <em>scheduler</em> to be invoked. This function suspends the currently executing thread and saves its registers in memory, looks over the list of threads and decides which one should run next, restores that thread’s registers from memory, then resumes the execution of that thread. Because OS threads are scheduled by the kernel, passing control from one thread to another requires a full <em>context switch</em>, that is, saving the state of one user thread to memory, restoring the state of another, and updating the scheduler’s data structures. This operation is slow, due to its poor locality and the number of memory accesses required, and has historically only gotten worse as the number of CPU cycles required to access memory has increased.</p>
-<p>The Go runtime contains its own scheduler that uses a technique known as <span class="math" >m:n scheduling</span>, because it multiplexes (or schedules) <span class="math" >m</span> goroutines on <span class="math" >n</span> OS threads. The job of the Go scheduler is analogous to that of the kernel scheduler, but it is concerned only with the goroutines of a single Go program.</p>
+<p>The Go runtime contains its own scheduler that uses a technique known as <em>m:n scheduling</em>, because it multiplexes (or schedules) <em>m</em> goroutines on <em>n</em> OS threads. The job of the Go scheduler is analogous to that of the kernel scheduler, but it is concerned only with the goroutines of a single Go program.</p>
 <p>Unlike the operating system’s thread scheduler, the Go scheduler is not invoked periodically by a hardware timer, but implicitly by certain Go language constructs. For example, when a goroutine calls <code>time.Sleep</code> or blocks in a channel or mutex operation, the scheduler puts it to sleep and runs another goroutine until it is time to wake the first one up. Because it doesn’t need a switch to kernel context, rescheduling a goroutine is much cheaper than rescheduling a thread.</p>
 <p><b>Exercise 9.5</b>: Write a program with two goroutines that send messages back and forth over two unbuffered channels in ping-pong fashion. How many communications per second can the program sustain?</p>
 </div>
-<h4 id="Section-9.8.3" >GOMAXPROCS</h4>
+<h4 id="Section-9.8.3" ><code>GOMAXPROCS</code></h4>
 <div class="hBody-4" >
 <p>The Go scheduler uses a parameter called <code>GOMAXPROCS</code> to determine how many OS threads may be actively executing Go code simultaneously. Its default value is the number of CPUs on the machine, so on a machine with 8 CPUs, the scheduler will schedule Go code on up to 8 OS threads at once. (<code>GOMAXPROCS</code> is the <span class="math" >n</span> in <span class="math" >m:n</span> scheduling.) Goroutines that are sleeping or blocked in a communication do not need a thread at all. Goroutines that are blocked in I/O or other system calls or are calling non-Go functions, do need an OS thread, but <code>GOMAXPROCS</code> need not account for them.</p>
 <p>You can explicitly control this parameter using the <code>GOMAXPROCS</code> environment variable or the <code>runtime.GOMAXPROCS</code> function. We can see the effect of <code>GOMAXPROCS</code> on this little program, which prints an endless stream of zeros and ones:</p>
@@ -9090,7 +9091,7 @@ $ <span class="nv">GOMAXPROCS</span><span class="o">=</span><span class="m">2</s
 </div>
 <h4 id="Section-9.8.4" >Goroutines Have No Identity</h4>
 <div class="hBody-4" >
-<p>In most operating systems and programming languages that support multithreading, the current thread has a distinct identity that can be easily obtained as an ordinary value, typically an integer or pointer. This makes it easy to build an abstraction called <em>thread-local storagec, which is essentially a global map keyed by thread identity, so that each thread can store and retrieve values independent of other threads.</em></p>
+<p>In most operating systems and programming languages that support multithreading, the current thread has a distinct identity that can be easily obtained as an ordinary value, typically an integer or pointer. This makes it easy to build an abstraction called <em>thread-local storage</em>, which is essentially a global map keyed by thread identity, so that each thread can store and retrieve values independent of other threads.</p>
 <p>Goroutines have no notion of identity that is accessible to the programmer. This is by design, since thread-local storage tends to be abused. For example, in a web server implemented in a language with thread-local storage, it’s common for many functions to find information about the HTTP request on whose behalf they are currently working by looking in that storage.  However, just as with programs that rely excessively on global variables, this can lead to an unhealthy <q>action at a distance</q> in which the behavior of a function is not determined by its arguments alone, but by the identity of the thread in which it runs. Consequently, if the identity of the thread should change—some worker threads are enlisted to help, say—the function misbehaves mysteriously.</p>
 <p>Go encourages a simpler style of programming in which parameters that affect the behavior of a function are explicit. Not only does this make programs easier to read, but it lets us freely assign subtasks of a given function to many different goroutines without worrying about their identity.</p>
 <p>You’ve now learned about all the language features you need for writing Go programs. In the next two chapters, we’ll step back to look at some of the practices and tools that support programming in the large: how to structure a project as a set of packages, and how to obtain, build, test, benchmark, profile, document, and share those packages.</p>

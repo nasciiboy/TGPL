@@ -15419,7 +15419,7 @@
      A2  "= 200"
 
 
-   After @c(A1r), the expression @e(balance + amount) evaluates to 200, so this
+   After @c(A1r), the expression @c(balance + amount) evaluates to 200, so this
    is the value written during @c(A1w), despite the intervening deposit. The
    final balance is only $200. The bank is $100 richer at Bob’s expense.
 
@@ -15586,7 +15586,7 @@
      func icer(iced chan<- *Cake, cooked <-chan *Cake) {
        for cake := range cooked {
          cake.state = "iced"
-         iced <- cake // icer never touches this cake again
+         iced <- cake   // icer never touches this cake again
        }
      }
    < src..
@@ -15874,7 +15874,7 @@
 
 ** Section 9.4 <> Memory Synchronization
 
-   You may wonder why the Balance method needs mutual exclusion, either
+   You may wonder why the @c(Balance) method needs mutual exclusion, either
    channel-based or mutex-based. After all, unlike @c(Deposit), it consists only
    of a single operation, so there is no danger of another goroutine executing
    @"(in the middle) of it. There are two reasons we need a mutex. The first is
@@ -15938,7 +15938,7 @@
    or mutex, there is no guarantee that events are seen in the same order by all
    goroutines. Although goroutine A must observe the effect of the write @c(x
    = 1) before it reads the value of @c(y), it does not necessarily observe the
-   write to y done by goroutine B, so A may print a @e(stale) value of @c(y).
+   write to @c(y) done by goroutine B, so A may print a @e(stale) value of @c(y).
 
    It is tempting to try to understand concurrency as if it corresponds to
    @e(some) interleaving of the statements of each goroutine, but as the example
@@ -16070,17 +16070,17 @@
    lock, consults the map, then releases the lock. If an entry was found (the
    common case), it is returned. If no entry was found, the goroutine acquires a
    writer lock. There is no way to upgrade a shared lock to an exclusive one
-   without first releasing the shared lock, so we must recheck the icons
+   without first releasing the shared lock, so we must recheck the @c(icons)
    variable in case another goroutine already initialized it in the interim.
 
    The pattern above gives us greater concurrency but is complex and thus
    error-prone.  Fortunately, the @c(sync) package provides a specialized
-   solution to the problem of one-time initialization:
-   @c(sync.Once). Conceptually, a @c(Once) consists of a mutex and a boolean
-   variable that records whether initialization has taken place; the mutex
-   guards both the boolean and the client’s data structures. The sole method,
-   Do, accepts the initialization function as its argument. Let’s use Once to
-   simplify the @c(Icon) function:
+   solution to the problem of one-time initialization: @c(sync.Once).
+   Conceptually, a @c(Once) consists of a mutex and a boolean variable that
+   records whether initialization has taken place; the mutex guards both the
+   boolean and the client’s data structures. The sole method, Do, accepts the
+   initialization function as its argument. Let’s use @c(Once) to simplify the
+   @c(Icon) function:
 
    ..src > go
      var loadIconsOnce sync.Once
@@ -16318,16 +16318,16 @@
    @c(cache) map without any intervening synchronization. @c(Get) is not
    concurrency-safe: it has a data race.
 
-   ..pre >
-     28  func (memo *Memo) Get(key string) (interface{}, error) {
-     29  res, ok := memo.cache[key]
-     30  if !ok {
-     31  res.value, res.err = memo.f(key)
-     32  memo.cache[key] = res
-     33  }
-     34  return res.value, res.err
-     35  }
-
+   ..src n(28) > go
+     func (memo *Memo) Get(key string) (interface{}, error) {
+       res, ok := memo.cache[key]
+       if !ok {
+         res.value, res.err = memo.f(key)
+         memo.cache[key] = res
+       }
+       return res.value, res.err
+     }
+   < src..
 
    The simplest way to make the cache concurrency-safe is to use monitor-based
    synchronization. All we need to do is add a mutex to the @c(Memo), acquire
@@ -16402,7 +16402,7 @@
    called @e(duplicate suppression). In the version of @c(Memo) below, each map
    element is a pointer to an @c(entry) struct.  Each @c(entry) contains the
    memoized result of a call to the function @c(f), as before, but it
-   additionally contains a channel called ready. Just after the @c(entry)’s
+   additionally contains a channel called @c(ready). Just after the @c(entry)’s
    @c(result) has been set, this channel will be closed, to @e(broadcast)
    (@l(#Section 8.9<>§8.9)) to any other goroutines that it is now safe for them
    to read the result from the entry.
@@ -16455,9 +16455,10 @@
    allocating and inserting a new @c(entry) if none was found, then releasing
    the lock. If there was an existing @c(entry), its value is not necessarily
    ready yet—another goroutine could still be calling the slow function @c(f)—so
-   the calling goroutine must wait for the entry’s @"(ready) condition before it
-   reads the @c(entry)’s @c(result). It does this by reading a value from the
-   @c(ready) channel, since this operation blocks until the channel is closed.
+   the calling goroutine must wait for the @c(entry)’s @"(ready) condition
+   before it reads the @c(entry)’s @c(result). It does this by reading a value
+   from the @c(ready) channel, since this operation blocks until the channel is
+   closed.
 
    If there was no existing @c(entry), then by inserting a new @"(not ready)
    @c(entry) into the map, the current goroutine becomes responsible for
@@ -16597,9 +16598,9 @@
    approach to the other can make your code simpler.
 
    @b(Exercise 9.3): Extend the Func type and the @c[(*Memo).Get] method so that
-   callers may provide an optional done channel through which they can cancel
-   the operation (@l(#Section 8.9<>§8.9)). The results of a cancelled @c(Func)
-   call should not be cached.
+   callers may provide an optional @c(done) channel through which they can
+   cancel the operation (@l(#Section 8.9<>§8.9)). The results of a cancelled
+   @c(Func) call should not be cached.
 
 ** Section 9.8 <> Goroutines and Threads
 
@@ -16654,8 +16655,8 @@
     increased.
 
     The Go runtime contains its own scheduler that uses a technique known as
-    @m(m:n scheduling), because it multiplexes (or schedules) @m(m) goroutines
-    on @m(n) OS threads. The job of the Go scheduler is analogous to that of the
+    @e(m:n scheduling), because it multiplexes (or schedules) @e(m) goroutines
+    on @e(n) OS threads. The job of the Go scheduler is analogous to that of the
     kernel scheduler, but it is concerned only with the goroutines of a single
     Go program.
 
@@ -16671,7 +16672,7 @@
     back and forth over two unbuffered channels in ping-pong fashion. How many
     communications per second can the program sustain?
 
-*** Section 9.8.3 <> GOMAXPROCS
+*** Section 9.8.3 <> @c(GOMAXPROCS)
 
     The Go scheduler uses a parameter called @c(GOMAXPROCS) to determine how
     many OS threads may be actively executing Go code simultaneously. Its
@@ -16720,7 +16721,7 @@
     In most operating systems and programming languages that support
     multithreading, the current thread has a distinct identity that can be
     easily obtained as an ordinary value, typically an integer or pointer. This
-    makes it easy to build an abstraction called @e(thread-local storagec, which
+    makes it easy to build an abstraction called @e(thread-local storage), which
     is essentially a global map keyed by thread identity, so that each thread
     can store and retrieve values independent of other threads.
 
