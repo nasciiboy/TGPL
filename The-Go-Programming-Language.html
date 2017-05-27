@@ -9122,7 +9122,7 @@ $ <span class="nv">GOMAXPROCS</span><span class="o">=</span><span class="m">2</s
   <span class="s">&quot;github.com/go-sql-driver/mysql&quot;</span>
 <span class="p">)</span>
 </pre></div>
-<p>As we mentioned in <a href="#Section-2.6.1" >Section 2.6.1</a>, the Go language specification doesn’t define the meaning of these strings or how to determine a package’s import path, but leaves these issues to the tools. In this chapter, we’ll take a detailed look at how the go tool interprets them, since that’s what the majority of Go programmers use for building, testing, and so on. Other tools do exist, though. For example, Go programmers using Google’s internal multi-language build system follow different rules for naming and locating packages, specifying tests, and so on, that more closely match the conventions of that system.</p>
+<p>As we mentioned in <a href="#Section-2.6.1" >Section 2.6.1</a>, the Go language specification doesn’t define the meaning of these strings or how to determine a package’s import path, but leaves these issues to the tools. In this chapter, we’ll take a detailed look at how the <code class="command" >go</code> tool interprets them, since that’s what the majority of Go programmers use for building, testing, and so on. Other tools do exist, though. For example, Go programmers using Google’s internal multi-language build system follow different rules for naming and locating packages, specifying tests, and so on, that more closely match the conventions of that system.</p>
 <p>For packages you intend to share or publish, import paths should be globally unique. To avoid conflicts, the import paths of all packages other than those from the standard library should start with the Internet domain name of the organization that owns or hosts the package; this also makes it possible to find packages. For example, the declaration above imports an HTML parser maintained by the Go team and a popular third-party MySQL database driver.</p>
 </div>
 <h3 id="Section-10.3" >The Package Declaration</h3>
@@ -9130,6 +9130,7 @@ $ <span class="nv">GOMAXPROCS</span><span class="o">=</span><span class="m">2</s
 <p>A <code>package</code> declaration is required at the start of every Go source file. Its main purpose is to determine the default identifier for that package (called the <em>package name</em>) when it is imported by another package.</p>
 <p>For example, every file of the <code>math/rand</code> package starts with <code>package rand</code>, so when you import this package, you can access its members as <code>rand.Int</code>, <code>rand.Float64</code>, and so on.</p>
 <div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
+
 <span class="kn">import</span> <span class="p">(</span>
   <span class="s">&quot;fmt&quot;</span>
   <span class="s">&quot;math/rand&quot;</span>
@@ -9140,8 +9141,8 @@ $ <span class="nv">GOMAXPROCS</span><span class="o">=</span><span class="m">2</s
 <span class="p">}</span>
 </pre></div>
 <p>Conventionally, the package name is the last segment of the import path, and as a result, two packages may have the same name even though their import paths necessarily differ. For example, the packages whose import paths are <code>math/rand</code> and <code>crypto/rand</code> both have the name <code>rand</code>. We’ll see how to use both in the same program in a moment.</p>
-<p>There are three major exceptions to the <q>last segment</q> convention. The first is that a package defining a command (an executable Go program) always has the name <code>main</code>, regardless of the package’s import path. This is a signal to <code>go build</code> (<a href="#Section-10.7.3" >§10.7.3</a>) that it must invoke the linker to make an executable file.</p>
-<p>The second exception is that some files in the directory may have the suffix <code>_test</code> on their package name if the file name ends with <code>_test.go</code>. Such a directory may define <em>two</em> packages: the usual one, plus another one called an <em>external test package</em>. The <code>_test</code> suffix signals to <code>go test</code> that it must build both packages, and it indicates which files belong to each package.  External test packages are used to avoid cycles in the import graph arising from dependencies of the test; they are covered in more detail in <a href="#Section-11.2.4" >Section 11.2.4</a>.</p>
+<p>There are three major exceptions to the <q>last segment</q> convention. The first is that a package defining a command (an executable Go program) always has the name <code>main</code>, regardless of the package’s import path. This is a signal to <code class="command" >go build</code> (<a href="#Section-10.7.3" >§10.7.3</a>) that it must invoke the linker to make an executable file.</p>
+<p>The second exception is that some files in the directory may have the suffix <code>_test</code> on their package name if the file name ends with <code>_test.go</code>. Such a directory may define <em>two</em> packages: the usual one, plus another one called an <em>external test package</em>. The <code>_test</code> suffix signals to <code class="command" >go test</code> that it must build both packages, and it indicates which files belong to each package.  External test packages are used to avoid cycles in the import graph arising from dependencies of the test; they are covered in more detail in <a href="#Section-11.2.4" >Section 11.2.4</a>.</p>
 <p>The third exception is that some tools for dependency management append version number suffixes to package import paths, such as <code>&quot;gopkg.in/yaml.v2&quot;</code>. The package name excludes the suffix, so in this case it would be just <code>yaml</code>.</p>
 </div>
 <h3 id="Section-10.4" >Import Declarations</h3>
@@ -9232,8 +9233,8 @@ jpeg: image: unknown format
 <span class="kd">func</span> <span class="nx">DecodeConfig</span><span class="p">(</span><span class="nx">r</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span><span class="p">)</span> <span class="p">(</span><span class="nx">image</span><span class="p">.</span><span class="nx">Config</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
 
 <span class="kd">func</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
-<span class="kd">const</span> <span class="nx">pngHeader</span> <span class="p">=</span> <span class="s">&quot;\x89PNG\r\n\x1a\n&quot;</span>
-<span class="nx">image</span><span class="p">.</span><span class="nx">RegisterFormat</span><span class="p">(</span><span class="s">&quot;png&quot;</span><span class="p">,</span> <span class="nx">pngHeader</span><span class="p">,</span> <span class="nx">Decode</span><span class="p">,</span> <span class="nx">DecodeConfig</span><span class="p">)</span>
+  <span class="kd">const</span> <span class="nx">pngHeader</span> <span class="p">=</span> <span class="s">&quot;\x89PNG\r\n\x1a\n&quot;</span>
+  <span class="nx">image</span><span class="p">.</span><span class="nx">RegisterFormat</span><span class="p">(</span><span class="s">&quot;png&quot;</span><span class="p">,</span> <span class="nx">pngHeader</span><span class="p">,</span> <span class="nx">Decode</span><span class="p">,</span> <span class="nx">DecodeConfig</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 <p>The effect is that an application need only blank-import the package for the format it needs to make the <code>image.Decode</code> function able to decode it.</p>
@@ -9248,7 +9249,7 @@ jpeg: image: unknown format
 <span class="nx">db</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">sql</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="s">&quot;mysql&quot;</span><span class="p">,</span> <span class="nx">dbname</span><span class="p">)</span>    <span class="c1">// OK</span>
 <span class="nx">db</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">sql</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="s">&quot;sqlite3&quot;</span><span class="p">,</span> <span class="nx">dbname</span><span class="p">)</span>  <span class="c1">// returns error: unknown driver &quot;sqlite3&quot;</span>
 </pre></div>
-<p><b>Exercise 10.1</b>: Extend the <code>jpeg</code> program so that it converts any supported input format to any output format, using <code>image.Decode</code> to detect the input format and a flag to select the output format.</p>
+<p><b>Exercise 10.1</b>: Extend the <code class="command" >jpeg</code> program so that it converts any supported input format to any output format, using <code>image.Decode</code> to detect the input format and a flag to select the output format.</p>
 <p><b>Exercise 10.2</b>: Define a generic archive file-reading function capable of reading ZIP files (<code>archive/zip</code>) and POSIX tar files (<code>archive/tar</code>). Use a registration mechanism similar to the one described above so that support for each file format can be plugged in using blank imports.</p>
 </div>
 <h3 id="Section-10.6" >Packages and Naming</h3>
@@ -9284,7 +9285,7 @@ jpeg: image: unknown format
 <h3 id="Section-10.7" >The Go Tool</h3>
 <div class="hBody-3" >
 <p>The rest of this chapter concerns the <code class="command" >go</code> tool, which is used for downloading, querying, formatting, building, testing, and installing packages of Go code.</p>
-<p>The <code class="command" >go</code> tool combines the features of a diverse set of tools into one command set. It is a package manager (analogous to apt or rpm) that answers queries about its inventory of packages, computes their dependencies, and downloads them from remote version-control systems. It is a build system that computes file dependencies and invokes compilers, assemblers, and linkers, although it is intentionally less complete than the standard Unix <code>make</code>. And it is a test driver, as we will see in <a href="#Chapter-11" >Chapter 11</a>.</p>
+<p>The <code class="command" >go</code> tool combines the features of a diverse set of tools into one command set. It is a package manager (analogous to <code class="command" >apt</code> or <code class="command" >rpm</code>) that answers queries about its inventory of packages, computes their dependencies, and downloads them from remote version-control systems. It is a build system that computes file dependencies and invokes compilers, assemblers, and linkers, although it is intentionally less complete than the standard Unix <code class="command" >make</code>. And it is a test driver, as we will see in <a href="#Chapter-11" >Chapter 11</a>.</p>
 <p>Its command-line interface uses the <q>Swiss army knife</q> style, with over a dozen subcommands, some of which we have already seen, like <code>get</code>, <code>run</code>, <code>build</code>, and <code>fmt</code>. You can run <code class="command" >go help</code> to see the index of its built-in documentation, but for reference, we’ve listed the most commonly used commands below:</p>
 <div class="highlight"><pre><span></span>$ go
 ...
@@ -9317,29 +9318,29 @@ $ go get gopl.io/...
 </pre></div>
 <p>After you download all the programs for this book using the command above, your workspace will contain a hierarchy like this one:</p>
 <pre class="pre" >GOPATH/
-    src/
-        gopl.io/
-        .git/
-        ch1/
-            helloworld/
-                main.go
-            dup/
-                main.go
-            ...
-    golang.org/x/net/
-        .git/
-        html/
-            parse.go
-            node.go
-            ...
-    bin/
-        helloworld
-        dup
-    pkg/
-        darwin_amd64/
-        ...</pre>
-<p><code>GOPATH</code> has three subdirectories. The src subdirectory  holds source code. Each package resides in a directory whose name relative to <code>$GOPATH/src</code> is the package’s import path, such as <code>gopl.io/ch1/helloworld</code>. Observe that a single <code>GOPATH</code> workspace contains multiple version-control repositories beneath <span class="file" >src</span>, such as <code>gopl.io</code> or <code>golang.org</code>. The <span class="file" >pkg</span> subdirectory is where the build tools store compiled packages, and the <span class="file" >bin</span> subdirectory holds executable programs like <code>helloworld</code>.</p>
-<p>A second environment variable, <code>GOROOT</code>, specifies the root directory of the Go distribution, which provides all the packages of the standard library. The directory structure beneath <code>GOROOT</code> resembles that of <code>GOPATH</code>, so, for example, the source files of the <code>fmt</code> package reside in the <span class="file" >$GOROOT/src/fmt</span> directory. Users never need to set <code>GOROOT</code> since, by default, the go tool will use the location where it was installed.</p>
+      src/
+          gopl.io/
+                  .git/
+                  ch1/
+                      helloworld/
+                                 main.go
+                      dup/
+                          main.go
+                      ...
+          golang.org/x/net/
+                          .git/
+                          html/
+                              parse.go
+                              node.go
+                              ...
+      bin/
+          helloworld
+          dup
+      pkg/
+          darwin_amd64/
+          ...</pre>
+<p><code>GOPATH</code> has three subdirectories. The <span class="file" >src</span> subdirectory  holds source code. Each package resides in a directory whose name relative to <code>$GOPATH/src</code> is the package’s import path, such as <code>gopl.io/ch1/helloworld</code>. Observe that a single <code>GOPATH</code> workspace contains multiple version-control repositories beneath <span class="file" >src</span>, such as <code>gopl.io</code> or <code>golang.org</code>. The <span class="file" >pkg</span> subdirectory is where the build tools store compiled packages, and the <span class="file" >bin</span> subdirectory holds executable programs like <code class="command" >helloworld</code>.</p>
+<p>A second environment variable, <code>GOROOT</code>, specifies the root directory of the Go distribution, which provides all the packages of the standard library. The directory structure beneath <code>GOROOT</code> resembles that of <code>GOPATH</code>, so, for example, the source files of the <code>fmt</code> package reside in the <span class="file" >$GOROOT/src/fmt</span> directory. Users never need to set <code>GOROOT</code> since, by default, the <code class="command" >go</code> tool will use the location where it was installed.</p>
 <p>The <code class="command" >go env</code> command prints the effective values of the environment variables relevant to the toolchain, including the default values for the missing ones. <code>GOOS</code> specifies the target operating system (for example, <code>android</code>, <code>linux</code>, <code>darwin</code>, or <code>windows</code>) and <code>GOARCH</code> specifies the target processor architecture, such as <code>amd64</code>, <code>386</code>, or <code>arm</code>. Although <code>GOPATH</code> is the only variable you must set, the others occasionally appear in our explanations.</p>
 <div class="highlight"><pre><span></span>$ go env
 <span class="nv">GOPATH</span><span class="o">=</span><span class="s2">&quot;/home/gopher/gobook&quot;</span>
@@ -9352,14 +9353,14 @@ $ go get gopl.io/...
 <div class="hBody-4" >
 <p>When using the <code class="command" >go</code> tool, a package’s import path indicates not only where to find it in the local workspace, but where to find it on the Internet so that <code class="command" >go get</code> can retrieve and update it.</p>
 <p>The <code class="command" >go get</code> command can download a single package or an entire subtree or repository using the <code>...</code> notation, as in the previous section. The tool also computes and downloads all the dependencies of the initial packages, which is why the <code>golang.org/x/net/html</code> package appeared in the workspace in the previous example.</p>
-<p>Once <code class="command" >go get</code> has downloaded the packages, it builds them and then <em>installs</em> the libraries and commands. We’ll look at the details in the next section, but an example will show how straightforward the process is. The first command below gets the <code>golint</code> tool, which checks for common style problems in Go source code. The second command runs <code>golint</code> on <code>gopl.io/ch2/popcount</code> from <a href="#Section-2.6.2" >Section 2.6.2</a>. It helpfully reports that we have forgotten to write a doc comment for the package:</p>
+<p>Once <code class="command" >go get</code> has downloaded the packages, it builds them and then <em>installs</em> the libraries and commands. We’ll look at the details in the next section, but an example will show how straightforward the process is. The first command below gets the <code class="command" >golint</code> tool, which checks for common style problems in Go source code. The second command runs <code class="command" >golint</code> on <code>gopl.io/ch2/popcount</code> from <a href="#Section-2.6.2" >Section 2.6.2</a>. It helpfully reports that we have forgotten to write a doc comment for the package:</p>
 <div class="highlight"><pre><span></span>$ go get github.com/golang/lint/golint
 $ <span class="nv">$GOPATH</span>/bin/golint gopl.io/ch2/popcount
 src/gopl.io/ch2/popcount/main.go:1:1:
   package comment should be of the form <span class="s2">&quot;Package popcount ...&quot;</span>
 </pre></div>
 <p>The <code class="command" >go get</code> command has support for popular code-hosting sites like GitHub, Bitbucket, and Launchpad and can make the appropriate requests to their version-control systems. For less well-known sites, you may have to indicate which version-control protocol to use in the import path, such as Git or Mercurial. Run <code class="command" >go help importpath</code> for the details.</p>
-<p>The directories that <code class="command" >go get</code> creates are true clients of the remote repository, not just copies of the files, so you can use version-control commands to see a diff of local edits you’ve made or to update to a different revision. For example, the <code>golang.org/x/net</code> directory is a Git client:</p>
+<p>The directories that <code class="command" >go get</code> creates are true clients of the remote repository, not just copies of the files, so you can use version-control commands to see a diff of local edits you’ve made or to update to a different revision. For example, the <span class="file" >golang.org/x/net</span> directory is a Git client:</p>
 <div class="highlight"><pre><span></span>$ <span class="nb">cd</span> <span class="nv">$GOPATH</span>/src/golang.org/x/net
 $ git remote -v
 origin  https://go.googlesource.com/net <span class="o">(</span>fetch<span class="o">)</span>
@@ -9373,12 +9374,12 @@ $ ./fetch https://golang.org/x/net/html <span class="p">|</span> grep go-import
 </pre></div>
 <p>If you specify the <code>-u</code> flag, <code class="command" >go get</code> will ensure that all packages it visits, including dependencies, are updated to their latest version before being built and installed. Without that flag, packages that already exist locally will not be updated.</p>
 <p>The <code class="command" >go get -u</code> command generally retrieves the latest version of each package, which is convenient when you’re getting started but may be inappropriate for deployed projects, where precise control of dependencies is critical for release hygiene. The usual solution to this problem is to <em>vendor</em> the code, that is, to make a persistent local copy of all the necessary dependencies, and to update this copy carefully and deliberately. Prior to Go 1.5, this required changing those packages’ import paths, so our copy of <code>golang.org/x/net/html</code> would become <code>gopl.io/vendor/golang.org/x/net/html</code>. More recent versions of the go tool support vendoring directly, though we don’t have space to show the details here. See <em>Vendor Directories</em> in the output of the <code class="command" >go help gopath</code> command.</p>
-<p><b>Exercise 10.3</b>: Using <code class="command" >fetch http://gopl.io/ch1/helloworld?go-get=1</code>, find out which service hosts the code samples for this book. (HTTP requests from <code class="command" >go get</code> include the go-get parameter so that servers can distinguish them from ordinary browser requests.)</p>
+<p><b>Exercise 10.3</b>: Using <code class="command" >fetch http://gopl.io/ch1/helloworld?go-get=1</code>, find out which service hosts the code samples for this book. (HTTP requests from <code class="command" >go get</code> include the <code>go-get</code> parameter so that servers can distinguish them from ordinary browser requests.)</p>
 </div>
 <h4 id="Section-10.7.3" >Building Packages</h4>
 <div class="hBody-4" >
 <p>The <code class="command" >go build</code> command compiles each argument package. If the package is a library, the result is discarded; this merely checks that the package is free of compile errors. If the package is named <code>main</code>, <code class="command" >go build</code> invokes the linker to create an executable in the current directory; the name of the executable is taken from the last segment of the package’s import path.</p>
-<p>Since each directory contains one package, each executable program, or <em>command</em> in Unix terminology, requires its own directory. These directories are sometimes children of a directory named cmd, such as the <code>golang.org/x/tools/cmd/godoc</code> command which serves Go package documentation through a web interface (<a href="#Section-10.7.4" >§10.7.4</a>).</p>
+<p>Since each directory contains one package, each executable program, or <em>command</em> in Unix terminology, requires its own directory. These directories are sometimes children of a directory named <code>cmd</code>, such as the <code>golang.org/x/tools/cmd/godoc</code> command which serves Go package documentation through a web interface (<a href="#Section-10.7.4" >§10.7.4</a>).</p>
 <p>Packages may be specified by their import paths, as we saw above, or by a relative directory name, which must start with a <code>.</code> or <code>..</code> segment even if this would not ordinarily be required.  If no argument is provided, the current directory is assumed. Thus the following commands build the same package, though each writes the executable to the directory in which <code class="command" >go build</code> is run:</p>
 <div class="highlight"><pre><span></span>$ <span class="nb">cd</span> <span class="nv">$GOPATH</span>/src/gopl.io/ch1/helloworld
 $ go build
@@ -9396,17 +9397,17 @@ $ go build ./src/gopl.io/ch1/helloworld
 $ go build src/gopl.io/ch1/helloworld
 Error: cannot find package <span class="s2">&quot;src/gopl.io/ch1/helloworld&quot;</span>.
 </pre></div>
-<p>Packages may also be specified as a list of file names, though this tends to be used only for small programs and one-off experiments. If the package name is main, the executable name comes from the basename of the first <span class="file" >.go</span> file.</p>
+<p>Packages may also be specified as a list of file names, though this tends to be used only for small programs and one-off experiments. If the package name is <code>main</code>, the executable name comes from the basename of the first <span class="file" >.go</span> file.</p>
 <div class="highlight"><pre><span></span>$ cat quoteargs.go
 package main
 
 import <span class="o">(</span>
-    <span class="s2">&quot;fmt&quot;</span>
-    <span class="s2">&quot;os&quot;</span>
+  <span class="s2">&quot;fmt&quot;</span>
+  <span class="s2">&quot;os&quot;</span>
 <span class="o">)</span>
 
 func main<span class="o">()</span> <span class="o">{</span>
-    fmt.Printf<span class="o">(</span><span class="s2">&quot;%q\n&quot;</span>, os.Args<span class="o">[</span><span class="m">1</span>:<span class="o">])</span>
+  fmt.Printf<span class="o">(</span><span class="s2">&quot;%q\n&quot;</span>, os.Args<span class="o">[</span><span class="m">1</span>:<span class="o">])</span>
 <span class="o">}</span>
 $ go build quoteargs.go
 $ ./quoteargs one <span class="s2">&quot;two three&quot;</span> four<span class="se">\ </span>five
@@ -9420,7 +9421,7 @@ $ ./quoteargs one <span class="s2">&quot;two three&quot;</span> four<span class=
 <p>By default, the <code class="command" >go build</code> command builds the requested package and all its dependencies, then throws away all the compiled code except the final executable, if any. Both the dependency analysis and the compilation are surprisingly fast, but as projects grow to dozens of packages and hundreds of thousands of lines of code, the time to recompile dependencies can become noticeable, potentially several seconds, even when those dependencies haven’t changed at all.</p>
 <p>The <code class="command" >go install</code> command is very similar to <code class="command" >go build</code>, except that it saves the compiled code for each package and command instead of throwing it away. Compiled packages are saved beneath the <span class="file" >$GOPATH/pkg</span> directory corresponding to the <span class="file" >src</span> directory in which the source resides, and command executables are saved in the <span class="file" >$GOPATH/bin</span> directory. (Many users put <span class="file" >$GOPATH/bin</span> on their executable search path.) Thereafter, <code class="command" >go build</code> and <code class="command" >go install</code> do not run the compiler for those packages and commands if they have not changed, making subsequent builds much faster. For convenience, <code class="command" >go build -i</code> installs the packages that are dependencies of the build target.</p>
 <p>Since compiled packages vary by platform and architecture, <code class="command" >go install</code> saves them beneath a subdirectory whose name incorporates the values of the <code>GOOS</code> and <code>GOARCH</code> environment variables. For example, on a Mac the <code>golang.org/x/net/html</code> package is compiled and installed in the file <span class="file" >golang.org/x/net/html.a</span> under <span class="file" >$GOPATH/pkg/darwin_amd64</span>.</p>
-<p>It is straightforward to <em>cross-compile</em> a Go program, that is, to build an executable intended for a different operating system or CPU. Just set the <code>GOOS</code> or <code>GOARCH</code> variables during the build.  The <code>cross</code> program prints the operating system and architecture for which it was built:</p>
+<p>It is straightforward to <em>cross-compile</em> a Go program, that is, to build an executable intended for a different operating system or CPU. Just set the <code>GOOS</code> or <code>GOARCH</code> variables during the build.  The <code class="command" >cross</code> program prints the operating system and architecture for which it was built:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch10/cross/main.go" >gopl.io/ch10/cross</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
@@ -9454,7 +9455,7 @@ darwin <span class="m">386</span>
 <span class="c1">// It returns the number of bytes written and any write error encountered.</span>
 <span class="kd">func</span> <span class="nx">Fprintf</span><span class="p">(</span><span class="nx">w</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Writer</span><span class="p">,</span> <span class="nx">format</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">a</span> <span class="o">...</span><span class="kd">interface</span><span class="p">{})</span> <span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
 </pre></div>
-<p>The details of <code>Fprintf</code>’s formatting are explained in a <code>doc</code> comment associated with the <code>fmt</code> package itself. A comment immediately preceding a <code>package</code> declaration is considered the doc comment for the package as a whole. There must be only one, though it may appear in any file. Longer package comments may warrant a file of their own; <code>fmt</code>’s is over 300 lines.  This file is usually called <code>doc.go</code>.</p>
+<p>The details of <code>Fprintf</code>’s formatting are explained in a doc comment associated with the <code>fmt</code> package itself. A comment immediately preceding a <code>package</code> declaration is considered the doc comment for the package as a whole. There must be only one, though it may appear in any file. Longer package comments may warrant a file of their own; <code>fmt</code>’s is over 300 lines.  This file is usually called <span class="file" >doc.go</span>.</p>
 <p>Good documentation need not be extensive, and documentation is no substitute for simplicity.  Indeed, Go’s conventions favor brevity and simplicity in documentation as in all things, since documentation, like code, requires maintenance too. Many declarations can be explained in one well-worded sentence, and if the behavior is truly obvious, no comment is needed. Throughout the book, as space permits, we’ve preceded many declarations by doc comments, but you will find better examples as you browse the standard library. Two tools can help you do that.</p>
 <p>The <code class="command" >go doc</code> tool prints the declaration and doc comment of the entity specified on the command line, which may be a package:</p>
 <div class="highlight"><pre><span></span>$ go doc <span class="nb">time</span>
@@ -9491,7 +9492,7 @@ func <span class="o">(</span>dec *Decoder<span class="o">)</span> Decode<span cl
     Decode reads the next JSON-encoded value from its input and stores
     it in the value pointed to by v.
 </pre></div>
-<p>The second tool, confusingly named <code class="command" >godoc</code>, serves cross-linked HTML pages that provide the same information as <code class="command" >go doc</code> and much more. The <code class="command" >godoc</code> server at <a href="https://golang.org/pkg" >https://golang.org/pkg</a> covers the standard library. Figure 10.1 shows the documentation for the time package, and in <a href="#Section-11.6" >Section 11.6</a> we’ll see <code class="command" >godoc</code>’s interactive display of example programs. The <code class="command" >godoc</code> server at <a href="https://godoc.org" >https://godoc.org</a> has a searchable index of thousands of open-source packages.</p>
+<p>The second tool, confusingly named <code class="command" >godoc</code>, serves cross-linked HTML pages that provide the same information as <code class="command" >go doc</code> and much more. The <code class="command" >godoc</code> server at <a href="https://golang.org/pkg" >https://golang.org/pkg</a> covers the standard library. Figure 10.1 shows the documentation for the <code>time</code> package, and in <a href="#Section-11.6" >Section 11.6</a> we’ll see <code class="command" >godoc</code>’s interactive display of example programs. The <code class="command" >godoc</code> server at <a href="https://godoc.org" >https://godoc.org</a> has a searchable index of thousands of open-source packages.</p>
 <p>You can also run an instance of <code class="command" >godoc</code> in your workspace if you want to browse your own packages. Visit <a href="http://localhost:8000/pkg" >http://localhost:8000/pkg</a> in your browser while running this command:</p>
 <div class="highlight"><pre><span></span>$ godoc -http :8000
 </pre></div>
@@ -9502,7 +9503,7 @@ func <span class="o">(</span>dec *Decoder<span class="o">)</span> Decode<span cl
 <p>The package is the most important mechanism for encapsulation in Go programs. Unexported identifiers are visible only within the same package, and exported identifiers are visible to the world.</p>
 <p>Sometimes, though, a middle ground would be helpful, a way to define identifiers that are visible to a small set of trusted packages, but not to everyone. For example, when we’re breaking up a large package into more manageable parts, we may not want to reveal the interfaces between those parts to other packages. Or we may want to share utility functions across several packages of a project without exposing them more widely. Or perhaps we just want to experiment with a new package without prematurely committing to its API, by putting it <q>on probation</q> with a limited set of clients.</p>
 <div class="figure" >
-<p class="title">Figure 10.1. The <code>time</code> package in <code>godoc</code>.</p>
+<p class="title">Figure 10.1. The <code>time</code> package in <code class="command" >godoc</code>.</p>
 <figure>
 <img src="img/Figure-10.1.jpg" />
 </figure>

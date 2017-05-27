@@ -526,7 +526,7 @@
 #    language, plans for the future, reports on conferences, and in-depth
 #    explanations of a wide variety of Go-related topics.
    La mejor fuente para obtener mas informacion sobre Go es el sitio web
-   oficial, @l(https://golang.org) , que proporciona acceso a la documentacion,
+   oficial, @l(https://golang.org), que proporciona acceso a la documentacion,
    incluyendo la @e(Especificacion del Lenguaje de Programacion Go), los
    paquetes estandar, y similares. Tambien hay tutoriales sobre como escribir Go
    y como escribirlo bien, y una amplia variedad de recursos de texto y video en
@@ -753,7 +753,7 @@
    codigo fuente de un programa y las cosas de las que depende, en instrucciones
    en el lenguaje maquina nativo de una computadora. Se puede acceder a estas
    herramientas a traves de un unico comando llamado @$(go) que tiene una serie
-   de subcomandos. El mas simple de estos subcomandos es @$(run) , que compila
+   de subcomandos. El mas simple de estos subcomandos es @$(run), que compila
    el codigo fuente de uno o mas archivos de origen cuyos nombres terminan en
    @f(.go), lo vincula con las librerias, y a continuacion, ejecuta el archivo
    ejecutable resultante. (Utilizaremos @$($) como el simbolo del sistema en
@@ -957,7 +957,7 @@
 #    can obtain it with this command:
    Muchos editores de texto pueden ser configurados para ejecutar @$(gofmt) cada
    vez que se guarda un archivo, por lo que su codigo fuente siempre tendra el
-   formato apropiado. Una herramienta relacionada, @$(goimports) , ademas,
+   formato apropiado. Una herramienta relacionada, @$(goimports), ademas,
    gestiona la insercion y extraccion de las declaraciones de importacion, segun
    sea necesario. No es parte de la distribucion estandar pero se puede obtener
    con este comando:
@@ -12277,7 +12277,7 @@
 #    @c(encoding/json) package.
    Go tiene un excelente soporte para la codificacion y decodificacion de estos
    formatos, proporcionado por los paquetes de las librerias estandar
-   @c(encoding/json) , @c(encoding/xml), @c(encoding/asn1), y demas, y todos
+   @c(encoding/json), @c(encoding/xml), @c(encoding/asn1), y demas, y todos
    estos paquetes tienen APIs similares. En esta seccion se presenta una breve
    descripcion de las partes mas importantes del paquete @c(encoding/json).
 
@@ -12780,7 +12780,7 @@
 #    called @c(json.Encoder).
    Los ejemplos anteriores utilizaron @c(json.Unmarshal) para decodificar todo
    el contenido de una slice de bytes como una sola entidad JSON. Para variar,
-   este ejemplo utiliza el decodificador de @e(flujo), @c(json.Decoder) , que
+   este ejemplo utiliza el decodificador de @e(flujo), @c(json.Decoder), que
    permite que varias entidades JSON sean decodificados en secuencia desde el
    mismo flujo, aunque aqui no necesitamos esa caracteristica. Como era de
    esperar, hay un codificador de flujo correspondiente llamado @c(json.Encoder).
@@ -20839,7 +20839,7 @@
     de comportamiento de la interfaz. En particular, la llamada viola la
     condicion implicita de @c[(*bytes.Buffer).Write] de que receptor no sea nil,
     por lo que la asignacion de puntero nulo a la interfaz fue un error. La
-    solucion es cambiar el tipo de @c(buf) en @c(main) a @c(io.Writer) ,
+    solucion es cambiar el tipo de @c(buf) en @c(main) a @c(io.Writer),
     evitando de ese modo la asignacion del valor disfuncional a la interfaz en
     el primer lugar:
 
@@ -21022,7 +21022,7 @@
    funcionaria si almacenamos los @c(Tracks) directamente, la funcion de
    clasificacion intercambiara muchos pares de elementos, por lo que se
    ejecutara mas rapido si cada elemento es un puntero, que es una sola palabra
-   de la maquina, en lugar de un @c(Track) completo , lo que podrian ser ocho o
+   de la maquina, en lugar de un @c(Track) completo, lo que podrian ser ocho o
    mas palabras.
 
 #    ..figure > @l(gopl.io/ch7/sorting/main.go<>gopl.io/ch7/sorting)
@@ -21474,10 +21474,10 @@
 #    implement web clients (@l(#Section 1.5<>§1.5)) and servers (@l(#Section
 #    1.7<>§1.7)). In this section, we’ll look more closely at the server API,
 #    whose foundation is the @c(http.Handler) interface:
-   En el capitulo 1 , vimos una idea de como utilizar el paquete @c(net/http)
-   para implementar clientes web (@l(#Seccion 1.5<>§1.5)) y servidores
-   (@l(#Seccion 1.7<>§1.7)). En esta seccion, vamos a ver mas de cerca la API
-   del servidor, cuyo fundamento es la interfaz @c(http.Handler):
+   En el @l(#Capitulo 1), vimos una idea de como utilizar el paquete
+   @c(net/http) para implementar clientes web (@l(#Seccion 1.5<>§1.5)) y
+   servidores (@l(#Seccion 1.7<>§1.7)). En esta seccion, vamos a ver mas de
+   cerca la API del servidor, cuyo fundamento es la interfaz @c(http.Handler):
 
 #    ..figure > @c(net/http)
    ..figure > @c(net/http)
@@ -21519,7 +21519,7 @@
    Imagine un sitio de comercio electronico con una base de datos de los
    articulos a la venta con sus precios en dolares. El siguiente programa
    muestra la implementacion imaginable mas sencilla. Modelos del inventario
-   como un tipo de mapa, @c(database) , a la que ha adjuntado un metodo
+   como un tipo de mapa, @c(database), a la que ha adjuntado un metodo
    @c(ServeHTTP) para que satisfaga la interfaz @c(http.Handler). El controlador
    se extiende sobre el mapa e imprime los elementos.
 
@@ -24170,7 +24170,7 @@
    @b(Ejercicio 7.17): Extiende @$(xmlselect) para que los elementos puedan ser
    seleccionados no solo por su nombre, sino tambien por sus atributos, a la
    manera de CSS, de modo que, por ejemplo, un elemento como @c(<div id="page"
-   class="wide">) podria ser seleccionado encontrando su @c(id) o @c(class) ,
+   class="wide">) podria ser seleccionado encontrando su @c(id) o @c(class),
    asi como su nombre.
 
 #    @b(Exercise 7.18): Using the token-based decoder API, write a program that
@@ -25433,7 +25433,7 @@
 #     better solution. (Notice that the @c(go) statement calls a literal function,
 #     a common construction.)
     Cuando el usuario cierra el flujo de entrada estandar, @c(mustCopy) regresa
-    y la gorutina principal llama a @c[conn.Close()] , cerrando las dos mitades
+    y la gorutina principal llama a @c[conn.Close()], cerrando las dos mitades
     de la conexion de red. Cerrar la mitad de escritura de la conexion hace que
     el servidor vea una condicion de fin de archivo. Cerrar la mitad de leectura
     hace que la gorutina de fondo llame a @c(io.Copy) para devolver @"(error de
@@ -30378,7 +30378,7 @@
 #    chose this return type for @c(httpGetBody) so that it conforms to the type of
 #    functions that our cache is designed to memoize.
    La linea final esconde una sutileza menor. @c(ReadAll) devuelve dos
-   resultados, @c([]byte) y un @c(error) , pero ya que estos son asignables a
+   resultados, @c([]byte) y un @c(error), pero ya que estos son asignables a
    los tipos de resultados declarados de @c(httpGetBody)–@c(interface{}) y
    @c(error), respectivamente–podemos devolver el resultado de la llamada sin
    mas preambulos. Hemos Elegimos este tipo retorno para @c(httpGetBody) para
@@ -30475,7 +30475,7 @@
 #    of incoming URLs, we call @c(Get), logging the latency of the call and the
 #    amount of data it returns:
    A continuacion se muestra un ejemplo de como utilizar @c(Memo). Para cada
-   elemento en una corriente de URLs entrantes, llamamos a @c(Get) , registrando
+   elemento en una corriente de URLs entrantes, llamamos a @c(Get), registrando
    la latencia de la llamada y la cantidad de datos que devuelve:
 
 #    ..src > go
@@ -30751,7 +30751,7 @@
 #    the lock twice: once for the lookup, and then a second time for the update if
 #    the lookup returned nothing. In between, other goroutines are free to use the
 #    cache.
-   En la proxima implementacion de @c(Get) , a continuacion, la llamada gorutina adquiere
+   En la proxima implementacion de @c(Get), a continuacion, la llamada gorutina adquiere
    el bloqueo  dos veces: una vez para la busqueda, y luego una segunda vez
    para la actualizacion si la busqueda devuelve nada. En el medio, otras
    gorutinas son libres de usar la memoria cache.
@@ -31156,7 +31156,7 @@
 #    by closing the @c(ready) channel. This is done by @c[(*entry).call].
    De manera similar a la version basada en mutex, la primer solicitud de una
    clave dada se convierte en responsable de llamar a la funcion @c(f) de esa
-   clave, almacenar el resultado en @c(entry) , y la difundir la disponibilidad
+   clave, almacenar el resultado en @c(entry), y la difundir la disponibilidad
    de @c(entry) al cerrar el canal @c(ready). Esto se hace mediante
    @c[(*entry).call].
 
@@ -31481,3 +31481,1969 @@
 
 # * Chapter 10 <> Packages and the Go Tool
 * Capitulo 10 <> Paquetes y la Herramienta Go
+
+#   A modest-size program today might contain 10,000 functions. Yet its author
+#   need think about only a few of them and design even fewer, because the vast
+#   majority were written by others and made available for reuse through
+#   @e(packages).
+  A dia de hoy un programa de tamaño modesto podria contener 10.000 funciones.
+  Sin embargo, su autor tiene que pensar en solo unas pocas de ellas y el
+  diseñar aun menos, porque la gran mayoria fueron escritas por otros y puestas
+  a disposicion para su reutilizacion a traves de paquetes.
+
+#   Go comes with over 100 standard packages that provide the foundations for most
+#   applications.  The Go community, a thriving ecosystem of package design,
+#   sharing, reuse, and improvement, has published many more, and you can find a
+#   searchable index of them at @l(http://godoc.org).  In this chapter, we’ll show
+#   how to use existing packages and create new ones.
+  Go incluye mas de 100 paquetes estandar que proporcionan las bases para la
+  mayoria de las aplicaciones. La comunidad Go, con un prospero ecosistema para
+  diseñar, compartir, reutilizar y mejorar paquetes ha publicado muchos mas, y
+  usted puede encontrar un indice de busqueda en @l(http://godoc.org). En este
+  capitulo, mostraremos como utilizar los paquetes existentes y crear otros
+  nuevos.
+
+#   Go also comes with the @$(go) tool, a sophisticated but simple-to-use command
+#   for managing workspaces of Go packages. Since the beginning of the book, we’ve
+#   been showing how to use the @$(go) tool to download, build, and run example
+#   programs. In this chapter, we’ll look at the tool’s underlying concepts and
+#   tour more of its capabilities, which include printing documentation and
+#   querying metadata about the packages in the workspace. In the next chapter
+#   we’ll explore its testing features.
+  Go tambien viene con la herramienta @$(go), un comando sofisticado pero facil
+  de usar para gestionar los espacios de trabajo de los paquetes de Go. Desde el
+  comienzo del libro, hemos estado mostrando como utilizar la herramienta @$(go)
+  para descargar, compilar y ejecutar programas de ejemplo. En este capitulo,
+  vamos a ver los conceptos subyacentes de la herramienta y daremos un paseo por
+  sus capacidades, que incluyen la impresion de documentacion y la consulta de
+  metadatos sobre los paquetes en el espacio de trabajo. En el siguiente
+  capitulo vamos a explorar sus caracteristicas para realizar pruebas.
+
+# ** Section 10.1 <> Introduction
+** Seccion 10.1 <> Introduccion
+
+#    The purpose of any package system is to make the design and maintenance of
+#    large programs practical by grouping related features together into units
+#    that can be easily understood and changed, independent of the other packages
+#    of the program. This @e(modularity) allows packages to be shared and reused
+#    by different projects, distributed within an organization, or made available
+#    to the wider world.
+   El proposito de cualquier sistema de paquetes es hacer que el diseño y
+   mantenimiento de programas grandes sea practico, agrupando las
+   caracteristicas relacionadas en unidades que puedan ser facilmente
+   comprendidas y cambiadas, independientemente de los otros paquetes del
+   programa. Esta @e(modularidad) permite que los paquetes sean compartidos y
+   reutilizados por diferentes proyectos, distribuidos dentro de una
+   organizacion, o puestos a disposicion del resto del mundo.
+
+#    Each package defines a distinct name space that encloses its
+#    identifiers. Each name is associated with a particular package, letting us
+#    choose short, clear names for the types, functions, and so on that we use
+#    most often, without creating conflicts with other parts of the program.
+   Cada paquete define un espacio de nombre distinto que incluye sus
+   identificadores. Cada nombre esta asociado con un paquete en particular, lo
+   que nos permite elegir nombres cortos y claros para los tipos, funciones,
+   etc., que usamos con mas frecuencia, sin crear conflictos con otras partes
+   del programa.
+
+#    Packages also provide @e(encapsulation) by controlling which names are
+#    visible or exported outside the package. Restricting the visibility of
+#    package members hides the helper functions and types behind the package’s
+#    API, allowing the package maintainer to change the implementation with
+#    confidence that no code outside the package will be affected. Restricting
+#    visibility also hides variables so that clients can access and update them
+#    only through exported functions that preserve internal invariants or enforce
+#    mutual exclusion in a concurrent program.
+   Los paquetes tambien proporcionan @e(encapsulacion) controlando que nombres
+   son visibles o exportados fuera del paquete. La restriccion de la visibilidad
+   de los miembros del paquete oculta las funciones y tipos de ayuda, de la API
+   del paquete, lo que permite al responsable del paquete cambiar la
+   implementacion con la confianza de que ningun codigo fuera del paquete se
+   vera afectado. Restringir la visibilidad tambien oculta las variables para
+   que los clientes puedan acceder y actualizarlas solo mediante funciones
+   exportadas que preserven las invariantes internas o impongan la exclusion
+   mutua en un programa concurrente.
+
+#    When we change a file, we must recompile the file’s package and potentially
+#    all the packages that depend on it. Go compilation is notably faster than
+#    most other compiled languages, even when building from scratch. There are
+#    three main reasons for the compiler’s speed. First, all imports must be
+#    explicitly listed at the beginning of each source file, so the compiler does
+#    not have to read and process an entire file to determine its
+#    dependencies. Second, the dependencies of a package form a directed acyclic
+#    graph, and because there are no cycles, packages can be compiled separately
+#    and perhaps in parallel. Finally, the object file for a compiled Go package
+#    records export information not just for the package itself, but for its
+#    dependencies too.  When compiling a package, the compiler must read one
+#    object file for each import but need not look beyond these files.
+   Cuando cambiamos un archivo, debemos recompilar el paquete del archivo y
+   potencialmente todos los paquetes que dependen de el. La compilacion de Go es
+   notablemente mas rapida que la mayoria de los otros lenguajes compilados,
+   incluso cuando se construye desde cero. Hay tres razones principales para la
+   velocidad del compilador. En primer lugar, todas las importaciones deben
+   estar listadas explicitamente al principio de cada archivo de origen, por lo
+   que el compilador no tiene que leer y procesar un archivo completo para
+   determinar sus dependencias. En segundo lugar, las dependencias de un paquete
+   forman un grafo aciclico dirigido, y debido a que no hay ciclos, los paquetes
+   pueden ser compilados por separado y tal vez en paralelo. Finalmente, el
+   archivo de objeto de un paquete compilado Go registra informacion de
+   exportacion no solo para el propio paquete, sino tambien para sus
+   dependencias. Al compilar un paquete, el compilador debe leer un archivo de
+   objeto para cada importacion pero no necesita mirar mas alla de estos
+   archivos.
+
+# ** Section 10.2 <> Import Paths
+** Seccion 10.2 <> Rutas de Importacion
+
+#    Each package is identified by a unique string called its @e(import
+#    path). Import paths are the strings that appear in @c(import) declarations.
+   Cada paquete esta identificado por una cadena unica denominada su @e(ruta de
+   importacion). Las rutas de importacion son las cadenas que aparecen en las
+   declaraciones @c(import).
+
+#    ..src > go
+#      import (
+#        "fmt"
+#        "math/rand"
+#        "encoding/json"
+#
+#        "golang.org/x/net/html"
+#
+#        "github.com/go-sql-driver/mysql"
+#      )
+#    < src..
+   ..src > go
+     import (
+       "fmt"
+       "math/rand"
+       "encoding/json"
+
+       "golang.org/x/net/html"
+
+       "github.com/go-sql-driver/mysql"
+     )
+   < src..
+
+#    As we mentioned in @l(#Section 2.6.1), the Go language specification doesn’t
+#    define the meaning of these strings or how to determine a package’s import
+#    path, but leaves these issues to the tools. In this chapter, we’ll take a
+#    detailed look at how the @$(go) tool interprets them, since that’s what the
+#    majority of Go programmers use for building, testing, and so on. Other tools
+#    do exist, though. For example, Go programmers using Google’s internal
+#    multi-language build system follow different rules for naming and locating
+#    packages, specifying tests, and so on, that more closely match the
+#    conventions of that system.
+   Como mencionamos en la @l(#Seccion 2.6.1), la especificacion del lenguaje Go
+   no define el significado de estas cadenas o como determinar ruta de
+   importacion de un paquete, sino que deja estas cuestiones a las herramientas.
+   En este capitulo, analizaremos con detalle como interpreta la herramienta
+   @$(go), ya que eso es lo que la mayoria de los programadores de Go utilizan
+   para construir, probar, etc. Sin embargo, existen otras herramientas. Por
+   ejemplo, los programadores de Go que utilizan el sistema de compilacion
+   multilenguaje interno de Google siguen reglas diferentes para nombrar y
+   localizar paquetes, especificar pruebas y demas, que se ajusten mas a las
+   convenciones de ese sistema.
+
+#    For packages you intend to share or publish, import paths should be globally
+#    unique. To avoid conflicts, the import paths of all packages other than those
+#    from the standard library should start with the Internet domain name of the
+#    organization that owns or hosts the package; this also makes it possible to
+#    find packages. For example, the declaration above imports an HTML parser
+#    maintained by the Go team and a popular third-party MySQL database driver.
+   Para los paquetes que desea compartir o publicar, las vias de acceso de
+   importacion deben ser unicas a nivel global. Para evitar conflictos, las
+   rutas de importacion de todos los paquetes distintos de los de la biblioteca
+   estandar deben comenzar con el nombre de dominio de Internet de la
+   organizacion que posee o aloja el paquete; Esto tambien hace posible
+   encontrar paquetes. Por ejemplo, la declaracion anterior importa un
+   analizador HTML mantenido por el equipo Go y un popular controlador de base
+   de datos MySQL de terceros.
+
+# ** Section 10.3 <> The Package Declaration
+** Seccion 10.3 <> La Declaracion @c(package)
+
+#    A @c(package) declaration is required at the start of every Go source
+#    file. Its main purpose is to determine the default identifier for that
+#    package (called the @e(package name)) when it is imported by another package.
+   En Go se requiere una declaracion @c(package) al inicio de cada archivo
+   fuente. Su proposito principal es determinar el identificador por defecto
+   para ese paquete (denominado el @e(nombre del paquete)) cuando se importa por
+   otro paquete.
+
+#    For example, every file of the @c(math/rand) package starts with @c(package
+#    rand), so when you import this package, you can access its members as
+#    @c(rand.Int), @c(rand.Float64), and so on.
+   Por ejemplo, todos los archivos del paquete @c(math/rand) comienza con
+   @c(package rand), por lo que al importar este paquete, puede acceder a sus
+   miembros como @c(rand.Int), @c(rand.Float64), etc.
+
+#    ..src > go
+#      package main
+#
+#      import (
+#        "fmt"
+#        "math/rand"
+#      )
+#
+#      func main() {
+#        fmt.Println(rand.Int())
+#      }
+#    < src..
+   ..src > go
+     package main
+
+     import (
+       "fmt"
+       "math/rand"
+     )
+
+     func main() {
+       fmt.Println(rand.Int())
+     }
+   < src..
+
+#    Conventionally, the package name is the last segment of the import path, and
+#    as a result, two packages may have the same name even though their import
+#    paths necessarily differ. For example, the packages whose import paths are
+#    @c(math/rand) and @c(crypto/rand) both have the name @c(rand). We’ll see how
+#    to use both in the same program in a moment.
+   Convencionalmente, el nombre del paquete es el ultimo segmento de la ruta de
+   importacion y, como resultado, dos paquetes pueden tener el mismo nombre
+   aunque sus rutas de importacion difieran necesariamente. Por ejemplo, los
+   paquetes cuyas rutas de importacion son @c(math/rand) y @c(crypto/rand)
+   tienen el nombre @c(rand). Veremos como usar ambos en el mismo programa en un
+   momento.
+
+#    There are three major exceptions to the @"(last segment) convention. The
+#    first is that a package defining a command (an executable Go program) always
+#    has the name @c(main), regardless of the package’s import path. This is a
+#    signal to @$(go build) (@l(#Section 10.7.3<>§10.7.3)) that it must invoke the
+#    linker to make an executable file.
+   Hay tres excepciones principales a la convencion del @"(ultimo segmento). La
+   primera es que un paquete que define un comando (un programa ejecutable Go)
+   siempre tiene el nombre @c(main), independientemente de la ruta de
+   importacion del paquete. Esta es una señal para @$(go build) (@l(#Seccion
+   10.7.3<>§10.7.3)) que debe invocar el enlazador para crear un archivo
+   ejecutable.
+
+#    The second exception is that some files in the directory may have the suffix
+#    @c(_test) on their package name if the file name ends with @c(_test.go). Such
+#    a directory may define @e(two) packages: the usual one, plus another one
+#    called an @e(external test package). The @c(_test) suffix signals to @$(go
+#    test) that it must build both packages, and it indicates which files belong
+#    to each package.  External test packages are used to avoid cycles in the
+#    import graph arising from dependencies of the test; they are covered in more
+#    detail in @l(#Section 11.2.4).
+   La segunda excepcion es que algunos archivos en el directorio pueden tener el
+   sufijo @c(_test) en su nombre de paquete si el nombre del archivo termina con
+   @c(_test.go). Un directorio de este tipo puede definir dos paquetes: el
+   habitual, ademas de otro denominado @e(paquete de prueba externa). El sufijo
+   @c(_test) indica a @$(go test) que debe construir ambos paquetes, e indica
+   que archivos pertenecen a cada paquete. Los paquetes de prueba externos se
+   utilizan para evitar ciclos en el grafico de importacion que surgen de las
+   dependencias de la prueba; se cubren con mas detalle en la @l(#Seccion
+   11.2.4).
+
+#    The third exception is that some tools for dependency management append
+#    version number suffixes to package import paths, such as
+#    @c("gopkg.in/yaml.v2"). The package name excludes the suffix, so in this case
+#    it would be just @c(yaml).
+   La tercera excepcion es que algunas herramientas para la gestion de
+   dependencias añaden sufijos del numero de version a rutas de importacion,
+   como @c("gopkg.in/yaml.v2"). El nombre del paquete excluye el sufijo, por lo
+   que en este caso seria simplemente @c(yaml).
+
+# ** Section 10.4 <> Import Declarations
+** Seccion 10.4 <> Declaraciones Import
+
+#    A Go source file may contain zero or more @c(import) declarations immediately
+#    after the @c(package) declaration and before the first non-import
+#    declaration. Each import declaration may specify the import path of a single
+#    package, or multiple packages in a parenthesized list. The two forms below
+#    are equivalent but the second form is more common.
+   Un archivo de codigo Go puede contener cero o mas declaraciones @c(import)
+   inmediatamente despues de la declaracion @c(package) y antes de la primera
+   declaracion de no importacion. Cada declaracion de importacion puede
+   especificar la ruta de importacion de un unico paquete o varios paquetes en
+   una lista entre parentesis. Las dos formas a continuacion son equivalentes
+   pero la segunda forma es mas comun.
+
+#    ..src > go
+#      import "fmt"
+#      import "os"
+#
+#      import (
+#        "fmt"
+#        "os"
+#      )
+#    < src..
+   ..src > go
+     import "fmt"
+     import "os"
+
+     import (
+       "fmt"
+       "os"
+     )
+   < src..
+
+#    Imported packages may be grouped by introducing blank lines; such groupings
+#    usually indicate different domains. The order is not significant, but by
+#    convention the lines of each group are sorted alphabetically. (Both @$(gofmt)
+#    and @$(goimports) will group and sort for you.)
+   Los paquetes importados pueden agruparse introduciendo lineas en blanco;
+   Tales grupos suelen indicar diferentes dominios. El orden no es
+   significativo, pero por convencion las lineas de cada grupo se ordenan
+   alfabeticamente. (Tanto @$(gofmt) como @$(goimports) las agruparan y
+   ordenaran por usted.)
+
+#    ..src > go
+#      import (
+#        "fmt"
+#        "html/template"
+#        "os"
+#
+#        "golang.org/x/net/html"
+#        "golang.org/x/net/ipv4"
+#      )
+#    < src..
+   ..src > go
+     import (
+       "fmt"
+       "html/template"
+       "os"
+
+       "golang.org/x/net/html"
+       "golang.org/x/net/ipv4"
+     )
+   < src..
+
+#    If we need to import two packages whose names are the same, like
+#    @c(math/rand) and @c(crypto/rand), into a third package, the import
+#    declaration must specify an alternative name for at least one of them to
+#    avoid a conflict. This is called a @e(renaming import).
+   Si tenemos que importar dos paquetes cuyos nombres son los mismos, como
+   @c(math/rand) y @c(crypto/rand), en un tercer paquete, la declaracion de
+   importacion debe especificar un nombre alternativo para al menos uno de ellos
+   para evitar un conflicto. Esto se denomina @e(renombrar la importacion).
+
+#    ..src > go
+#      import (
+#        "crypto/rand"
+#        mrand "math/rand" // alternative name mrand avoids conflict
+#      )
+#    < src..
+   ..src > go
+     import (
+       "crypto/rand"
+       mrand "math/rand" // alternative name mrand avoids conflict
+     )
+   < src..
+
+#    The alternative name affects only the importing file. Other files, even ones
+#    in the same package, may import the package using its default name, or a
+#    different name.
+   El nombre alternativo solo afecta al archivo de importacion. Otros archivos,
+   incluso los del mismo paquete, pueden importar el paquete usando su nombre
+   predeterminado o un nombre diferente.
+
+#    A renaming import may be useful even when there is no conflict. If the name
+#    of the imported package is unwieldy, as is sometimes the case for
+#    automatically generated code, an abbreviated name may be more convenient. The
+#    same short name should be used consistently to avoid confusion. Choosing an
+#    alternative name can help avoid conflicts with common local variable
+#    names. For example, in a file with many local variables named @c(path), we
+#    might import the standard @c("path") package as @c(pathpkg).
+   Renombrar una importacion ser util incluso cuando no hay conflicto. Si el
+   nombre del paquete importado es dificil de manejar, como ocurre a veces con
+   el codigo generado automaticamente, es posible que el nombre abreviado sea
+   mas conveniente. El mismo nombre abreviado debe ser usado consistentemente
+   para evitar confusiones. La eleccion de un nombre alternativo puede ayudar a
+   evitar conflictos con nombres de variables locales comunes. Por ejemplo, en
+   un archivo con muchas variables locales llamado @c(path), podriamos importar
+   el paquete estandar @c("path") como @c(pathpkg).
+
+#    Each import declaration establishes a dependency from the current package to
+#    the imported package. The @$(go build) tool reports an error if these
+#    dependencies form a cycle.
+   Cada declaracion de importacion establece una dependencia del paquete actual
+   al paquete importado. La herramienta @$(go build) informara un error si estas
+   dependencias forman un ciclo.
+
+# ** Section 10.5 <> Blank Imports
+** Seccion 10.5 <> Importaciones En Blanco
+
+#    It is an error to import a package into a file but not refer to the name it
+#    defines within that file.  However, on occasion we must import a package
+#    merely for the side effects of doing so: evaluation of the initializer
+#    expressions of its package-level variables and execution of its @c(init)
+#    functions (@l(#Section 2.6.2<>§2.6.2)). To suppress the @"(unused import)
+#    error we would otherwise encounter, we must use a renaming import in which
+#    the alternative name is @c(_), the blank identifier. As usual, the blank
+#    identifier can never be referenced.
+   Es un error importar un paquete en un archivo pero no hacer referencia al
+   nombre que define, dentro de ese archivo. Sin embargo, en ocasiones hay que
+   importar un paquete solo por los efectos secundarios de hacerlo: evaluacion
+   de las expresiones de inicializador de sus variables y ejecucion de sus
+   funciones @c(init) a nivel de paquete (@l(#Seccion 2.6.2<>§2.6.2)). Para
+   suprimir el error de @"(importacion no utilizada) que encontrariamos de otra
+   manera, debemos utilizar una importacion de cambio de nombre en la que el
+   nombre alternativo sea @c(_), el identificador en blanco. Como de costumbre,
+   el identificador en blanco nunca puede ser referenciado.
+
+#    ..src > go
+#      import _ "image/png" // register PNG decoder
+#    < src..
+   ..src > go
+     import _ "image/png" // registra decodificador PNG
+   < src..
+
+#    This is known as a @e(blank import). It is most often used to implement a
+#    compile-time mechanism whereby the main program can enable optional features
+#    by blank-importing additional packages. First we’ll see how to use it, then
+#    we’ll see how it works.
+   Esto se conoce como una @e(importacion en blanco). Se utiliza con mayor
+   frecuencia para implementar un mecanismo de tiempo de compilacion mediante el
+   cual el programa principal puede habilitar caracteristicas opcionales
+   mediante la importacion en blanco de paquetes adicionales. Primero veremos
+   como usarlo, luego veremos como funciona.
+
+#    The standard library’s @c(image) package exports a @c(Decode) function that
+#    reads bytes from an @c(io.Reader), figures out which image format was used to
+#    encode the data, invokes the appropriate decoder, then returns the resulting
+#    @c(image.Image). Using @c(image.Decode), it’s easy to build a simple image
+#    converter that reads an image in one format and writes it out in another:
+   De la biblioteca estandar el paquete @c(image) exporta una funcion @c(Decode)
+   que lee bytes desde un @c(io.Reader), se da cuenta de que el formato de
+   imagen se utiliza para codificar los datos, invoca el decodificador
+   apropiado, a continuacion, devuelve la resultante @c(image.Image). Usando
+   @c(image.Decode), es facil construir un convertidor de imagenes simple que
+   lee una imagen en un formato y lo escribe en otro:
+
+#    ..figure > @l(gopl.io/ch10/jpeg/main.go<>gopl.io/ch10/jpeg)
+   ..figure > @l(gopl.io/ch10/jpeg/main.go<>gopl.io/ch10/jpeg)
+
+#      ..src > go
+#        // The jpeg command reads a PNG image from the standard input
+#        // and writes it as a JPEG image to the standard output.
+#        package main
+#
+#        import (
+#          "fmt"
+#          "image"
+#          "image/jpeg"
+#          _ "image/png" // register PNG decoder
+#          "io"
+#          "os"
+#        )
+#
+#        func main() {
+#          if err := toJPEG(os.Stdin, os.Stdout); err != nil {
+#            fmt.Fprintf(os.Stderr, "jpeg: %v\n", err)
+#            os.Exit(1)
+#          }
+#        }
+#
+#        func toJPEG(in io.Reader, out io.Writer) error {
+#          img, kind, err := image.Decode(in)
+#          if err != nil {
+#            return err
+#          }
+#          fmt.Fprintln(os.Stderr, "Input format =", kind)
+#          return jpeg.Encode(out, img, &jpeg.Options{Quality: 95})
+#        }
+#      < src..
+     ..src > go
+       // El comando jpeg lee una imagen PNG de la entrada estandar
+       // y lo escribe como una imagen JPEG en la salida estandar.
+       package main
+
+       import (
+         "fmt"
+         "image"
+         "image/jpeg"
+         _ "image/png" // registra decodificador PNG
+         "io"
+         "os"
+       )
+
+       func main() {
+         if err := toJPEG(os.Stdin, os.Stdout); err != nil {
+           fmt.Fprintf(os.Stderr, "jpeg: %v\n", err)
+           os.Exit(1)
+         }
+       }
+
+       func toJPEG(in io.Reader, out io.Writer) error {
+         img, kind, err := image.Decode(in)
+         if err != nil {
+           return err
+         }
+         fmt.Fprintln(os.Stderr, "Input format =", kind)
+         return jpeg.Encode(out, img, &jpeg.Options{Quality: 95})
+       }
+     < src..
+
+
+#    If we feed the output of @c(gopl.io/ch3/mandelbrot) (@l(#Section 3.3<>§3.3))
+#    to the converter program, it detects the PNG input format and writes a JPEG
+#    version of Figure 3.3.
+   Si alimentamos con la salida de @c(gopl.io/ch3/mandelbrot) (@l(#Seccion
+   3.3<>§3.3)) al programa convertidor, detecta el formato de entrada PNG y
+   escribe una version JPEG de la Figura 3.3.
+
+#    ..src > sh
+#      $ go build gopl.io/ch3/mandelbrot
+#      $ go build gopl.io/ch10/jpeg
+#      $ ./mandelbrot | ./jpeg >mandelbrot.jpg
+#      Input format = png
+#    < src..
+   ..src > sh
+     $ go build gopl.io/ch3/mandelbrot
+     $ go build gopl.io/ch10/jpeg
+     $ ./mandelbrot | ./jpeg >mandelbrot.jpg
+     Input format = png
+   < src..
+
+#    Notice the blank import of @c(image/png). Without that line, the program
+#    compiles and links as usual but can no longer recognize or decode input in
+#    PNG format:
+   Observe la importacion en blanco de @c(image/png). Sin esa linea, el programa
+   compila y vincula como de costumbre, pero ya no puede reconocer o decodificar
+   la entrada en formato PNG:
+
+#    ..src > sh
+#      $ go build gopl.io/ch10/jpeg
+#      $ ./mandelbrot | ./jpeg >mandelbrot.jpg
+#      jpeg: image: unknown format
+#    < src..
+   ..src > sh
+     $ go build gopl.io/ch10/jpeg
+     $ ./mandelbrot | ./jpeg >mandelbrot.jpg
+     jpeg: image: unknown format
+   < src..
+
+#    Here’s how it works. The standard library provides decoders for GIF, PNG, and
+#    JPEG, and users may provide others, but to keep executables small, decoders
+#    are not included in an application unless explicitly requested. The
+#    @c(image.Decode) function consults a table of supported formats. Each entry
+#    in the table specifies four things: the name of the format; a string that is
+#    a prefix of all images encoded this way, used to detect the encoding; a
+#    function @c(Decode) that decodes an encoded image; and another function
+#    @c(DecodeConfig) that decodes only the image metadata, such as its size and
+#    color space. An entry is added to the table by calling
+#    @c(image.RegisterFormat), typically from within the package initializer of
+#    the supporting package for each format, like this one in @c(image/png):
+   Asi es como funciona. La biblioteca estandar ofrece descodificadores para
+   GIF, PNG y JPEG, y los usuarios pueden proporcionar otros, pero para mantener
+   pequeños ejecutables, los decodificadores no se incluyen en una aplicacion a
+   menos que se solicite explicitamente. la funcion @c(image.Decode) consulta
+   una tabla de formatos soportados. Cada entrada en la tabla especifica cuatro
+   cosas: el nombre del formato; Una cadena que es un prefijo de todas las
+   imagenes codificadas de esta manera, utilizadas para detectar la
+   codificacion; una funcion @c(Decode) que decodifica una imagen codificada; y
+   otra funcion @c(DecodeConfig) que decodifica solo los metadatos de la imagen,
+   como su tamaño y espacio de color. Se añade una entrada a la tabla llamando a
+   @c(image.RegisterFormat), normalmente desde destro del paquete inicializador
+   del paquete de soporte para cada formato, como este en @c(image/png) :
+
+#    ..src > go
+#      package png // image/png
+#
+#      func Decode(r io.Reader) (image.Image, error)
+#      func DecodeConfig(r io.Reader) (image.Config, error)
+#
+#      func init() {
+#        const pngHeader = "\x89PNG\r\n\x1a\n"
+#        image.RegisterFormat("png", pngHeader, Decode, DecodeConfig)
+#      }
+#    < src..
+   ..src > go
+     package png // image/png
+
+     func Decode(r io.Reader) (image.Image, error)
+     func DecodeConfig(r io.Reader) (image.Config, error)
+
+     func init() {
+       const pngHeader = "\x89PNG\r\n\x1a\n"
+       image.RegisterFormat("png", pngHeader, Decode, DecodeConfig)
+     }
+   < src..
+
+#    The effect is that an application need only blank-import the package for the
+#    format it needs to make the @c(image.Decode) function able to decode it.
+   El efecto es que una aplicacion solo necesita importar el paquete en blanco
+   para el formato que necesita para hacer a la funcion @c(image.Decode) capaz
+   de decodificarlo.
+
+#    The @c(database/sql) package uses a similar mechanism to let users install
+#    just the database drivers they need. For example:
+   El paquete @c(database/sql) utiliza un mecanismo similar para permitir a los
+   usuarios instalar solo los controladores de base de datos que necesita. Por
+   ejemplo:
+
+#    ..src > go
+#      import (
+#        "database/mysql"
+#        _ "github.com/lib/pq"                // enable support for Postgres
+#        _ "github.com/go-sql-driver/mysql"   // enable support for MySQL
+#      )
+#
+#      db, err = sql.Open("postgres", dbname) // OK
+#      db, err = sql.Open("mysql", dbname)    // OK
+#      db, err = sql.Open("sqlite3", dbname)  // returns error: unknown driver "sqlite3"
+#    < src..
+   ..src > go
+     import (
+       "database/mysql"
+       _ "github.com/lib/pq"                // habilitira el soporte para Postgres
+       _ "github.com/go-sql-driver/mysql"   // habilitira el soporte para MySQL
+     )
+
+     db, err = sql.Open("postgres", dbname) // OK
+     db, err = sql.Open("mysql", dbname)    // OK
+     db, err = sql.Open("sqlite3", dbname)  // devuelve error: controlador desconocido "sqlite3"
+   < src..
+
+#    @b(Exercise 10.1): Extend the @$(jpeg) program so that it converts any
+#    supported input format to any output format, using @c(image.Decode) to detect
+#    the input format and a flag to select the output format.
+   @b(Ejercicio 10.1): Extender el programa @$(jpeg) para que convierte
+   cualquier formato de entrada compatible con cualquier formato de salida,
+   utilizando @c(image.Decode) para detectar el formato de entrada y una bandera
+   para seleccionar el formato de salida.
+
+#    @b(Exercise 10.2): Define a generic archive file-reading function capable of
+#    reading ZIP files (@c(archive/zip)) and POSIX tar files (@c(archive/tar)).
+#    Use a registration mechanism similar to the one described above so that
+#    support for each file format can be plugged in using blank imports.
+   @b(Ejercicio 10.2): Definir una funcion generica lectura de archivos capaz de
+   leer archivos ZIP (@c(archive/zip)) y archivos tar POSIX (@c(archive/tar)).
+   Utilice un mecanismo de registro similar al descrito anteriormente para que
+   el soporte para cada formato de archivo se pueda conectar usando
+   importaciones en blanco.
+
+# ** Section 10.6 <> Packages and Naming
+** Seccion 10.6 <> Paquetes y Nombres
+
+#    In this section, we’ll offer some advice on how to follow Go’s distinctive
+#    conventions for naming packages and their members.
+   En esta seccion, ofreceremos algunos consejos sobre como seguir las
+   distintivas convenciones de Go para nombrar paquetes y sus miembros.
+
+#    When creating a package, keep its name short, but not so short as to be
+#    cryptic. The most frequently used packages in the standard library are named
+#    @c(bufio), @c(bytes), @c(flag), @c(fmt), @c(http), @c(io), @c(json), @c(os),
+#    @c(sort), @c(sync), and @c(time).
+   Al crear un paquete, mantenga su nombre corto, pero no tan corto como para
+   ser criptico. Los paquetes mas utilizados en la biblioteca estandar se
+   nombran @c(bufio), @c(bytes), @c(flag), @c(fmt), @c(http), @c(io), @c(json),
+   @c(os), @c(sort), @c(sync) y @c(time).
+
+#    Be descriptive and unambiguous where possible. For example, don’t name a
+#    utility package @c(util) when a name such as @c(imageutil) or @c(ioutil) is
+#    specific yet still concise. Avoid choosing package names that are commonly
+#    used for related local variables, or you may compel the package’s clients to
+#    use renaming imports, as with the @c(path) package.
+   Sea descriptivo y sin ambigüedades donde sea posible. Por ejemplo, no nombre
+   un paquete de utilidades @c(util) cuando un nombre como @c(imageutil) o
+   @c(ioutil) es especifico y aun asi conciso. No se debe elegir nombres de los
+   paquetes que se utilizan comunmente para las variables locales relacionados,
+   o puede obligar a los clientes del paquete a renombrar las importaciones, al
+   igual que con el paquete @c(path).
+
+#    Package names usually take the singular form. The standard packages
+#    @c(bytes), @c(errors), and @c(strings) use the plural to avoid hiding the
+#    corresponding predeclared types and, in the case of @c(go/types), to avoid
+#    conflict with a keyword.
+   Los nombres de los paquetes usualmente toman la forma singular. Los paquetes
+   estandar @c(bytes), @c(errors) y @c(strings) utilizan el plural para evitar
+   ocultar los tipos predeclarados correspondientes y, en el caso de
+   @c(go/types), para evitar conflictos con una palabra clave.
+
+#    Avoid package names that already have other connotations. For example, we
+#    originally used the name @c(temp) for the temperature conversion package in
+#    @l(#Section 2.5), but that didn’t last long. It was a terrible idea because
+#    @"(temp) is an almost universal synonym for @"(temporary.) We went through a
+#    brief period with the name @c(temperature), but that was too long and didn’t
+#    say what the package did. In the end, it became @c(tempconv), which is
+#    shorter and parallel with @c(strconv).
+   Evite nombres de paquetes que ya tengan otras connotaciones. Por ejemplo, se
+   utilizamos originalmente el nombre @c(temp) para el paquete de conversion de
+   temperatura en la @l(#Seccion 2.5), pero eso no duro mucho tiempo. Era una
+   idea terrible, porque @"(temp) es un sinonimo casi universal de
+   @"(temporal). Pasamos de un breve periodo con el nombre @c(temperature), pero
+   que era demasiado largo y no decia lo que hace el paquete. Al final, se
+   convirtio en @c(tempconv), que es mas corto y paralelo con @c(strconv) .
+
+#    Now let’s turn to the naming of package members. Since each reference to a
+#    member of another package uses a qualified identifier such as
+#    @c(fmt.Println), the burden of describing the package member is borne equally
+#    by the package name and the member name. We need not mention the concept of
+#    formatting in @c(Println) because the package name @c(fmt) does that
+#    already. When designing a package, consider how the two parts of a qualified
+#    identifier work together, not the member name alone. Here are some
+#    characteristic examples:
+   Ahora pasemos a la nomenclatura de los miembros del paquete. Puesto que cada
+   referencia a un miembro de otro paquete utiliza un identificador calificado
+   como @c(fmt.Println), la carga de describir el elemento del paquete es
+   soportado igualmente por el nombre del paquete y el nombre del miembro. No
+   tenemos que mencionar el concepto de formateo en @c(Println) debido a que el
+   nombre del paquete @c(fmt) ya hace eso. Al diseñar un paquete, considere como
+   funcionan las dos partes de un identificador cualificado, no solo el nombre
+   del miembro. Estos son algunos ejemplos caracteristicos:
+
+#    ..pre >
+#      bytes.Equal     flag.Int     http.Get     json.Marshal
+   ..pre >
+     bytes.Equal     flag.Int     http.Get     json.Marshal
+
+#    We can identify some common naming patterns. The @c(strings) package provides
+#    a number of independent functions for manipulating strings:
+   Podemos identificar algunos patrones de denominacion comunes. El paquete
+   @c(strings) proporciona una serie de funciones para manipular cadenas
+   independientes:
+
+#    ..src > go
+#      package strings
+#
+#      func Index(needle, haystack string) int
+#
+#      type Replacer struct{ /* ... */ }
+#      func NewReplacer(oldnew ...string) *Replacer
+#
+#      type Reader struct{ /* ... */ }
+#      func NewReader(s string) *Reader
+#    < src..
+   ..src > go
+     package strings
+
+     func Index(needle, haystack string) int
+
+     type Replacer struct{ /* ... */ }
+     func NewReplacer(oldnew ...string) *Replacer
+
+     type Reader struct{ /* ... */ }
+     func NewReader(s string) *Reader
+   < src..
+
+#    The word @c(string) does not appear in any of their names. Clients refer to
+#    them as @c(strings.Index), @c(strings.Replacer), and so on.
+   La palabra @c(string) no aparece en ninguno de sus nombres. Los clientes se
+   refieren a ellos como @c(strings.Index), @c(strings.Replacer), y asi
+   sucesivamente.
+
+#    Other packages that we might describe as @e(single-type packages), such as
+#    @c(html/template) and @c(math/rand), expose one principal data type plus its
+#    methods, and often a New function to create instances.
+   Otros paquetes que podriamos describir como paquetes de un solo tipo, como
+   @c(html/template) y @c(math/rand), exponen un tipo de datos principal mas sus
+   metodos, y con frecuencia una nueva funcion para crear instancias.
+
+#    ..src > go
+#      package rand // "math/rand"
+#
+#      type Rand struct{ /* ... */ }
+#      func New(source Source) *Rand
+#    < src..
+   ..src > go
+     package rand // "math/rand"
+
+     type Rand struct{ /* ... */ }
+     func New(source Source) *Rand
+   < src..
+
+#    This can lead to repetition, as in @c(template.Template) or @c(rand.Rand),
+#    which is why the names of these kinds of packages are often especially short.
+   Esto puede conducir a la repeticion, como en @c(template.Template) o
+   @c(rand.Rand), por lo que los nombres de estos tipos de paquetes suelen ser
+   especialmente cortos.
+
+#    At the other extreme, there are packages like @c(net/http) that have a lot of
+#    names without a lot of structure, because they perform a complicated
+#    task. Despite having over twenty types and many more functions, the package’s
+#    most important members have the simplest names: @c(Get), @c(Post),
+#    @c(Handle), @c(Error), @c(Client), @c(Server).
+   En el otro extremo, hay paquetes como @c(net/http) que tienen una gran
+   cantidad de nombres sin mucha estructura, ya que desempeñan una tarea
+   complicada. A pesar de tener mas de veinte tipos y muchas mas funciones, los
+   miembros mas importantes del paquete tienen los nombres mas simples: @c(Get),
+   @c(Post), @c(Handle), @c(Error), @c(Client), @c(Server).
+
+# ** Section 10.7 <> The Go Tool
+** Seccion 10.7 <> La Herramienta Go
+
+#    The rest of this chapter concerns the @$(go) tool, which is used for
+#    downloading, querying, formatting, building, testing, and installing packages
+#    of Go code.
+   El resto de este capitulo se refiere a la herramienta @$(go), que se utiliza
+   para descargar, consultar, formatear, crear, probar e instalar paquetes de
+   codigo Go.
+
+#    The @$(go) tool combines the features of a diverse set of tools into one
+#    command set. It is a package manager (analogous to @$(apt) or @$(rpm)) that answers
+#    queries about its inventory of packages, computes their dependencies, and
+#    downloads them from remote version-control systems. It is a build system that
+#    computes file dependencies and invokes compilers, assemblers, and linkers,
+#    although it is intentionally less complete than the standard Unix
+#    @$(make). And it is a test driver, as we will see in @l(#Chapter 11).
+   La herramienta @$(go) combina las caracteristicas de un conjunto diverso de
+   herramientas en un conjunto de comandos. Es un gestor de paquetes (analogo a
+   @$(apt) o @$(rpm)) que responde a consultas sobre su inventario de paquetes,
+   calcula sus dependencias y las descarga desde sistemas de control de
+   versiones remotos. Es un sistema de construccion que calcula las dependencias
+   de archivos e invoca compiladores, ensambladores, enlazadores, aunque es
+   intencionalmente menos completo que el @$(make) estandar de Unix. Y es un
+   operador de pruebas, como veremos en el @l(#Capitulo 11).
+
+#    Its command-line interface uses the @"(Swiss army knife) style, with over a
+#    dozen subcommands, some of which we have already seen, like @c(get), @c(run),
+#    @c(build), and @c(fmt). You can run @$(go help) to see the index of its
+#    built-in documentation, but for reference, we’ve listed the most commonly
+#    used commands below:
+   Su interfaz de linea de comandos utiliza el estilo @"(navaja suiza), con mas
+   de una docena de subcomandos, algunos de los cuales ya hemos visto, como
+   @c(get), @c(run), @c(build) y @c(fmt). Puede ejecutar @$(go help) a ver el
+   indice de la documentacion incorporada, pero como referencia, hemos realizado
+   una lista de los comandos mas utilizados a continuacion:
+
+#    ..src > sh
+#      $ go
+#      ...
+#          build       compile packages and dependencies
+#          clean       remove object files
+#          doc         show documentation for package or symbol
+#          env         print Go environment information
+#          fix         run go tool fix on packages
+#          fmt         run gofmt on package sources
+#          generate    generate Go files by processing source
+#          get         download and install packages and dependencies
+#          install     compile and install packages and dependencies
+#          list        list packages
+#          run         compile and run Go program
+#          test        test packages
+#          tool        run specified go tool
+#          version     print Go version
+#          vet         run go tool vet on packages
+#
+#      Use "go help [command]" for more information about a command.
+#      ...
+#    < src..
+   ..src > sh
+     $ go
+     ...
+         build       compile packages and dependencies
+         clean       remove object files
+         doc         show documentation for package or symbol
+         env         print Go environment information
+         fix         run go tool fix on packages
+         fmt         run gofmt on package sources
+         generate    generate Go files by processing source
+         get         download and install packages and dependencies
+         install     compile and install packages and dependencies
+         list        list packages
+         run         compile and run Go program
+         test        test packages
+         tool        run specified go tool
+         version     print Go version
+         vet         run go tool vet on packages
+
+     Use "go help [command]" for more information about a command.
+     ...
+   < src..
+
+#    To keep the need for configuration to a minimum, the @$(go) tool relies
+#    heavily on conventions. For example, given the name of a Go source file, the
+#    tool can find its enclosing package, because each directory contains a single
+#    package and the import path of a package corresponds to the directory
+#    hierarchy in the workspace. Given the import path of a package, the tool can
+#    find the corresponding directory in which it stores object files. It can also
+#    find the URL of the server that hosts the source code repository.
+   Para mantener la necesidad de configuracion al minimo, la herramienta @$(go)
+   se basa en gran medida en las convenciones. Por ejemplo, dado el nombre de un
+   archivo fuente Go, la herramienta puede encontrar su paquete que lo contiene,
+   ya que cada directorio contiene un unico paquete y la ruta de importacion de
+   un paquete corresponde a la jerarquia de directorios en el espacio de
+   trabajo. Dada la ruta de importacion de un paquete, la herramienta puede
+   encontrar el directorio correspondiente en el que almacena los archivos de
+   objeto. Tambien puede encontrar la direccion URL del servidor que aloja el
+   repositorio de codigo fuente.
+
+# *** Section 10.7.1 <> Workspace Organization
+*** Seccion 10.7.1 <> Organizacion del Espacio de Trabajo
+
+#     The only configuration most users ever need is the @c(GOPATH) environment
+#     variable, which specifies the root of the workspace. When switching to a
+#     different workspace, users update the value of @c(GOPATH). For instance, we
+#     set @c(GOPATH) to @c($HOME/gobook) while working on this book:
+    La unica configuracion de la mayoria de los usuarios necesitan es la
+    variable de entorno @c(GOPATH), que especifica la raiz del espacio de
+    trabajo. Cuando se cambia a otro espacio de trabajo, los usuarios actualizan
+    el valor de @c(GOPATH). Por ejemplo, mientras trabajamos en este libro
+    establecemos @c(GOPATH) a @c($HOME/gobook):
+
+#     ..src > sh
+#       $ export GOPATH=$HOME/gobook
+#       $ go get gopl.io/...
+#     < src..
+    ..src > sh
+      $ export GOPATH=$HOME/gobook
+      $ go get gopl.io/...
+    < src..
+
+#     After you download all the programs for this book using the command above,
+#     your workspace will contain a hierarchy like this one:
+    Despues de descargar todos los programas de este libro utilizando el comando
+    anterior, su espacio de trabajo contendra una jerarquia como esta:
+
+#     ..pre >
+#       GOPATH/
+#             src/
+#                 gopl.io/
+#                         .git/
+#                         ch1/
+#                             helloworld/
+#                                        main.go
+#                             dup/
+#                                 main.go
+#                             ...
+#                 golang.org/x/net/
+#                                 .git/
+#                                 html/
+#                                     parse.go
+#                                     node.go
+#                                     ...
+#             bin/
+#                 helloworld
+#                 dup
+#             pkg/
+#                 darwin_amd64/
+#                 ...
+#     < pre..
+    ..pre >
+      GOPATH/
+            src/
+                gopl.io/
+                        .git/
+                        ch1/
+                            helloworld/
+                                       main.go
+                            dup/
+                                main.go
+                            ...
+                golang.org/x/net/
+                                .git/
+                                html/
+                                    parse.go
+                                    node.go
+                                    ...
+            bin/
+                helloworld
+                dup
+            pkg/
+                darwin_amd64/
+                ...
+    < pre..
+
+#     @c(GOPATH) has three subdirectories. The src subdirectory holds source
+#     code. Each package resides in a directory whose name relative to
+#     @c($GOPATH/src) is the package’s import path, such as
+#     @c(gopl.io/ch1/helloworld). Observe that a single @c(GOPATH) workspace
+#     contains multiple version-control repositories beneath @f(src), such as
+#     @c(gopl.io) or @c(golang.org). The @f(pkg) subdirectory is where the build
+#     tools store compiled packages, and the @f(bin) subdirectory holds executable
+#     programs like @$(helloworld).
+    @c(GOPATH) tiene tres subdirectorios. El subdirectorio @f(src) contiene el
+    codigo fuente. Cada paquete reside en un directorio cuyo nombre en relacion
+    con @c($GOPATH/src) es ruta de importacion del paquete, como
+    @c(gopl.io/ch1/helloworld). Observe que un solo espacio de trabajo
+    @c(GOPATH) contiene multiples repositorios de control de version debajo
+    @f(src), como @c(gopl.io) o @c(golang.org). El subdirectorio @f(pkg) es
+    donde las h herramientas de construccion almacenan paquetes compilados, y el
+    subdirectorio @f(bin) contiene los programas ejecutables como @$(helloworld).
+
+#     A second environment variable, @c(GOROOT), specifies the root directory of
+#     the Go distribution, which provides all the packages of the standard
+#     library. The directory structure beneath @c(GOROOT) resembles that of
+#     @c(GOPATH), so, for example, the source files of the @c(fmt) package reside
+#     in the @f($GOROOT/src/fmt) directory. Users never need to set @c(GOROOT)
+#     since, by default, the @$(go) tool will use the location where it was installed.
+    Una segunda variable de entorno, @$(GOROOT), especifica el directorio raiz
+    de la distribucion Go, que ofrece todos los paquetes de la biblioteca
+    estandar. La estructura de directorios debajo de @c(GOROOT) asemeja a la de
+    @c(GOPATH), por lo que, por ejemplo, los archivos de origen del paquete
+    @c(fmt) residen en el directorio @c($GOROOT/src/fmt). Los usuarios no
+    necesitan configurar @c(GOROOT) ya que, por defecto, la herramienta de
+    @$(go) utilizara la ubicacion donde se instalo.
+
+#     The @$(go env) command prints the effective values of the environment
+#     variables relevant to the toolchain, including the default values for the
+#     missing ones. @c(GOOS) specifies the target operating system (for example,
+#     @c(android), @c(linux), @c(darwin), or @c(windows)) and @c(GOARCH) specifies
+#     the target processor architecture, such as @c(amd64), @c(386), or
+#     @c(arm). Although @c(GOPATH) is the only variable you must set, the others
+#     occasionally appear in our explanations.
+    El comando @$(go env) imprime los valores efectivos de las variables de
+    entorno correspondientes a la cadena de herramientas, incluidos los valores
+    por defecto para los que faltan. @c(GOOS) especifica el sistema operativo de
+    destino (por ejemplo, @c(android), @c(linux), @c(darwin), o @c(windows)) y
+    @c(GOARCH) especifica la arquitectura de procesador objetivo, como
+    @c(amd64), @c(386), o @c(arm). Aunque @c(GOPATH) es la unica variable que
+    debe establecer, los demas de vez en cuando aparecen en nuestras
+    explicaciones.
+
+#     ..src > sh
+#       $ go env
+#       GOPATH="/home/gopher/gobook"
+#       GOROOT="/usr/local/go"
+#       GOARCH="amd64"
+#       GOOS="darwin"
+#     < src..
+    ..src > sh
+      $ go env
+      GOPATH="/home/gopher/gobook"
+      GOROOT="/usr/local/go"
+      GOARCH="amd64"
+      GOOS="darwin"
+    < src..
+
+# *** Section 10.7.2 <> Downloading Packages
+*** Seccion 10.7.2 <> Descargando paquetes
+
+#     When using the @$(go) tool, a package’s import path indicates not only where
+#     to find it in the local workspace, but where to find it on the Internet so
+#     that @$(go get) can retrieve and update it.
+    Cuando se utiliza la herramienta @$(go), ruta de importacion de un paquete
+    indica no solo donde encontrarlo en el espacio de trabajo local, sino donde
+    encontrarlo en Internet para que @$(go get) pueda recuperarlo y
+    actualizarlo.
+
+#     The @$(go get) command can download a single package or an entire subtree or
+#     repository using the @c(...) notation, as in the previous section. The tool
+#     also computes and downloads all the dependencies of the initial packages,
+#     which is why the @c(golang.org/x/net/html) package appeared in the workspace
+#     in the previous example.
+    El comando @$(go get) puede descargar un solo paquete o todo un subarbol o
+    repositorio usando la notacion @c(...), como en la seccion anterior. La
+    herramienta tambien calcula y descarga todas las dependencias de los
+    paquetes iniciales, como el paquete @c(golang.org/x/net/html) que aparecio
+    en el espacio de trabajo en el ejemplo anterior.
+
+#     Once @$(go get) has downloaded the packages, it builds them and then
+#     @e(installs) the libraries and commands. We’ll look at the details in the
+#     next section, but an example will show how straightforward the process
+#     is. The first command below gets the @$(golint) tool, which checks for
+#     common style problems in Go source code. The second command runs @$(golint)
+#     on @c(gopl.io/ch2/popcount) from @l(#Section 2.6.2). It helpfully reports
+#     that we have forgotten to write a doc comment for the package:
+    Una vez que @$(go get) ha descargado los paquetes, los construye y luego
+    instala las librerias y comandos. Veremos los detalles en la siguiente
+    seccion, pero un ejemplo mostrara lo sencillo que es el proceso. El primer
+    comando a continuacion optiene la herramienta @$(golint), que comprueba si
+    hay problemas de estilo comunes en codigo fuente Go. El segundo comando
+    ejecuta @$(golint) en @c(gopl.io/ch2/popcount) de la @l(#Seccion 2.6.2). Es
+    util que nos informe que hemos olvidado escribir un comentario de
+    documentacion para el paquete:
+
+#     ..src > sh
+#       $ go get github.com/golang/lint/golint
+#       $ $GOPATH/bin/golint gopl.io/ch2/popcount
+#       src/gopl.io/ch2/popcount/main.go:1:1:
+#         package comment should be of the form "Package popcount ..."
+#     < src..
+    ..src > sh
+      $ go get github.com/golang/lint/golint
+      $ $GOPATH/bin/golint gopl.io/ch2/popcount
+      src/gopl.io/ch2/popcount/main.go:1:1:
+        package comment should be of the form "Package popcount ..."
+    < src..
+
+#     The @$(go get) command has support for popular code-hosting sites like
+#     GitHub, Bitbucket, and Launchpad and can make the appropriate requests to
+#     their version-control systems. For less well-known sites, you may have to
+#     indicate which version-control protocol to use in the import path, such as
+#     Git or Mercurial. Run @$(go help importpath) for the details.
+    El comando @$(go get) tiene soporte para los sitios de alojamiento de codigo
+    populares como GitHub, Bitbucket y Launchpad y puede hacer las solicitudes
+    apropiadas en sus sistemas de control de versiones. Para sitios menos
+    conocidos, es posible que deba indicar que protocolo de control de versiones
+    debe utilizar en la ruta de importacion, como Git o Mercurial. Ejecuta @$(go
+    help importpath) para los detalles.
+
+#     The directories that @$(go get) creates are true clients of the remote
+#     repository, not just copies of the files, so you can use version-control
+#     commands to see a diff of local edits you’ve made or to update to a
+#     different revision. For example, the @f(golang.org/x/net) directory is a Git
+#     client:
+    Los directorios que @$(go get) crea son verdaderos clientes del repositorio
+    remoto, no solo copias de los archivos, por lo que puede utilizar los
+    comandos de control de versiones para ver un diff de ediciones locales que
+    ha realizado o para actualizar a una revision diferente. Por ejemplo, el
+    directorio @f(golang.org/x/net) es un cliente de Git:
+
+#     ..src > sh
+#       $ cd $GOPATH/src/golang.org/x/net
+#       $ git remote -v
+#       origin  https://go.googlesource.com/net (fetch)
+#       origin  https://go.googlesource.com/net (push)
+#     < src..
+    ..src > sh
+      $ cd $GOPATH/src/golang.org/x/net
+      $ git remote -v
+      origin  https://go.googlesource.com/net (fetch)
+      origin  https://go.googlesource.com/net (push)
+    < src..
+
+#     Notice that the apparent domain name in the package’s import path,
+#     @c(https://golang.org<>golang.org), differs from the actual domain name of
+#     the Git server, @c(https://go.googlesource.com/<>go.googlesource.com). This
+#     is a feature of the go tool that lets packages use a custom domain name in
+#     their import path while being hosted by a generic service such as
+#     @l(https://googlesource.com) or @l(https://github.com). HTML pages beneath
+#     @l(https://golang.org/x/net/html) include the metadata shown below, which
+#     redirects the @$(go) tool to the Git repository at the actual hosting site:
+    Observe que el nombre de dominio en ruta de importacion del paquete,
+    @c(golang.org), difiere del nombre de dominio real del servidor Git,
+    @c(go.googlesource.com). Esta es una caracteristica de la herramienta Go que
+    permite que lo paquetes usen un nombre de dominio personalizado en su ruta
+    de importacion al ser alojados por un servicio generico como
+    @l(https://googlesource.com) o @l(https://github.com). Paginas HTML debajo
+    de @l(https://golang.org/x/net/html) incluyen los metadatos que se muestran
+    a continuacion, que redirecciona la herramienta @$(go) al repositorio Git en
+    el lugar del alojamiento actual:
+
+#     ..src > sh
+#       $ go build gopl.io/ch1/fetch
+#       $ ./fetch https://golang.org/x/net/html | grep go-import
+#       <meta name="go-import"
+#             content="golang.org/x/net git https://go.googlesource.com/net">
+#     < src..
+    ..src > sh
+      $ go build gopl.io/ch1/fetch
+      $ ./fetch https://golang.org/x/net/html | grep go-import
+      <meta name="go-import"
+            content="golang.org/x/net git https://go.googlesource.com/net">
+    < src..
+
+#     If you specify the @c(-u) flag, @$(go get) will ensure that all packages it
+#     visits, including dependencies, are updated to their latest version before
+#     being built and installed. Without that flag, packages that already exist
+#     locally will not be updated.
+    Si especifica la bandera @c(-u), @$(go get) se asegurara de que todos los
+    paquetes que visita, incluidas las dependencias, se actualizan a su ultima
+    version antes de ser construido e instalado. Sin ese indicador, los paquetes
+    que ya existen localmente no se actualizaran.
+
+#     The @$(go get -u) command generally retrieves the latest version of each
+#     package, which is convenient when you’re getting started but may be
+#     inappropriate for deployed projects, where precise control of dependencies
+#     is critical for release hygiene. The usual solution to this problem is to
+#     @e(vendor) the code, that is, to make a persistent local copy of all the
+#     necessary dependencies, and to update this copy carefully and
+#     deliberately. Prior to Go 1.5, this required changing those packages’ import
+#     paths, so our copy of @c(golang.org/x/net/html) would become
+#     @c(gopl.io/vendor/golang.org/x/net/html). More recent versions of the go
+#     tool support vendoring directly, though we don’t have space to show the
+#     details here. See @e(Vendor Directories) in the output of the @$(go help
+#     gopath) command.
+    El comando @$(go get -u) recupera generalmente la ultima version de cada
+    paquete, lo cual es conveniente cuando se inicia, pero puede ser inadecuado
+    para proyectos desplegados, donde el control preciso de dependencias es
+    critico para la higiene de la liberacion. La solucion habitual a este
+    problema es el @e(proveedor) del codigo, es decir, hacer una copia local
+    persistente de todas las dependencias necesarias, para actualizar esta copia
+    cuidadosa y deliberadamente. Antes de Go 1.5, esto requiere cambiar las
+    rutas de importacion esos paquetes, por lo que nuestra copia de
+    @c(golang.org/x/net/html) se convertiria en
+    @c(gopl.io/vendor/golang.org/x/net/html). Las versiones mas recientes de la
+    herramienta soportan directorios de proveedores directamente, aunque no
+    tenemos espacio para mostrar los detalles aqui. Vea @e(Directorios de
+    Proveedores) en la salida del comando @$(go help gopath).
+
+#     @b(Exercise 10.3): Using @$(fetch http://gopl.io/ch1/helloworld?go-get=1),
+#     find out which service hosts the code samples for this book. (HTTP requests
+#     from @$(go get) include the @c(go-get) parameter so that servers can distinguish
+#     them from ordinary browser requests.)
+    @b(Ejercicio 10.3): Utilizando @$(fetch http://gopl.io/ch1/helloworld?go-get=1),
+    averigüe que servicio alberga los ejemplos de codigo para este libro.  (Las
+    peticiones HTTP de @$(go get) incluyen el parametro @c(go-get) para que los
+    servidores pueden distinguirlos de las solicitudes del navegador comun.)
+
+# *** Section 10.7.3 <> Building Packages
+*** Seccion 10.7.3 <> Construccion de Paquetes
+
+#     The @$(go build) command compiles each argument package. If the package is a
+#     library, the result is discarded; this merely checks that the package is
+#     free of compile errors. If the package is named @c(main), @$(go build)
+#     invokes the linker to create an executable in the current directory; the
+#     name of the executable is taken from the last segment of the package’s
+#     import path.
+    El comando @$(go build) compila cada argumento de paquete. Si el paquete es
+    una libreria, el resultado se descarta; Esto simplemente comprueba que el
+    paquete esta libre de errores de compilacion. Si el paquete se llama
+    @c(main), @$(go build) invoca el enlazador para crear un archivo ejecutable
+    en el directorio actual; El nombre del ejecutable se toma del ultimo
+    segmento de la ruta de importacion del paquete.
+
+#     Since each directory contains one package, each executable program, or
+#     @e(command) in Unix terminology, requires its own directory. These
+#     directories are sometimes children of a directory named @c(cmd), such as the
+#     @c(golang.org/x/tools/cmd/godoc) command which serves Go package
+#     documentation through a web interface (@l(#Section 10.7.4<>§10.7.4)).
+    Dado que cada directorio contiene un solo paquete, cada programa ejecutable,
+    o @e(comando) en la terminologia Unix, requiere su propio directorio. Estos
+    directorios son a veces los hijos de un directorio denominado @c(cmd), como
+    el comando @c(golang.org/x/tools/cmd/godoc) que sirve la documentacion del
+    paquete Go a traves de una interfaz web (@l(#Seccion 10.7.4<>§10.7.4)).
+
+#     Packages may be specified by their import paths, as we saw above, or by a
+#     relative directory name, which must start with a @c(.) or @c(..) segment
+#     even if this would not ordinarily be required.  If no argument is provided,
+#     the current directory is assumed. Thus the following commands build the same
+#     package, though each writes the executable to the directory in which @$(go
+#     build) is run:
+    Los paquetes pueden especificarse por sus rutas de importacion, como hemos
+    visto anteriormente, o por un nombre de directorio relativo, que debe
+    comenzar con un @c(.) o @c(..) aun si ordinariamente no se requere. Si no se
+    proporciona ningun argumento, se supone el directorio actual. Por lo tanto
+    los siguientes comandos construyen el mismo paquete, aunque cada uno escribe
+    el ejecutable en el directorio en el que @$(go build) se ejecuta:
+
+#     ..src > sh
+#       $ cd $GOPATH/src/gopl.io/ch1/helloworld
+#       $ go build
+#     < src..
+    ..src > sh
+      $ cd $GOPATH/src/gopl.io/ch1/helloworld
+      $ go build
+    < src..
+
+#     and:
+y:
+
+#     ..src > sh
+#       $ cd anywhere
+#       $ go build gopl.io/ch1/helloworld
+#     < src..
+    ..src > sh
+      $ cd anywhere
+      $ go build gopl.io/ch1/helloworld
+    < src..
+
+#     and:
+y:
+
+#     ..src > sh
+#       $ cd $GOPATH
+#       $ go build ./src/gopl.io/ch1/helloworld
+#     < src..
+    ..src > sh
+      $ cd $GOPATH
+      $ go build ./src/gopl.io/ch1/helloworld
+    < src..
+
+#     but not:
+pero no:
+
+#     ..src > sh
+#       $ cd $GOPATH
+#       $ go build src/gopl.io/ch1/helloworld
+#       Error: cannot find package "src/gopl.io/ch1/helloworld".
+#     < src..
+    ..src > sh
+      $ cd $GOPATH
+      $ go build src/gopl.io/ch1/helloworld
+      Error: cannot find package "src/gopl.io/ch1/helloworld".
+    < src..
+
+#     Packages may also be specified as a list of file names, though this tends to
+#     be used only for small programs and one-off experiments. If the package name
+#     is @c(main), the executable name comes from the basename of the first @f(.go)
+#     file.
+    Los paquetes tambien se pueden especificar como una lista de nombres de
+    archivo, aunque esto tiende a utilizarse solo para programas pequeños y
+    experimentos puntuales. Si el nombre del paquete es @c(main), el nombre del
+    ejecutable viene del nombre base del primer archivo @f(.go).
+
+#     ..src > sh
+#       $ cat quoteargs.go
+#       package main
+#
+#       import (
+#         "fmt"
+#         "os"
+#       )
+#
+#       func main() {
+#         fmt.Printf("%q\n", os.Args[1:])
+#       }
+#       $ go build quoteargs.go
+#       $ ./quoteargs one "two three" four\ five
+#       ["one" "two three" "four five"]
+#     < src..
+    ..src > sh
+      $ cat quoteargs.go
+      package main
+
+      import (
+        "fmt"
+        "os"
+      )
+
+      func main() {
+        fmt.Printf("%q\n", os.Args[1:])
+      }
+      $ go build quoteargs.go
+      $ ./quoteargs one "two three" four\ five
+      ["one" "two three" "four five"]
+    < src..
+
+#     Particularly for throwaway programs like this one, we want to run the
+#     executable as soon as we’ve built it. The @$(go run) command combines these
+#     two steps:
+    Especialmente para programas descartables como este, queremos ejecutar el
+    archivo ejecutable tan pronto como lo hayamos construido. El comando @$(go
+    run) combina estos dos pasos:
+
+#     ..src > sh
+#       $ go run quoteargs.go one "two three" four\ five
+#       ["one" "two three" "four five"]
+#     < src..
+    ..src > sh
+      $ go run quoteargs.go one "two three" four\ five
+      ["one" "two three" "four five"]
+    < src..
+
+#     The first argument that doesn’t end in @f(.go) is assumed to be the
+#     beginning of the list of arguments to the Go executable.
+    El primer argumento que no termina en @f(.go) se asume como el principio de
+    la lista de argumentos para el ejecutable de Go.
+
+#     By default, the @$(go build) command builds the requested package and all
+#     its dependencies, then throws away all the compiled code except the final
+#     executable, if any. Both the dependency analysis and the compilation are
+#     surprisingly fast, but as projects grow to dozens of packages and hundreds
+#     of thousands of lines of code, the time to recompile dependencies can become
+#     noticeable, potentially several seconds, even when those dependencies
+#     haven’t changed at all.
+    Por defecto, el comando @$(go build) construye el paquete solicitado y todas
+    sus dependencias, y luego tira a la basura todo el codigo compilado, excepto
+    el ejecutable final, si lo hubiera. Tanto el analisis de dependencias como
+    la compilacion son sorprendentemente rapidos, pero a medida que los
+    proyectos crecen hasta decenas de paquetes y cientos de miles de lineas de
+    codigo, el tiempo para recompilar las dependencias puede llegar a ser
+    notable, potencialmente varios segundos, incluso cuando no todas las
+    dependencias han cambiado.
+
+#     The @$(go install) command is very similar to @$(go build), except that it
+#     saves the compiled code for each package and command instead of throwing it
+#     away. Compiled packages are saved beneath the @f($GOPATH/pkg) directory
+#     corresponding to the @f(src) directory in which the source resides, and
+#     command executables are saved in the @f($GOPATH/bin) directory. (Many users
+#     put @f($GOPATH/bin) on their executable search path.) Thereafter, @$(go
+#     build) and @$(go install) do not run the compiler for those packages and
+#     commands if they have not changed, making subsequent builds much faster. For
+#     convenience, @$(go build -i) installs the packages that are dependencies of
+#     the build target.
+    El comando @$(go install) es muy similar a @$(go build), excepto que guarda
+    el codigo compilado para cada paquete y comando en lugar de tirarlo a la
+    basura. Los paquetes compilados se guardan bajo el directorio
+    @f($GOPATH/pkg) correspondiente al directorio @f(src) en el que reside el
+    codigo fuente y los ejecutables de comando se guardan en el directorio
+    @f($GOPATH/bin). (Muchos usuarios agregar @f($GOPATH/bin) en su ruta de
+    busqueda ejecutable.) A partir de entonces, @$(go build) y @$(go install) no
+    ejecutan el compilador para esos paquetes y comandos si no han cambiado,
+    haciendo las compilaciones posteriores mucho mas rapido. Por cenveniencia,
+    @$(go build -i) instala los paquetes que son dependencias del objetivo a
+    compilar.
+
+#     Since compiled packages vary by platform and architecture, @$(go install)
+#     saves them beneath a subdirectory whose name incorporates the values of the
+#     @c(GOOS) and @c(GOARCH) environment variables. For example, on a Mac the
+#     @c(golang.org/x/net/html) package is compiled and installed in the file
+#     @f(golang.org/x/net/html.a) under @f($GOPATH/pkg/darwin_amd64).
+    Dado que los paquetes compilados varian segun la plataforma y la
+    arquitectura, @$(go install) los guarda debajo de un subdirectorio cuyo
+    nombre incorpora los valores de las variables de entorno @c(GOOS) y
+    @c(GOARCH). Por ejemplo, en un Mac el paquete @c(golang.org/x/net/html) se
+    compila e instala en el archivo @f(golang.org/x/net/html.a) bajo
+    @f($GOPATH/pkg/darwin_amd64).
+
+#     It is straightforward to @e(cross-compile) a Go program, that is, to build
+#     an executable intended for a different operating system or CPU. Just set the
+#     @c(GOOS) or @c(GOARCH) variables during the build.  The @$(cross) program
+#     prints the operating system and architecture for which it was built:
+    Es facil aplicar @e(compilacion cruzada) a un programa Go, es decir,
+    construir un ejecutable destinado a un sistema operativo diferente o
+    CPU. Solo hay que establecer las variables @c(GOOS) o @c(GOARCH) durante la
+    construccion. El programa @$(cross) imprime el sistema operativo y la
+    arquitectura para la que fue construido:
+
+#     ..figure > @l(gopl.io/ch10/cross/main.go<>gopl.io/ch10/cross)
+    ..figure > @l(gopl.io/ch10/cross/main.go<>gopl.io/ch10/cross)
+
+#       ..src > go
+#         func main() {
+#           fmt.Println(runtime.GOOS, runtime.GOARCH)
+#         }
+#       < src..
+      ..src > go
+        func main() {
+          fmt.Println(runtime.GOOS, runtime.GOARCH)
+        }
+      < src..
+
+
+#     The following commands produce 64-bit and 32-bit executables respectively:
+    Los comandos siguientes producen ejecutables de 64 bits y 32 bits,
+    respectivamente:
+
+#     ..src > sh
+#       $ go build gopl.io/ch10/cross
+#       $ ./cross
+#       darwin amd64
+#       $ GOARCH=386 go build gopl.io/ch10/cross
+#       $ ./cross
+#       darwin 386
+#     < src..
+    ..src > sh
+      $ go build gopl.io/ch10/cross
+      $ ./cross
+      darwin amd64
+      $ GOARCH=386 go build gopl.io/ch10/cross
+      $ ./cross
+      darwin 386
+    < src..
+
+#     Some packages may need to compile different versions of the code for certain
+#     platforms or processors, to deal with low-level portability issues or to
+#     provide optimized versions of important routines, for instance. If a file
+#     name includes an operating system or processor architecture name like
+#     @f(net_linux.go) or @f(asm_amd64.s), then the @$(go) tool will compile the
+#     file only when building for that target. Special comments called @e(build
+#     tags) give more fine-grained control. For example, if a file contains this
+#     comment:
+    Algunos paquetes pueden necesitar compilar versiones diferentes del codigo
+    para ciertas plataformas o procesadores, para tratar problemas de
+    portabilidad de bajo nivel o para proporcionar versiones optimizadas de
+    rutinas importantes, por ejemplo. Si un nombre de archivo incluye un sistema
+    operativo o arquitectura de procesador, como @f(net_linux.go) o
+    @f(asm_amd64.s), la herramienta @$(go) compilara el archivo solo cuando se
+    construye para ese objetivo. Comentarios especiales llamadas @e(etiquetas de
+    compilacion) ofrecen un control mas detallado. Por ejemplo, si un archivo
+    contiene este comentario:
+
+#     ..src > go
+#       // +build linux darwin
+#     < src..
+    ..src > go
+      // +build linux darwin
+    < src..
+
+#     before the package declaration (and its doc comment), @$(go build) will
+#     compile it only when building for Linux or Mac OS X, and this comment says
+#     never to compile the file:
+    antes de la declaracion del paquete (y su comentario de documentacion),
+    @$(go build) compilara solo cuando se compile para Linux o Mac OS X, y este
+    comentario indica nunca compilar el archivo:
+
+#     ..src > go
+#       // +build ignore
+#     < src..
+    ..src > go
+      // +build ignore
+    < src..
+
+#     For more details, see the @e(Build Constraints) section of the @c(go/build)
+#     package’s documentation:
+    Para mas detalles, consulte la seccion @e(Build Constraints) de la
+    documentacion del paquete @c(go/build):
+
+#     ..src > sh
+#       $ go doc go/build
+#     < src..
+    ..src > sh
+      $ go doc go/build
+    < src..
+
+# *** Section 10.7.4 <> Documenting Packages
+*** Seccion 10.7.4 <> Documentacion de Paquetes
+
+#     Go style strongly encourages good documentation of package APIs. Each
+#     declaration of an exported package member and the package declaration itself
+#     should be immediately preceded by a comment explaining its purpose and
+#     usage.
+    El estilo Go anima fuertemente la buena documentacion de las API del
+    paquete. Cada declaracion de un miembro del paquete exportado y la propia
+    declaracion del paquete deben ir precedidas inmediatamente de un comentario
+    que explique su proposito y uso.
+
+#     Go @e(doc comments) are always complete sentences, and the first sentence is
+#     usually a summary that starts with the name being declared. Function
+#     parameters and other identifiers are mentioned without quotation or
+#     markup. For example, here’s the doc comment for @c(fmt.Fprintf):
+    Los @e(comentarios de documentacion) de Go siempre son oraciones completas,
+    y la primera frase es por lo general un resumen que se inicia con el nombre
+    que se declaro. Los parametros de funcion y otros identificadores se
+    mencionan sin citacion o marcado. Por ejemplo, aqui esta el comentario de
+    documentacion para @c(fmt.Fprintf):
+
+#     ..src > go
+#       // Fprintf formats according to a format specifier and writes to w.
+#       // It returns the number of bytes written and any write error encountered.
+#       func Fprintf(w io.Writer, format string, a ...interface{}) (int, error)
+#     < src..
+    ..src > go
+      // Fprintf formateo de acuerdo con un especificador de formato y escriben w.
+      // Devuelve el numero de bytes escritos y cualquier error de escritura encontrado.
+      func Fprintf(w io.Writer, format string, a ...interface{}) (int, error)
+    < src..
+
+#     The details of @c(Fprintf)’s formatting are explained in a doc comment
+#     associated with the @c(fmt) package itself. A comment immediately preceding
+#     a @c(package) declaration is considered the doc comment for the package as a
+#     whole. There must be only one, though it may appear in any file. Longer
+#     package comments may warrant a file of their own; @c(fmt)’s is over 300
+#     lines.  This file is usually called @f(doc.go).
+    Los detalles del formateo de @c(Fprintf) se explican en un comentario de
+    documentacion asociado al paquete @c(fmt) en si. Un comentario que precede
+    inmediatamente a una declaracion @c(package) se considera el comentario de
+    documentacion para el paquete en su conjunto. Solo debe haber uno, aunque
+    pueda aparecer en cualquier archivo. Los comentarios de paquetes mas largos
+    pueden justificar un archivo propio; @c(fmt) tiene mas de 300 lineas. Este
+    archivo normalmente se llama @f(doc.go) .
+
+#     Good documentation need not be extensive, and documentation is no substitute
+#     for simplicity.  Indeed, Go’s conventions favor brevity and simplicity in
+#     documentation as in all things, since documentation, like code, requires
+#     maintenance too. Many declarations can be explained in one well-worded
+#     sentence, and if the behavior is truly obvious, no comment is needed.
+#     Throughout the book, as space permits, we’ve preceded many declarations by
+#     doc comments, but you will find better examples as you browse the standard
+#     library. Two tools can help you do that.
+    Una buena documentacion no necesita ser extensa, y la documentacion no es un
+    sustituto de la sencillez. De hecho, las convenciones de Go favorecen la
+    brevedad y simplicidad en la documentacion como en todas las cosas, ya que
+    la documentacion, como el codigo, tambien requiere mantenimiento. Muchas
+    declaraciones se pueden explicar en una oracion bien redactada, y si el
+    comportamiento es realmente obvio, no necesita comentarse. A lo largo del
+    libro, a medida que el espacio lo permite, hemos precedido a muchas
+    declaraciones por comentarios de documentacion, pero encontraremos mejores
+    ejemplos buscando en la biblioteca estandar. Dos herramientas pueden
+    ayudarte a hacer eso.
+
+#     The @$(go doc) tool prints the declaration and doc comment of the entity
+#     specified on the command line, which may be a package:
+    La herramienta @$(go doc) imprime la declaracion y el comentario de
+    documentacion de la entidad especificada en la linea de comandos, que puede
+    ser un paquete:
+
+#     ..src > sh
+#       $ go doc time
+#       package time // import "time"
+#
+#       Package time provides functionality for measuring and displaying time.
+#
+#       const Nanosecond Duration = 1 ...
+#       func After(d Duration) <-chan Time
+#       func Sleep(d Duration)
+#       func Since(t Time) Duration
+#       func Now() Time
+#       type Duration int64
+#       type Time struct { ... }
+#       ...many more...
+#     < src..
+    ..src > sh
+      $ go doc time
+      package time // import "time"
+
+      Package time provides functionality for measuring and displaying time.
+
+      const Nanosecond Duration = 1 ...
+      func After(d Duration) <-chan Time
+      func Sleep(d Duration)
+      func Since(t Time) Duration
+      func Now() Time
+      type Duration int64
+      type Time struct { ... }
+      ...many more...
+    < src..
+
+#     or a package member:
+    O un miembro del paquete:
+
+#     ..src > sh
+#       $ go doc time.Since
+#       func Since(t Time) Duration
+#
+#           Since returns the time elapsed since t.
+#           It is shorthand for time.Now().Sub(t).
+#     < src..
+    ..src > sh
+      $ go doc time.Since
+      func Since(t Time) Duration
+
+          Since returns the time elapsed since t.
+          It is shorthand for time.Now().Sub(t).
+    < src..
+
+#     or a method:
+    O un metodo:
+
+#     ..src > sh
+#       $ go doc time.Duration.Seconds
+#       func (d Duration) Seconds() float64
+#
+#           Seconds returns the duration as a floating-point number of seconds.
+#     < src..
+    ..src > sh
+      $ go doc time.Duration.Seconds
+      func (d Duration) Seconds() float64
+
+          Seconds returns the duration as a floating-point number of seconds.
+    < src..
+
+#     The tool does not need complete import paths or correct identifier
+#     case. This command prints the documentation of @c[(*json.Decoder).Decode]
+#     from the @c(encoding/json) package:
+    La herramienta no necesita rutas de importacion completas o casos de
+    identificador exactos. Este comando imprime la documentacion de
+    @c[(*json.Decoder).Decode] del paquete @c(encoding/json):
+
+#     ..src > sh
+#       $ go doc json.decode
+#       func (dec *Decoder) Decode(v interface{}) error
+#
+#           Decode reads the next JSON-encoded value from its input and stores
+#           it in the value pointed to by v.
+#     < src..
+    ..src > sh
+      $ go doc json.decode
+      func (dec *Decoder) Decode(v interface{}) error
+
+          Decode reads the next JSON-encoded value from its input and stores
+          it in the value pointed to by v.
+    < src..
+
+#     The second tool, confusingly named @$(godoc), serves cross-linked HTML pages
+#     that provide the same information as @$(go doc) and much more. The @$(godoc)
+#     server at @l(https://golang.org/pkg) covers the standard library. Figure
+#     10.1 shows the documentation for the @c(time) package, and in @l(#Section 11.6)
+#     we’ll see @$(godoc)’s interactive display of example programs. The @$(godoc)
+#     server at @l(https://godoc.org) has a searchable index of thousands of
+#     open-source packages.
+    La segunda herramienta, confusamente nombrada @$(godoc), sirve paginas HTML
+    a entrecruzadas que proporcionan la misma informacion que @$(go doc) y mucho
+    mas. El servidor @$(godoc) en @l(https://golang.org/pkg) cubre la biblioteca
+    estandar. La Figura 10.1 muestra la documentacion del paquete @c(time), y en
+    la @l(#Seccion 11.6) veremos la pantalla interactiva de @$(godoc) de
+    programas de ejemplo. El servidor @$(godoc) en @l(https://godoc.org) tiene
+    un indice de busqueda de miles de paquetes de codigo abierto.
+
+#     You can also run an instance of @$(godoc) in your workspace if you want to
+#     browse your own packages. Visit @l(http://localhost:8000/pkg) in your
+#     browser while running this command:
+    Tambien puede ejecutar una instancia de @$(godoc) en su espacio de trabajo
+    si desea navegar por sus propios paquetes. Visite
+    @l(http://localhost:8000/pkg) en su navegador mientras se ejecuta este
+    comando:
+
+#     ..src > sh
+#       $ godoc -http :8000
+#     < src..
+    ..src > sh
+      $ godoc -http :8000
+    < src..
+
+#     Its @c(-analysis=type) and @c(-analysis=pointer) flags augment the
+#     documentation and the source code with the results of advanced static
+#     analysis.
+    Sus banderas @c(-analysis=type) y @c(-analysis=pointer) aumentan la
+    documentacion y el codigo fuente con resultados del analisis estatico
+    avanzado.
+
+# *** Section 10.7.5 <> Internal Packages
+*** Seccion 10.7.5 <> Paquetes Internos
+
+#     The package is the most important mechanism for encapsulation in Go
+#     programs. Unexported identifiers are visible only within the same package,
+#     and exported identifiers are visible to the world.
+    El paquete es el mecanismo mas importante para la encapsulacion en programas
+    Go. Los identificadores sin exportacion son visibles solo dentro del mismo
+    paquete, y los identificadores exportados son visibles para el mundo.
+
+#     Sometimes, though, a middle ground would be helpful, a way to define
+#     identifiers that are visible to a small set of trusted packages, but not to
+#     everyone. For example, when we’re breaking up a large package into more
+#     manageable parts, we may not want to reveal the interfaces between those
+#     parts to other packages. Or we may want to share utility functions across
+#     several packages of a project without exposing them more widely. Or perhaps
+#     we just want to experiment with a new package without prematurely committing
+#     to its API, by putting it @"(on probation) with a limited set of clients.
+    A veces, sin embargo, camino medio seria util, una forma de definir
+    identificadores que son visibles para un pequeño conjunto de paquetes de
+    confianza, pero no para todos. Por ejemplo, cuando estamos dividiendo un
+    paquete grande en partes mas manejables, es posible que no deseemos revelar
+    las interfaces entre esas partes a otros paquetes. O quizas queramos
+    compartir funciones de utilidad entre varios paquetes de un proyecto sin
+    exponerlos mas ampliamente. O tal vez solo queremos experimentar con un
+    nuevo paquete sin comprometerse prematuramente con su API, poniendolo @"(a
+    prueba) con un conjunto limitado de clientes.
+
+#     ..figure > Figure 10.1. The @c(time) package in @$(godoc).
+    ..figure > Figura 10.1. El paquete @c(time) en @$(godoc).
+
+#       ..img  > img/Figure-10.1.jpg
+      ..img  > img/Figure-10.1.jpg
+
+#     To address these needs, the @$(go build) tool treats a package specially if
+#     its import path contains a path segment named @c(internal). Such packages
+#     are called @e(internal packages). An internal package may be imported only
+#     by another package that is inside the tree rooted at the parent of the
+#     @c(internal) directory. For example, given the packages below,
+#     @c(net/http/internal/chunked) can be imported from @c(net/http/httputil) or
+#     @c(net/http), but not from @c(net/url). However, @c(net/url) may import
+#     @c(net/http/httputil).
+    Para hacer frente a estas necesidades, la herramienta @$(go build) maneja de
+    un paquete de forma especial si su ruta de importacion contiene un segmento
+    de ruta denominado @c(interno). Dichos paquetes se denominan @e(paquetes
+    internos). Un paquete interno puede ser importadas por otro paquete que esta
+    dentro del arbol raiz en el paquete del directorio @c(internal). Por
+    ejemplo, los paquetes a continuacion, @c(net/http/internal/chunked) pueden
+    ser importados de @c(net/http/httputil) o @c(net/http), pero no de
+    @c(net/url) . Sin embargo, @c(net/url) puede importar @c(net/http/httputil).
+
+#     ..pre >
+#       net/http
+#       net/http/internal/chunked
+#       net/http/httputil
+#       net/url
+    ..pre >
+      net/http
+      net/http/internal/chunked
+      net/http/httputil
+      net/url
+
+# *** Section 10.7.6 <> Querying Packages
+*** Seccion 10.7.6 <> Consultando Paquetes
+
+#     The @$(go list) tool reports information about available packages. In its
+#     simplest form, @$(go list) tests whether a package is present in the
+#     workspace and prints its import path if so:
+    La herramienta @$(go list) reporta informacion sobre los paquetes
+    disponibles. En su forma mas simple, @$(go list) comprueba si un paquete
+    esta presente en el espacio de trabajo e imprime su ruta de importacion si
+    es asi:
+
+#     ..src > sh
+#       $ go list github.com/go-sql-driver/mysql
+#       github.com/go-sql-driver/mysql
+#     < src..
+    ..src > sh
+      $ go list github.com/go-sql-driver/mysql
+      github.com/go-sql-driver/mysql
+    < src..
+
+#     An argument to @$(go list) may contain the @"(@c(...)) wildcard, which
+#     matches any substring of a package’s import path. We can use it to enumerate
+#     all the packages within a Go workspace:
+    Un argumento para @$(go list) puede contener el comodin @"(@c(...)), que
+    coincide con cualquier subcadena de ruta de importacion de un paquete.
+    Podemos usarlo para enumerar todos los paquetes dentro de un espacio de
+    trabajo Go:
+
+#     ..src > sh
+#       $ go list ...
+#       archive/tar
+#       archive/zip
+#       bufio
+#       bytes
+#       cmd/addr2line
+#       cmd/api
+#       ...many more...
+#     < src..
+    ..src > sh
+      $ go list ...
+      archive/tar
+      archive/zip
+      bufio
+      bytes
+      cmd/addr2line
+      cmd/api
+      ...many more...
+    < src..
+
+#     or within a specific subtree:
+    O dentro de un subarbol especifico:
+
+#     ..src > sh
+#       $ go list gopl.io/ch3/...
+#       gopl.io/ch3/basename1
+#       gopl.io/ch3/basename2
+#       gopl.io/ch3/comma
+#       gopl.io/ch3/mandelbrot
+#       gopl.io/ch3/netflag
+#       gopl.io/ch3/printints
+#       gopl.io/ch3/surface
+#     < src..
+    ..src > sh
+      $ go list gopl.io/ch3/...
+      gopl.io/ch3/basename1
+      gopl.io/ch3/basename2
+      gopl.io/ch3/comma
+      gopl.io/ch3/mandelbrot
+      gopl.io/ch3/netflag
+      gopl.io/ch3/printints
+      gopl.io/ch3/surface
+    < src..
+
+#     or related to a particular topic:
+    O relacionados con un tema particular:
+
+#     ..src > sh
+#       $ go list ...xml...
+#       encoding/xml
+#       gopl.io/ch7/xmlselect
+#     < src..
+    ..src > sh
+      $ go list ...xml...
+      encoding/xml
+      gopl.io/ch7/xmlselect
+    < src..
+
+#     The @$(go list) command obtains the complete metadata for each package, not
+#     just the import path, and makes this information available to users or other
+#     tools in a variety of formats. The @c(-json) flag causes @$(go list) to
+#     print the entire record of each package in JSON format:
+    El comando @$(go list) obtiene los metadatos completos de cada paquete, no
+    solo la ruta de importacion, y pone esta informacion a disposicion de los
+    usuarios u otras herramientas en una variedad de formatos. La bandera
+    @c(-json) proboca que @$(go list) imprima el registro completo de cada
+    paquete en formato JSON:
+
+#     ..src > sh
+#       $ go list -json hash
+#       {
+#           "Dir": "/home/gopher/go/src/hash",
+#           "ImportPath": "hash",
+#           "Name": "hash",
+#           "Doc": "Package hash provides interfaces for hash functions.",
+#           "Target": "/home/gopher/go/pkg/darwin_amd64/hash.a",
+#           "Goroot": true,
+#           "Standard": true,
+#           "Root": "/home/gopher/go",
+#           "GoFiles": [
+#                  "hash.go"
+#           ],
+#           "Imports": [
+#               "io"
+#           ],
+#           "Deps": [
+#               "errors",
+#               "io",
+#               "runtime",
+#               "sync",
+#               "sync/atomic",
+#               "unsafe"
+#           ]
+#       }
+#     < src..
+    ..src > sh
+      $ go list -json hash
+      {
+          "Dir": "/home/gopher/go/src/hash",
+          "ImportPath": "hash",
+          "Name": "hash",
+          "Doc": "Package hash provides interfaces for hash functions.",
+          "Target": "/home/gopher/go/pkg/darwin_amd64/hash.a",
+          "Goroot": true,
+          "Standard": true,
+          "Root": "/home/gopher/go",
+          "GoFiles": [
+                 "hash.go"
+          ],
+          "Imports": [
+              "io"
+          ],
+          "Deps": [
+              "errors",
+              "io",
+              "runtime",
+              "sync",
+              "sync/atomic",
+              "unsafe"
+          ]
+      }
+    < src..
+
+#     The @c(-f) flag lets users customize the output format using the template
+#     language of package @c(text/template) (@l(#Section 4.6<>§4.6)). This command
+#     prints the transitive dependencies of the @c(strconv) package, separated by
+#     spaces:
+    La bandera @c(-f) permite a los usuarios personalizar el formato de salida
+    utilizando el lenguaje de la plantilla del paquete de @c(text/template)
+    (@l(#Seccion 4.6<>§4.6)). Este comando imprime las dependencias transitivas
+    del paquete @c(strconv), separados por espacios:
+
+#     ..src > sh
+#       $ go list -f '{{join .Deps " "}}' strconv
+#       errors math runtime unicode/utf8 unsafe
+#     < src..
+    ..src > sh
+      $ go list -f '{{join .Deps " "}}' strconv
+      errors math runtime unicode/utf8 unsafe
+    < src..
+
+#     and this command prints the direct imports of each package in the
+#     @c(compress) subtree of the standard library:
+    y el comando muestra las importaciones directas de cada paquete en el
+    subarbol @c(compress) de la biblioteca estandar:
+
+#     ..src > sh
+#       $ go list -f '{{.ImportPath}} -> {{join .Imports " "}}' compress/...
+#       compress/bzip2 -> bufio io sort
+#       compress/flate -> bufio fmt io math sort strconv
+#       compress/gzip -> bufio compress/flate errors fmt hash hash/crc32 io time
+#       compress/lzw -> bufio errors fmt io
+#       compress/zlib -> bufio compress/flate errors fmt hash hash/adler32 io
+#     < src..
+    ..src > sh
+      $ go list -f '{{.ImportPath}} -> {{join .Imports " "}}' compress/...
+      compress/bzip2 -> bufio io sort
+      compress/flate -> bufio fmt io math sort strconv
+      compress/gzip -> bufio compress/flate errors fmt hash hash/crc32 io time
+      compress/lzw -> bufio errors fmt io
+      compress/zlib -> bufio compress/flate errors fmt hash hash/adler32 io
+    < src..
+
+#     The @$(go list) command is useful for both one-off interactive queries and
+#     for build and test automation scripts. We’ll use it again in @l(#Section
+#     11.2.4). For more information, including the set of available fields and
+#     their meaning, see the output of @$(go help list).
+    El comando @$(go list) es util tanto para consultas interactivas puntuales y
+    para scripts de construccion y automatizacion de pruebas. Lo volveremos a
+    utilizar en la @l(#Seccion 11.2.4). Para obtener mas informacion, incluyendo
+    el conjunto de campos disponibles y su significado, ver la salida de la
+    @$(go help list).
+
+#     In this chapter, we’ve explained all the important subcommands of the @$(go)
+#     tool—except one. In the next chapter, we’ll see how the @$(go test) command
+#     is used for testing Go programs.
+    En este capitulo, hemos explicado todos los subcomandos importantes de la
+    herramientas @$(go) excepto uno. En el siguiente capitulo, veremos como se
+    utiliza el comando @$(go test) para probar programas Go.
+
+#     @b(Exercise 10.4): Construct a tool that reports the set of all packages in
+#     the workspace that transitively depend on the packages specified by the
+#     arguments. Hint: you will need to run @$(go list) twice, once for the
+#     initial packages and once for all packages. You may want to parse its JSON
+#     output using the @$(encoding/json) package (@l(#Section 4.5<>§4.5)).
+    @b(Ejercicio 10.4): Construir una herramienta que reporte el conjunto de
+    todos los paquetes en el espacio de trabajo que dependen de forma transitiva
+    de los paquetes especificados por los argumentos. Sugerencia: tendra que ejecutar
+    @$(go list) dos veces, una para los paquetes iniciales y una vez para todos los
+    paquetes. Es posible que desee analizar su salida JSON utilizando el paquete
+    @c(encoding/json) (@l(#Seccion 4.5<>§4.5)).
+
+# * Chapter 11 <> Testing
+* Capitulo 11 <> Pruebas

@@ -16825,7 +16825,7 @@
    As we mentioned in @l(#Section 2.6.1), the Go language specification doesn’t
    define the meaning of these strings or how to determine a package’s import
    path, but leaves these issues to the tools. In this chapter, we’ll take a
-   detailed look at how the go tool interprets them, since that’s what the
+   detailed look at how the @$(go) tool interprets them, since that’s what the
    majority of Go programmers use for building, testing, and so on. Other tools
    do exist, though. For example, Go programmers using Google’s internal
    multi-language build system follow different rules for naming and locating
@@ -16851,6 +16851,7 @@
 
    ..src > go
      package main
+
      import (
        "fmt"
        "math/rand"
@@ -16870,13 +16871,13 @@
    There are three major exceptions to the @"(last segment) convention. The
    first is that a package defining a command (an executable Go program) always
    has the name @c(main), regardless of the package’s import path. This is a
-   signal to @c(go build) (@l(#Section 10.7.3<>§10.7.3)) that it must invoke the
+   signal to @$(go build) (@l(#Section 10.7.3<>§10.7.3)) that it must invoke the
    linker to make an executable file.
 
    The second exception is that some files in the directory may have the suffix
    @c(_test) on their package name if the file name ends with @c(_test.go). Such
    a directory may define @e(two) packages: the usual one, plus another one
-   called an @e(external test package). The @c(_test) suffix signals to @c(go
+   called an @e(external test package). The @c(_test) suffix signals to @$(go
    test) that it must build both packages, and it indicates which files belong
    to each package.  External test packages are used to avoid cycles in the
    import graph arising from dependencies of the test; they are covered in more
@@ -17049,8 +17050,8 @@
      func DecodeConfig(r io.Reader) (image.Config, error)
 
      func init() {
-     const pngHeader = "\x89PNG\r\n\x1a\n"
-     image.RegisterFormat("png", pngHeader, Decode, DecodeConfig)
+       const pngHeader = "\x89PNG\r\n\x1a\n"
+       image.RegisterFormat("png", pngHeader, Decode, DecodeConfig)
      }
    < src..
 
@@ -17072,7 +17073,7 @@
      db, err = sql.Open("sqlite3", dbname)  // returns error: unknown driver "sqlite3"
    < src..
 
-   @b(Exercise 10.1): Extend the @c(jpeg) program so that it converts any
+   @b(Exercise 10.1): Extend the @$(jpeg) program so that it converts any
    supported input format to any output format, using @c(image.Decode) to detect
    the input format and a flag to select the output format.
 
@@ -17167,12 +17168,12 @@
    of Go code.
 
    The @$(go) tool combines the features of a diverse set of tools into one
-   command set. It is a package manager (analogous to apt or rpm) that answers
-   queries about its inventory of packages, computes their dependencies, and
-   downloads them from remote version-control systems. It is a build system that
-   computes file dependencies and invokes compilers, assemblers, and linkers,
-   although it is intentionally less complete than the standard Unix
-   @c(make). And it is a test driver, as we will see in @l(#Chapter 11).
+   command set. It is a package manager (analogous to @$(apt) or @$(rpm)) that
+   answers queries about its inventory of packages, computes their dependencies,
+   and downloads them from remote version-control systems. It is a build system
+   that computes file dependencies and invokes compilers, assemblers, and
+   linkers, although it is intentionally less complete than the standard Unix
+   @$(make). And it is a test driver, as we will see in @l(#Chapter 11).
 
    Its command-line interface uses the @"(Swiss army knife) style, with over a
    dozen subcommands, some of which we have already seen, like @c(get), @c(run),
@@ -17228,44 +17229,44 @@
 
     ..pre >
       GOPATH/
-          src/
-              gopl.io/
-              .git/
-              ch1/
-                  helloworld/
-                      main.go
-                  dup/
-                      main.go
-                  ...
-          golang.org/x/net/
-              .git/
-              html/
-                  parse.go
-                  node.go
-                  ...
-          bin/
-              helloworld
-              dup
-          pkg/
-              darwin_amd64/
-              ...
+            src/
+                gopl.io/
+                        .git/
+                        ch1/
+                            helloworld/
+                                       main.go
+                            dup/
+                                main.go
+                            ...
+                golang.org/x/net/
+                                .git/
+                                html/
+                                    parse.go
+                                    node.go
+                                    ...
+            bin/
+                helloworld
+                dup
+            pkg/
+                darwin_amd64/
+                ...
     < pre..
 
-    @c(GOPATH) has three subdirectories. The src subdirectory  holds source
+    @c(GOPATH) has three subdirectories. The @f(src) subdirectory  holds source
     code. Each package resides in a directory whose name relative to
     @c($GOPATH/src) is the package’s import path, such as
     @c(gopl.io/ch1/helloworld). Observe that a single @c(GOPATH) workspace
     contains multiple version-control repositories beneath @f(src), such as
     @c(gopl.io) or @c(golang.org). The @f(pkg) subdirectory is where the build
     tools store compiled packages, and the @f(bin) subdirectory holds executable
-    programs like @c(helloworld).
+    programs like @$(helloworld).
 
     A second environment variable, @c(GOROOT), specifies the root directory of
     the Go distribution, which provides all the packages of the standard
     library. The directory structure beneath @c(GOROOT) resembles that of
     @c(GOPATH), so, for example, the source files of the @c(fmt) package reside
     in the @f($GOROOT/src/fmt) directory. Users never need to set @c(GOROOT)
-    since, by default, the go tool will use the location where it was installed.
+    since, by default, the @$(go) tool will use the location where it was installed.
 
     The @$(go env) command prints the effective values of the environment
     variables relevant to the toolchain, including the default values for the
@@ -17298,8 +17299,8 @@
     Once @$(go get) has downloaded the packages, it builds them and then
     @e(installs) the libraries and commands. We’ll look at the details in the
     next section, but an example will show how straightforward the process
-    is. The first command below gets the @c(golint) tool, which checks for
-    common style problems in Go source code. The second command runs @c(golint)
+    is. The first command below gets the @$(golint) tool, which checks for
+    common style problems in Go source code. The second command runs @$(golint)
     on @c(gopl.io/ch2/popcount) from @l(#Section 2.6.2). It helpfully reports
     that we have forgotten to write a doc comment for the package:
 
@@ -17319,7 +17320,7 @@
     The directories that @$(go get) creates are true clients of the remote
     repository, not just copies of the files, so you can use version-control
     commands to see a diff of local edits you’ve made or to update to a
-    different revision. For example, the @c(golang.org/x/net) directory is a Git
+    different revision. For example, the @f(golang.org/x/net) directory is a Git
     client:
 
     ..src > sh
@@ -17365,8 +17366,8 @@
 
     @b(Exercise 10.3): Using @$(fetch http://gopl.io/ch1/helloworld?go-get=1),
     find out which service hosts the code samples for this book. (HTTP requests
-    from @$(go get) include the go-get parameter so that servers can distinguish
-    them from ordinary browser requests.)
+    from @$(go get) include the @c(go-get) parameter so that servers can
+    distinguish them from ordinary browser requests.)
 
 *** Section 10.7.3 <> Building Packages
 
@@ -17379,7 +17380,7 @@
 
     Since each directory contains one package, each executable program, or
     @e(command) in Unix terminology, requires its own directory. These
-    directories are sometimes children of a directory named cmd, such as the
+    directories are sometimes children of a directory named @c(cmd), such as the
     @c(golang.org/x/tools/cmd/godoc) command which serves Go package
     documentation through a web interface (@l(#Section 10.7.4<>§10.7.4)).
 
@@ -17419,7 +17420,7 @@
 
     Packages may also be specified as a list of file names, though this tends to
     be used only for small programs and one-off experiments. If the package name
-    is main, the executable name comes from the basename of the first @f(.go)
+    is @c(main), the executable name comes from the basename of the first @f(.go)
     file.
 
     ..src > sh
@@ -17427,12 +17428,12 @@
       package main
 
       import (
-          "fmt"
-          "os"
+        "fmt"
+        "os"
       )
 
       func main() {
-          fmt.Printf("%q\n", os.Args[1:])
+        fmt.Printf("%q\n", os.Args[1:])
       }
       $ go build quoteargs.go
       $ ./quoteargs one "two three" four\ five
@@ -17478,7 +17479,7 @@
 
     It is straightforward to @e(cross-compile) a Go program, that is, to build
     an executable intended for a different operating system or CPU. Just set the
-    @c(GOOS) or @c(GOARCH) variables during the build.  The @c(cross) program
+    @c(GOOS) or @c(GOARCH) variables during the build.  The @$(cross) program
     prints the operating system and architecture for which it was built:
 
     ..figure > @l(gopl.io/ch10/cross/main.go<>gopl.io/ch10/cross)
@@ -17547,12 +17548,12 @@
       func Fprintf(w io.Writer, format string, a ...interface{}) (int, error)
     < src..
 
-    The details of @c(Fprintf)’s formatting are explained in a @c(doc) comment
+    The details of @c(Fprintf)’s formatting are explained in a doc comment
     associated with the @c(fmt) package itself. A comment immediately preceding
     a @c(package) declaration is considered the doc comment for the package as a
     whole. There must be only one, though it may appear in any file. Longer
     package comments may warrant a file of their own; @c(fmt)’s is over 300
-    lines.  This file is usually called @c(doc.go).
+    lines.  This file is usually called @f(doc.go).
 
     Good documentation need not be extensive, and documentation is no substitute
     for simplicity.  Indeed, Go’s conventions favor brevity and simplicity in
@@ -17616,7 +17617,7 @@
     The second tool, confusingly named @$(godoc), serves cross-linked HTML pages
     that provide the same information as @$(go doc) and much more. The @$(godoc)
     server at @l(https://golang.org/pkg) covers the standard library. Figure
-    10.1 shows the documentation for the time package, and in @l(#Section 11.6)
+    10.1 shows the documentation for the @c(time) package, and in @l(#Section 11.6)
     we’ll see @$(godoc)’s interactive display of example programs. The @$(godoc)
     server at @l(https://godoc.org) has a searchable index of thousands of
     open-source packages.
@@ -17648,7 +17649,7 @@
     we just want to experiment with a new package without prematurely committing
     to its API, by putting it @"(on probation) with a limited set of clients.
 
-    ..figure > Figure 10.1. The @c(time) package in @c(godoc).
+    ..figure > Figure 10.1. The @c(time) package in @$(godoc).
 
       ..img  > img/Figure-10.1.jpg
 
