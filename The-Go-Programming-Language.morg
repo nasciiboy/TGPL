@@ -17849,7 +17849,7 @@
    in @l(#Section 11.4), and examples in @l(#Section 11.6).
 
    The @$(go test) tool scans the @f(*_test.go) files for these special
-   functions, generates a temporary main package that calls them all in the
+   functions, generates a temporary @c(main) package that calls them all in the
    proper way, builds and runs it, reports the results, and then cleans up.
 
 ** Section 11.2 <> @c(Test) Functions
@@ -18124,7 +18124,7 @@
    author of a test should strive to help the programmer who must diagnose a
    test failure.
 
-   @b(Exercise 11.1): Write tests for the charcount program in @l(#Section 4.3).
+   @b(Exercise 11.1): Write tests for the @$(charcount) program in @l(#Section 4.3).
 
    @b(Exercise 11.2): Write a set of tests for @c(IntSet) (@l(#Section
    6.5<>§6.5)) that checks that its behavior after each operation is equivalent
@@ -18206,9 +18206,9 @@
     as a library too.
 
     Let’s write a test for the @$(echo) program of @l(#Section 2.3.2). We’ve
-    split the program into two functions: @$(echo) does the real work, while
+    split the program into two functions: @c(echo) does the real work, while
     @c(main) parses and reads the flag values and reports any errors returned by
-    @$(echo).
+    @c(echo).
 
     ..figure > @l(gopl.io/ch11/echo/echo.go<>gopl.io/ch11/echo)
 
@@ -18249,12 +18249,12 @@
       < src..
 
 
-    From the test, we will call @$(echo) with a variety of arguments and flag
+    From the test, we will call @c(echo) with a variety of arguments and flag
     settings and check that it prints the correct output in each case, so we’ve
     added parameters to @$(echo) to reduce its dependence on global
     variables. That said, we’ve also introduced another global variable,
-    @$(out), the @$(io.Writer) to which the result will be written. By having
-    @$(echo) write through this variable, not directly to @c(os.Stdout), the
+    @c(out), the @c(io.Writer) to which the result will be written. By having
+    @c(echo) write through this variable, not directly to @c(os.Stdout), the
     tests can substitute a different @c(Writer) implementation that records what
     was written for later inspection. Here’s the test, in file @f(echo_test.go):
 
@@ -18354,8 +18354,8 @@
     coverage of the trickier parts of the implementation.
 
     We’ve already seen examples of both kinds. @c(TestIsPalindrome) calls only
-    the exported function @c(IsPalindrome) and is thus a black-box
-    test. @c(TestEcho) calls the echo function and updates the global variable
+    the exported function @c(IsPalindrome) and is thus a black-box test.
+    @c(TestEcho) calls the @c(echo) function and updates the global variable
     @c(out), both of which are unexported, making it a white-box test.
 
     While developing @c(TestEcho), we modified the @c(echo) function to use the
@@ -18522,7 +18522,7 @@
     other words, a test of the lower-level package imports the higher-level
     package.
 
-    ..figure > Figure 11.1. A test of net/url depends on net/http.
+    ..figure > Figure 11.1. A test of @c(net/url) depends on @c(net/http).
 
       ..img  > img/Figure-11.1.jpg
 
@@ -18533,7 +18533,7 @@
 
     We resolve the problem by declaring the test function in an @e(external test
     package), that is, in a file in the @c(net/url) directory whose package
-    declaration reads package url_test. The extra suffix @c(_test) is a signal
+    declaration reads package @c(url_test). The extra suffix @c(_test) is a signal
     to @$(go test) that it should build an additional package containing just
     these files and run its tests. It may be helpful to think of this external
     test package as if it had the import path @c(net/url_test), but it cannot be
@@ -18755,8 +18755,8 @@
    @e(Statement coverage) is the simplest and most widely used of these
    heuristics. The statement coverage of a test suite is the fraction of source
    statements that are executed at least once during the test. In this section,
-   we’ll use Go’s cover tool, which is integrated into @c(go test), to measure
-   statement coverage and help identify obvious gaps in the tests.
+   we’ll use Go’s @$(cover) tool, which is integrated into @c(go test), to
+   measure statement coverage and help identify obvious gaps in the tests.
 
    The code below is a table-driven test for the expression evaluator we built
    back in @l(#Chapter 7):
@@ -18907,7 +18907,7 @@
 
    We run it with the command below. Unlike tests, by default no benchmarks are
    run. The argument to the @c(-bench) flag selects which benchmarks to run. It
-   is a regular expression matching the names of Benchmark functions, with a
+   is a regular expression matching the names of @c(Benchmark) functions, with a
    default value that matches none of them.  The @"(@c(.)) pattern causes it to
    match all benchmarks in the @c(word) package, but since there’s only one,
    @c(-bench=IsPalindrome) would have been equivalent.
@@ -19067,12 +19067,12 @@
      waste enormous amounts of time thinking about, or worrying about, the speed
      of noncritical parts of their programs, and these attempts at efficiency
      actually have a strong negative impact when debugging and maintenance are
-     considered. We should forget about small efficiencies, say about 97% of the
-     time: premature optimization is the root of all evil.
+     considered. We @e(should) forget about small efficiencies, say about 97% of
+     the time: premature optimization is the root of all evil.
 
      Yet we should not pass up our opportunities in that critical 3%. A good
      programmer will not be lulled into complacency by such reasoning, he will
-     be wise to look carefully at the critical code; but only after that code
+     be wise to look carefully at the critical code; but only @e(after) that code
      has been identified. It is often a mistake to make a priori judgments about
      what parts of a program are really critical, since the universal experience
      of programmers who have been using measurement tools has been that their
@@ -19089,10 +19089,10 @@
    Go supports many kinds of profiling, each concerned with a different aspect
    of performance, but all of them involve recording a sequence of events of
    interest, each of which has an accompanying stack trace—the stack of function
-   calls active at the moment of the event. The go test tool has built-in
+   calls active at the moment of the event. The @$(go test) tool has built-in
    support for several kinds of profiling.
 
-   A e(CPU profile) identifies the functions whose execution requires the most
+   A @e(CPU profile) identifies the functions whose execution requires the most
    CPU time. The currently running thread on each CPU is interrupted
    periodically by the operating system every few milliseconds, with each
    interruption recording one profile event before normal execution resumes.
@@ -19123,7 +19123,7 @@
    long-running applications, so the Go runtime’s profiling features can be
    enabled under programmer control using the @c(runtime) API.
 
-   Once we’ve gathered a profile, we need to analyze it using the @c(pprof)
+   Once we’ve gathered a profile, we need to analyze it using the @$(pprof)
    tool. This is a standard part of the Go distribution, but since it’s not an
    everyday tool, it’s accessed indirectly using @$(go tool pprof). It has
    dozens of features and options, but basic use requires only two arguments,
@@ -19131,7 +19131,7 @@
 
    To make profiling efficient and to save space, the log does not include
    function names; instead, functions are identified by their addresses. This
-   means that pprof needs the executable in order to make sense of the
+   means that @$(pprof) needs the executable in order to make sense of the
    log. Although @$(go test) usually discards the test executable once the test
    is complete, when profiling is enabled it saves the executable as
    @f(foo.test), where @c(foo) is the name of the tested package.
@@ -19176,11 +19176,11 @@
 
    This profile tells us that elliptic-curve cryptography is important to the
    performance of this particular HTTPS benchmark. By contrast, if a profile is
-   dominated by memory allocation functions from the runtime package, reducing
+   dominated by memory allocation functions from the @c(runtime) package, reducing
    memory consumption may be a worthwhile optimization.
 
-   For more subtle problems, you may be better off using one of pprof’s
-   graphical displays.  These require GraphViz, which can be downloaded from
+   For more subtle problems, you may be better off using one of @$(pprof)’s
+   graphical displays. These require GraphViz, which can be downloaded from
    @l(www.graphviz.org). The @c(-web) flag then renders a directed graph of the
    functions of the program, annotated by their CPU profile numbers and colored
    to indicate the hottest functions.
@@ -19191,8 +19191,8 @@
 ** Section 11.6 <> @c(Example) Functions
 
    The third kind of function treated specially by @$(go test) is an example
-   function, one whose name starts with Example. It has neither parameters nor
-   results. Here’s an example function for @$(IsPalindrome):
+   function, one whose name starts with @c(Example). It has neither parameters
+   nor results. Here’s an example function for @$(IsPalindrome):
 
    ..src > go
      func ExampleIsPalindrome() {
