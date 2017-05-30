@@ -6,7 +6,7 @@
 ..id      > isbn-13 978-0-13-419044-0
 ..id      > isbn-10 0-13-419044-0
 ..style   > worg-data/worg.css
-..options > toc pygments
+..options > toc
 
 @ revision 3b600c, date 29 Sep 2015
 
@@ -20034,3 +20034,2258 @@ pero no:
    ahora seria un buen momento para hacerlo.
 
 * Capitulo 12 <> Reflexion
+
+  Go proporciona un mecanismo para actualizar variables e inspeccionar sus
+  valores en tiempo de ejecucion, llamar a sus metodos y aplicar las operaciones
+  intrinsecas a su representacion, todo sin conocer sus tipos en tiempo de
+  compilacion. Este mecanismo se denomina @e(reflexion). La reflexion tambien
+  nos permite tratar los propios tipos como valores de primera clase.
+
+  En este capitulo, vamos a explorar las caracteristicas de reflexion de Go para
+  ver la forma en que aumentan la expresividad del lenguaje, y en particular la
+  forma en que son cruciales para la implementacion de dos APIs importantes: el
+  formateo de cadenas proporcionado por @c(fmt), y el protocolo de codificacion
+  proporcionados por los paquetes @c(encoding/json) y @c(encoding/xml). La
+  reflexion es tambien esencial para el mecanismo de plantilla proporcionada por
+  los paquetes @c(text/template) y @c(html/template) que vimos en la @l(#Seccion
+  4.6). Sin embargo, es complejo razonar la reflexion y no es para uso casual,
+  por lo que aunque estos paquetes se implementan mediante la reflexion, no
+  exponen la reflexion en sus propias API.
+
+** Seccion 12.1 <> ¿Por que la Reflexion?
+
+   A veces necesitamos escribir una funcion capaz de tratar uniformemente con
+   valores de tipos que no satisfacen una interfaz comun, no tienen una
+   representacion conocida o no existen en el momento en que diseñamos la
+   funcion–o incluso los tres.
+
+   Un ejemplo familiar es la logica de formateo dentro de @c(fmt.Fprintf), que
+   puede imprimir de manera util un valor arbitrario de cualquier tipo, incluso
+   uno definido por el usuario. Tratemos de implementar una funcion como esta
+   usando lo que ya sabemos. Para simplificar, nuestra funcion acepta un
+   argumento y devuelve el resultado como una cadena como hace @c(fmt.Sprint),
+   asi que vamos a llamarlo @c(Sprint).
+
+   Empezamos con un @c(switch) de tipo que pone a prueba si el argumento define
+   una metodo @c(String), y lo llaman si es asi. A continuacion, agregamos casos
+   que ponen a prueba el tipo dinamico del valor en cada uno de los tipos
+   basicos–@c(string), @c(int), @c(bool), etc–y realice la operacion de formato
+   adecuado en cada caso.
+
+   ..src > go
+     func Sprint(x interface{}) string {
+       type stringer interface {
+         String() string
+       }
+       switch x := x.(type) {
+       case stringer:
+         return x.String()
+       case string:
+         return x
+       case int:
+         return strconv.Itoa(x)
+         // ...similar cases for int16, uint32, and so on...
+       case bool:
+         if x {
+           return "true"
+         }
+         return "false"
+       default:
+         // array, chan, func, map, pointer, slice, struct
+         return "???"
+       }
+     }
+   < src..
+
+   Pero, ¿como podemos hacer frente a otros tipos, como @c([]float64),
+   @c(map[string][]string), y demas? Podriamos añadir mas casos, pero el numero
+   de tales tipos es infinito. Y que pasa con los tipos con nombre, como
+   @c(url.Values)? Incluso si el @c(switch) de tipo tenia un caso para su tipo
+   subyacente @c(map[string][]string), no coincidira con con @c(url.Values)
+   porque los dos tipos no son identicos, y el interruptor de tipo no puede
+   incluir un caso para cada tipo como @c(url.Values) porque eso requeriria que
+   esta libreria dependa de sus clientes.
+
+   Sin una manera de inspeccionar la representacion de valores de tipos
+   desconocidos, rapidamente nos quedamos atascados. Lo que necesitamos es
+   reflexion.
+
+** Seccion 12.2 <> @c(reflect.Type) y @c(reflect.Value)
+
+   La reflexion es proporcionada por el paquete @c(reflect). Este define dos
+   tipos importantes, @c(Type) y @c(Value). @c(Type) representa un tipo Go. Es
+   una interfaz con muchos metodos para discriminar entre tipos e inspeccionar
+   sus componentes, como los campos de una estructura o los parametros de una
+   funcion. La unica aplicacion de @c(reflect.Type) es el descriptor de tipo
+   (@l(#Seccion 7.5<>§7.5)), la misma entidad que identifica el tipo dinamico de
+   un valor interfaz.
+
+   la funcion @c(reflect.TypeOf) acepta cualquier @c(interface{}) y devuelve su
+   tipo dinamico como @c(reflect.Type):
+
+   ..src > go
+     t := reflect.TypeOf(3)  // un reflect.Type
+     fmt.Println(t.String()) // "int"
+     fmt.Println(t)          // "int"
+   < src..
+
+   La llamada @c[TypeOf(3)] anterior asigna el valor 3 al parametro
+   @c(interface{}). Recuerdese de la @l(#Seccion 7.5) que una asignacion de un
+   valor concreto a un tipo de interfaz lleva a cabo una conversion de la
+   interfaz implicita, que crea un valor interfaz que consta de dos componentes:
+   su @e(tipo dinamico) es el tipo del operando (@c(int)) y su @e(valor
+   dinamico) es el valor del operando (3).
+
+   Ya que @c(reflect.TypeOf) regresa el tipo dinamico de un valor de interfaz,
+   siempre devuelve un tipo concreto. Asi, por ejemplo, el codigo que aparce a
+   continuacion imprime @"(@c(*os.File)), no @"(@c(*io.Writer)). Mas tarde,
+   veremos que @c(reflect.Type) es capaz de representar tipos de interfaz
+   tambien.
+
+   ..src > go
+     var w io.Writer = os.Stdout
+     fmt.Println(reflect.TypeOf(w)) // "*os.File"
+   < src..
+
+   Observe que @c(reflect.Type) satisface @c(fmt.Stringer). Como la impresion
+   del tipo dinamico de un valor interfaz es util para depuracion y registro,
+   @c(fmt.Printf) proporciona una abreviatura, @c(%T), que internamente utiliza
+   @c(reflect.TypeOf):
+
+   ..src > go
+     fmt.Printf("%T\n", 3) // "int"
+   < src..
+
+   El otro tipo importante en el paquete @c(reflect) es @c(Value). Un
+   @c(reflect.Value) puede contener un valor de cualquier tipo. La funcion
+   @c(reflect.ValueOf) acepta cualquier @c(interface{}) y devuelve un valor
+   @c(reflect.Value) que contiene el valor dinamico de la interfaz. Al igual que
+   con @c(reflect.TypeOf), los resultados de @c(reflect.ValueOf) son siempre
+   concretos, pero un @c(reflect.Value) pueden contener valores de interfaz
+   tambien.
+
+   ..src > go
+     v := reflect.ValueOf(3)  // un reflect.Value
+     fmt.Println(v)           // "3"
+     fmt.Printf("%v\n", v)    // "3"
+     fmt.Println(v.String())  // NOTA: "<int Value>"
+   < src..
+
+   Al igual que @c(reflect.Type), @c(reflect.Value) tambien satisface
+   @c(fmt.Stringer), pero a menos que @c(Value) contenga un string, el resultado
+   del metodo @c(String) solo revela el tipo. En su lugar, utilice el verbo
+   @c(%v) del paquete @c(fmt), que maneja @c(reflect.Values) especialmente.
+
+   Al llamar al metodo @c(Type) en un @c(Value) devuelve su tipo como
+   @c(reflect.Type):
+
+   ..src > go
+     t := v.Type()           // un reflect.Type
+     fmt.Println(t.String()) // "int"
+   < src..
+
+   La operacion inversa de @c(reflect.ValueOf) es el motodo
+   @c(reflect.Value.Interface). Devuelve una @c(interface{}) que contiene el
+   mismo valor concreto que @c(reflect.Value):
+
+   ..src > go
+     v := reflect.ValueOf(3) // un reflect.Value
+     x := v.Interface()      // un interface{}
+     i := x.(int)            // un int
+     fmt.Printf("%d\n", i)   // "3"
+   < src..
+
+   Un @c(reflect.Value) y una @c(interface{}) pueden ambos contener valores
+   arbitrarios. La diferencia es que una interfaz vacia oculta la representacion
+   y las operaciones intrinsecas del valor que contiene y no expone ninguno de
+   sus metodos, de modo que a menos que conozcamos su tipo dinamico y usemos una
+   asercion de tipo para mirar dentro (como lo hicimos anteriormente), hay Poco
+   que podemos hacer con el valor. Por el contrario, un @c(Value) tiene muchos
+   metodos para inspeccionar su contenido, independientemente de su tipo. Vamos
+   a utilizarlos para nuestro segundo intento de una funcion de formateo
+   general, que llamaremos @c(format.Any).
+
+   En lugar de un switch de tipo, usaremos @c(reflect.Value) y su metodo
+   @c(Kind) para discriminar los casos. Aunque hay un numero infinito de tipos,
+   solo hay un numero finito de @c(kinds) de tipo: los tipos basicos @c(Bool),
+   @c(String), y todos los numeros; los tipos agregados @c(Array) y @c(Struct);
+   los tipos de referencia @c(Chan), @c(Func), @c(Ptr), @c(Slice), y @c(Map);
+   los tipos @c(Interface); y, finalmente, @c(Invalid), es decir, sin valor
+   alguno. (El valor cero de una @c(reflect.Value) tiene una tipo @c(Invalid).)
+
+   ..figure > @l(gopl.io/ch12/format/format.go<>gopl.io/ch12/format)
+
+     ..src > go
+       package format
+
+       import (
+         "reflect"
+         "strconv"
+       )
+
+       // Any formatea cualquier valor como un string.
+       func Any(value interface{}) string {
+         return formatAtom(reflect.ValueOf(value))
+       }
+
+       // formatAtom formatea un valor sin inspeccionar su estructura interna.
+       func formatAtom(v reflect.Value) string {
+         switch v.Kind() {
+         case reflect.Invalid:
+           return "invalid"
+         case reflect.Int, reflect.Int8, reflect.Int16,
+           reflect.Int32, reflect.Int64:
+           return strconv.FormatInt(v.Int(), 10)
+         case reflect.Uint, reflect.Uint8, reflect.Uint16,
+           reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+           return strconv.FormatUint(v.Uint(), 10)
+         // ...Casos de punto flotante y complejos omitidos por brevedad...
+         case reflect.Bool:
+           return strconv.FormatBool(v.Bool())
+         case reflect.String:
+           return strconv.Quote(v.String())
+         case reflect.Chan, reflect.Func, reflect.Ptr, reflect.Slice, reflect.Map:
+           return v.Type().String() + " 0x" +
+             strconv.FormatUint(uint64(v.Pointer()), 16)
+         default: // reflect.Array, reflect.Struct, reflect.Interface
+           return v.Type().String() + " value"
+         }
+       }
+     < src..
+
+
+   Hasta ahora, nuestra funcion maneja cada valor como una cosa indivisible, sin
+   estructura interna–de ahi @c(formatAtom). Para los tipos de agregados
+   (estructuras y matrices) y las interfaces se imprime unicamente el @e(tipo)
+   del valor, y para los tipos de referencia (canales, funciones, punteros,
+   slices, y mapas), se imprime el tipo y la direccion de referencia en
+   hexadecimal. Esto es menos que ideal, pero sigue siendo una importante
+   mejora, y ya que @c(Kind) se ocupa solo con la representacion subyacente,
+   @c(format.Any) funciona tambien para los timpos con nombre. Por ejemplo:
+
+   ..src > go
+     var x int64 = 1
+     var d time.Duration = 1 * time.Nanosecond
+     fmt.Println(format.Any(x))                  // "1"
+     fmt.Println(format.Any(d))                  // "1"
+     fmt.Println(format.Any([]int64{x}))         // "[]int64 0x8202b87b0"
+     fmt.Println(format.Any([]time.Duration{d})) // "[]time.Duration 0x8202b87e0"
+   < src..
+
+** Seccion 12.3 <> @c(Display), una Impresora Recursiva de Valor
+
+   A continuacion veremos como mejorar la visualizacion de tipos compuestos. En
+   lugar de tratar de copiar @c(fmt.Sprint) exactamente, vamos a construir una
+   funcion de utilidad de depuracion llamada @c(Display) que, dado un valor
+   @c(x) arbitrariamente complejo, imprime la estructura completa de ese valor,
+   etiquetando cada elemento con el camino por el cual se encontro. Comencemos
+   con un ejemplo.
+
+   ..src > go
+     e, _ := eval.Parse("sqrt(A / pi)")
+     Display("e", e)
+   < src..
+
+   En la llamada anterior, el argumento de @c(Display) es un arbol sintactico
+   del evaluador de expresiones en la @l(#Seccion 7.9). La salida de @c(Display)
+   se muestra a continuacion:
+
+   ..src > sh
+     Display e (eval.call):
+     e.fn = "sqrt"
+     e.args[0].type = eval.binary
+     e.args[0].value.op = 47
+     e.args[0].value.x.type = eval.Var
+     e.args[0].value.x.value = "A"
+     e.args[0].value.y.type = eval.Var
+     e.args[0].value.y.value = "pi"
+   < src..
+
+   Cuando sea posible, debe evitar exponer la reflexion en la API de un
+   paquete. Definiremos un funcion sin exportacion @c(display) para hacer el
+   trabajo real de la recursividad, y la exportacion @c(Display), un simple
+   envoltorio alrededor de el que acepta un parametro @c(interface{}):
+
+   ..figure > @l(gopl.io/ch12/display/display.go<>gopl.io/ch12/display)
+
+     ..src > go
+       func Display(name string, x interface{}) {
+         fmt.Printf("Display %s (%T):\n", name, x)
+         display(name, reflect.ValueOf(x))
+       }
+     < src..
+
+
+   En @c(display), usaremos la funcion @c(formatAtom) que definimos anteriormente
+   para imprimir valores elementales–tipos basicos, funciones y canales–pero
+   vamos a utilizar los metodos de @c(reflect.Value) para mostrar repetidamente cada
+   componente de un tipo mas complejo. A medida que la recursion desciende, la cadena de
+   ruta, que describe inicialmente el valor de partida (por ejemplo, @"(@c(e))),
+   se incrementara para indicar como alcanzamos el valor actual (por
+   ejemplo, @"(@c(e.args[0].value))).
+
+   Como ya no pretendemos implementar @c(fmt.Sprint), utilizaremos el paquete
+   @c(fmt) para mantener nuestro ejemplo corto.
+
+   ..src > go
+     func display(path string, v reflect.Value) {
+       switch v.Kind() {
+       case reflect.Invalid:
+         fmt.Printf("%s = invalid\n", path)
+       case reflect.Slice, reflect.Array:
+         for i := 0; i < v.Len(); i++ {
+           display(fmt.Sprintf("%s[%d]", path, i), v.Index(i))
+         }
+       case reflect.Struct:
+         for i := 0; i < v.NumField(); i++ {
+           fieldPath := fmt.Sprintf("%s.%s", path, v.Type().Field(i).Name)
+           display(fieldPath, v.Field(i))
+         }
+       case reflect.Map:
+         for _, key := range v.MapKeys() {
+           display(fmt.Sprintf("%s[%s]", path,
+             formatAtom(key)), v.MapIndex(key))
+         }
+       case reflect.Ptr:
+         if v.IsNil() {
+           fmt.Printf("%s = nil\n", path)
+         } else {
+           display(fmt.Sprintf("(*%s)", path), v.Elem())
+         }
+       case reflect.Interface:
+         if v.IsNil() {
+           fmt.Printf("%s = nil\n", path)
+         } else {
+           fmt.Printf("%s.type = %s\n", path, v.Elem().Type())
+           display(path+".value", v.Elem())
+         }
+       default: // basic types, channels, funcs
+         fmt.Printf("%s = %s\n", path, formatAtom(v))
+       }
+     }
+   < src..
+
+
+   Vamos a discutir los casos en orden.
+
+   - Slices y arreglos :: La logica es la misma para ambos. El metodo @c(Len)
+     devuelve el numero de elementos de un valor slice o arreglo, y @c[Index(i)]
+     recupera el elemento en el indice @c(i), tambien como un @c(reflect.Value);
+     entra en panico si @c(i) esta fuera de limites. Esto es analoga al
+     @c[len(a)] nativo y a la operacion en secuencias @c(a[i]). La funcion
+     @c(display) se invoca a si misma recursivamente en cada elemento de la
+     secuencia, añadiendo la notacion subindice @"(@c([i])) a la trayectoria.
+
+     Aunque @c(reflect.Value) tiene muchos metodos, solo unos pocos son seguros
+     para llamar a cualquier valor dado. Por ejemplo, el metodo @c(Index) puede
+     ser llamado en valores de tipo @c(Slice), @c(Array) o @c(String), pero
+     entra en panico para cualquier otro tipo.
+
+   - Estructuras :: El metodo @c(NumField) informa el numero de campos en la
+     estructura, y @c[Field(i)] devuelve el valor del campo @c(i) como un
+     @c(reflect.Value). La lista de campos incluye los promocionados desde
+     campos anonimos. Para añadir la notacion de seleccion de campo @"(@c(.f)) a
+     la ruta, debemos obtener el @c(reflect.Type) de la estructura y tener
+     acceso al nombre de su campo @c(i).
+
+   - Mapas :: El metodo @c(MapKeys) devuelve un slice de @c(reflect.Values), uno
+     por cada clave del mapa. Como de costumbre cuando se itera sobre un mapa,
+     el orden no esta definido. @c[MapIndex(key)] devuelve el valor
+     correspondiente a @c(key). Añadimos la notacion de subindice @"(@c([key]))
+     a la ruta. (Estamos cortando una esquina aqui el tipo de una clave del mapa
+     no se limita a los tipos que @c(formatAtom) maneja mejor; arreglos,
+     estructuras e interfaces tambien pueden ser claves validas de mapa.
+     Extender este caso para imprimir la clave en su totalidad es el
+     Ejercicio. 12.1.)
+
+   - Punteros :: El metodo @c(Elem) devuelve la variable a la que apunta un
+     puntero, de nuevo como un @c(reflect.Value). Esta operacion seria segura
+     incluso si el valor del puntero es @c(nil), en cuyo caso el resultado
+     tendria tipo @c(Invalid), pero utilizamos @c(IsNil) para detectar punteros
+     nulos de manera explicita por lo que podemos imprimir un mensaje mas
+     apropiado. Prefijamos el camino con un @"(@c(*)) y un parentesis para
+     evitar la ambigüedad.
+
+   - Interfaces : Una vez mas, utilizamos @c(IsNil) para probar si la interfaz
+     es nil, y si no, recuperamos su valor dinamico utilizando @c[v.Elem()) e
+     imprimimos su tipo y valor.
+
+
+   Ahora que nuestro funcion @c(Display) esta completa, vamos a ponerla a
+   trabajar. El tipo @c(Movie) a continuacion es una ligera variacion del
+   presente en la @l(#Seccion 4.5):
+
+   ..src > go
+     type Movie struct {
+       Title, Subtitle string
+       Year            int
+       Color           bool
+       Actor           map[string]string
+       Oscars          []string
+       Sequel          *string
+     }
+   < src..
+
+   Vamos a declarar un valor de este tipo y ver lo que hace @c(Display) con el:
+
+   ..src > go
+     strangelove := Movie{
+       Title:    "Dr. Strangelove",
+       Subtitle: "How I Learned to Stop Worrying and Love the Bomb",
+       Year:     1964,
+       Color:    false,
+       Actor: map[string]string{
+         "Dr. Strangelove":            "Peter Sellers",
+         "Grp. Capt. Lionel Mandrake": "Peter Sellers",
+         "Pres. Merkin Muffley":       "Peter Sellers",
+         "Gen. Buck Turgidson":        "George C. Scott",
+         "Brig. Gen. Jack D. Ripper":  "Sterling Hayden",
+         `Maj. T.J. "King" Kong`:      "Slim Pickens",
+       },
+       Oscars: []string{
+         "Best Actor (Nomin.)",
+         "Best Adapted Screenplay (Nomin.)",
+         "Best Director (Nomin.)",
+         "Best Picture (Nomin.)",
+       },
+     }
+   < src..
+
+   La llamada @c[Display("strangelove", strangelove)] imprime:
+
+   ..pre >
+     Display strangelove (display.Movie):
+     strangelove.Title = "Dr. Strangelove"
+     strangelove.Subtitle = "How I Learned to Stop Worrying and Love the Bomb"
+     strangelove.Year = 1964
+     strangelove.Color = false
+     strangelove.Actor["Gen. Buck Turgidson"] = "George C. Scott"
+     strangelove.Actor["Brig. Gen. Jack D. Ripper"] = "Sterling Hayden"
+     strangelove.Actor["Maj. T.J. \"King\" Kong"] = "Slim Pickens"
+     strangelove.Actor["Dr. Strangelove"] = "Peter Sellers"
+     strangelove.Actor["Grp. Capt. Lionel Mandrake"] = "Peter Sellers"
+     strangelove.Actor["Pres. Merkin Muffley"] = "Peter Sellers"
+     strangelove.Oscars[0] = "Best Actor (Nomin.)"
+     strangelove.Oscars[1] = "Best Adapted Screenplay (Nomin.)"
+     strangelove.Oscars[2] = "Best Director (Nomin.)"
+     strangelove.Oscars[3] = "Best Picture (Nomin.)"
+     strangelove.Sequel = nil
+   < pre..
+
+   Podemos utilizar @c(Display) para mostrar el funcionamiento interno de los
+   tipos de librerias, como @c(*os.File):
+
+   ..pre >
+     Display("os.Stderr", os.Stderr)
+     // Output:
+     // Display os.Stderr (*os.File):
+     // (*(*os.Stderr).file).fd = 2
+     // (*(*os.Stderr).file).name = "/dev/stderr"
+     // (*(*os.Stderr).file).nepipe = 0
+   < pre..
+
+   Observe que incluso los campos no exportados son visibles para la reflexion.
+   Tenga en cuenta que la salida particular de este ejemplo puede variar entre
+   plataformas y puede cambiar con el tiempo a medida que las librerias
+   evolucionan. (Esos campos son privados por una razon!) Incluso podemos
+   aplicar @c(Display) a un @c(reflect.Value) y verlo atravesar la
+   representacion interna del descriptor de tipo de @c(*os.File). La salida de
+   la llamada @c[Display("rV", reflect.ValueOf(os.Stderr))] se muestra a
+   continuacion, aunque, por supuesto, su experiencia puede variar:
+
+   ..pre >
+     Display rV (reflect.Value):
+     (*rV.typ).size = 8
+     (*rV.typ).hash = 871609668
+     (*rV.typ).align = 8
+     (*rV.typ).fieldAlign = 8
+     (*rV.typ).kind = 22
+     (*(*rV.typ).string) = "*os.File"
+     (*(*(*rV.typ).uncommonType).methods[0].name) = "Chdir"
+     (*(*(*(*rV.typ).uncommonType).methods[0].mtyp).string) = "func() error"
+     (*(*(*(*rV.typ).uncommonType).methods[0].typ).string) = "func(*os.File) error"
+     ...
+   < pre..
+
+   Observe la diferencia entre estos dos ejemplos:
+
+   ..src > go
+     var i interface{} = 3
+     Display("i", i)
+     // Output:
+     // Display i (int):
+     // i = 3
+
+     Display("&i", &i)
+     // Output:
+     // Display &i (*interface {}):
+     // (*&i).type = int
+     // (*&i).value = 3
+   < src..
+
+   En el primer ejemplo, @c(Display) llama a @c[reflect.ValueOf(i)], que
+   devuelve un valor de tipo @c(Int). Como mencionamos en la @l(#Seccion 12.2),
+   @c(reflect.ValueOf) siempre devuelve un valor de un tipo concreto ya que
+   extrae el contenido de un valor interfaz.
+
+   En el segundo ejemplo, @c(Display) llama a @c[reflect.ValueOf(&i)], que
+   devuelve un puntero a @c(i), de tipo @c(Ptr). El caso del switch para @c(Ptr)
+   llama a @c(Elem) en este valor, que devuelve un valor que representa la
+   @e(variable) @c(i) en si, del tipo @c(Interface). Un @c(Value) obtenido
+   indirectamente, como este, puede representar cualquier valor en absoluto,
+   incluyendo interfaces. La funcion @c(display) se llama a si misma de forma
+   recursiva y esta vez, imprime componentes separados para el tipo y valor
+   dinamico de la interfaz.
+
+   Tal como se aplica actualmente, @c(Display) nunca terminara si encuentra un
+   ciclo en el grafico del objeto, como esta lista enlazada que se come su
+   propia cola:
+
+   ..src > go
+     // une estructura que apunta a si misma
+     type Cycle struct{ Value int; Tail *Cycle }
+     var c Cycle
+     c = Cycle{42, &c}
+     Display("c", c)
+   < src..
+
+   @c(Display) imprime esta expansion cada vez mayor:
+
+   ..src > go
+     Display c (display.Cycle):
+     c.Value = 42
+     (*c.Tail).Value = 42
+     (*(*c.Tail).Tail).Value = 42
+     (*(*(*c.Tail).Tail).Tail).Value = 42
+     ...ad infinitum...
+   < src..
+
+   Muchos programas Go contienen al menos algunos datos ciclicos. Hacer
+   @c(Display) robusto frente a estos ciclos es complicado, requiriendo
+   contabilidad adicional para registrar el conjunto de referencias que se han
+   seguido hasta ahora; Es costoso tambien. Una solucion general requiere la
+   caracteristicas @c(unsafe) del lenguaje, como veremos en la @l(#Seccion
+   13.3).
+
+   Los ciclos plantean un problema menor para @c(fmt.Sprint), ya que rara vez se
+   intenta imprimir la estructura completa. Por ejemplo, cuando encuentra un
+   puntero, rompe la recursion imprimiendo el valor numerico del puntero. Puede
+   quedar atrapado tratando de imprimir un slice o un mapa que se contiene como
+   un elemento, pero estos casos raros no garantizan el considerable problema
+   adicional de la manipulacion de ciclos.
+
+   @b(Ejercicio 12.1): Ampliar @c(Display) para que pueda mostrar mapas cuyas claves
+   son estructuras o matrices.
+
+   @b(Ejercicio 12.2): Hacer @c(display) seguro de usar en estructuras de datos
+   ciclicas limitando el numero de pasos necesarios antes de abandonar la
+   recursividad. (En la @l(#Seccion 13.3), veremos otra forma de detectar
+   ciclos).
+
+** Seccion 12.4 <> Ejemplo: Codificacion de Expressions-S
+
+   @c(Display) es una rutina de depuracion para la visualizacion de datos
+   estructurados, pero no esta muy lejos de ser capaz de codificar u @e(ordenar)
+   objetos Go arbitrarios como mensajes en una notacion portatil adecuada para
+   la comunicacion entre procesos.
+
+   Como vimos en la @l(#Seccion 4.5), la libreria estandar de Go es compatible
+   con una variedad de formatos, incluyendo JSON, XML y ASN.1. Otra indicacion
+   de que todavia es ampliamente utilizado @e(expresiones-S), la sintaxis de
+   Lisp. A diferencia de las otras notaciones, las expresiones-S no son
+   compatibles con la libreria estandar de Go, no menos porque no tienen una
+   definicion universalmente aceptada, a pesar de varios intentos de
+   estandarizacion y la existencia de muchas implementaciones.
+
+   En esta seccion, definiremos un paquete que codifica objetos Go arbitrarios
+   usando una notacion de expresiones-S que admita las siguientes construcciones:
+
+   | @c(42)      | entero                                              |
+   |-------------|-----------------------------------------------------|
+   | @c("hello") | cadena  (con notacion en estilo Go)                 |
+   |-------------|-----------------------------------------------------|
+   | @c(foo)     | symbolo (un nombre sin cita)                        |
+   |-------------|-----------------------------------------------------|
+   | @c[(1 2 3)] | lista   (zero o mas elementos entre parentesis)     |
+
+   Los booleanos tradicionalmente se codifican utilizando el simbolo @c(t) para
+   la verdadero, y la lista vacia @c[()] o el simbolo @c(nil) para falso, pero
+   por simplicidad, nuestra implementacion los ignora. Tambien ignora canales y
+   funciones, ya que su estado es opaco a la reflexion. Y no hace caso de
+   numeros reales y complejos de punto flotante e interfaces. Agregar soporte
+   para ellos es el @l(#Ejercicio 12.3).
+
+   Vamos a codificar los tipos de Go usando expresiones-S como sigue. Los
+   enteros y las cadenas se codifican de la manera obvia. Los valores Nil se
+   codifican como el simbolo @c(nil). Los arrays y slices se codifican
+   utilizando la notacion de lista.
+
+   Las estructuras se codifican como una lista de campos enlazados, siendo cada
+   enlace de campo una lista de dos elementos cuyo primer elemento (un simbolo)
+   es el nombre del campo y cuyo segundo elemento es el valor del campo. Los
+   mapas tambien se codifican como una lista de pares, siendo cada par la clave
+   y el valor de una entrada de mapa. Tradicionalmente, las expresiones-S
+   representan listas de pares clave/valor utilizando una sola celula @e(cons)
+   @c[(key . value)] para cada par, en lugar de una lista de dos elementos, pero
+   para simplificar la decodificacion ignoraremos la notacion de lista punteada.
+
+   La codificacion se realiza por una sola funcion recursiva, @c(encode), que se
+   muestra a continuacion. Su estructura es esencialmente la misma que la de
+   @c(Display) en la seccion anterior:
+
+   ..figure > @l(gopl.io/ch12/sexpr/encode.go<>gopl.io/ch12/sexpr)
+
+     ..src > go
+       func encode(buf *bytes.Buffer, v reflect.Value) error {
+         switch v.Kind() {
+         case reflect.Invalid:
+           buf.WriteString("nil")
+
+         case reflect.Int, reflect.Int8, reflect.Int16,
+           reflect.Int32, reflect.Int64:
+           fmt.Fprintf(buf, "%d", v.Int())
+
+         case reflect.Uint, reflect.Uint8, reflect.Uint16,
+           reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+           fmt.Fprintf(buf, "%d", v.Uint())
+
+         case reflect.String:
+           fmt.Fprintf(buf, "%q", v.String())
+
+         case reflect.Ptr:
+           return encode(buf, v.Elem())
+
+         case reflect.Array, reflect.Slice: // (value ...)
+           buf.WriteByte('(')
+           for i := 0; i < v.Len(); i++ {
+             if i > 0 {
+               buf.WriteByte(' ')
+             }
+             if err := encode(buf, v.Index(i)); err != nil {
+               return err
+             }
+           }
+           buf.WriteByte(')')
+
+         case reflect.Struct: // ((name value) ...)
+           buf.WriteByte('(')
+           for i := 0; i < v.NumField(); i++ {
+             if i > 0 {
+               buf.WriteByte(' ')
+             }
+             fmt.Fprintf(buf, "(%s ", v.Type().Field(i).Name)
+             if err := encode(buf, v.Field(i)); err != nil {
+               return err
+             }
+             buf.WriteByte(')')
+           }
+           buf.WriteByte(')')
+
+         case reflect.Map: // ((key value) ...)
+           buf.WriteByte('(')
+           for i, key := range v.MapKeys() {
+             if i > 0 {
+               buf.WriteByte(' ')
+             }
+             buf.WriteByte('(')
+             if err := encode(buf, key); err != nil {
+               return err
+             }
+             buf.WriteByte(' ')
+             if err := encode(buf, v.MapIndex(key)); err != nil {
+               return err
+             }
+             buf.WriteByte(')')
+           }
+           buf.WriteByte(')')
+
+         default: // float, complex, bool, chan, func, interface
+           return fmt.Errorf("unsupported type: %s", v.Type())
+         }
+         return nil
+       }
+     < src..
+
+
+   La funcion @c(Marshal) envuelve el codificador en una API similar a los de
+   otros paquetes @c(encoding/...):
+
+   ..src > go
+     // Marshal codifica un valor Go en forma de expresion-S.
+     func Marshal(v interface{}) ([]byte, error) {
+       var buf bytes.Buffer
+       if err := encode(&buf, reflect.ValueOf(v)); err != nil {
+         return nil, err
+       }
+       return buf.Bytes(), nil
+     }
+   < src..
+
+   Aqui esta la salida que @c(Marshal) aplica a la variable @c(strangelove) de
+   la @l(#Seccion 12.3):
+
+   ..src > lisp
+     ((Title "Dr. Strangelove") (Subtitle "How I Learned to Stop Worrying and Love the Bomb") (Year 1964) (Actor (("Grp. Capt. Lionel Mandrake" "Peter Sellers") ("Pres. Merkin Muffley" "Peter Sellers") ("Gen. Buck Turgidson" "George C. Scott") ("Brig. Gen. Jack D. Ripper" "Sterling Hayden") ("Maj. T.J. \"King\" Kong" "Slim Pickens") ("Dr. Strangelove" "Peter Sellers"))) (Oscars ("Best Actor (Nomin.)" "Best Adapted Screenplay (Nomin.)" "Best Director (Nomin.)" "Best Picture (Nomin.)")) (Sequel nil))
+   < src..
+
+   Toda la salida aparece en una linea larga con espacios minimos, por lo que es
+   dificil de leer. Esta es la misma salida formateada manualmente de acuerdo
+   con las convenciones de expresion-S. Escribir una bonita impresora para las
+   expresiones-S se deja como un ejercicio (desafiante); la descarga de
+   @c(gopl.io) incluye una version simple.
+
+   ..src > lisp
+     ((Title "Dr. Strangelove")
+      (Subtitle "How I Learned to Stop Worrying and Love the Bomb")
+      (Year 1964)
+      (Actor (("Grp. Capt. Lionel Mandrake" "Peter Sellers")
+              ("Pres. Merkin Muffley" "Peter Sellers")
+              ("Gen. Buck Turgidson" "George C. Scott")
+              ("Brig. Gen. Jack D. Ripper" "Sterling Hayden")
+              ("Maj. T.J. \"King\" Kong" "Slim Pickens")
+              ("Dr. Strangelove" "Peter Sellers")))
+      (Oscars ("Best Actor (Nomin.)"
+               "Best Adapted Screenplay (Nomin.)"
+               "Best Director (Nomin.)"
+               "Best Picture (Nomin.)"))
+      (Sequel nil))
+   < src..
+
+   Al igual las funciones @c(fmt.Print), @c(json.Marshal) y @c(Display),
+   @c(sexpr.Marshal) entrara en un bucle infinito si es llamado con los datos
+   ciclicos.
+
+   En la @l(#Seccion 12.6), esbozaremos la implementacion de la funcion de
+   decodificacion de expreciones-S correspondiente, pero antes de llegar alli,
+   primero debemos entender como se puede usar la reflexion para actualizar las
+   variables del programa.
+
+   @b(Ejercicio 12.3): Implementar los casos faltantes de la funcion @c(encode).
+   Codifique booleanos como @c(t) y @c(nil), numeros de punto flotante
+   utilizando la notacion de Go, y los numeros complejos como @m(1+2i) como
+   @c[#C(1.0 2.0)]. Las interfaces se pueden codificar como un par de nombre de
+   tipo y un valor, por ejemplo @c[("[]int" (1 2 3))], pero cuidado que esta
+   notacion es ambigua: el metodo @c(reflect.Type.String) puede devolver la
+   misma cadena para diferentes tipos.
+
+   @b(Ejercicio 12.4): Modifique @c(encode) para imprimir expresiones-S con el
+   estilo mostrado anteriormente.
+
+   @b(Ejercicio 12.5): Adapte @c(encode) para producir JSON en lugar de
+   expresiones-S. Pruebe su codificador utilizando el descodificador estandar,
+   @c(json.Unmarshal).
+
+   @b(Ejercicio 12.6): Adapte @c(encode) para que a manera de optimizacion, no
+   codifique un campo cuyo valor es el valor cero de su tipo.
+
+   @b(Ejercicio 12.7): Crear un API de streaming para el decodificador de
+   expresiones-S, siguiendo el estilo de @c(json.Decoder) (@l(#Seccion
+   4.5<>§4.5)).
+
+** Seccion 12.5 <> Configurar Variables con @c(reflect.Value)
+
+   Hasta el momento, la reflexion solo ha @e(interpretado) los valores en
+   nuestro programa de diversas maneras. El punto de esta seccion, es
+   @c(cambiarlos).
+
+   Recordemos que algunas expresiones van como @c(x), @c(x.f[1]), y @c(*p)
+   denotan variables, pero otras como @c(x + 1) y @c[f(2)] no. Una variable es
+   una ubicacion de almacenamiento @e(direccionable) que contiene un valor, y su
+   valor puede ser actualizado a traves de esa direccion.
+
+   Una distincion similar se aplica a @c(reflect.Values). Algunos son
+   direccionables; Otros no lo son. Considere las siguientes declaraciones:
+
+   ..src > go
+     x := 2                     // valor   tipo   variable?
+     a := reflect.ValueOf(2)    // 2       int    no
+     b := reflect.ValueOf(x)    // 2       int    no
+     c := reflect.ValueOf(&x)   // &x      *int   no
+     d := c.Elem()              // 2       int    si (x)
+   < src..
+
+
+   El valor dentro de @c(a) no es direccionable. Se trata simplemente de una
+   copia del entero 2. Lo mismo es cierto para @c(b). El valor dentro de @c(c)
+   tambien es no direccionable, siendo una copia del valor de puntero @c(&x). De
+   hecho, @c(reflect.Value) devuelto por @c[reflect.ValueOf(x)] no es
+   direccionable. Pero @c(d), derivado de @c(c) mediante la desreferenciacion
+   del puntero un su interior, se refiere a una variable y es, por tanto
+   direccionable. Podemos utilizar este enfoque, llamando a
+   @c[reflect.ValueOf(&x).Elem()], para obtener un @c(Value) direccionable de
+   cualquier variable @c(x).
+
+   Podemos pregruntar a @c(reflect.Value) si es direccionable a traves de su
+   metodo @c(CanAddr):
+
+   ..src > go
+     fmt.Println(a.CanAddr()) // "false"
+     fmt.Println(b.CanAddr()) // "false"
+     fmt.Println(c.CanAddr()) // "false"
+     fmt.Println(d.CanAddr()) // "true"
+   < src..
+
+   Obtenemos un @c(reflect.Value) direccionable siempre indirectamente atravez
+   de un puntero, incluso si partimos de un @c(Value) no-direccionable . Todas
+   las reglas habituales de direccionabilidad tienen analogos para la
+   reflexion. Por ejemplo, ya que la expresion de indexacion de un slice
+   @c(e[i]) sigue implicitamente un puntero, es direccionable incluso si la
+   expresion @c(e) no lo es. Por analogia, @c[reflect.ValueOf(e).Index(i)] se
+   refiere a una variable, y por tanto es direccionable incluso si
+   @c[reflect.ValueOf(e)] no lo es.
+
+   Para recuperar la variable de un @c(reflect.Value) direccionable requiere
+   tres pasos. En primer lugar, llamamos a @c[Addr()], que devuelve un valor que
+   contiene un puntero a la variable. Despues, llamamos a @c[Interface()] en
+   este @c(Value), que devuelve un valor @c[interface{}] que contiene el
+   puntero. Finalmente, si sabemos el tipo de la variable, podemos usar una
+   asercion de tipo para recuperar el contenido de la interfaz como un puntero
+   comun. A continuacion, podemos actualizar la variable a traves del puntero:
+
+   ..src > go
+     x := 2
+     d := reflect.ValueOf(&x).Elem()    // d referencia a la variable x
+     px := d.Addr().Interface().(*int)  // px := &x
+     *px = 3                            // x = 3
+     fmt.Println(x)                     // "3"
+   < src..
+
+   O bien, podemos actualizar la variable a la que hace referencia
+   @c(reflect.Value) directamente, sin necesidad de utilizar un puntero,
+   llamando al metodo @c(reflect.Value.Set):
+
+   ..src > go
+     d.Set(reflect.ValueOf(4))
+     fmt.Println(x) // "4"
+   < src..
+
+   Las mismas comprobaciones de asignabilidad que normalmente se realizan por el
+   compilador se realizan en tiempo de ejecucion por los metodos
+   @c[Set]. Arriba, la variable y el valor tienen el tipo @c(int), pero si la
+   variable habia sido un @c(int64), el programa entrara en panico, por lo que
+   es crucial asegurarse de que el valor sea asignable al tipo de la variable:
+
+   ..src > go
+     d.Set(reflect.ValueOf(int64(5))) // panico: int64 no es asignable a int
+   < src..
+
+   Y, por supuesto, llamando a @c(Set) sobre un @c(reflect.Value) no
+   direccionable tambien entra en panico:
+
+   ..src > go
+     x := 2
+     b := reflect.ValueOf(x)
+     b.Set(reflect.ValueOf(3)) // panico: se utiliza Set con un valor no direccionable
+   < src..
+
+   Hay variantes de @c(Set) especializadas para ciertos grupos de tipos basicos:
+   @c(SetInt), @c(SetUint), @c(SetString), @c(SetFloat), y demas:
+
+   ..src > go
+     d := reflect.ValueOf(&x).Elem()
+     d.SetInt(3)
+     fmt.Println(x) // "3"
+   < src..
+
+   En algunos aspectos, estos metodos son mas tolerantes. @c(SetInt), por
+   ejemplo, tendra exito siempre y cuando el tipo de la variable sea algun tipo
+   de entero con signo, o incluso un tipo con nombre cuyo tipo subyacente es un
+   entero con signo, y si el valor es demasiado grande sera truncado en silencio
+   para ajustarse. Pero pise con cuidado: llamar a @c(SetInt) en un
+   @c(reflect.Value) que se refiere a una variable @c[interface{}] entrara en
+   panico, aunque @c(Set) tendria exito.
+
+   ..src > go
+     x := 1
+     rx := reflect.ValueOf(&x).Elem()
+     rx.SetInt(2)                     // OK, x = 2
+     rx.Set(reflect.ValueOf(3))       // OK, x = 3
+     rx.SetString("hello")            // panic: string no es asignable a int
+     rx.Set(reflect.ValueOf("hello")) // panic: string no es asignable a int
+
+     var y interface{}
+     ry := reflect.ValueOf(&y).Elem()
+     ry.SetInt(2)                     // panico: SetInt llamada con un Valoe interface
+     ry.Set(reflect.ValueOf(3))       // OK, y = int(3)
+     ry.SetString("hello")            // panico: SetString llamada en un Value interface
+     ry.Set(reflect.ValueOf("hello")) // OK, y = "hello"
+   < src..
+
+   Cuando aplicamos @c(Display) a @c(os.Stdout), encontramos que la reflexion
+   puede leer los valores de los campos no exportados de estructuras que son
+   inaccesibles segun las reglas usuales del lenguaje, como el campo @c(fd int)
+   de una estructura @c(os.File) en una plataforma Unix. Sin embargo, la
+   reflexion no puede actualizar estos valores:
+
+   ..src > go
+     stdout := reflect.ValueOf(os.Stdout).Elem() // *os.Stdout, una variable os.File
+     fmt.Println(stdout.Type())                  // "os.File"
+     fd := stdout.FieldByName("fd")
+     fmt.Println(fd.Int()) // "1"
+     fd.SetInt(2)          // panico: capo sin exportar
+   < src..
+
+   Un @c(reflect.Value) direccionable registra si se obtuvo al atravesar el
+   campo sin exportar de una estructura y, si es asi, no permite la
+   modificacion. En consecuencia, @c(CanAddr) no suele ser la comprobacion
+   correcta a utilizar antes de establecer una variable. El metodo relacionado
+   @c(CanSet) informa si un @c(reflect.Value) es direccionable @e(y) asignable:
+
+   ..src > go
+     fmt.Println(fd.CanAddr(), fd.CanSet()) // "true false"
+   < src..
+
+** Seccion 12.6 <> Ejemplo: Descodificar Expressions-S
+
+   Por cada funcion @c(Marshal) proporcionada por los paquetes @c(encoding/...)
+   de la libreria estandar, hay una funcion correspondiente @c(Unmarshal) que
+   realiza la decodificacion. Por ejemplo, como vimos en la @l(#Seccion 4.5),
+   dada un slice de bytes que contiene datos codificados JSON para nuestro tipo
+   @c(Movie) (@l(#Seccion 12.3<>§12.3)), podemos decodificarla asi:
+
+   ..src > go
+     data := []byte{/* ... */}
+     var movie Movie
+     err := json.Unmarshal(data, &movie)
+   < src..
+
+   la funcion @c(Unmarshal) utiliza la reflexion para modificar los campos de la
+   variable @c(movie) actual, creando nuevos mapas, estructuras, y las slices
+   segun lo determinado por el tipo @c(Movie) y el contenido de los datos
+   entrantes.
+
+   Ahora vamos a poner en practica una simple funcion @c(Unmarshal) para
+   expresiones-S, analoga a la funcion estandar @c(json.Unmarshal) utilizada
+   anteriormente, y la inversa de nuestra anterior @c(sexpr.Marshal). Debemos
+   advertirle que una implementacion robusta y general requiere mucho mas codigo
+   del que encajaria comodamente en este ejemplo, que ya es largo, asi que hemos
+   tomado muchos atajos. Soportamos solo un subconjunto limitado de
+   expresiones-S y no manejamos errores con gracia. El codigo pretende ilustrar
+   la reflexion, no el analisis.
+
+   El lexer utiliza el tipo @c(Scanner) del paquete @c(text/scanner) para romper
+   una corriente de entrada en una secuencia de tokens como comentarios,
+   identificadores, literales de cadena, y literales numericos. El metodo del
+   @c(Scan) del escaner avanza el escaner y devuelve el tipo del siguiente
+   token, que tiene el tipo @c(rune). La mayoria de los tokens, como @c['('],
+   consisten en una sola runa, pero el paquete @c(text/scanner) representa el
+   tipo de tokens de caracteres multiples @c(Ident), @c(String), e @c(Int)
+   usando pequeños valores negativos del tipo @c(rune). Despues de una llamada a
+   @c(Scan) que devuelve uno de estos tipos de token, el metodo @c(TokenText) de
+   escaner devuelve el texto del token.
+
+   Ya que un analizador tipico puede tener que inspeccionar el token actual
+   varias veces, pero el metodo @c(Scan) avanza el escaner, envolvemos el
+   escaner en un tipo auxiliar llamado @c(lexer) que realiza un seguimiento del
+   token recientemente devuelto por @c(Scan).
+
+   ..figure > @l(gopl.io/ch12/sexpr/decode.go<>gopl.io/ch12/sexpr)
+
+     ..src > go
+       type lexer struct {
+         scan  scanner.Scanner
+         token rune // the current token
+       }
+
+       func (lex *lexer) next()        { lex.token = lex.scan.Scan() }
+       func (lex *lexer) text() string { return lex.scan.TokenText() }
+
+       func (lex *lexer) consume(want rune) {
+         if lex.token != want { // NOTA: No es un ejemplo de buen manejo de errores.
+           panic(fmt.Sprintf("got %q, want %q", lex.text(), want))
+         }
+         lex.next()
+       }
+     < src..
+
+
+   Ahora pasemos al analizador sintactico. Consiste en dos funciones
+   principales. La primera, @c(read), lee la expresion-S que comienza con el
+   token actual y actualiza la variable referida por el @c(reflect.Value v)
+   direccionable.
+
+   ..src > go
+     func read(lex *lexer, v reflect.Value) {
+       switch lex.token {
+       case scanner.Ident:
+         // Los unicos identificadores validos son
+         // "nil" y campos con nombre en estructuras.
+         if lex.text() == "nil" {
+           v.Set(reflect.Zero(v.Type()))
+           lex.next()
+           return
+         }
+       case scanner.String:
+         s, _ := strconv.Unquote(lex.text()) // NOTA: ignorando errores
+         v.SetString(s)
+         lex.next()
+         return
+       case scanner.Int:
+         i, _ := strconv.Atoi(lex.text()) // NOTA: ignorando errores
+         v.SetInt(int64(i))
+         lex.next()
+         return
+       case '(':
+         lex.next()
+         readList(lex, v)
+         lex.next() // consume ')'
+         return
+       }
+       panic(fmt.Sprintf("unexpected token %q", lex.text()))
+     }
+   < src..
+
+   Nuestras expresiones-S utilizan identificadores para dos propositos
+   distintos, nombres de campo en estructuras y el valor de un puntero
+   @c(nil). La funcion @c(read) solo se ocupa de este ultimo caso. Cuando
+   @c(scanner.Ident) se encuentra con @"(@c(nil)), establece @c(v) a el valor
+   cero de su tipo usando la funcion @c(reflect.Zero). Para cualquier otro
+   identificador, informa de un error. la funcion @c(readList), que veremos en
+   un momento, maneja identificadores utilizados como nombres de campo
+   estructura.
+
+   Un token @c['('] indica el comienzo de una lista. La segunda funcion,
+   @c(readList), decodifica una lista en una variable de tipo compuesto–un mapa,
+   estructura, slice, o arreglo–dependiendo el tipo de variable Go que estamos
+   rellenando actualmente. En cada caso, el bucle mantiene el analisis de
+   elementos hasta encontrar el parentesis de cierre correspondiente, @c[')'],
+   detectado por la funcion @c(endList).
+
+   La parte interesante es la recursion. El caso mas sencillo es un arreglo.
+   Hasta que se ve el cierre @c[')'], utilizamos @c(Index) para obtener la
+   variable para cada elemento del arreglo y hacer una llamada recursiva a
+   @c(read) para rellenarla. Como en muchos otros casos de error, si los datos
+   de entrada hacen que el decodificador se indexe mas alla del final del
+   arreglo, el descodificador entrara en panico. Un metodo similar se utiliza
+   para los slices, excepto que debemos crear una nueva variable para cada
+   elemento, rellenarlo y, a continuacion, añadirlo a la porcion.
+
+   Los bucles de estructuras y mapas deben analizar una sublista @c[(key value)]
+   en cada iteracion. Para las estructuras, la clave es un simbolo que
+   identifica el campo. Analogo al caso de los arreglos, obtenemos la variable
+   existente para el campo struct usando @c(FieldByName) y realizamos una
+   llamada recursiva para llenarla. Para los mapas, la clave puede ser de
+   cualquier tipo, y de forma analoga al caso de los slices, creamos una nueva
+   variable, rellenandola de forma recursiva y finalmente insertamos el nuevo
+   par clave/valor en el mapa.
+
+   ..src > go
+     func readList(lex *lexer, v reflect.Value) {
+       switch v.Kind() {
+       case reflect.Array: // (item ...)
+         for i := 0; !endList(lex); i++ {
+           read(lex, v.Index(i))
+         }
+
+       case reflect.Slice: // (item ...)
+         for !endList(lex) {
+           item := reflect.New(v.Type().Elem()).Elem()
+           read(lex, item)
+           v.Set(reflect.Append(v, item))
+         }
+
+       case reflect.Struct: // ((name value) ...)
+         for !endList(lex) {
+           lex.consume('(')
+           if lex.token != scanner.Ident {
+             panic(fmt.Sprintf("got token %q, want field name", lex.text()))
+           }
+           name := lex.text()
+           lex.next()
+           read(lex, v.FieldByName(name))
+           lex.consume(')')
+         }
+
+       case reflect.Map: // ((key value) ...)
+         v.Set(reflect.MakeMap(v.Type()))
+         for !endList(lex) {
+           lex.consume('(')
+           key := reflect.New(v.Type().Key()).Elem()
+           read(lex, key)
+           value := reflect.New(v.Type().Elem()).Elem()
+           read(lex, value)
+           v.SetMapIndex(key, value)
+           lex.consume(')')
+         }
+
+       default:
+         panic(fmt.Sprintf("cannot decode list into %v", v.Type()))
+       }
+     }
+
+     func endList(lex *lexer) bool {
+       switch lex.token {
+       case scanner.EOF:
+         panic("end of file")
+       case ')':
+         return true
+       }
+       return false
+     }
+   < src..
+
+   Finalmente, terminamos el analizador en una funcion exportada @c(Unmarshal),
+   que se muestra a continuacion, que esconde algunas de las asperezas de la
+   aplicacion. Los errores encontrados durante el analisis dan lugar a un
+   panico, por lo que @c(Unmarshal) utiliza una llamada diferida para
+   recuperarse del panico (@l(#Seccion 5.10<>§5.10)) y devolvera un mensaje de
+   error.
+
+   ..src > go
+     // Unmarshal analiza datos de expresiones-S y rellena la variable
+     // cuya direccion esta en el puntero out no-nil.
+     func Unmarshal(data []byte, out interface{}) (err error) {
+       lex := &lexer{scan: scanner.Scanner{Mode: scanner.GoTokens}}
+       lex.scan.Init(bytes.NewReader(data))
+       lex.next() // obtiene el primer token
+       defer func() {
+         // NOTE: this is not an example of ideal error handling.
+         if x := recover(); x != nil {
+           err = fmt.Errorf("error at %s: %v", lex.scan.Position, x)
+         }
+       }()
+       read(lex, reflect.ValueOf(out).Elem())
+       return nil
+     }
+   < src..
+
+   Una implementacion de calidad de produccion nunca debe entrar en panico para
+   cualquier entrada y debe informar un error informativo para cada
+   contratiempo, tal vez con un numero de linea o desplazamiento. No obstante,
+   esperamos que este ejemplo transmita una idea de lo que esta sucediendo bajo
+   el capo de paquetes como @c(encoding/json), y como se puede utilizar la
+   reflexion para poblar las estructuras de datos.
+
+   @b(Ejercicio 12.8): La funcion @c(sexpr.Unmarshal), como @c(json.Marshal),
+   requiere la entrada completa en un slice de bytes antes de que pueda comenzar
+   la decodificacion. Defina un tipo @c(sexpr.Decoder) que como
+   @c(json.Decoder), permite que una secuencia de valores sea decodificada desde
+   un @c(io.Reader). Cambiar @c(sexpr.Unmarshal) para utilizar este nuevo tipo.
+
+   @b(Ejercicio 12.9): Escriba una API basada en tokens para decodificar
+   expresiones-S, siguiendo el estilo de @c(xml.Decoder) (@l(#Seccion
+   7.14<>§7.14)). Necesitara cinco tipos de tokens: @c(Symbol), @c(String),
+   @c(Int), @c(StartList) y @c(EndList).
+
+   @b(Ejercicio 12.10): Extienda @c(sexpr.Unmarshal) para manejar booleanos,
+   numeros de punto flotante, e interfaces codificadas con su solucion al
+   Ejercicio 12.3. (Sugerencia: para decodificar interfaces, se necesitara una
+   asignacion del nombre de cada tipo soportado a su @c(reflect.Type)).
+
+** Seccion 12.7 <> Accediendo a Etiquetas de Campo en Estructuras
+
+   En la @l(#Seccion 4.5) utilizamos @e(etiquetas de campo) de estructura para
+   modificar la codificacion de valores JSON de estructuras Go. La etiqueta de
+   campo @c(json) nos permite escoger nombres de campos alternativos y suprimir
+   la salida de los campos vacios. En esta seccion, veremos como acceder a las
+   etiquetas de campo mediante la reflexion.
+
+   En un servidor web, lo primero que hace la mayoria de las funciones del
+   controlador HTTP es extraer los parametros de la peticion en variables
+   locales. Vamos a definir una funcion de utilidad, @c(params.Unpack), que
+   utiliza etiquetas de campos de estructura para que los manipuladores de la
+   escritura HTTP (@l(#Seccion 7.7<>§7.7)) sean mas convenientes.
+
+   En primer lugar, vamos a mostrar como se utiliza. La funcion @c(search) a
+   continuacion, es un controlador HTTP. Se define una variable llamada @c(data)
+   de un tipo de estructura anonima cuyos campos corresponden a los parametros
+   de la peticion HTTP. Las etiquetas de campo de la estructura especifican los
+   nombres de los parametros, que a menudo son cortos y cripticos, ya que el
+   espacio es precioso en una URL. la funcion @c(Unpack) llena la estructura del
+   la solicitud, por lo que los parametros se puede acceder convenientemente y
+   con un tipo apropiado.
+
+   ..figure > @l(gopl.io/ch12/search/main.go<>gopl.io/ch12/search)
+
+     ..src > go
+       import "gopl.io/ch12/params"
+
+       // search implementa la busqueda del /punto-final de la URL.
+       func search(resp http.ResponseWriter, req *http.Request) {
+         var data struct {
+           Labels     []string `http:"l"`
+           MaxResults int      `http:"max"`
+           Exact      bool     `http:"x"`
+         }
+         data.MaxResults = 10 // establece por defecto
+         if err := params.Unpack(req, &data); err != nil {
+           http.Error(resp, err.Error(), http.StatusBadRequest) // 400
+           return
+         }
+
+         // ...resto del manejador...
+         fmt.Fprintf(resp, "Search: %+v\n", data)
+       }
+     < src..
+
+
+   La funcion @c(Unpack) de abajo hace tres cosas. En primer lugar, llama
+   @c[req.ParseForm()] para analizar la solicitud. Posteriormente, @c(req.Form)
+   contiene todos los parametros, independientemente de si el cliente HTTP
+   utiliza el metodo de solicitud GET o POST.
+
+   A continuacion, @c(Unpack) construye una correlacion del nombre @e(efectivo)
+   de cada campo a la variable para ese campo. El nombre efectivo puede diferir
+   del nombre real si el campo tiene una etiqueta. El metodo @c(Field) de
+   @c(reflect.Type) devuelve un @c(reflect.StructField) que proporciona
+   informacion sobre el tipo de cada campo, como su nombre, tipo, y la etiqueta
+   opcional. El campo @c(Tag) es un @c(reflect.StructTag), que es un tipo de
+   cadena que proporciona un metodo @c(Get) para analizar y extraer la subcadena
+   de una clave particular, como @c(http:"...") en este caso.
+
+   ..figure > @l(gopl.io/ch12/params/params.go<>gopl.io/ch12/params)
+
+     ..src > go
+       // Unpack rellena los campos de la estructura apuntada por ptr
+       // con los parametros de la solicitud HTTP en req.
+       func Unpack(req *http.Request, ptr interface{}) error {
+         if err := req.ParseForm(); err != nil {
+           return err
+         }
+
+         // Construye un mapa de los campos marcados con un nombre efectivo.
+         fields := make(map[string]reflect.Value)
+         v := reflect.ValueOf(ptr).Elem() // the struct variable
+         for i := 0; i < v.NumField(); i++ {
+           fieldInfo := v.Type().Field(i) // un reflect.StructField
+           tag := fieldInfo.Tag           // un reflect.StructTag
+           name := tag.Get("http")
+           if name == "" {
+             name = strings.ToLower(fieldInfo.Name)
+           }
+           fields[name] = v.Field(i)
+         }
+
+         // Actualiza el campo de estructura para cada parametro en la solicitud
+         for name, values := range req.Form {
+           f := fields[name]
+           if !f.IsValid() {
+             continue // ingorar los parametros HTTP no reconocidos
+           }
+           for _, value := range values {
+             if f.Kind() == reflect.Slice {
+               elem := reflect.New(f.Type().Elem()).Elem()
+               if err := populate(elem, value); err != nil {
+                 return fmt.Errorf("%s: %v", name, err)
+               }
+               f.Set(reflect.Append(f, elem))
+             } else {
+               if err := populate(f, value); err != nil {
+                 return fmt.Errorf("%s: %v", name, err)
+               }
+             }
+           }
+         }
+         return nil
+       }
+     < src..
+
+
+   Finalmente, @c(Unpack) itera sobre los pares nombre/valor de los parametros
+   HTTP y actualiza los campos de estructura correspondientes. Recuerde que el
+   mismo nombre de parametro puede aparecer mas de una vez. Si esto sucede, y el
+   campo es un slice, entonces todos los valores de ese parametro se acumulan en
+   el slice. De lo contrario, el campo se sobrescribe repetidamente para que
+   solo el ultimo valor tenga algun efecto.
+
+   la funcion @c(populate) se encarga de establecer un unico campo @c(v) (o un
+   unico elemento de un campo de slice) a partir de un valor de parametro. Por
+   ahora, solo admite cadenas, enteros con signo y booleanos. Soportar otros
+   tipos se deja como un ejercicio.
+
+   ..src > go
+     func populate(v reflect.Value, value string) error {
+       switch v.Kind() {
+       case reflect.String:
+         v.SetString(value)
+
+       case reflect.Int:
+         i, err := strconv.ParseInt(value, 10, 64)
+         if err != nil {
+           return err
+         }
+         v.SetInt(i)
+
+       case reflect.Bool:
+         b, err := strconv.ParseBool(value)
+         if err != nil {
+           return err
+         }
+         v.SetBool(b)
+
+       default:
+         return fmt.Errorf("unsupported kind %s", v.Type())
+       }
+       return nil
+     }
+   < src..
+
+   Si añadimos el controlador @c(server) a un servidor web, esto podria ser una
+   tipica sesion:
+
+   ..src > sh
+     $ go build gopl.io/ch12/search
+     $ ./search &
+     $ ./fetch 'http://localhost:12345/search'
+     Search: {Labels:[] MaxResults:10 Exact:false}
+     $ ./fetch 'http://localhost:12345/search?l=golang&l=programming'
+     Search: {Labels:[golang programming] MaxResults:10 Exact:false}
+     $ ./fetch 'http://localhost:12345/search?l=golang&l=programming&max=100'
+     Search: {Labels:[golang programming] MaxResults:100 Exact:false}
+     $ ./fetch 'http://localhost:12345/search?x=true&l=golang&l=programming'
+     Search: {Labels:[golang programming] MaxResults:10 Exact:true}
+     $ ./fetch 'http://localhost:12345/search?q=hello&x=123'
+     x: strconv.ParseBool: parsing "123": invalid syntax
+     $ ./fetch 'http://localhost:12345/search?q=hello&max=lots'
+     max: strconv.ParseInt: parsing "lots": invalid syntax
+   < src..
+
+   @b(Ejercicio 12.11): Escribir la funcion correspondiente @c(Pack). Dado un
+   valor de estructura, @c(Pack) debe devolver una direccion URL que incorpora
+   los valores de los parametros de la estructura.
+
+   @b(Ejercicio 12.12): Extender la notacion de etiqueta de campo para expresar
+   requisitos de validez de parametros. Por ejemplo, es posible que una cadena
+   tenga que ser una direccion de correo electronico valida o un numero de
+   tarjeta de credito, y un numero entero puede tener que ser un codigo postal
+   valido de los Estados Unidos. Modifique @c(Unpack) para comprobar estos
+   requisitos.
+
+   @b(Ejercicio 12.13): Modificar el codificador (@l(#Seccion 12.4<>§12.4)) y
+   decodificador (@l(#Seccion 12.6<>§12.6)) de expresiones-S para que cumplan la
+   etiqueta de campo @c(sexpr:"...") de una manera similar a @c(encoding/json)
+   (@l(#Seccion 4.5<>§4.5)).
+
+** Seccion 12.8 <> Visualizando los Motodos de Type
+
+   Nuestro ultimo ejemplo de reflexion utiliza @c(reflect.Type) para imprimir el
+   tipo de un valor arbitrario y enumerar sus metodos:
+
+   ..figure > @l(gopl.io/ch12/methods/methods.go<>gopl.io/ch12/methods)
+
+     ..src > go
+       // Print imprime el conjunto de metodos del valor x.
+       func Print(x interface{}) {
+         v := reflect.ValueOf(x)
+         t := v.Type()
+         fmt.Printf("type %s\n", t)
+
+         for i := 0; i < v.NumMethod(); i++ {
+           methType := v.Method(i).Type()
+           fmt.Printf("func (%s) %s%s\n", t, t.Method(i).Name,
+             strings.TrimPrefix(methType.String(), "func"))
+         }
+       }
+     < src..
+
+
+   Ambos @c(reflect.Type) y @c(reflect.Value) tienen un metodo llamado
+   @c(Method). Cada llamada @c[t.Method(i)] devuelve una instancia de
+   @c(reflect.Method), un tipo struct que describe el nombre y tipo de un unico
+   metodo. Cada llamada @c[v.Method(i)] devuelve un @c(reflect.Value) que
+   representa un valor metodo (@l(#Seccion 6.4<>§6.4)), es decir, un metodo
+   vinculado a su receptor. Utilizando el metodo @c(reflect.Value.Call) (que no
+   tenemos espacio para mostrar aqui), es posible llamar a @c(Values) de tipo
+   @c(Func) como este, pero este programa solo necesita su @c(Type).
+
+   Estos son los metodos que pertenecen a dos tipos, @c(time.Duration) y
+   @c(*strings.Replacer):
+
+   ..src > go
+     methods.Print(time.Hour)
+     // Output:
+     // type time.Duration
+     // func (time.Duration) Hours() float64
+     // func (time.Duration) Minutes() float64
+     // func (time.Duration) Nanoseconds() int64
+     // func (time.Duration) Seconds() float64
+     // func (time.Duration) String() string
+
+     methods.Print(new(strings.Replacer))
+     // Output:
+     // type *strings.Replacer
+     // func (*strings.Replacer) Replace(string) string
+     // func (*strings.Replacer) WriteString(io.Writer, string) (int, error)
+   < src..
+
+** Seccion 12.9 <> Una Palabra de Precaucion
+
+   Hay mucho mas sobre la API de reflexion que el espacio que tenemos para
+   mostror, pero los ejemplos anteriores dan una idea de lo que es posible. La
+   reflexion es una herramienta poderosa y expresiva, pero debe ser usada con
+   cuidado, por tres razones.
+
+   La primera razon es que el codigo basado en reflexion puede ser fragil. Para
+   cada error que podria hacer que un compilador informe un error de tipo, hay
+   una forma correspondiente de usar incorrectamente la reflexion, pero mientras
+   que el compilador informa del error en el tiempo de construccion, un error de
+   reflexion se informa durante la ejecucion como un panico, posiblemente mucho
+   despues heber escrito el programa o incluso mucho despues de que ha comenzado
+   su ejecucion.
+
+   Si la funcion @c(readList) (@l(#Seccion 12.6<>§12.6)), por ejemplo, debe leer
+   una cadena de la entrada al rellenar una variable de tipo @c(int), la llamada
+   a @c(reflect.Value.SetString) entrara en panico. La mayoria de los programas
+   que utilizan la reflexion tienen riesgos similares, y se requiere mucho
+   cuidado para realizar un seguimiento del tipo, capacidad de direccionamiento,
+   y asignabilidad de cada @c(reflect.Value).
+
+   La mejor manera de evitar esta fragilidad es asegurar que el uso de la
+   reflexion esta totalmente encapsulado dentro de su paquete y, si es posible,
+   evitar @c(reflect.Value) en favor de tipos especificos en la API de su
+   paquete, para restringir las entradas a valores legales. Si esto no es
+   posible, realice comprobaciones dinamicas adicionales antes de cada operacion
+   riesgosa. A modo de ejemplo en la libreria estandar, cuando @c(fmt.Printf)
+   aplica un verbo a un operando inadecuado, no entra misteriosamente en panico,
+   por que imprime un mensaje de error informativo. El programa aun tiene un
+   error, pero es mas facil de diagnosticar.
+
+   ..src > go
+     fmt.Printf("%d %s\n", "hello", 42) // "%!d(string=hello) %!s(int=42)"
+   < src..
+
+   La reflexion tambien reduce la seguridad y la precision de las herramientas
+   automatizadas de refactorizacion y analisis, ya que no pueden determinar o
+   confiar en la informacion de tipo.
+
+   La segunda razon para evitar la reflexion es que como los tipos sirven como
+   una forma de documentacion y las operaciones de reflexion no pueden estar
+   sujetas a la verificacion de tipo estatico, el codigo altamente reflexivo es
+   a menudo dificil de entender. Siempre documente cuidadosamente los tipos
+   esperados y otros invariantes de las funciones que aceptan una
+   @c(interface{}) o @c(reflect.Value).
+
+   La tercera razon es que las funciones basadas en la reflexion pueden ser de
+   uno o dos ordenes de magnitud mas lentas que el codigo especializado para un
+   tipo particular. En un programa tipico, la mayoria de las funciones no son
+   relevantes para el rendimiento general, por lo que es bueno usar la reflexion
+   cuando haga mas claro el programa. Las pruebas son particularmente adecuadas
+   para la reflexion ya que la mayoria de las pruebas utilizan conjuntos de
+   datos pequeños. Pero para las funciones en rutas criticas, es mejor evitar la
+   reflexion.
+
+* Capitulo 13 <> Programacion de Bajo Nivel
+
+  El diseño de Go garantiza una serie de propiedades de seguridad que limitan
+  las formas en que un programa Go puede @"(ir mal). Durante la compilacion, la
+  comprobacion de tipo detecta la mayoria de los intentos de aplicar una
+  operacion a un valor inadecuado para su tipo, por ejemplo, restando una cadena
+  de otra. Las estrictas reglas para las conversiones de tipos impiden el acceso
+  directo a los tipos nativos como cadenas, mapas, slices y canales.
+
+  Para errores que no se pueden detectar de forma estatica, como accesos a un
+  arreglo fuera de limites o desreferencias de puntero nulo, las comprobaciones
+  dinamicas aseguran que el programa termina inmediatamente con un error
+  informativo siempre que se produce una operacion prohibida. La gestion
+  automatica de memoria (recoleccion de basura) elimina errores de @"(uso
+  posterior), asi como la mayoria de las perdidas de memoria.
+
+  Muchos detalles de la implementacion son inaccesibles para los programas de
+  Go. No hay manera de descubrir el diseño de memoria de un tipo agregado como
+  una estructura, o el codigo maquina para una funcion, o la identidad del hilo
+  del sistema operativo en el que se esta ejecutando la actual gorutina. De
+  hecho, el planificador de Go mueve libremente las gorutas de un hilo a
+  otro. Un puntero identifica una variable sin revelar la direccion numerica de
+  la variable. Las direcciones pueden cambiar a medida que el recolector de
+  basura mueve las variables; Los punteros se actualizan de forma transparente.
+
+  Juntas, estas caracteristicas hacen que los programas de Go, especialmente los
+  que fallan, sean mas predecibles y menos misteriosos que los programas en C,
+  la quienta escencia de los lenguajes de bajo nivel. Al ocultar los detalles
+  subyacentes, tambien hace que los programas Go sean altamente portatiles, ya
+  que la semantica del lenguaje es en gran medida independiente de cualquier
+  compilador, sistema operativo o arquitectura de la CPU en particular. (No es
+  totalmente independiente: algunos detalles se filtran, como el tamaño de la
+  palabra del procesador, el orden de evaluacion de ciertas expresiones y el
+  conjunto de restricciones de implementacion impuestas por el compilador).
+
+  Ocasionalmente, podemos optar por renunciar a algunas de estas garantias
+  utiles para lograr el maximo rendimiento posible, para interoperar con
+  librerias escritas en otros lenguajes o para implementar una funcion que no
+  puede expresarse en Go puro.
+
+  En este capitulo, vamos a ver como el paquete @c(unsafe) nos permite saltar
+  las reglas habituales, y como utilizar la herramienta @$(cgo) para crear
+  enlaces Go para librerias de C y llamadas al sistema operativo.
+
+  Los enfoques descritos en este capitulo no deben utilizarse frivolamente. Sin
+  la atencion cuidadosa a los detalles, pueden causar el tipo de fracasos
+  impredecibles, inescrutables, no locales con los cuales los programadores de C
+  son infelizmente familiarizados. El uso de @c(unsafe) tambien anula la
+  garantia de la compatibilidad de Go con versiones futuras, ya que, ya sea
+  intencional o no, es facil depender de detalles de implementacion no
+  especificados que pueden cambiar de forma inesperada.
+
+  El paquete @c(unsafe) es bastante magico. Aunque parece ser un paquete regular
+  y se importa de la manera habitual, es realmente implementado por el
+  compilador. Proporciona acceso a una serie de caracteristicas nativas de
+  lenguaje que normalmente no estan disponibles porque exponen detalles del
+  diseño de memoria de Go. La presentacion de estas caracteristicas como un
+  paquete por separado hace que las raras ocasiones en que se necesita mas
+  conspicuo. Ademas, algunos entornos pueden restringir el uso del paquete
+  @c(unsafe) por razones de seguridad.
+
+  El paquete @c(unsafe) se utiliza ampliamente en paquetes de bajo nivel como
+  @c(runtime), @c(os), @c(syscall), y @c(net) que interactuan con el sistema
+  operativo, pero casi nunca es necesario en programas ordinarios.
+
+** Seccion 13.1 <> @c(unsafe.Sizeof), @c(Alignof), y @c(Offsetof)
+
+   la funcion @c(unsafe.Sizeof) informa el tamaño en bytes de la representacion
+   de su operando, que puede ser una expresion de cualquier tipo; La expresion
+   no se evalua. Una llamada a @c(Sizeof) es una expresion constante de tipo
+   @c(uintptr), por lo que el resultado puede ser utilizado como la dimension de
+   un tipo de matriz, o para calcular otras constantes.
+
+   ..src > go
+     import "unsafe"
+     fmt.Println(unsafe.Sizeof(float64(0))) // "8"
+   < src..
+
+   @c(Sizeof) informa solo el tamaño de la parte fija de cada estructura de
+   datos, como el puntero y longitud de una cadena, pero no partes indirectas
+   como el contenido de la cadena. Los tamaños tipicos para todos los tipos Go
+   no agregados se muestran a continuacion, aunque los tamaños exactos pueden
+   variar segun la cadena de herramientas. Para la portabilidad, hemos dado los
+   tamaños de los tipos de referencia (o tipos que contienen referencias) en
+   terminos de palabras, donde una palabra es 4 bytes en una plataforma de 32
+   bits y 8 bytes en una plataforma de 64 bits.
+
+   Las computadoras cargan y almacenan los valores de memoria mas efecientemente
+   cuando esos valores estan correctamente @e(alineados). Por ejemplo, la
+   direccion de un valor de un tipo de dos bytes como @c(int16) debe ser un
+   numero par, la direccion de un valor de cuatro bytes como una runa debe ser
+   un multiplo de cuatro, y la direccion de un valor de ocho bytes como un
+   @c(float64), @c(uint64), o un puntero de 64 bits debe ser un multiplo de
+   ocho. Los requisitos de alineacion de multiplos mayores son inusuales,
+   incluso para los tipos de datos mas grandes como @c(complex128).
+
+   Por esta razon, el tamaño de un valor de un tipo agregado (una estructura o
+   arreglo) es al menos la suma de los tamaños de sus campos o elementos, pero
+   puede ser mayor debido a la presencia de @"(agujeros). Los agujeros son
+   espacios no utilizados añadidos por el compilador para asegurar que el
+   siguiente campo o elemento este correctamente alineado con respecto al inicio
+   de la estructura o arreglo.
+
+   | Type                                                          | Size                                                  |
+   |===============================================================|=======================================================|
+   | @c(bool)                                                      | 1 byte                                                |
+   |---------------------------------------------------------------|-------------------------------------------------------|
+   | @c(int)@m(N), @c(uint)@m(N), @c(float)@m(N), @c(complex)@m(N) | @m(N) / 8 bytes (por ejemplo, f@c(loat64) es 8 bytes) |
+   |---------------------------------------------------------------|-------------------------------------------------------|
+   | @c(int), @c(uint), @c(uintptr)                                | 1 palabra                                             |
+   |---------------------------------------------------------------|-------------------------------------------------------|
+   | @c(*T)                                                        | 1 palabra                                             |
+   |---------------------------------------------------------------|-------------------------------------------------------|
+   | @c(string)                                                    | 2 palabras (data, len)                                |
+   |---------------------------------------------------------------|-------------------------------------------------------|
+   | @c([]T)                                                       | 3 palabras (data, len, cap)                           |
+   |---------------------------------------------------------------|-------------------------------------------------------|
+   | @c(map)                                                       | 1 palabra                                             |
+   |---------------------------------------------------------------|-------------------------------------------------------|
+   | @c(func)                                                      | 1 palabra                                             |
+   |---------------------------------------------------------------|-------------------------------------------------------|
+   | @c(chan)                                                      | 1 palabra                                             |
+   |---------------------------------------------------------------|-------------------------------------------------------|
+   | @c(interface)                                                 | 2 palabras (type, value)                              |
+
+
+   La especificacion del lenguaje no garantiza que el orden en que se declaran
+   los campos es el orden en el que se exponen en la memoria, por lo que en
+   teoria un compilador es libre de reordenarlos, aunque al escribir esto,
+   ninguno lo hace. Si los tipos de campos de una estructura son de diferentes
+   tamaños, puede ser mas eficiente en el espacio declarar los campos en un
+   orden que los empaqueta tan firmemente como sea posible. Las tres estructuras
+   abajo tienen los mismos campos, pero la primera requiere hasta un 50% mas de
+   memoria que las otras dos:
+
+   ..src > go
+                                       // 64-bit       32-bit
+     struct{ bool; float64; int16 }    // 3 palabras   4 palabras
+     struct{ float64; int16; bool }    // 2 palabras   3 palabras
+     struct{ bool; int16; float64 }    // 2 palabras   3 palabras
+   < src..
+
+   Los detalles del algoritmo de alineacion estan mas alla del alcance de este
+   libro, y ciertamente no vale la pena preocuparse por cada estructura, pero un
+   enpaque eficiente puede hacer que las estructuras de datos asignadas
+   frecuentemente sean mas compactas y por lo tanto mas rapidas.
+
+   La funcion @c(unsafe.Alignof) informa la alineacion requerida del tipo de su
+   argumento. Al igual que @c(Sizeof), se puede aplicar a una expresion de
+   cualquier tipo, y produce una constante. Normalmente, los tipos booleanos y
+   numericos estan alineados con su tamaño (hasta un maximo de 8 bytes) y todos
+   los demas tipos estan alineados con palabras.
+
+   La funcion @c(unsafe.Offsetof), cuyo operando debe ser un selector de campo
+   @c(x.f), calcula el desplazamiento del campo de @c(f) con respecto al
+   comienzo de su estructura contenedora @c(x), representando los agujeros, si
+   los hay.
+
+   La Figura 13.1 muestra una variable de estructura @c(x) y su disposicion de
+   memoria tipica en de 32 y 64 bits en implementaciones Go. Las regiones grises
+   son agujeros.
+
+   ..src > go
+     var x struct {
+       a bool
+       b int16
+       c []int
+     }
+   < src..
+
+   ..figure > Figura 13.1. Agujeros en una estructura.
+
+     ..img  > img/Figure-13.1.jpg
+
+
+   La siguiente tabla muestra los resultados de aplicar las tres funcion
+   @c(unsafe) al mismo @c(x) y a cada uno de sus tres campos:
+
+   - Plataforma tipica de 32 bits ::
+
+     ..pre >
+       Sizeof(x)   = 16  Alignof(x)   = 4
+       Sizeof(x.a) =  1  Alignof(x.a) = 1  Offsetof(x.a) = 0
+       Sizeof(x.b) =  2  Alignof(x.b) = 2  Offsetof(x.b) = 2
+       Sizeof(x.c) = 12  Alignof(x.c) = 4  Offsetof(x.c) = 4
+
+   - Plataforma tipica de 64 bits ::
+
+     ..pre >
+       Sizeof(x)   = 32  Alignof(x)   = 8
+       Sizeof(x.a) =  1  Alignof(x.a) = 1  Offsetof(x.a) = 0
+       Sizeof(x.b) =  2  Alignof(x.b) = 2  Offsetof(x.b) = 2
+       Sizeof(x.c) = 24  Alignof(x.c) = 8  Offsetof(x.c) = 8
+
+   A pesar de sus nombres, estas funciones en realidad no son inseguras, y
+   pueden ser utiles para entender el diseño de la memoria en bruto en un
+   programa al optimizar el espacio.
+
+** Seccion 13.2 <> @c(unsafe.Pointer)
+
+   La mayoria de los tipos de puntero se escriben @c(*T), es decir, @"(un
+   puntero a una variable de tipo @c(T)). El tipo @c(unsafe.Pointer) es un tipo
+   especial de puntero que puede contener la direccion de cualquier variable.
+   Por supuesto, no podemos aplicar indireccion a traves de un
+   @c(unsafe.Pointer) usando @c(*p), porque no sabemos que tipo de expresion que
+   debe tener. Como los punteros ordinarios, @c(unsafe.Pointers) es comparable y
+   pueden compararse con @c(nil), que es el valor cero del tipo.
+
+   Un puentor @c(*T) ordinario puede convertirse en un @c(unsafe.Pointer), y un
+   @c(unsafe.Pointer) convertirse de nuevo a un puntero ordinario, no
+   necesariamente del mismo tipo @c(*T). Por ejemplo, al convertir un puntero
+   @c(*float64) en un @c(*uint64), podemos inspeccionar el patron de bits de una
+   variable de punto flotante:
+
+   ..src > go
+     package math
+
+     func Float64bits(f float64) uint64 { return *(*uint64)(unsafe.Pointer(&f)) }
+
+     fmt.Printf("%#016x\n", Float64bits(1.0)) // "0x3ff0000000000000"
+   < src..
+
+   A traves del puntero resultante, podemos actualizar el patron de bits
+   tambien. Esto es inofensivo para una variable de punto flotante, ya que
+   cualquier patron de bits es legal, pero en general, las conversiones
+   @c(unsafe.Pointer) nos permiter escribir valores arbitrarios en memoria y asi
+   subvertir el sistema de tipos.
+
+   Un @c(unsafe.Pointer) tambien se puede convertir en un @c(uintptr) que
+   mantiene el valor numerico del puntero, dejandonos realizar aritmetica de
+   direcciones. (Recuerde del @l(#Capitulo 3) que un @c(uintptr) es un entero
+   sin signo lo suficientemente ancho como para representar una direccion.) Esta
+   conversion tambien se puede aplicar a la inversa, pero de nuevo, la
+   conversion de un @c(uintptr) a un @c(unsafe.Pointer) puede subvertir el
+   sistema de tipos ya que no todos los numeros son direcciones validas.
+
+   Muchos valores @c(unsafe.Pointer) son, por tanto, intermediarios para
+   convertir punteros ordinarios en direcciones numericas brutas y viceversa. El
+   ejemplo a continuacion toma la direccion de la variable @c(x), añade el
+   desplazamiento de su campo @c(b), convierte la direccion resultante en
+   @c(*int16), y por medio este puntero actualiza @c(x.b):
+
+   ..figure > @l(gopl.io/ch13/unsafeptr/main.go<>gopl.io/ch13/unsafeptr)
+
+     ..src > go
+       var x struct {
+         a bool
+         b int16
+         c []int
+       }
+
+       // equivalente a pb := &x.b
+       pb := (*int16)(unsafe.Pointer(
+         uintptr(unsafe.Pointer(&x)) + unsafe.Offsetof(x.b)))
+       *pb = 42
+
+       fmt.Println(x.b) // "42"
+     < src..
+
+
+   Aunque la sintaxis es engorrosa–quiza no es malo, ya que estas
+   caracteristicas deben utilizarse con moderacion–no se sienta tentado a
+   introducir variables temporales de tipo @c(uintptr) para romper las
+   lineas. Este codigo es incorrecto:
+
+   ..src > go
+     // NOTA: sutilmente incorreto!
+     tmp := uintptr(unsafe.Pointer(&x)) + unsafe.Offsetof(x.b)
+     pb := (*int16)(unsafe.Pointer(tmp))
+     *pb = 42
+   < src..
+
+   La razon es muy sutil. Algunos recolectores de basura mueven las variables en
+   la memoria para reducir la fragmentacion o la contabilidad. Los recolectores
+   de basura de este tipo lo conocen como @e(mover GCs). Cuando se mueve una
+   variable, todos los punteros que contienen la direccion de la antigua
+   ubicacion deben actualizarse para apuntar a la nueva. Desde la perspectiva
+   del colector de basura, un @c(unsafe.Pointer) es un puntero y por lo tanto su
+   valor debe cambiar a medida que se mueve la variable, pero un @c(uintptr) es
+   solo un numero por lo que su valor no debe cambiar. El codigo anterior es
+   incorrecta por que @e(oculta un puentero) del recolector de basura en la
+   variable no puntero @c(tmp). En el momento que la segunda instruccion se
+   ejecuta, la variable @c(x) podria haberse movido y el numero de @c(tmp) ya no
+   seria la direccion @c(&x.b). La tercera declaracion ataca una ubicacion de
+   memoria arbitraria con el valor 42.
+
+   Hay un sin sinnumero de variaciones patologicas sobre este tema. Despues de
+   que esta declaracion se ha ejecutado:
+
+   ..src > go
+     pT := uintptr(unsafe.Pointer(new(T))) // NOTA: incorrecto!
+   < src..
+
+   no hay punteros que referencien la variable creado por @c(new), por lo que el
+   recolector de basura tiene derecho a reciclar su almacenamiento cuando esta
+   declaracion se complete, despues de lo cual @c(pT) contiene la direccion
+   donde estaba la variable, pero ya no.
+
+   Ninguna implementacion actual de Go utiliza un recolector de basura en
+   movimiento (aunque futuras implementaciones podrian), pero esto no es motivo
+   de complacencia: las versiones actuales de Go hacer mover @e(algunas)
+   variables en la memoria. Recuerde de la @l(#Seccion 5.2) que las pilas de
+   gorutina crecen segun sea necesario. Cuando esto sucede, todas las variables
+   de la pila antigua pueden ser reubicadas en una nueva pila mas grande, por lo
+   que no podemos confiar en que el valor numerico de la direccion de una
+   variable permanezca invariable durante toda su vida util.
+
+   En el momento de escribir esto, hay poco clara orientacion sobre lo que los
+   programadores Go pueden esperar despues de una convercion @c(unsafe.Pointer)
+   a @c(uintptr) (en el repositorio vea el asunto 7192), por lo que recomendamos
+   encarecidamente que asuma el minimo necesario. Trate todos los valores
+   @c(uintptr) como si almacenaran la @e(antigua) direccion de una variable, y
+   minimice el numero de operaciones entre la conversion de un @c(unsafe.Pointer)
+   a un @c(uintptr) y el uso de ese @c(uintptr). En nuestro primer ejemplo
+   anterior, las tres operaciones–la conversion a un @c(uintptr), la suma la
+   compensacion de campo, y la conversion de nuevo–aparecieron dentro de una
+   sola expresion.
+
+   Cuando se llama a una funcion de libreria que devuelve un @c(uintptr), como
+   las que se muestran a continuacion del paquete @c(reflect), el resultado debe
+   ser convertido inmediatamente a un @c(unsafe.Pointer) para asegurarse de que
+   sigue apuntando a la misma variable.
+
+   ..src > go
+     package reflect
+     func (Value) Pointer() uintptr
+     func (Value) UnsafeAddr() uintptr
+     func (Value) InterfaceData() [2]uintptr // (index 1)
+   < src..
+
+** Seccion 13.3 <> Ejemplo: Equivalencia profunda
+
+   La funcion @c(DeepEqual) del paquete @c(reflect) informa si dos valores son
+   @"(profundamente) iguales. @c(DeepEqual) compara los valores basicos como si
+   fuera el operador @c(==); para los valores compuestos, los recorre
+   recursivamente, comparando los elementos correspondientes. Debido a que
+   funciona para cualquier par de valores, incluso los que no son comparables
+   con @c(==), este encuentra un uso amplio en pruebas. La siguiente prueba
+   utiliza @c(DeepEqual) para comparar dos valores @c([]string):
+
+   ..src > go
+     func TestSplit(t *testing.T) {
+       got := strings.Split("a:b:c", ":")
+       want := []string{"a", "b", "c"};
+       if !reflect.DeepEqual(got, want) { /* ... */ }
+     }
+   < src..
+
+   Aunque @c(DeepEqual) es conveniente, sus distinciones pueden parecer
+   arbitrarias. Por ejemplo, no considera un mapa nil igual a un mapa vacio
+   no-nil, ni un slice nil igual a uno vacio no-nil:
+
+   ..src > go
+     var a, b []string = nil, []string{}
+     fmt.Println(reflect.DeepEqual(a, b)) // "false"
+
+     var c, d map[string]int = nil, make(map[string]int)
+     fmt.Println(reflect.DeepEqual(c, d)) // "false"
+   < src..
+
+   En esta seccion vamos a definir una funcion @c(Equal) que compara valores
+   arbitrarios. Al igual que @c(DeepEqual), compara slices y mapas en base a sus
+   elementos, pero a diferencia de @c(DeepEqual), considera una slice nil (o
+   mapa) igual a uno no-nil vacio. La recursion basica sobre los argumentos se
+   puede hacer con reflexion, usando un enfoque similar a @c(Display) del
+   programa que vimos en la @l(#Seccion 12.3). Como de costumbre, definimos una
+   funcion no exportada, @c(equal), para la recursion.  Por el momento no se
+   preocupe por el parametro @c(seen). Para cada par de valores @c(x) y @c(y) a
+   comparar, @c(equal) verifica que ambos (o ninguno) son validos y comprueba
+   que tienen el mismo tipo. El resultado de la funcion se define como un
+   conjunto de casos de conmutacion que comparan dos valores del mismo tipo. Por
+   motivos de espacio, hemos omitido varios casos, ya que el patron debe ser
+   familiar por ahora.
+
+   ..figure > @l(gopl.io/ch13/equal/equal.go<>gopl.io/ch13/equal)
+
+     ..src > go
+       func equal(x, y reflect.Value, seen map[comparison]bool) bool {
+         if !x.IsValid() || !y.IsValid() {
+           return x.IsValid() == y.IsValid()
+         }
+         if x.Type() != y.Type() {
+           return false
+         }
+
+         // ...ciclo de verificacion omitido (mostrado mas adelante)...
+
+         switch x.Kind() {
+         case reflect.Bool:
+           return x.Bool() == y.Bool()
+
+         case reflect.String:
+           return x.String() == y.String()
+
+         // ...casos numericos omitidos por brevedad...
+
+         case reflect.Chan, reflect.UnsafePointer, reflect.Func:
+           return x.Pointer() == y.Pointer()
+
+         case reflect.Ptr, reflect.Interface:
+           return equal(x.Elem(), y.Elem(), seen)
+
+         case reflect.Array, reflect.Slice:
+           if x.Len() != y.Len() {
+             return false
+           }
+           for i := 0; i < x.Len(); i++ {
+             if !equal(x.Index(i), y.Index(i), seen) {
+               return false
+             }
+           }
+           return true
+
+         // ...struct and map cases omitted for brevity...
+         }
+         panic("unreachable")
+       }
+     < src..
+
+
+   Como de costumbre, no exponemos el uso de la reflexion en la API, por lo que
+   la funcion exportada @c(Equal) debe llamarla con @c(reflect.ValueOf) en sus
+   argumentos:
+
+   ..src > go
+     // Equal informa si x e y son profundamente iguales.
+     func Equal(x, y interface{}) bool {
+       seen := make(map[comparison]bool)
+       return equal(reflect.ValueOf(x), reflect.ValueOf(y), seen)
+     }
+
+     type comparison struct {
+       x, y unsafe.Pointer
+       t
+       reflect.Type
+     }
+   < src..
+
+   Para asegurar que el algoritmo termina incluso para estructuras de datos
+   ciclicas, debe registrar que pares de variables ya ha comparado y evitar
+   compararlas una segunda vez. @c(Equal) asigna un conjunto de comparison
+   estructuras, cada uno con la direccion de dos variables (representado como
+   valores @c(unsafe.Pointer)) y el tipo de comparacion. Necesitamos registrar
+   el tipo ademas de las direcciones porque las diferentes variables pueden
+   tener la misma direccion. Por ejemplo, si @c(x) y @c(y) son ambos arreglos,
+   @c(x) y @c(x[0]) tienen la misma direccion, como lo hacen @c(y) e @c(y[0]), y
+   es importante distinguir si hemos comparado @c(x) y @c(y) o @c(x[0]) y
+   @c(y[0]).
+
+   Una vez equal ha establecido que sus argumentos tienen el mismo tipo, y antes
+   de que ejecute el switch, se comprueba si se esta comparando dos variables
+   que ya ha visto y, si es asi, termina la recursion.
+
+   ..src > go
+     // verificacion de ciclo
+     if x.CanAddr() && y.CanAddr() {
+       xptr := unsafe.Pointer(x.UnsafeAddr())
+       yptr := unsafe.Pointer(y.UnsafeAddr())
+       if xptr == yptr {
+         return true // referencias identicas
+       }
+       c := comparison{xptr, yptr, x.Type()}
+       if seen[c] {
+         return true // ya visto
+       }
+       seen[c] = true
+     }
+   < src..
+
+   Aqui esta nuestra funcion @c(Equal) en accion:
+
+   ..src > go
+     fmt.Println(Equal([]int{1, 2, 3}, []int{1, 2, 3}))        // "true"
+     fmt.Println(Equal([]string{"foo"}, []string{"bar"}))      // "false"
+     fmt.Println(Equal([]string(nil), []string{}))             // "true"
+     fmt.Println(Equal(map[string]int(nil), map[string]int{})) // "true"
+   < src..
+
+   Incluso funciona en entradas ciclicas similares a la que hizo que la funcion
+   @c(Display) de la @l(#Seccion 12.3) quedara atascada en un bucle:
+
+   ..src > go
+     // Lista circular enlazada a -> b -> a and c -> c.
+     type link struct {
+       value string
+       tail *link
+     }
+     a, b, c := &link{value: "a"}, &link{value: "b"}, &link{value: "c"}
+     a.tail, b.tail, c.tail = b, a, c
+     fmt.Println(Equal(a, a)) // "true"
+     fmt.Println(Equal(b, b)) // "true"
+     fmt.Println(Equal(c, c)) // "true"
+     fmt.Println(Equal(a, b)) // "false"
+     fmt.Println(Equal(a, c)) // "false"
+   < src..
+
+   @b(Ejercicio 13.1): Definir una funcion de comparacion de profundidad que
+   tome en cuenta los numeros (de cualquier tipo) igual si difieren en menos de
+   una parte en mil millones.
+
+   @b(Ejercicio 13.2): Escribir una funcion que informa si su argumento es una
+   estructura de datos ciclica.
+
+** Seccion 13.4 <> Llamar Codigo C con @$(cgo)
+
+   Un programa Go puede necesitar utilizar un controlador de hardware
+   implementado en C, consultar una base de datos enbebida implementada en C++ o
+   utilizar algunas rutinas de algebra lineal implementadas en Fortran. C ha
+   sido durante mucho tiempo la lingua franca de la programacion, por lo que
+   muchos paquetes destinados a un uso generalizado exportan una API compatible
+   con C, independientemente del lenguaje de su implementacion.
+
+   En esta seccion, vamos a construir un simple programa de compresion de datos
+   que utiliza @$(cgo), una herramienta que crea enlaces de Go para funciones C.
+   Estas herramientas se llaman @e(interfaces de funcion externa) (FFIs), y
+   @$(cgo) no es el unico para los programas Go. SWIG
+   (@l(http://swig.org/<>swig.org)) es otro; Proporciona caracteristicas mas
+   complejas para integrarse con las clases de C++, pero no lo mostraremos aqui.
+
+   El subarbol @c(compress/...) de la libreria estandar proporciona compresores
+   y descompresores de los algoritmos de compresion mas populares, incluyendo
+   LZW (usado por el comando Unix @$(compress)) y DEFLATE (usado por el comando
+   GNU @$(gzip)). Las APIs de estos paquetes varian ligeramente en detalles,
+   pero todos ellos proporcionan un envoltorio para un io.Writer que comprime
+   los datos escritos en ellos, y un envoltorio para un io.Reader que
+   descomprime los datos leidos de estos. Por ejemplo:
+
+   ..src > go
+     package gzip // compress/gzip
+
+     func NewWriter(w io.Writer) io.WriteCloser
+     func NewReader(r io.Reader) (io.ReadCloser, error)
+   < src..
+
+   El algoritmo bzip2, que se basa en la elegante transformacion de
+   Burrows-Wheeler, corre mas lento que gzip pero produce una compresion
+   significativamente mejor. El paquete @c(compress/bzip2) proporciona un
+   descompresor para bzip2, pero en este momento el paquete no proporciona
+   ningun compresor. La construccion de uno desde cero es una tarea sustancial,
+   pero hay una implementacion en C de codigo abierto bien documentada con alto
+   rendimiento, el paquete @c(libbzip2) desde @l(http://bzip.org/<>bzip.org).
+
+   Si la libreria de C fuera pequeña, simplemente la portariamos a Go puro, y si
+   su rendimiento no fuera critico para nuestros propositos, estariamos mejor
+   invocando un programa en C como un subproceso de ayuda utilizando el paquete
+   @c(os/exec). Es cuando se necesita utilizar una libreria compleja, de
+   rendimiento critico con un API C compacto que puede tener sentido envolverla
+   usando @$(cgo). El resto de este capitulo, trabajaremos con un ejemplo.
+
+   Desde el paquete C @c(libbzip2), necesitamos el tipo de estructura
+   @c(bz_stream), que contiene los buferes de entrada y salida, y tres funciones
+   de C: @c(BZ2_bzCompressInit), que asigna buffers del flujo;
+   @c(BZ2_bzCompress), que comprime los datos de bufer d entrada al bufer de
+   salida; y @c(BZ2_bzCompressEnd), que libera los bufferes. (No se preocupe por
+   la mecanica del paquete @c(libbzip2), el proposito de este ejemplo es mostrar
+   como las piezas encajan entre si.)
+
+   Vamos a llamar a las funciones @c(BZ2_bzCompressInit) y @c(BZ2_bzCompressEnd)
+   C directamente desde Go, pero para @c(BZ2_bzCompress), vamos a definir una
+   funcion de envoltorio en C, para mostrar como se hace. El archivo de codigo
+   fuente C vive al lado del codigo Go en nuestro paquete:
+
+   ..figure > @l(gopl.io/ch13/bzip/bzip2.c<>gopl.io/ch13/bzip)
+
+     ..src > go
+       /* Este archivo es gopl.io/ch13/bzip/bzip2.c,            */
+       /* un simple envoltorio para libbzip2 adecuado para cgo. */
+       #include <bzlib.h>
+
+       int bz2compress(bz_stream *s, int action,
+                       char *in, unsigned *inlen, char *out, unsigned *outlen) {
+         s->next_in = in;
+         s->avail_in = *inlen;
+         s->next_out = out;
+         s->avail_out = *outlen;
+         int r = BZ2_bzCompress(s, action);
+         *inlen -= s->avail_in;
+         *outlen -= s->avail_out;
+         s->next_in = s->next_out = NULL;
+         return r;
+       }
+     < src..
+
+
+   Ahora veamos el codigo Go, cuya primera parte se muestra a continuacion. La
+   declaracion @c(import "C") es especial. No hay ningun paquete C, pero esta
+   importacion hace que @$(go build) preprocese el archivo con la herramienta
+   @$(cgo) antes de que el compilador Go lo vea.
+
+   ..src > go
+     // El paquete bzip proporciona un escritor que utiliza compresion bzip2 (bzip.org).
+     package bzip
+
+     /*
+     #cgo CFLAGS: -I/usr/include
+     #cgo LDFLAGS: -L/usr/lib -lbz2
+     #include <bzlib.h>
+     int bz2compress(bz_stream *s, int action,
+                     char *in, unsigned *inlen, char *out, unsigned *outlen);
+     */
+     import "C"
+
+     import (
+       "io"
+       "unsafe"
+     )
+
+     type writer struct {
+       w      io.Writer // underlying output stream
+       stream *C.bz_stream
+       outbuf [64 * 1024]byte
+     }
+
+     // NewWriter devuelve un escritor para flujos bzip2 comprimidos.
+     func NewWriter(out io.Writer) io.WriteCloser {
+       const (
+         blockSize = 9
+         verbosity = 0
+         workFactor = 30
+       )
+       w := &writer{w: out, stream: new(C.bz_stream)}
+       C.BZ2_bzCompressInit(w.stream, blockSize, verbosity, workFactor)
+       return w
+     }
+   < src..
+
+   Durante el preprocesamiento, @$(cgo) genera un paquete temporal que contiene
+   declaraciones Go correspondientes a todas las funciones de C y los tipos
+   utilizados por el archivo, como @c(C.bz_stream) y @c(C.BZ2_bzCompressInit).
+   La herramienta @$(cgo) descubre este tipo invocando el compilador de C de una
+   manera especial sobre el contenido del comentario que precede a la
+   declaracion de importacion.
+
+   El comentario tambien puede contener directivas @c(#cgo) que especifican
+   opciones adicionales a la cadena de herramientas C. Los valores @c(CFLAGS) y
+   @c(LDFLAGS) aportan argumentos adicionales a los comandos de compilacion y
+   enlace para que puedan localizar el archivo de cabecera @c(bzlib.h) y la
+   libreria de archivo @c(libbz2.a). El ejemplo supone que estos se instalan
+   debajo de @c(/usr) en su sistema. Es posible que necesite modificar o
+   eliminar estos indicadores para su instalacion. @c(NewWriter) realiza una
+   llamada a la funcion C @c(BZ2_bzCompressInit) para inicializar los buferes de
+   la secuencia. El tipo de escritor incluye otro bufer que se utilizara para
+   drenar el bufer de salida del descompresor.
+
+   El metodo @c(Write), se muestra a continuacion, alimenta el compresor con
+   @c(data), llamando a la funcion @c(bz2compress) en un bucle hasta que todos
+   los datos se ha consumido. Observe que el programa Go puede acceder tipos C
+   como @c(bz_stream), @c(char), y @c(uint), funciones de C como
+   @c(bz2compress), e incluso macros del preprocesador C como a objetos como
+   @c(BZ_RUN), todo a traves de la notacion @c(C.x). El tipo @c(C.uint) es
+   distinto del tipo @c(uint) de Go, incluso si ambos tienen el mismo tamaño.
+
+   ..src > go
+     func (w *writer) Write(data []byte) (int, error) {
+       if w.stream == nil {
+         panic("closed")
+       }
+       var total int // bytes escritos sin comprimir
+
+       for len(data) > 0 {
+         inlen, outlen := C.uint(len(data)), C.uint(cap(w.outbuf))
+         C.bz2compress(w.stream, C.BZ_RUN,
+           (*C.char)(unsafe.Pointer(&data[0])), &inlen,
+           (*C.char)(unsafe.Pointer(&w.outbuf)), &outlen)
+         total += int(inlen)
+         data = data[inlen:]
+         if _, err := w.w.Write(w.outbuf[:outlen]); err != nil {
+           return total, err
+         }
+       }
+       return total, nil
+     }
+   < src..
+
+   Cada iteracion del bucle @c(bz2compress) pasa la direccion y longitud de la
+   porcion restante de la variable @c(data), y la direccion y capacidad de
+   @c(w.outbuf). Las dos variables de longitud son pasadas por sus direcciones,
+   no por sus valores, por lo que la funcion C puede actualizarlas para indicar
+   la cantidad de datos sin comprimir que se consumio y la cantidad de datos
+   comprimidos producidos. Cada trozo de datos comprimido se escribe en el
+   @c(io.Writer) subyacente.
+
+   El metodo @c(Close) tiene una estructura similar a @c(Write), utilizando un
+   bucle para eliminar cualquier resto de datos comprimidos del bufer de salida
+   del flujo.
+
+   ..src > go
+     // Cierra los datos comprimidos y cierra el flujo.
+     // No cierra el io.Writer subyacente.
+     func (w *writer) Close() error {
+       if w.stream == nil {
+         panic("closed")
+       }
+       defer func() {
+         C.BZ2_bzCompressEnd(w.stream)
+         w.stream = nil
+       }()
+       for {
+         inlen, outlen := C.uint(0), C.uint(cap(w.outbuf))
+         r := C.bz2compress(w.stream, C.BZ_FINISH, nil, &inlen,
+           (*C.char)(unsafe.Pointer(&w.outbuf)), &outlen)
+         if _, err := w.w.Write(w.outbuf[:outlen]); err != nil {
+           return err
+         }
+         if r == C.BZ_STREAM_END {
+           return nil
+         }
+       }
+     }
+   < src..
+
+   Al finalizar, @c(Close) llama a @c(C.BZ2_bzCompressEnd) para liberar los
+   buferes de flujo, utilizando @c(defer) para asegurar que esto sucede en todas
+   las rutas de retorno. En este punto el puntero @c(w.stream) ya no es seguro
+   de deferenciar. Para estar a la defensiva, lo ponemos a @c(nil), y agregamos
+   chequeos explicitos de nil en cada metodo, por lo que el programa entra en
+   panico si el usuario llama por error un metodo despues de @c(Close).
+
+   No solo @c(writer) no es concurrentemente seguro, sino que las concurrentes a
+   @c(Close) y @c(Write) podria hacer que el programa se bloquee en el codigo
+   C. Correjir esto es el Ejercicio 13.3.
+
+   El siguiente programa, @c(bzipper), es un comando @c(bzip2) compresor que
+   utiliza nuestro nuevo paquete. Se comporta como el comando @$(bzip2) presente
+   en muchos sistemas Unix.
+
+   ..figure > @l(gopl.io/ch13/bzipper/main.go<>gopl.io/ch13/bzipper)
+
+     ..src > go
+       // Bzipper lee la entrada, lo comprime como bzip2, y lo escribe en la salida.
+       package main
+
+       import (
+         "io"
+         "log"
+         "os"
+
+         "gopl.io/ch13/bzip"
+       )
+
+       func main() {
+         w := bzip.NewWriter(os.Stdout)
+         if _, err := io.Copy(w, os.Stdin); err != nil {
+           log.Fatalf("bzipper: %v\n", err)
+         }
+         if err := w.Close(); err != nil {
+           log.Fatalf("bzipper: close: %v\n", err)
+         }
+       }
+     < src..
+
+
+   En la sesion a continuacion, utilizamos @$(bzipper) para comprimir
+   @c(/usr/share/dict/words) el diccionario del sistema, de 938,848 bytes a
+   335,405 bytes–aproximadamente de un tercio de su tamaño original–luego lo
+   descomprimimos con el comando del sistema @$(bunzip2). El hash SHA256 es el
+   mismo antes y despues, dandonos confianza de que el compresor esta
+   funcionando correctamente. (Si usted no tiene @$(sha256sum) en su sistema,
+   utilice su solucion al Ejercicio 4.2.)
+
+   ..src > sh
+     $ go build gopl.io/ch13/bzipper
+     $ wc -c < /usr/share/dict/words
+     938848
+     $ sha256sum < /usr/share/dict/words
+     126a4ef38493313edc50b86f90dfdaf7c59ec6c948451eac228f2f3a8ab1a6ed $ ./bzipper < /usr/share/dict/words | wc -c
+     335405
+     $ ./bzipper < /usr/share/dict/words | bunzip2 | sha256sum
+     126a4ef38493313edc50b86f90dfdaf7c59ec6c948451eac228f2f3a8ab1a6ed -
+   < src..
+
+   Hemos demostrado la vinculacion de una libreria C con un programa Go. Yendo
+   en la otra direccion, tambien es posible compilar un programa Go como un
+   archivo estatico que se puede vincular en un programa C o como una libreria
+   compartida que puede cargarse dinamicamente por un programa C. Solo hemos
+   arañado la superficie de @$(cgo), y hay mucho mas que decir acerca de la
+   gestion de memoria, punteros, devoluciones de llamada, el manejo de señales,
+   cadenas, @c(errno), finalizadores, y la relacion entre gorutinas y los hilos
+   del sistema operativo, gran parte de ello muy sutil. En particular, las
+   reglas para pasar correctamente punteros de Go a C o viceversa son complejas,
+   por razones similares a las que discutimos en la @l(#Seccion 13.2), y aun no
+   autoritariamente especificadas. Para mas informacion, comience con
+   @l(https://golang.org/cmd/cgo).
+
+   @b(Ejercicio 13.3): Utilice @c(sync.Mutex) para hacer @c(bzip2.writer) seguro
+   para el uso concurrente por multiples gorutinas.
+
+   @b(Ejercicio 13.4): Depender de librerias C tiene sus inconvenientes.
+   Proporcione una implementacion alternativa en puro Go de @c(bzip.NewWriter)
+   que utilice el paquete @c(os/exec) para ejecutar @c(/bin/bzip2) como un
+   subproceso.
+
+** Seccion 13.5 <> Otra Palabra de Precaucion
+
+   Terminamos el capitulo anterior con una advertencia sobre las desventajas de
+   la interfaz de reflexion. Esa advertencia se aplica incluso con mas fuerza al
+   paquete @c(unsafe) descrito en este capitulo.
+
+   Los lenguajes de alto nivel aislan a los programas y programadores no solo de
+   los detalles arcanos de los conjuntos de instrucciones individuales de
+   computadora, sino de la dependencia de las irrelevancias, como en la memoria
+   en la que vive una variable, el tamaño del tipo de datos, y otros detalles de
+   implementacion del anfitrion. Debido a esa capa aislante, es posible escribir
+   programas que son seguros y robustos y que se ejecutaran en cualquier sistema
+   operativo sin cambios.
+
+   El paquete @c(unsafe) permite a los programadores cruzar a traves del
+   aislamiento para utilizar alguna caracteristica crucial, pero de otro modo
+   inaccesibles, o tal vez para lograr un mayor rendimiento. El costo suele ser
+   la portabilidad y la seguridad. Nuestro consejo sobre como y cuando usar
+   @c(unsafe) son paralelos a los comentarios de Knuth para la optimizacion
+   prematura, que hemos citado en la @l(#Seccion 11.5). La mayoria de los
+   programadores nunca necesitaran utilizar @c(unsafe) en absoluto. Sin embargo,
+   ocasionalmente habra situaciones en las que algun fragmento critica de codigo
+   puede ser escrito mejor usando @c(unsafe). Si el estudio y la medicion
+   cuidadosa indican que @c(unsafe) realmente es el mejor enfoque, restrinja el
+   fragmento lo mayor posible, para que la mayor parte del programa ignore su
+   uso.
+
+   Por ahora, ponga los dos ultimos capitulos en la parte de atras de su mente.
+   Escriba algunos programas importantes en Go. Evite @c(reflect) y @c(unsafe);
+   Vuelva a estos capitulos solamente si usted debe.
+
+   Mientras tanto, Feliz programacion con Go. Esperamos que disfrutes
+   escribiendo en Go tanto como nosotros.

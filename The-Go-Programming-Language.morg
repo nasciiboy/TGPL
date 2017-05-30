@@ -6,7 +6,7 @@
 ..id      > isbn-13 978-0-13-419044-0
 ..id      > isbn-10 0-13-419044-0
 ..style   > worg-data/worg.css
-..options > toc pygments
+..options > toc
 
 @ revision 3b600c, date 29 Sep 2015
 
@@ -17980,7 +17980,7 @@
    rapidly. If the test suite contains many slow tests, we may make even faster
    progress if we’re selective about which ones we run.
 
-   The @$(-v) flag prints the name and execution time of each test in the
+   The @c(-v) flag prints the name and execution time of each test in the
    package:
 
    ..src > sh
@@ -19344,8 +19344,8 @@
 
    Because @c(reflect.TypeOf) returns an interface value’s dynamic type, it
    always returns a concrete type. So, for example, the code below prints
-   "@c(*os.File)", not "@c(io.Writer)". Later, we will see that @c(reflect.Type)
-   is capable of representing interface types too.
+   @"(@c(*os.File)), not @"(@c(*io.Writer)). Later, we will see that
+   @c(reflect.Type) is capable of representing interface types too.
 
    ..src > go
      var w io.Writer = os.Stdout
@@ -19462,7 +19462,7 @@
    arrays) and interfaces it prints only the @e(type) of the value, and for
    reference types (channels, functions, pointers, slices, and maps), it prints
    the type and the reference address in hexadecimal. This is less than ideal
-   but still a major improvement, and since Kind is concerned only with the
+   but still a major improvement, and since @c(Kind) is concerned only with the
    underlying representation, @c(format.Any) works for named types too. For
    example:
 
@@ -19493,7 +19493,7 @@
    expression evaluator in @l(#Section 7.9). The output of @c(Display) is shown
    below:
 
-   ..src > go
+   ..src > sh
      Display e (eval.call):
      e.fn = "sqrt"
      e.args[0].type = eval.binary
@@ -19520,12 +19520,12 @@
 
 
    In @c(display), we’ll use the @c(formatAtom) function we defined earlier to
-   print elementary values— basic types, functions, and channels—but we’ll use
+   print elementary values—basic types, functions, and channels—but we’ll use
    the methods of @c(reflect.Value) to recursively display each component of a
    more complex type. As the recursion descends, the path string, which
-   initially describes the starting value (for instance, "@c(e)"), will be
+   initially describes the starting value (for instance, @"(@c(e))), will be
    augmented to indicate how we reached the current value (for instance,
-   "@c(e.args[0].value)").
+   @"(@c(e.args[0].value))).
 
    Since we’re no longer pretending to implement @c(fmt.Sprint), we will use the
    @c(fmt) package to keep our example short.
@@ -19571,44 +19571,45 @@
 
    Let’s discuss the cases in order.
 
-   @b(Slices and arrays): The logic is the same for both. The Len method returns
-   the number of elements of a slice or array value, and @c[Index(i)] retrieves
-   the element at index @c(i), also as a reflect.Value; it panics if i is out of
-   bounds. These are analogous to the built-in @c[len(a)] and @c(a[i])
-   operations on sequences. The @c(display) function recursively invokes itself
-   on each element of the sequence, appending the subscript notation "@c([i])"
-   to the path.
+   - Slices and arrays :: The logic is the same for both. The Len method returns
+     the number of elements of a slice or array value, and @c[Index(i)] retrieves
+     the element at index @c(i), also as a reflect.Value; it panics if @c(i) is
+     out of bounds. These are analogous to the built-in @c[len(a)] and @c(a[i])
+     operations on sequences. The @c(display) function recursively invokes itself
+     on each element of the sequence, appending the subscript notation @"(@c([i]))
+     to the path.
 
-   Although @c(reflect.Value) has many methods, only a few are safe to call on
-   any given value.  For example, the Index method may be called on values of
-   kind @c(Slice), @c(Array), or @c(String), but panics for any other kind.
+     Although @c(reflect.Value) has many methods, only a few are safe to call on
+     any given value.  For example, the Index method may be called on values of
+     kind @c(Slice), @c(Array), or @c(String), but panics for any other kind.
 
-   @b(Structs): The @c(NumField) method reports the number of fields in the
-   struct, and @c[Field(i)] returns the value of the @m(i)-th field as a
-   @c(reflect.Value). The list of fields includes ones promoted from anonymous
-   fields. To append the field selector notation "@c(.f)" to the path, we must
-   obtain the @c(reflect.Type) of the struct and access the name of its @m(i)-th
-   field.
+   - Structs :: The @c(NumField) method reports the number of fields in the
+     struct, and @c[Field(i)] returns the value of the @m(i)-th field as a
+     @c(reflect.Value). The list of fields includes ones promoted from anonymous
+     fields. To append the field selector notation @"(@c(.f)) to the path, we must
+     obtain the @c(reflect.Type) of the struct and access the name of its @m(i)-th
+     field.
 
-   @c(Maps): The @c(MapKeys) method returns a slice of @c(reflect.Values), one
-   per map key. As usual when iterating over a map, the order is
-   undefined. @c[MapIndex(key)] returns the value corresponding to @c(key). We
-   append the subscript notation "@c([key])" to the path. (We’re cutting a
-   corner here. The type of a map key isn’t restricted to the types
-   @c(formatAtom) handles best; arrays, structs, and interfaces can also be
-   valid map keys. Extending this case to print the key in full is Exercise
-   12.1.)
+   - Maps :: The @c(MapKeys) method returns a slice of @c(reflect.Values), one
+     per map key. As usual when iterating over a map, the order is
+     undefined. @c[MapIndex(key)] returns the value corresponding to @c(key). We
+     append the subscript notation @"(@c([key])) to the path. (We’re cutting a
+     corner here. The type of a map key isn’t restricted to the types
+     @c(formatAtom) handles best; arrays, structs, and interfaces can also be
+     valid map keys. Extending this case to print the key in full is Exercise
+     12.1.)
 
-   @b(Pointers): The @c(Elem) method returns the variable pointed to by a
-   pointer, again as a @c(reflect.Value). This operation would be safe even if
-   the pointer value is @c(nil), in which case the result would have kind
-   @c(Invalid), but we use IsNil to detect nil pointers explicitly so we can
-   print a more appropriate message. We prefix the path with a "@c(*)" and
-   parenthesize it to avoid ambiguity.
+   - Pointers :: The @c(Elem) method returns the variable pointed to by a
+     pointer, again as a @c(reflect.Value). This operation would be safe even if
+     the pointer value is @c(nil), in which case the result would have kind
+     @c(Invalid), but we use IsNil to detect nil pointers explicitly so we can
+     print a more appropriate message. We prefix the path with a @"(@c(*)) and
+     parenthesize it to avoid ambiguity.
 
-   @b(Inter) faces: Again, we use @c(IsNil) to test whether the interface is
-   nil, and if not, we retrieve its dynamic value using @c[v.Elem()] and print
-   its type and value.
+   - Interfaces :: Again, we use @c(IsNil) to test whether the interface is
+     nil, and if not, we retrieve its dynamic value using @c[v.Elem()] and print
+     its type and value.
+
 
    Now that our @c(Display) function is complete, let’s put it to work. The
    @c(Movie) type below is a slight variation on the one in @l(#Section 4.5):
@@ -19673,14 +19674,14 @@
    We can use @c(Display) to display the internals of library types, such as
    @c(*os.File):
 
-   ..src > go
+   ..pre >
      Display("os.Stderr", os.Stderr)
      // Output:
      // Display os.Stderr (*os.File):
      // (*(*os.Stderr).file).fd = 2
      // (*(*os.Stderr).file).name = "/dev/stderr"
      // (*(*os.Stderr).file).nepipe = 0
-   < src..
+   < pre..
 
    Notice that even unexported fields are visible to reflection. Beware that the
    particular output of this example may vary across platforms and may change
@@ -19690,7 +19691,7 @@
    of the call @c[Display("rV", reflect.ValueOf(os.Stderr))] is shown below,
    though of course your mileage may vary:
 
-   ..src > go
+   ..pre >
      Display rV (reflect.Value):
      (*rV.typ).size = 8
      (*rV.typ).hash = 871609668
@@ -19702,7 +19703,7 @@
      (*(*(*(*rV.typ).uncommonType).methods[0].mtyp).string) = "func() error"
      (*(*(*(*rV.typ).uncommonType).methods[0].typ).string) = "func(*os.File) error"
      ...
-   < src..
+   < pre..
 
    Observe the difference between these two examples:
 
@@ -19744,7 +19745,7 @@
      Display("c", c)
    < src..
 
-   Display prints this ever-growing expansion:
+   @c(Display) prints this ever-growing expansion:
 
    ..src > go
      Display c (display.Cycle):
@@ -19956,13 +19957,13 @@
    the @c(reflect.Type.String) method may return the same string for different
    types.
 
-   @b(Exercise 12.4): Modify encode to pretty-print the S-expression in the
+   @b(Exercise 12.4): Modify @c(encode) to pretty-print the S-expression in the
    style shown above.
 
-   @b(Exercise 12.5): Adapt encode to emit JSON instead of S-expressions. Test
+   @b(Exercise 12.5): Adapt @c(encode) to emit JSON instead of S-expressions. Test
    your encoder using the standard decoder, @c(json.Unmarshal).
 
-   @b(Exercise 12.6): Adapt encode so that, as an optimization, it does not
+   @b(Exercise 12.6): Adapt @c(encode) so that, as an optimization, it does not
    encode a field whose value is the zero value of its type.
 
    @b(Exercise 12.7): Create a streaming API for the S-expression decoder,
@@ -20035,7 +20036,7 @@
 
    Or, we can update the variable referred to by an addressable
    @c(reflect.Value) directly, without using a pointer, by calling the
-   @c(reflect.Value).Set method:
+   @c(reflect.Value.Set) method:
 
    ..src > go
      d.Set(reflect.ValueOf(4))
@@ -20217,7 +20218,7 @@
 
    Our S-expressions use identifiers for two distinct purposes, struct field
    names and the @c(nil) value for a pointer. The @c(read) function only handles
-   the latter case. When it encounters the @c(scanner.Ident) "@c(nil)", it sets
+   the latter case. When it encounters the @c(scanner.Ident) @"(@c(nil)), it sets
    @c(v) to the zero value of its type using the @c(reflect.Zero) function.  For
    any other identifier, it reports an error. The @c(readList) function, which
    we’ll see in a moment, handles identifiers used as struct field names.
@@ -20685,7 +20686,7 @@
 
   Package @c(unsafe) is used extensively within low-level packages like
   @c(runtime), @c(os), @c(syscall), and @c(net) that interact with the operating
-  system, but is almost never needed by ordinar y programs.
+  system, but is almost never needed by ordinary programs.
 
 ** Section 13.1 <> @c(unsafe.Sizeof), @c(Alignof), and @c(Offsetof)
 
@@ -20786,13 +20787,13 @@
      }
    < src..
 
-   The table below shows the results of applying the three @c(unsafe) functions
-   to @c(x) itself and to each of its three fields:
-
    ..figure > Figure 13.1. Holes in a struct.
 
      ..img  > img/Figure-13.1.jpg
 
+
+   The table below shows the results of applying the three @c(unsafe) functions
+   to @c(x) itself and to each of its three fields:
 
    - Typical 32-bit platform ::
 
@@ -20845,9 +20846,9 @@
 
    An @c(unsafe.Pointer) may also be converted to a @c(uintptr) that holds the
    pointer’s numeric value, letting us perform arithmetic on addresses. (Recall
-   from @l(#Chapter 3) that a uintptr is an unsigned integer wide enough to
+   from @l(#Chapter 3) that a @c(uintptr) is an unsigned integer wide enough to
    represent an address.) This conversion too may be applied in reverse, but
-   again, converting from a uintptr to an @c(unsafe.Pointer) may subvert the
+   again, converting from a @c(uintptr) to an @c(unsafe.Pointer) may subvert the
    type system since not all numbers are valid addresses.
 
    Many @c(unsafe.Pointer) values are thus intermediaries for converting
@@ -20887,12 +20888,12 @@
 
    The reason is very subtle. Some garbage collectors move variables around in
    memory to reduce fragmentation or bookkeeping. Garbage collectors of this
-   kind are known as @e(moving) GCs. When a variable is moved, all pointers that
+   kind are known as @e(moving GCs). When a variable is moved, all pointers that
    hold the address of the old location must be updated to point to the new
    one. From the perspective of the garbage collector, an @c(unsafe.Pointer) is
    a pointer and thus its value must change as the variable moves, but a
    @c(uintptr) is just a number so its value must not change. The incorrect code
-   above @e(hides) a @e(pointer) from the garbage collector in the non-pointer
+   above @e(hides a pointer) from the garbage collector in the non-pointer
    variable @c(tmp). By the time the second statement executes, the variable
    @c(x) could have moved and the number in @c(tmp) would no longer be the
    address @c(&x.b). The third statement clobbers an arbitrary memory location
@@ -21076,7 +21077,7 @@
      }
    < src..
 
-   Here’s our Equal function in action:
+   Here’s our @c(Equal) function in action:
 
    ..src > go
      fmt.Println(Equal([]int{1, 2, 3}, []int{1, 2, 3}))        // "true"
@@ -21126,11 +21127,11 @@
 
    The @c(compress/...) subtree of the standard library provides compressors and
    decompressors for popular compression algorithms, including LZW (used by the
-   Unix @c(compress) command) and DEFLATE (used by the GNU @$(gzip)
-   command). The APIs of these packages vary slightly in details, but they all
-   provide a wrapper for an @c(io.Writer) that compresses the data written to
-   it, and a wrapper for an @c(io.Reader) that decompresses the data read from
-   it. For example:
+   Unix @$(compress) command) and DEFLATE (used by the GNU @$(gzip) command).
+   The APIs of these packages vary slightly in details, but they all provide a
+   wrapper for an @c(io.Writer) that compresses the data written to it, and a
+   wrapper for an @c(io.Reader) that decompresses the data read from it. For
+   example:
 
    ..src > go
      package gzip // compress/gzip
@@ -21151,7 +21152,7 @@
    performance were not critical for our purposes, we would be better off
    invoking a C program as a helper subprocess using the @c(os/exec)
    package. It’s when you need to use a complex, performance-critical library
-   with a narrow C API that it may make sense to wrap it using @c(cgo). For the
+   with a narrow C API that it may make sense to wrap it using @$(cgo). For the
    rest of this chapter, we’ll work through an example.
 
    From the @c(libbzip2) C package, we need the @c(bz_stream) struct type, which
@@ -21237,7 +21238,7 @@
    discovers these types by invoking the C compiler in a special way on the
    contents of the comment that precedes the import declaration.
 
-   The comment may also contain @$(#cgo) directives that specify extra options
+   The comment may also contain @c(#cgo) directives that specify extra options
    to the C toolchain. The @c(CFLAGS) and @c(LDFLAGS) values contribute extra
    arguments to the compiler and linker commands so that they can locate the
    @c(bzlib.h) header file and the @f(libbz2.a) archive library. The example
@@ -21321,8 +21322,8 @@
    calls a method after @c(Close).
 
    Not only is @c(writer) not concurrency-safe, but concurrent calls to
-   @c(Close) and Write could cause the program to crash in C code. Fixing this
-   is Exercise 13.3.
+   @c(Close) and @c(Write) could cause the program to crash in C code. Fixing
+   this is Exercise 13.3.
 
    The program below, @c(bzipper), is a bzip2 compressor command that uses our
    new package. It behaves like the @$(bzip2) command present on many Unix
@@ -21354,12 +21355,12 @@
      < src..
 
 
-   In the session below, we use @c(bzipper) to compress
+   In the session below, we use @$(bzipper) to compress
    @c(/usr/share/dict/words), the system dictionary, from 938,848 bytes to
    335,405 bytes—about a third of its original size—then uncompress it with the
-   system @c(bunzip2) command. The SHA256 hash is the same before and after,
+   system @$(bunzip2) command. The SHA256 hash is the same before and after,
    giving us confidence that the compressor is working correctly. (If you don’t
-   have @c(sha256sum) on your system, use your solution to Exercise 4.2.)
+   have @$(sha256sum) on your system, use your solution to Exercise 4.2.)
 
    ..src > sh
      $ go build gopl.io/ch13/bzipper
@@ -21382,7 +21383,7 @@
    subtle. In particular, the rules for correctly passing pointers from Go to C
    or vice versa are complex, for reasons similar to those we discussed in
    @l(#Section 13.2), and not yet authoritatively specified. For further
-   reading, start with https://golang.org/cmd/cgo.
+   reading, start with @l(https://golang.org/cmd/cgo).
 
    @b(Exercise 13.3): Use @c(sync.Mutex) to make @c(bzip2.writer) safe for
    concurrent use by multiple goroutines.
