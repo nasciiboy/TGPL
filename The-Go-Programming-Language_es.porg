@@ -30,7 +30,7 @@
     @"(Go es un lenguaje de programacion de codigo abierto, que facilita la
     creacion de software simple, confiable y eficiente.)
 
-    --(Desde el sitio web de Go en  @l(https://golang.org/<>golang.org))
+    --(Desde el sitio web de Go en @l(https://golang.org/<>golang.org))
   < quote..
 
 #   Go was conceived in September 2007 by Robert Griesemer, Rob Pike, and Ken
@@ -54,8 +54,8 @@
   Go tiene una similitud superficial con C y, como C, es una herramienta para
   programadores profesionales, logrando el maximo efecto con un minimo de
   medios. Pero es mucho mas que una version actualizada de C. Obtiene y adapta
-  buenas ideas de muchos otros idiomas, evitando caracteristicas que han llevado
-  a la complejidad y a un codigo poco confiable. Sus comodidades para la
+  buenas ideas de muchos otros lenguajes, evitando caracteristicas que han
+  llevado a la complejidad y a un codigo poco confiable. Sus comodidades para la
   concurrencia son nuevas y eficientes, y su enfoque hacia la abstraccion de
   datos y la programacion orientada a objetos es inusualmente flexible. Tambien
   cuenta con gestion automatica de memoria o @e(recoleccion de basura).
@@ -65,7 +65,7 @@
 #   general-purpose language and finds use in domains as diverse as graphics,
 #   mobile applications, and machine learning. It has become popular as a
 #   replacement for untyped scripting languages because it balances expressiveness
-#   with safety : Go programs typically run faster than programs written in
+#   with safety: Go programs typically run faster than programs written in
 #   dynamic languages and suffer far fewer crashes due to unexpected type errors.
   Go es especialmente adecuado para la construccion de infraestructura como
   servidores en red, y herramientas y sistemas para programadores, pero es
@@ -78,7 +78,7 @@
 
 #   Go is an open-source project, so source code for its compiler, libraries, and
 #   tools is freely available to anyone. Contributions to the project come from an
-#   active worldwide community. Go runs on Unix-like systems—Linux, FreeBSD,
+#   active worldwide community. Go runs on Unix-like systems—GNU/Linux, FreeBSD,
 #   OpenBSD, Mac OS X—and on Plan 9 and Microsoft Windows. Programs written in one
 #   of these environments generally work without modification on the others.
   Go es un proyecto de codigo abierto, por lo que el codigo fuente de su
@@ -97,14 +97,14 @@
   idiomaticos y eficientes.
 
 # ** The Origins of Go
-** Los origenes de Go
+** Los Origenes de Go
 
 #    Like biological species, successful languages beget offspring that
 #    incorporate the advantages of their ancestors; interbreeding sometimes leads
 #    to surprising strengths; and, very occasionally, a radical new feature arises
 #    without precedent. We can learn a lot about why a language is the way it is
 #    and what environment it has been adapted for by looking at these influences.
-   Como las especies biologicas, las lenguas exitosas engendran hijos que
+   Como las especies biologicas, los lenguajes exitosos engendran hijos que
    incorporan las ventajas de sus antepasados; El entrecruzamiento a veces
    conduce a fortalezas sorprendentes; Y, muy ocasionalmente, surge un nuevo
    rasgo radical sin precedentes. Podemos aprender mucho sobre por que un
@@ -125,9 +125,9 @@
 #    statements, basic data types, call-by-value parameter passing, pointers, and
 #    above all, C’s emphasis on programs that compile to efficient machine code
 #    and cooperate naturally with the abstractions of current operating systems.
-   En ocaciones Go se describe como un @"(lenguaje de tipo C,) o como @"(C para
-   el siglo 21.) De C, Go heredo su sintaxis de expresiones, instrucciones de
-   flujo de control, tipos de datos basicos, paso parametros por valor, punteros
+   En ocaciones Go se describe como un @"(lenguaje de tipo C), o como @"(C para
+   el siglo 21). De C, Go heredo su sintaxis de expresiones, instrucciones de
+   flujo de control, tipos de datos basicos, paso de parametros por valor, punteros
    y, sobre todo, el enfasis de C en programas que compilan codigo maquina
    eficiente y cooperan naturalmente con las abstracciones de los sistemas
    operativos actuales.
@@ -142,9 +142,9 @@
    corriente de influencia proviene de lenguajes de Niklaus Wirth, comenzando
    con Pascal. Modula-2 inspiro el concepto de paquete. Oberon elimino la
    distincion entre los archivos de interfaz del modulo y los archivos de
-   implementacion del modulo. Oberon-2 influyo en la sintaxis de paquetes,
-   importaciones y declaraciones, y Object Oberon proporciono la sintaxis para
-   la declararcion de metodos.
+   implementacion del modulo. Oberon-2 influyo en la sintaxis de importacion y
+   declaracion de paquetes, y Object Oberon proporciono la sintaxis para la
+   declararcion de metodos.
 
 #    Another lineage among Go’s ancestors, and one that makes Go distinctive among
 #    recent programming languages, is a sequence of little-known research
@@ -204,10 +204,10 @@
    entonces). Aqui tambien encontramos mutaciones novedosas. Go innova
    proporcionando slices (arreglos dinamicos) con acceso aleatorio eficiente,
    pero tambien permite sofisticados arreglos compartidos que recuerdan a las
-   listas enlazadas. Y la declaracion @c(defer) es con Go.
+   listas enlazadas. Y la declaracion @c(defer) es nueva con Go.
 
 # ** The Go Project
-** El proyecto Go
+** El Proyecto Go
 
 #    All programming languages reflect the programming philosophy of their
 #    creators, which often includes a significant component of reaction to the
@@ -216,7 +216,7 @@
 #    an explosion of complexity. (This problem is by no means unique to Google.)
    Todos los lenguajes de programacion reflejan la filosofia de programacion de
    sus creadores, que a menudo incluye un componente significativo de la
-   reaccion a las deficiencias percibidas de los idiomas anteriores. El proyecto
+   reaccion a las deficiencias percibidas de los lenguajes anteriores. El proyecto
    Go fue frustrado con varios sistemas de software de Google que estaban
    sufriendo una explosion de complejidad. (Este problema no es exclusivo de
    Google.)
@@ -246,7 +246,7 @@
    distinguir los buenos cambios, de los malos o perniciosos. Con un esfuerzo
    suficiente, un buen cambio se puede acomodar sin comprometer lo que Fred
    Brooks llamo la @"(integridad conceptual) del diseño, pero un mal cambio no
-   puede, un cambio pernicioso negocia la sencillez por uno conveniencia
+   puede, un cambio pernicioso negocia la sencillez por una conveniencia
    superficial. Solo a traves de la simplicidad del diseño un sistema puede
    permanecer estable, seguro y coherente a medida que crece.
 
@@ -319,11 +319,11 @@
    memoria y escrituras de memoria estan ocultas en el codigo. Los tipos
    agregados de Go (estructuras y matrices) mantienen sus elementos
    directamente, requiriendo menos almacenamiento y menos asignaciones e
-   indireccion de punteros, que los idiomas que utilizan campos indirectos. Y
+   indireccion de punteros, que los lenguajes que utilizan campos indirectos. Y
    como la computadora moderna es una maquina paralela, Go tiene caracteristicas
    de concurrencia basadas en CSP, como se menciono anteriormente. Los stacs de
-   tamaño variable de los hilos ligeros de Go o @e(goroutines) son inicialmente
-   lo suficientemente pequeñas como para que crear una goroutine sea barato y
+   tamaño variable de los hilos ligeros de Go o @e(gorutinas) son inicialmente
+   lo suficientemente pequeñas como para que crear una gorutina sea barato y
    crear un millon sea practico.
 
 #    Go’s standard library, often described as coming with @"(batteries included,)
@@ -368,7 +368,7 @@
 #    Chapter 1 is a tutorial on the basic constructs of Go, introduced through a
 #    dozen programs for everyday tasks like reading and writing files, formatting
 #    text, creating images, and communicating with Internet clients and servers.
-   El capitulo 1 es un tutorial sobre las construcciones basicas de Go,
+   El Capitulo 1 es un tutorial sobre las construcciones basicas de Go,
    introducido a traves de una docena de programas para tareas cotidianas como
    leer y escribir archivos, formatear texto, crear imagenes y comunicarse con
    clientes y servidores de Internet.
@@ -380,13 +380,13 @@
 #    simpler ones using arrays, maps, structs, and slices, Go’s approach to
 #    dynamic lists. Chapter 5 covers functions and discusses error handling,
 #    @c(panic) and @c(recover), and the @c(defer) statement.
-   El capitulo 2 describe los elementos estructurales de un programa
+   El Capitulo 2 describe los elementos estructurales de un programa
    Go–declaraciones, variables, nuevos tipos, paquetes y archivos, y alcance. El
-   capitulo 3 analiza numeros, booleanos, cadenas y constantes, y explica como
-   procesar Unicode. El capitulo 4 describe los tipos compuestos, es decir, los
+   Capitulo 3 analiza numeros, booleanos, cadenas y constantes, y explica como
+   procesar Unicode. El Capitulo 4 describe los tipos compuestos, es decir, los
    tipos construidos a partir de los mas sencillos utilizando arreglos, mapas,
    estructuras y slices, la aproximacion de Go para listas dinamicas. El
-   capitulo 5 cubre las funciones y discute el manejo de errores,
+   Capitulo 5 cubre las funciones y discute el manejo de errores,
    @c(panic) y @c(recover), y la sentencia @c(defer).
 
 #    Chapters 1 through 5 are thus the basics, things that are part of any
@@ -394,7 +394,7 @@
 #    other languages, but most programmers will pick them up quickly. The
 #    remaining chapters focus on topics where Go’s approach is less conventional:
 #    methods, interfaces, concurrency, packages, testing, and reflection.
-   Los capitulos 1 a 5 son, son por lo tanto, lo basico, las cosas que forman
+   Los Capitulos 1 a 5 son, son por lo tanto, lo basico, las cosas que forman
    parte de cualquier lenguaje imperativo popular. La sintaxis y el estilo de Go
    a veces difieren de otros lenguajes, pero la mayoria de los programadores los
    recogeran rapidamente. Los capitulos restantes se centran en temas en los que
@@ -413,15 +413,15 @@
    objetos complejos se crean a partir de los mas simples por composicion, no
    por herencia. Los metodos pueden ser asociados con cualquier tipo definido
    por el usuario, no solo las estructuras, y la relacion entre tipos concretos
-   y tipos abstractos (@e(interfaces)) es implicita, por lo que un tipo concreto
-   puede satisfacer una interfaz que el diseñador del tipo desconocia. Los
-   metodos estan cubiertos en el capitulo 6, las interfaces en el capitulo 7.
+   y tipos abstractos (las @e(interfaces)) son implicitas, por lo que un tipo
+   concreto puede satisfacer una interfaz que el diseñador del tipo desconocia.
+   Los metodos estan cubiertos en el Capitulo 6, las interfaces en el Capitulo 7.
 
 #    Chapter 8 presents Go’s approach to concurrency, which is based on the idea
 #    of communicating sequential processes (CSP), embodied by goroutines and
 #    channels. Chapter 9 explains the more traditional aspects of concurrency
 #    based on shared variables.
-   El capitulo 8 presenta el enfoque de Go a la concurrencia, que se basa en la
+   El Capitulo 8 presenta el enfoque de Go a la concurrencia, que se basa en la
    idea de comunicar procesos secuenciales (CSP), incorporados por goroutines y
    canales. El Capitulo 9 explica los aspectos mas tradicionales de la
    concurrencia basados ​​en variables compartidas.
@@ -430,7 +430,7 @@
 #    chapter also shows how to make effective use of the @$(go) tool, which
 #    provides for compilation, testing, benchmarking, program formatting,
 #    documentation, and many other tasks, all within a single command.
-   El capitulo 10 describe los paquetes, el mecanismo para organizar las
+   El Capitulo 10 describe los paquetes, el mecanismo para organizar las
    librerias. Este capitulo tambien muestra como hacer un uso efectivo de la
    herramienta @$(go), provista para la compilacion, pruebas, benchmarking,
    formateo del programa, documentacion y muchas otras tareas, todo dentro de un
@@ -440,7 +440,7 @@
 #    avoiding abstraction-laden frameworks in favor of simple libraries and
 #    tools. The testing libraries provide a foundation atop which more complex
 #    abstractions can be built if necessary.
-   El capitulo 11 trata de las pruebas, donde Go adopta un enfoque notablemente
+   El Capitulo 11 trata de las pruebas, donde Go adopta un enfoque notablemente
    ligero, evitando framewoks cargados de abstraccion en favor de librerias y
    herramientas simples. Las librerias de pruebas proporcionan una base sobre
    la que se pueden construir abstracciones mas complejas si es necesario.
@@ -451,14 +451,14 @@
 #    how it is used to implement some important Go libraries. Chapter 13 explains
 #    the gory details of low-level programming that uses the @c(unsafe) package to
 #    step around Go’s type system, and when that is appropriate.
-   El capitulo 12 discute la reflexion, la capacidad de un programa para
+   El Capitulo 12 discute la reflexion, la capacidad de un programa para
    examinar su propia representacion durante la ejecucion. La reflexion es una
    herramienta poderosa, aunque debe ser usada con cuidado; Este capitulo
    explica como encontrar el equilibrio correcto, mostrando como se utiliza para
-   implementar algunas librerias importantes en Go. El capitulo 13 explica los
+   implementar algunas librerias importantes en Go. El Capitulo 13 explica los
    detalles morbosos de programacion a bajo nivel que utiliza el paquete
    @c(unsafe) para dar un paso alrededor del sistema de tipado de Go, y cuando
-   es apropiada eso.
+   eso es apropiada.
 
 #    Each chapter has a number of exercises that you can use to test your
 #    understanding of Go, and to explore extensions and alternatives to the
@@ -477,11 +477,11 @@
    Todos menos los ejemplos de codigo mas triviales en el libro estan
    disponibles para su descarga desde un repositorio Git publico en
    @l(http://www.gopl.io/<>gopl.io). Cada ejemplo se identifica por su ruta de
-   importacion paquete y puede ser convenientemente localizado, construido e
+   importacion de paquete y puede ser convenientemente localizado, construido e
    instalado utilizando el comando @$(go get). tendra que elegir un directorio
-   para ser su espacio de trabajo y establecer la variable de entorno @c(GOPATH)
-   apuntando a este. La herramienta @$(go) creara el directorio si es necesario.
-   Por ejemplo:
+   para que sea su espacio de trabajo y establecer la variable de entorno
+   @c(GOPATH) apuntando a este. La herramienta @$(go) creara el directorio si es
+   necesario. Por ejemplo:
 
 #    ..src > sh
 #      $ export GOPATH=$HOME/gobook        # choose workspace directory
@@ -514,7 +514,7 @@
    la herramienta @$(go) esta ausente o es anterior.
 
 # ** Where to Find More Information
-** Donde encontrar mas informacion
+** Donde Encontrar Mas Informacion
 
 #    The best source for more information about Go is the official web site,
 #    @l(https://golang.org), which provides access to the documentation, including
@@ -558,7 +558,7 @@
    Playground hace que sea conveniente llevar a cabo experimentos sencillos para
    comprobar la propia comprension de la sintaxis, la semantica, o paquetes de
    librerias con programas cortos, y en muchos sentidos toma el lugar de un
-   @e(bucle leer-evaluar-imprimir) (@e(read-eval-print loop) o REPL) en otros
+   @e(bucle leer-evaluar-imprimir) (@e(read-eval-print loop) o REPL) de otros
    lenguajes. Sus URLs persistentes son ideales para compartir fragmentos de
    codigo con otros, para informar sobre errores o hacer sugerencias.
 
@@ -567,7 +567,7 @@
 #    constructions of Go, an orderly walk through the language.
    Construido sobre Playground, el Tour Go en @l(https://tour.golang.org<>tour.golang.org)
    es una secuencia de breves lecciones interactivas sobre las ideas basicas y
-   construcciones de Go, un paseo ordenado por atraves del lenguaje.
+   construcciones de Go, un paseo ordenado atraves del lenguaje.
 
 #    The primary shortcoming of the Playground and the Tour is that they allow
 #    only standard libraries to be imported, and many library features—networking,
@@ -579,13 +579,13 @@
 #    and start writing and running Go programs of your own.
    El principal inconveniente del Playground y del Tour es que permiten que solo
    se importen librerias estandar, y muchas funciones de la libreria–por
-   ejemplo, redes–estan restringidas por razones practicas o de
-   seguridad. Tambien requiere de acceso a Internet para compilar y ejecutar
-   cada programa. Asi que para experimentos mas elaborados, tendra que ejecutar
-   programas Go en su propia computadora. Afortunadamente, el proceso de
-   descarga es sencillo, por lo que no debe tomar mas de unos minutos para
-   buscar la Go distribucion desde @l(https://golang.org<>golang.org) y empezar
-   a escribir y ejecutar programas por su cuenta.
+   ejemplo, redes–estan restringidas por razones practicas o de seguridad.
+   Tambien requiere de acceso a Internet para compilar y ejecutar cada programa.
+   Asi que para experimentos mas elaborados, tendra que ejecutar programas Go en
+   su propia computadora. Afortunadamente, el proceso de descarga es sencillo,
+   por lo que no debe tomar mas de unos minutos para buscar su distribucion Go
+   desde @l(https://golang.org<>golang.org) y empezar a escribir y ejecutar
+   programas por su cuenta.
 
 #    Since Go is an open-source project, you can read the code for any type or
 #    function in the standard library online at @l(https://golang.org/pkg); the
@@ -593,11 +593,10 @@
 #    something works, or to answer questions about details, or merely to see how
 #    experts write really good Go.
    Ya que Go es un proyecto de codigo abierto, se puede leer el codigo fuente de
-   cualquier tipo o funcion en la libreria estandar en
-   @l(https://golang.org/pkg); el mismo codigo forma parte de la distribucion
-   descargada. Utilice esto para averiguar como funciona algo, o para responder
-   a preguntas sobre los detalles, o simplemente para ver como los expertos
-   escriben bueno Go.
+   cualquier tipo o funcion en la libreria estandar en @l(https://golang.org/pkg);
+   el mismo codigo forma parte de la distribucion descargada. Utilice esto para
+   averiguar como funciona algo, o para responder a preguntas sobre los
+   detalles, o simplemente para ver como los expertos escriben buen Go.
 
 # ** Acknowledgments
 ** Agradecimientos
@@ -702,7 +701,7 @@
 #   explain how to write good Go, so use the code here as a guide when you’re
 #   writing your own.
   Cuando estas aprendiendo un nuevo lenguaje, hay una tendencia natural a
-  escribir codigo como lo habrias escrito en un idioma que ya conoces. Este
+  escribir codigo como lo habrias escrito en un languaje que ya conoces. Este
   consciente de este sesgo a medida que aprende Go y trate de evitarlo. Hemos
   tratado de ilustrar y explicar como escribir buen Go, asi que utilice el
   codigo aqui como guia cuando este escribiendo el suyo propio.
@@ -714,10 +713,10 @@
 #    at the beginning of @e(The C Programming Language), published in 1978. C is
 #    one of the most direct influences on Go, and @"(hello, world) illustrates a
 #    number of central ideas.
-   Vamos a empezar con la ya tradicional ejemplo del @"(hola, mundo), que
+   Vamos a empezar con el ya tradicional ejemplo del @"(hola, mundo), que
    aparece al comienzo de @e(El lenguaje de programacion C), publicado
-   en 1978. C es una de las influencias mas directas sobre el Go, y @"(hola,
-   mundo) ilustra una serie de ideas centrales.
+   en 1978. C es una de las influencias mas directas sobre Go, y @"(hola, mundo)
+   ilustra una serie de ideas centrales.
 
 #    ..figure > @l(gopl.io/ch1/helloworld/main.go<>gopl.io/ch1/helloworld)
    ..figure > @l(gopl.io/ch1/helloworld/main.go<>gopl.io/ch1/helloworld)
@@ -749,7 +748,7 @@
 #    names end in @f(.go), links it with libraries, then runs the resulting
 #    executable file.  (We will use @$($) as the command prompt throughout the
 #    book.)
-   Go es un lenguaje compilado. El conjunto de herramienta de Go convierte un el
+   Go es un lenguaje compilado. El conjunto de herramienta de Go convierte el
    codigo fuente de un programa y las cosas de las que depende, en instrucciones
    en el lenguaje maquina nativo de una computadora. Se puede acceder a estas
    herramientas a traves de un unico comando llamado @$(go) que tiene una serie
@@ -819,8 +818,8 @@
 #    If you run @$(go get gopl.io/ch1/helloworld), it will fetch the source code
 #    and place it in the corresponding directory. There’s more about this topic in
 #    @l(#Section 2.6) and @l(#Section 10.7).
-   Si ejecuta @$(go get gopl.io/ch1/helloworld), se obtendra el codigo fuente y
-   lo coloca en el directorio correspondiente. Hay mas informacion sobre este
+   Si ejecuta @$(go get gopl.io/ch1/helloworld), obtendra el codigo fuente y
+   lo colocara en el directorio correspondiente. Hay mas informacion sobre este
    tema en la @l(#Seccion 2.6) y la @l(#Seccion 10.7).
 
 #    Let’s now talk about the program itself. Go code is organized into packages,
@@ -847,7 +846,7 @@
    La libreria estandar de Go tiene mas de 100 paquetes para tareas comunes como
    entrada y salida, clasificacion y manipulacion de texto. Por ejemplo, el
    paquete @c(fmt) contiene funciones para la impresion y entrada de datos con
-   formato. @c(Println) es una de las funciones de basicas de salida en @c(fmt);
+   formato. @c(Println) es una de las funciones basicas de salida en @c(fmt);
    esta imprime uno o mas valores, separados por espacios, con un caracter de
    nueva linea al final para que los valores aparezcan como una sola linea de
    salida.
@@ -863,17 +862,17 @@
    es especial–es donde comienza la ejecucion del programa. Cualquier cosa que
    haga @c(main) es lo que hara el programa. Por supuesto, @c(main) sera
    normalmente un llamado a las funciones de otros paquetes que hacen gran parte
-   del trabajo, tales como la funcion @c(fmt.Println).
+   del trabajo, como la funcion @c(fmt.Println).
 
 #    We must tell the compiler what packages are needed by this source file;
 #    that’s the role of the @c(import) declaration that follows the @c(package)
 #    declaration. The @"(hello, world) program uses only one function from one
 #    other package, but most programs will import more packages.
-   Debemos decirle al compilador que paquetes son necesarios por este archivo de
-   codigo fuente; ese es el papel de la declaracion @c(import) seguida por la
-   declaracion del @c(paquete). El programa @"(hola, mundial) utiliza solo una
-   funcion de otro paquete, pero en la mayoria de los programas se importaran
-   mas paquetes.
+   Debemos decirle al compilador que paquetes son necesarios para este archivo
+   de codigo fuente; ese es el papel de la declaracion @c(import) seguida por la
+   declaracion del @c(paquete). El programa @"(hola, mundo) utiliza solo una
+   funcion de otro paquete, pero en la mayoria de los programas importaran mas
+   paquetes.
 
 #    You must import exactly the packages you need. A program will not compile if
 #    there are missing imports or if there are unnecessary ones. This strict
@@ -893,10 +892,10 @@
 #    will sometimes not show the @c(package) and @c(import) declarations when
 #    presenting examples, but they are in the source file and must be there to
 #    compile the code.
-   Las declaraciones @c(import) deben ir luego de la declaracion
-   @c(package). Despues de eso, un programa consiste en la declaracion de
-   funciones, variables, constantes y tipos (introducidos por las palabras clave
-   @c(func), @c(var), @c(const), y @c(type)); En su mayor parte, el orden de las
+   Las declaraciones @c(import) deben ir luego de la declaracion @c(package).
+   Despues de eso, un programa consiste en la declaracion de funciones,
+   variables, constantes y tipos (introducidos por las palabras clave @c(func),
+   @c(var), @c(const), y @c(type)); En su mayor parte, el orden de las
    declaraciones no importa. Este programa es lo mas corto posible, ya que
    declara solo una funcion, que a su vez solo llama a otra funcion. Para
    ahorrar espacio en la presentacion de ejemplos, a veces no mostramos las
@@ -977,7 +976,7 @@
    con la herramienta @$(go), que vamos a ver en la @l(#Seccion 10.7).
 
 # ** Section 1.2 <> Command-Line Arguments
-** Seccion 1.2 <> Argumentos de la linea de comandos
+** Seccion 1.2 <> Argumentos de Linea de Comandos
 
 #    Most programs process some input to produce some output; that’s pretty much
 #    the definition of computing. But how does a program get input data on which
@@ -1015,7 +1014,7 @@
 #    that include the first index but exclude the last, because it simplifies
 #    logic. For example, the slice @c(s[m:n]), where @c[0 ≤ m ≤ n ≤ len(s)],
 #    contains @c(n-m) elements.
-   Las variables @c(os.Args) es una @e(slice) de strings. Los slices son una
+   La variable @c(os.Args) es un @e(slice) de @c(strings). Los slices son una
    nocion fundamental en Go, y hablaremos mucho mas sobre ellos pronto. Por
    ahora, piensa en un slice como una secuencia @c(s) de elementos de un arreglo
    de tamaño dinamico, donde los elementos individuales pueden accederse como
@@ -1120,12 +1119,12 @@
 #    initializes @c(s) and @c(sep) to empty strings. We’ll have more to say about
 #    variables and declarations in @l(#Chapter 2).
    La declaracion @c(var) declara dos variables @c(s) y @c(sep), de tipo
-   @c(string). Una variable se puede inicializar como parte de su
-   declaracion. Si no se inicia de forma explicita, se inicializa de forma
-   implicita al @e(valor cero) para su tipo, que es 0 para los tipos numericos y
-   la cadena vacia "" para strings. Asi, en este ejemplo, la declaracion
-   implicita inicializa @c(s) y @c(sep) como cadenas vacias. Tendremos mas que
-   decir acerca de las variables y las declaraciones en el @l(#Capitulo 2).
+   @c(string). Una variable se puede inicializar como parte de su declaracion.
+   Si no se inicia de forma explicita, se inicializa de forma implicita al
+   @e(valor cero) para su tipo, que es 0 para los tipos numericos y la cadena
+   vacia @c("") para strings. Asi, en este ejemplo, la declaracion implicita
+   inicializa @c(s) y @c(sep) como cadenas vacias. Tendremos mas que decir
+   acerca de las variables y las declaraciones en el @l(#Capitulo 2).
 
 #    For numbers, Go provides the usual arithmetic and logical operators. When
 #    applied to strings, however, the @c(+) operator @e(concatenates) the values,
@@ -1143,7 +1142,7 @@
 
 #    represents the concatenation of the strings @c(sep) and @c(os.Args[i]). The
 #    statement we used in the program,
-   representa la concatenacion de las cadenas @c(sep) y @c(os.Args[i]) . La
+   representa la concatenacion de las cadenas @c(sep) y @c(os.Args[i]). La
    declaracion que usamos en el programa,
 
 #    ..src > go
@@ -1182,10 +1181,10 @@
    El programa @$(echo) podria haber impreso su salida en un bucle de una sola
    pieza a la vez, pero en esta version, en su lugar se acumula una cadena
    añadiendo repetidamente nuevo texto hasta el final. La cadena de @c(s)
-   comienza su vida vacia, es decir, con el valor "", y cada ciclo a traves del
-   bucle añade un poco de texto a ella; Despues de la primera iteracion, tambien
-   se inserta un espacio para que cuando el bucle este terminado, haya un
-   espacio entre cada argumento. Este es un proceso cuadratico que podria ser
+   comienza su vida vacia, es decir, con el valor @c(""), y cada ciclo a traves
+   del bucle añade un poco de texto a ella; Despues de la primer iteracion,
+   tambien se inserta un espacio para que cuando el bucle este terminado, haya
+   un espacio entre cada argumento. Este es un proceso cuadratico que podria ser
    costoso si el numero de argumentos es grande, pero para @$(echo), eso es poco
    probable. Vamos a mostrar una serie de versiones mejoradas de @$(echo) en
    este capitulo y el siguiente para hacer frente a cualquier ineficiencia real.
@@ -1195,8 +1194,8 @@
 #    statement that declares one or more variables and gives them appropriate
 #    types based on the initializer values; there’s more about this in the next
 #    chapter.
-   El indice variable @c(i) de bucle se declara en la primera parte del bucle
-   @c(for). El @c(:=) simbolo es parte de una @e(declaracion de variables
+   El indice variable @c(i) del bucle se declara en la primer parte del bucle
+   @c(for). El simbolo @c(:=) es parte de una @e(declaracion de variables
    compacta), una sentencia que declara una o mas variables y les da los tipos
    apropiados basados en los valores del inicializador; Hay mas informacion al
    respecto en el proximo capitulo.
@@ -1225,7 +1224,7 @@
 #    < src..
    ..src > go
      for inicializacion; condicion; incremento {
-         // zero or more statements
+         // cero o mas declaraciones
      }
    < src..
 
@@ -1233,7 +1232,7 @@
 #    braces are mandatory, however, and the opening brace must be on the same line
 #    as the @c(post) statement.
    Los parentesis no se utilizan nunca alrededor de los tres componentes de un
-   bucle @c(for). Las llaves son obligatorios, sin embargo, y la llave de apertura
+   bucle @c(for). Las llaves son obligatorias, sin embargo, y la llave de apertura
    deben estar en la misma linea que la declaracion @c(incremento).
 
 #    The optional @c(initialization) statement is executed before the loop
@@ -1410,7 +1409,7 @@
    declaracion de variable compacta, es el mas compacto, pero puede ser utilizado
    solo dentro de una funcion, no para variables de nivel de paquete. La segunda
    forma se basa en la inicializacion por defecto al valor cero para strings,
-   que es @c("") . La tercera forma se utiliza raramente excepto cuando se
+   que es @c(""). La tercera forma se utiliza raramente excepto cuando se
    declaran multiples variables. La cuarta forma es explicita sobre el tipo de
    la variable, que es redundante cuando es el mismo que el del valor inicial
    pero necesario en otros casos donde no son del mismo tipo. En la practica,
@@ -1454,9 +1453,9 @@
 
 #    Finally, if we don’t care about format but just want to see the values,
 #    perhaps for debugging, we can let @c(Println) format the results for us:
-   Por ultimo, si no nos interesa el formato, pero solo queremos ver los
-   valores, tal vez para depurar, podemos dejar que @c(Println) formatee el
-   resultado por nosotros:
+   Por ultimo, si no nos interesa el formato, y solo queremos ver los valores,
+   tal vez para depuracion, podemos dejar que @c(Println) formatee el resultado por
+   nosotros:
 
 #    ..src > go
 #      fmt.Println(os.Args[1:])
@@ -1467,7 +1466,7 @@
 
 #    The output of this statement is like what we would get from @c(strings.Join),
 #    but with surrounding brackets. Any slice may be printed this way.
-   El resultado de esta sentencia es como la que se pueden conseguir mediante
+   El resultado de esta sentencia es como la que se puede conseguir mediante
    @c(strings.Join), pero con corchetes al rededor. Cualquier slice se puede
    imprimir de esta manera.
 
@@ -1486,7 +1485,7 @@
 #    @c(strings.Join). (@l(#Section 1.6) illustrates part of the @c(time) package,
 #    and @l(#Section 11.4) shows how to write benchmark tests for systematic
 #    performance evaluation.)
-   @b(Ejercicio 1.3): Experimento para medir la diferencia en el tiempo de
+   @b(Ejercicio 1.3): Experimente para medir la diferencia en el tiempo de
    funcionamiento entre nuestras versiones potencialmente ineficientes y el que
    utiliza @c(strings.Join). ( La @l(#Seccion 1.6) ilustra parte del paquete
    @c(time), y la @l(#Seccion 11.4) muestra como escribir pruebas de referencia
@@ -1503,18 +1502,18 @@
 #    and packages used are models that can be easily adapted.
    Los programas para copiar archivos, imprimir, buscar, clasificar, contar y
    similares tienen una estructura similar: un bucle sobre la entrada, algun
-   calculo sobre cada elemento y generacion de salida al vuelo o al
-   final. Mostraremos tres variantes de un programa llamado @$(dup); se inspira
-   en parte por el comando Unix @$(uniq), que mira las lineas duplicadas
+   calculo sobre cada elemento y generacion de salida al vuelo o al final.
+   Mostraremos tres variantes de un programa llamado @$(dup); se inspira en
+   parte por el comando Unix @$(uniq), que mira las lineas duplicadas
    adyacentes. Las estructuras y paquetes utilizados son modelos que se pueden
    adaptar facilmente.
 
 #    The first version of @$(dup) prints each line that appears more than once in the
 #    standard input, preceded by its count. This program introduces the @c(if)
 #    statement, the @$(map) data type, and the @c(bufio) package.
-   La primer version del @$(dup) imprime cada linea que aparece mas de una vez en
-   la entrada estandar, precedido por su recuento. Este programa presenta la declaracion
-   @c(if), el  tipo de datos @c(map) y el paquete @c(bufio).
+   La primer version de @$(dup) imprime cada linea que aparece mas de una vez en
+   la entrada estandar, precedido por su recuento. Este programa presenta la
+   declaracion @c(if), el tipo de datos @c(map) y el paquete @c(bufio).
 
 #    ..figure > @l(gopl.io/ch1/dup1/main.go<>gopl.io/ch1/dup1)
    ..figure > @l(gopl.io/ch1/dup1/main.go<>gopl.io/ch1/dup1)
@@ -1598,8 +1597,8 @@
 #    Each time @$(dup) reads a line of input, the line is used as a key into the
 #    map and the corresponding value is incremented. The statement
 #    @c{counts[input.Text()]++} is equivalent to these two statements:
-   Cada vez @$(dup) lee una linea de entrada, la linea se utiliza como una clave
-   en el mapa y se incrementa el valor correspondiente. La declaracion
+   Cada vez que @$(dup) lee una linea de entrada, la linea se utiliza como una
+   clave en el mapa y se incrementa el valor correspondiente. La declaracion
    @c{counts[input.Text()]++} es equivalente a estas dos afirmaciones:
 
 #    ..src > go
@@ -1737,10 +1736,11 @@
    salto de linea @c(\n). Los literales de cadena pueden contener tales
    @e(secuencias de escape) para la representacion de caracteres de otra manera
    invisibles. @c(Printf) no escribe una nueva linea por defecto. Por
-   convencion, las funciones de formato cuyos nombres terminan en f, tales como
-   @c(log.Printf) y @c(fmt.Errorf), utilizan las reglas de formato de
+   convencion, las funciones de formato cuyos nombres terminan en @c(f), tales
+   como @c(log.Printf) y @c(fmt.Errorf), utilizan las reglas de formato de
    @c(fmt.Printf), mientras que aquellas cuyos nombres terminan en @c(ln) como
-   @c(Println), formatean sus argumentos con %v, seguido por una nueva linea.
+   @c(Println), formatean sus argumentos con @c(%v), seguido por una nueva
+   linea.
 
 #    Many programs read either from their standard input, as above, or from a
 #    sequence of named files. The next version of @c(dup) can read from the
@@ -1860,7 +1860,7 @@
    correctamente. El archivo se lee, y cuando se llega al final de la entrada,
    @c(Close) cierra el archivo y libera cualquier recurso. Por otro lado, si
    @c(err) no es @c(nil), algo salio mal. En ese caso, el valor de error
-   describe el problema. Nuestra sencillo manejo de errores imprime un mensaje
+   describe el problema. Nuestro sencillo manejo de errores imprime un mensaje
    en el flujo de error estandar utilizando @c(Fprintf) y el verbo @c(%v), que
    muestra un valor de cualquier tipo en un formato predeterminado, y luego
    @c(dup) continua con el siguiente archivo; la instruccion @c(continue) va a
@@ -1914,8 +1914,8 @@
    solo trago, dividirlo en lineas a la vez, y luego procesar las lineas. La
    siguiente version, @$(dup3), funciona de esa manera. Se introduce la funcion
    @c(ReadFile) (del paquete @c(io/ioutil)), que lee todo el contenido de un
-   archivo, y @c(strings.Split), que divide una cadena en una slice de
-   subcadenas. ( @c(Split) es lo contrario de @c(strings.Join), que vimos
+   archivo, y @c(strings.Split), que divide una cadena en un slice de
+   subcadenas. (@c(Split) es lo contrario de @c(strings.Join), que vimos
    anteriormente.)
 
 #    We’ve simplified @$(dup3) somewhat. First, it only reads named files, not the

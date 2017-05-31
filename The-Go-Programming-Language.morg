@@ -47,7 +47,7 @@
 
   Go is an open-source project, so source code for its compiler, libraries, and
   tools is freely available to anyone. Contributions to the project come from an
-  active worldwide community. Go runs on Unix-like systems—Linux, FreeBSD,
+  active worldwide community. Go runs on Unix-like systems—GNU/Linux, FreeBSD,
   OpenBSD, Mac OS X—and on Plan 9 and Microsoft Windows. Programs written in one
   of these environments generally work without modification on the others.
 
