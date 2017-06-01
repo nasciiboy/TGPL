@@ -1141,7 +1141,7 @@
    llamadas @e(figuras de Lissajous), eran un efecto visual basico en peliculas
    de ciencia ficcion de la decada de 1960. Son las curvas parametricas
    producidas por oscilacion armonica en dos dimensiones, tales como dos ondas
-   sinusoidales alimentados en el entradas @m(x) e @m(y) de un osciloscopio. La
+   sinusoidales alimentados en entradas @m(x) e @m(y) de un osciloscopio. La
    Figura 1.1 muestra algunos ejemplos.
 
    ..figure > Figura 1.1. Cuatro figuras de Lissajous.
@@ -1149,13 +1149,13 @@
      ..img > img/Figure-1.1.jpg
 
 
-     Hay varias nuevas construcciones en este codigo, incluyendo declaraciones
-     const, tipos de estructura, y literales compuestos. A diferencia de la
-     mayoria de nuestros ejemplos, este tambien implica calculos de punto
-     flotante.  Aqui vamos a discutir estos temas solo brevemente, desplazando
-     la mayoria de los detalles a los capitulos posteriores, ya que el objetivo
-     principal en este momento es darle una idea de como se ve Go y el tipo de
-     cosas que se pueden hacer facilmente con el lenguaje y sus librerias.
+   Hay varias nuevas construcciones en este codigo, incluyendo declaraciones
+   @c(const), tipos de estructura, y literales compuestos. A diferencia de la
+   mayoria de nuestros ejemplos, este tambien implica calculos de punto
+   flotante.  Aqui vamos a discutir estos temas solo brevemente, desplazando la
+   mayoria de los detalles a los capitulos posteriores, ya que el objetivo
+   principal en este momento es darle una idea de como se ve Go y el tipo de
+   cosas que se pueden hacer facilmente con el lenguaje y sus librerias.
 
    ..figure > @l(gopl.io/ch1/lissajous/main.go<>gopl.io/ch1/lissajous)
 
@@ -1194,7 +1194,7 @@
          )
          freq := rand.Float64() * 3.0 // frecuencia relativa del oscilador y
          anim := gif.GIF{LoopCount: nframes}
-         phase := 0.0 // diferencia de fase
+         phase := 0.0                 // diferencia de fase
          for i := 0; i < nframes; i++ {
            rect := image.Rect(0, 0, 2*size+1, 2*size+1)
            img := image.NewPaletted(rect, palette)
@@ -1208,7 +1208,7 @@
            anim.Delay = append(anim.Delay, delay)
            anim.Image = append(anim.Image, img)
          }
-         gif.EncodeAll(out, &anim) // NOTA: Ignorados errores de codificacion
+         gif.EncodeAll(out, &anim) // NOTA: ignorando errores de codificacion
        }
      < src..
 
@@ -1220,10 +1220,10 @@
 
    Una declaracion @c(const) (@l(#Seccion 3.6<>§3.6)) da nombres a las
    constantes, es decir, valores que se establecen en tiempo de compilacion,
-   tales como los parametros numericos para ciclos, cuadros, y el retardo. Igual
-   a las declaraciones @c(var), las declaraciones @c(const) pueden aparecer a
-   nivel de paquete (por lo que los nombres son visibles en todo el paquete) o
-   dentro de una funcion (por lo que los nombres son visibles solo dentro de esa
+   como los parametros numericos para ciclos, cuadros, y el retardo. Igual a las
+   declaraciones @c(var), las declaraciones @c(const) pueden aparecer a nivel de
+   paquete (por lo que los nombres son visibles en todo el paquete) o dentro de
+   una funcion (por lo que los nombres son visibles solo dentro de esa
    funcion). El valor de una constante debe ser un numero, una cadena o un
    booleano.
 
@@ -1233,29 +1233,28 @@
    una secuencia de valores de los elementos. Aqui, la primera es un slice y
    la segunda es una @e(estructura).
 
-   El tipo @c(gif.GIF) es de tipo struct (@l(#Seccion 4.4<>§4.4)). Una
+   El tipo @c(gif.GIF) es de tipo estructura (@l(#Seccion 4.4<>§4.4)). Una
    estructura es un grupo de valores denominados @e(campos), a menudo de
    diferentes tipos, que se recogen juntos en un unico objeto que puede tratarse
-   como una unidad. La variable @c(anim) es una estructura de tipo
-   @c(gif.GIF). La estructura literal crea un valor estructura cuyo campo
-   @c(LoopCount) se establece en @c(nframes); Todos los demas campos tienen el
-   valor cero para su tipo. Los campos individuales de una estructura se puede
-   acceder usando la notacion punto, al igual que en las dos ultimas
-   asignaciones que actualizan de forma explicita los campos @c(Delay) e
-   @c(Image) de @c(anim).
+   como una unidad. La variable @c(anim) es una estructura de tipo @c(gif.GIF).
+   La estructura literal crea un valor estructura cuyo campo @c(LoopCount) se
+   establece en @c(nframes); Todos los demas campos tienen el valor cero para su
+   tipo. Los campos individuales de una estructura se puede acceder usando la
+   notacion punto, al igual que en las dos ultimas asignaciones que actualizan
+   de forma explicita los campos @c(Delay) e @c(Image) de @c(anim).
 
    La funcion @c(lissajous) tiene dos bucles anidados. El bucle exterior se
-   ejecuta 64 iteraciones, cada una produciendo un solo fotograma de la
+   ejecuta 64 iteraciones, cada uno produciendo un solo fotograma de la
    animacion. Crea una nueva imagen de 201x201 con una paleta de dos colores,
    blanco y negro. Todos los pixeles se ajustan inicialmente al valor cero de la
    paleta (el color cero de la paleta), que se establece en blanco. Cada paso a
    traves del bucle interno genera una nueva imagen estableciendo algunos
    pixeles en negro. El resultado se añade a una lista de cuadros en @c(anim)
-   utilizando la funcion incorporada @c(append) (@l(#Seccion 4.2.1<>§4.2.1)),
-   junto con un retardo especificado de 80 ms. Por ultimo, la secuencia de
-   cuadros y los retrasos se codifica en formato GIF y se escribe en la salida
-   de fluje @c(out). El tipo de @c(out) es @c(io.Writer), lo que nos permite
-   escribir a una amplia gama de posibles destinos, como vamos a mostrar pronto.
+   utilizando la funcion nativa @c(append) (@l(#Seccion 4.2.1<>§4.2.1)), junto
+   con un retardo especificado de 80ms. Por ultimo, la secuencia de cuadros y
+   los retrasos se codifican en formato GIF y se escribe en la salida de flujo
+   @c(out). El tipo de @c(out) es @c(io.Writer), lo que nos permite escribir a
+   una amplia gama de posibles destinos, como vamos a mostrar pronto.
 
    El bucle interior ejecuta los dos osciladores. El oscilador @c(x) es
    simplemente la funcion sinusoidal. El oscilador @c(y) es tambien una
@@ -1263,12 +1262,12 @@
    aleatorio entre 0 y 3, y su fase relativa al oscilador @c(x) es inicialmente
    cero, pero aumenta con cada fotograma de la animacion. El bucle se ejecuta
    hasta que el oscilador @c(x) ha completado cinco ciclos completos. En cada
-   paso, que llaman a @c(SetColorIndex) para colorear el pixel correspondiente
-   en (@c(x), @c(y)) negro, que es en la posicion 1 de la paleta.
+   paso, se llama a @c(SetColorIndex) para colorear el pixel (@c(x), @c(y))
+   correspondiente en negro, que es en la posicion 1 de la paleta.
 
-   La funcion @c(main) llama a la funcion @c(lissajous), dirigiendola a escribir en la
-   salida estandar, por lo que este comando produce un GIF animado con marcos
-   como los de la Figura 1.1:
+   La funcion @c(main) llama a la funcion @c(lissajous), dirigiendola a escribir
+   en la salida estandar, por lo que este comando produce un GIF animado con
+   cuadros como los de la Figura 1.1:
 
    ..src > sh
      $ go build gopl.io/ch1/lissajous
@@ -1335,9 +1334,9 @@
      < src..
 
 
-   Este programa introduce funciones a partir de dos paquetes, @c(net/http) y
+   Este programa introduce funciones a partir de dos paquetes, @c(net/http) e
    @c(io/ioutil). La funcion @c(http.Get) realiza una peticion HTTP y, si no hay
-   error, devuelve el resultado en la estructura @c(resp) . El campo @c(Body) de
+   error, devuelve el resultado en la estructura @c(resp). El campo @c(Body) de
    @c(resp) contiene la respuesta del servidor como un flujo legible. A
    continuacion, @c(ioutil.ReadAll) lee toda la respuesta; el resultado se
    almacena en @c(b). El flujo @c(Body) es cerrado para evitar fuga de recursos
@@ -1369,7 +1368,7 @@
    de comprobar el resultado del error de @c(io.Copy).
 
    @b(Ejercicio 1.8): Modificar @$(fetch) para agregar el prefijo @c(http://) a
-   cada argumento URL si este so se proporciona. Es posible que desee utilizar
+   cada argumento URL si este no se proporciona. Es posible que desee utilizar
    @c(strings.HasPrefix).
 
    @b(Ejercicio 1.9): Modificar @$(fetch) para imprimir tambien el codigo de
