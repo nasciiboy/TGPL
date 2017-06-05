@@ -2638,8 +2638,8 @@
 
    Named types also make it possible to define new behaviors for values of the
    type. These behaviors are expressed as a set of functions associated with the
-   type, called the type’s @e(methods).  We’ll look at methods in detail in Chapter
-   6 but will give a taste of the mechanism here.
+   type, called the type’s @e(methods).  We’ll look at methods in detail in
+   @l(#Chapter 6) but will give a taste of the mechanism here.
 
    The declaration below, in which the @c(Celsius) parameter @c(c) appears before the
    function name, associates with the @c(Celsius) type a method named @c(String) that

@@ -5,19 +5,19 @@
   <head>
     <title>The Go Programming Language</title>
     <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
-
+    
     <meta name="author"      content="Alan A. A. Donovan" /><meta name="author"      content="Brian W. Kernighan" />
-
-
+    
+    
     <meta name="id"          content="isbn-10 0-13-419044-0" />
     <meta name="date"        content="29/09/2015" />
-
-
-
+    
+    
+    
 
     <link rel="stylesheet" type="text/css" href="worg-data/worg.css" />
 
-
+    
   </head>
   <body>
 
@@ -1431,7 +1431,7 @@ Usage of ./echo4:
 </pre></div>
 <p>Note the last case carefully. In spite of its name, the type conversion <code>Celsius(f)</code> does not change the value of its argument, just its type. The test is true because <code>c</code> and <code>f</code> are both zero.</p>
 <p>A named type may provide notational convenience if it helps avoid writing out complex types over and over again. The advantage is small when the underlying type is simple like <code>float64</code>, but big for complicated types, as we will see when we discuss structs.</p>
-<p>Named types also make it possible to define new behaviors for values of the type. These behaviors are expressed as a set of functions associated with the type, called the type’s <em>methods</em>.  We’ll look at methods in detail in Chapter 6 but will give a taste of the mechanism here.</p>
+<p>Named types also make it possible to define new behaviors for values of the type. These behaviors are expressed as a set of functions associated with the type, called the type’s <em>methods</em>.  We’ll look at methods in detail in <a href="#Chapter-6" >Chapter 6</a> but will give a taste of the mechanism here.</p>
 <p>The declaration below, in which the <code>Celsius</code> parameter <code>c</code> appears before the function name, associates with the <code>Celsius</code> type a method named <code>String</code> that returns <code>c</code>’s numeric value followed by <code>°C</code>:</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="nx">Celsius</span><span class="p">)</span> <span class="nx">String</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;%g°C&quot;</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">}</span>
 </pre></div>
