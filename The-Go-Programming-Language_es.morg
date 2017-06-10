@@ -2914,11 +2914,11 @@
     una declaracion @c(import) como @c("gopl.io/ch2/tempconv"). La
     especificacion del lenguaje no define de donde provienen estas cadenas o lo
     que significan; Depende de las herramientas para interpretarlas. Cuando se
-    utiliza la herramienta @$(go) de (@l(#Capitulo 10)), una ruta de importacion
-    denota un directorio que contiene uno o mas archivos de codigo fuento Go que
-    juntos componen el paquete.
+    utiliza la herramienta @$(go) (@l(#Capitulo 10)), una ruta de importacion
+    denota un directorio que contiene uno o mas archivos de codigo fuente Go que
+    componen juntos el paquete.
 
-    Ademas de su ruta de importacion, cada paquete tiene un nombre de paquete,
+    Ademas de su ruta de importacion, cada paquete tiene un @e(nombre de paquete),
     que es corto (y no necesariamente unico) nombre que aparece en su
     declaracion @c(package). Por convencion, el nombre de un paquete coincide
     con el ultimo segmento de la ruta de importacion, por lo que es facil
@@ -3015,7 +3015,7 @@
 
     Si el paquete tiene multiples ficheros @f(.go), se inicializan en el orden
     en que se dan los archivos al compilador; La herramienta @$(go) ordena los
-    ficheros @f(.go) archivos por nombre antes de invocar el compilador.
+    ficheros @f(.go) archivos por nombre antes de invocar al compilador.
 
     Cada variable declarada en el nivel del paquete comienza su vida con el
     valor de su expresion de inicializador, pero para algunas variables, como
@@ -3088,7 +3088,7 @@
       i, _ := range pc {
     < src..
 
-    Veremos otros usos de funciones @c(init) en la siguiente seccion y en la seccion
+    Veremos otros usos de funciones @c(init) en la siguiente seccion y en la
     @l(#Seccion 10.5).
 
     @b(Ejercicio 2.3): Vuelve a escribir @c(PopCount) para utilizar un bucle en
@@ -3099,9 +3099,9 @@
     @b(Ejercicio 2.4): Escribe una version de @c(PopCount) que cuenta los bits
     desplazando su argumento a traves de posiciones de 64 bits, poniendo a
     prueba el bit mas a la derecha cada vez. Compare su rendimiento con la
-    version de buesqueda por la tabla.
+    version de buesqueda por tabla.
 
-    @b(Ejercicio 2.5): La expresion @c&x&(x-1)] despeja el bit mas a la derecha
+    @b(Ejercicio 2.5): La expresion @c[x&(x-1)] despeja el bit mas a la derecha
     no-cero de @c(x). Escribe una version de @c(PopCount) que cuente bits
     mediante este hecho, y evalua su rendimiento.
 
@@ -3162,7 +3162,7 @@
    se informa de un error de @"(nombre no declarado.) Si se declara un nombre
    tanto en un bloque externo como en un bloque interno, se encontrara primero
    la declaracion interna. En ese caso, se dice que la declaracion interna
-   @e(obscurese) u @e(ocultar) la exterior, por lo que es inaccesible:
+   @e(obscurese) u @e(oculta) la exterior, por lo que es inaccesible:
 
    ..src > go
      func f() {}
@@ -3181,7 +3181,7 @@
    como las declaraciones @c(if) y los bucles @c(for). El programa siguiente
    tiene tres variables distintas llamadas @c(x), ya que cada declaracion
    aparece en un bloque lexico diferente. (Este ejemplo ilustra las reglas de
-   alcance, no es un buen estilo de programacion!)
+   alcance, no un buen estilo de programacion!)
 
    ..src > go
      func main() {
@@ -3207,11 +3207,11 @@
    explicito para el cuerpo del bucle, y un bloque implicito que adicionalmente
    encierra las variables declaradas por la clausula de inicializacion, como
    @c(i). El alcance de una variable declarada en el bloque implicito es la
-   condicion, post-declaracion (@c(i++)), y el cuerpo del comunicado @c(for).
+   condicion, post-declaracion (@c(i++)), y el cuerpo del la sentencia @c(for).
 
-   El siguiente ejemplo tambien tiene tres variables denominadas @c(x), cada una
+   El siguiente ejemplo tambien tiene tres variables con nombre @c(x), cada una
    declarada en un bloque distinto–una en el cuerpo de la funcion, una en un
-   bloque de sentencia @c(for) y uno en el cuerpo del bucle–pero solo dos de los
+   bloque de sentencia @c(for) y otra en el cuerpo del bucle–pero solo dos de los
    bloques son explicitos:
 
    ..src > go
@@ -3225,8 +3225,8 @@
    < src..
 
    Al igual que bucle @c(for), las declaraciones @c(if) y @c(switch) tambien
-   crean un bloque implicito que, ademas del cuerpo de sus bloques. El codigo en
-   la siguiente cadena @c(if)-@c(else) muestra el alcance de @c(x) y @c(y):
+   crean un bloque implicito ademas del cuerpo de sus bloques. El codigo en la
+   siguiente cadena @c(if)-@c(else) muestra el alcance de @c(x) y @c(y):
 
    ..src > go
      if x := f(); x == 0 {
@@ -3262,7 +3262,7 @@
    < src..
 
    el alcance de @c(f) es solo la sentencia @c(if), por lo que @c(f) no es
-   accesible a los estados que despues de enta, lo que resulta en errores de
+   accesible a los estados que despues de esta, lo que resulta en errores de
    compilacion. Dependiendo del compilador, puede obtener un informe de errores
    adicional de que la variable local @c(f) nunca fue utilizada.
 
@@ -3286,7 +3286,7 @@
      if f, err := os.Open(fname); err != nil {
        return err
      } else {
-       // f and err are visible here too
+       // f y err son visibles aqui tambien
        f.ReadByte()
        f.Close()
      }
@@ -3324,7 +3324,7 @@
   Los compiladores de Go actuales detectan que la variable local @c(cwd) nunca
   se utilza e informar de esto como un error, pero no son estrictamente
   necesarias para llevar a cabo esta comprobacion. Por otra parte, un cambio
-  menor, como la adicion de una declaracion de registro que se hace referencia a
+  menor, como la adicion de una declaracion de registro que hace referencia a
   la @c(cwd) local, anularia la comprobacion.
 
    ..src > go
@@ -3367,12 +3367,12 @@
   En el fondo todo son solo bits, por supuesto, pero las computadoras operan
   fundamentalmente en numeros de tamaño fijo llamados palabras, que se
   interpretan como numeros enteros, numeros de punto flotante, conjuntos de
-  bits, o direcciones de memoria, que luego se combinana en agregados mas
-  grandes que representan paquetes, pixeles, carteras, poesia y todo lo
-  demas. Go ofrece una variedad de formas de organizar los datos, con un
-  espectro de tipos de datos que en un extremo coinciden con las caracteristicas
-  del hardware y en el otro extremo proporcionan lo que los programadores
-  necesitan para representar convenientemente estructuras de datos complicadas.
+  bits, o direcciones de memoria, que luego se combinan en agregados mas grandes
+  que representan paquetes, pixeles, carteras, poesia y todo lo demas. Go ofrece
+  una variedad de formas de organizar los datos, con un espectro de tipos de
+  datos que en un extremo coinciden con las caracteristicas del hardware y en el
+  otro proporcionan lo que los programadores necesitan para representar
+  convenientemente estructuras de datos complicadas.
 
   Los tipos de datos de Go se dividen en cuatro categorias: @e(tipos basicos),
   @e(tipos de agregados), @e(tipos de referencia), y @e(tipos de interfaz). Los
@@ -3429,8 +3429,8 @@
    bit de orden superior esta reservado para el signo del numero y la gama de
    valores de un numero de @m(n) bits es de -2ⁿ⁻¹ a 2ⁿ⁻¹-1. Los numeros enteros
    sin signo usan el rango completo de bits para valores no negativos y por lo
-   tanto tienen el rango de 0 a 2ⁿ-1. Por ejemplo, la gama de @c(int8) entre
-   -128 y 127, mientras que la gama de @c(uint8) es de 0 a 255.
+   tanto tienen el rango de 0 a 2ⁿ-1. Por ejemplo, la gama de @c(int8) es de
+   -128 a 127, mientras que la gama de @c(uint8) es de 0 a 255.
 
    En Go Los operadores binarios de aritmetica, logica y comparacion se enumeran
    aqui en orden decreciente de precedencia:
@@ -3449,25 +3449,25 @@
    evaluan en el orden deseado en una expresion como @c[mask & (1 << 28)].
 
    Cada operador en las dos primeras lineas de la tabla anterior, por ejemplo
-   @c(+), tiene un operador de asignacion correspondiente como @c(+=) que pueden
+   @c(+), tiene un operador de asignacion correspondiente, como @c(+=) que pueden
    utilizarse para abreviar una instruccion de asignacion.
 
    Los operadores aritmetica enteros @c(+), @c(-), @c(*), y @c(/) pueden
    aplicarse a numeros enteros, de coma flotante, y numeros complejos, pero el
    operador @c(%) solo se aplica a numeros enteros. El comportamiento de @c(%)
-   para los numeros negativos varia a traves de los lenguajes de
-   programacion. En Go, el signo del resto es siempre el mismo que el signo del
-   dividendo, por lo @c(-5%3) y @c(-5%-3) son ambos @c(-2). El comportamiento de
-   @c(/) depende de si sus operandos son numeros enteros, por lo que @c(5.0/4.0)
-   es @c(1.25), pero @c(5/4) es @c(1) porque la division entera trunca el
-   resultado hacia cero.
+   para los numeros negativos varia a traves de los lenguajes de programacion.
+   En Go, el signo del resto es siempre el mismo que el signo del dividendo, por
+   lo que @c(-5%3) y @c(-5%-3) son ambos @c(-2). El comportamiento de @c(/) depende
+   de si sus operandos son numeros enteros, por lo que @c(5.0/4.0) es @c(1.25),
+   pero @c(5/4) es @c(1) porque la division entera trunca el resultado hacia
+   cero.
 
    Si el resultado de una operacion aritmetica, ya sea con o sin signo, tiene
    mas bits de los que pueden ser representados en el tipo del resultado, se
    dice que se @e(desborda). Los bits de orden superior que no encajan se
    descartan silenciosamente. Si el numero original es un tipo con signo, el
    resultado podria ser negativo si el bit mas a la izquierda es un 1, como en
-   el @c(int8) ejemplo aqui:
+   el siguiente ejemplo:
 
    ..src > go
      var u uint8 = 255
@@ -3585,7 +3585,7 @@
    entero como un patron de bits.
 
    Aunque Go proporciona aritmetica y numeros sin signo, se tiende a utilizar un
-   int con signo incluso para cantidades que no pueden ser negativas, tales como
+   @c(int) con signo incluso para cantidades que no pueden ser negativas, como
    la longitud de un arreglo, aunque @c(uint) puede parecer una eleccion mas
    obvia. De hecho, la funcion nativa @c(len) devuelve un @c(int) con signo,
    como en este bucle que anuncia medallas de premio en el orden inverso:
@@ -3601,8 +3601,8 @@
    entonces @c(i) tambien seria un @c(uint), y la condicion @c(i >= 0) siempre
    seria verdadera por definicion. Despues de la tercera iteracion, en la cual
    @c(i == 0), la instruccion @c(i--) no haria que @c(i) se volviera -1, en
-   cambion seria el valor maximo de @c(uint) (es decir, 2⁶⁴-1), y la evaluacion
-   de @c(medallas[i]) fallaria en tiempo de ejecucion, o de @e(panico)
+   cambio seria el valor maximo de @c(uint) (es decir, 2⁶⁴-1), y la evaluacion
+   de @c(medallas[i]) fallaria en tiempo de ejecucion, o entraria en @e(panico)
    (@l(#Seccion 5.9<>§5.9)), al tratar de acceder a un elemento fuera de los
    limites del slice.
 
@@ -3691,12 +3691,12 @@
    formato @c(Printf) que contiene multiples verbos @c(%) requeriria el mismo
    numero de operandos adicionales, pero los @"(adverbios) @c([1]) despues de
    @c(%) le indican a @c(Printf) utilizar el primer operando una y otra vez. En
-   segundo lugar, el adverbio @c(#) enr @c(%o) o @c(%x) o @c(%X) indica a
+   segundo lugar, el adverbio @c(#) en @c(%o) o @c(%x) o @c(%X) indica a
    @c(Printf) emitir un prefijo @c(0) o @c(0x) o @c(0X) respectivamente.
 
-   Las literales de runa se escriben como un caracter entre comillas
-   simples. El ejemplo mas simple es un caracter ASCII como @c('a'), pero es
-   posible escribir cualquier punto de codigo Unicode directamente o con escapes
+   Las literales de runa se escriben como un caracter entre comillas simples.
+   El ejemplo mas simple es un caracter ASCII como @c('a'), pero es posible
+   escribir cualquier punto de codigo Unicode directamente o con escapes
    numericos, como veremos en breve.
 
    Las runas se imprimen con @c(%c), o con @c(%q) si se desea citar:
@@ -3705,7 +3705,7 @@
      ascii := 'a'
      unicode := '𢉩'
      newline := '\n'
-     fmt.Printf("%d %[1]c %[1]q\n", ascii)   // "97 un 'a'"
+     fmt.Printf("%d %[1]c %[1]q\n", ascii)   // "97 una 'a'"
      fmt.Printf("%d %[1]c %[1]q\n", unicode) // "22269 𢉩 '𢉩'"
      fmt.Printf("%d %[1]q\n", newline)       // "10 '\n'"
    < src..
@@ -3882,7 +3882,7 @@
      < src..
 
 
-   Observe que la esquina de funcion devuelve dos valores, las coordenadas de la
+   Observe que la funcion @c(corner) devuelve dos valores, las coordenadas de la
    esquina de la celda.
 
    La explicacion de como funciona el programa requiere solo geometria basica,
@@ -3932,9 +3932,8 @@
    paquete @c(math). ¿Puede usted producir una caja de huevos, moguls, o una
    montura?
 
-   @b(Ejercicio 3.3): El color de cada poligono en funcion de su altura, por lo
-   que los picos son de color rojo (@c(#ff0000)) y los valles azul
-   (@c(#0000ff)).
+   @b(Ejercicio 3.3): Coloree cada poligono en funcion de su altura, por lo que
+   los picos son de color rojo (@c(#ff0000)) y los valles azul (@c(#0000ff)).
 
    @b(Ejercicio 3.4): Siguiendo el enfoque del ejemplo Lissajous en la
    @l(#Seccion 1.7), construya un servidor web que calcule superficies y escriba
@@ -3956,8 +3955,8 @@
    Go proporciona dos tamaños de numeros complejos, @c(complex64) y
    @c(complex128), cuyos componentes son @c(float32) y @c(float64)
    respectivamente. La funcion nativa @c(complex) crea un numero complejo a
-   partir de sus componentes real e imaginario, e incorpora funciones @c(real) y
-   @c(imag) para extraer estos componentes:
+   partir de sus componentes real e imaginario, e incorpora las funciones
+   @c(real) e @c(imag) para extraer estos componentes:
 
    ..src > go
      var x complex128 = complex(1, 2) // 1+2i
@@ -3979,7 +3978,7 @@
    Bajo las reglas de la aritmetica constante, constantes complejas se pueden
    añadir a otras constantes (enteras o de coma flotante, real o imaginarias),
    lo que nos permite escribir numeros complejos de forma natural, como
-   @c(1+2i), o equivalentemente, @c(2i+1) . Las anteriores declaraciones @c(x) y
+   @c(1+2i), o equivalentemente, @c(2i+1). Las declaraciones anteriores @c(x) y
    @c(y) se pueden simplificar:
 
    ..src > go
@@ -3987,12 +3986,12 @@
      y := 3 + 4i
    < src..
 
-   Los numeros complejos se pueden comparar por igualdad con @c(==) y
-   @c(!=). Dos numeros complejos son iguales si sus partes reales son iguales y
-   sus partes imaginarias son iguales.
+   Los numeros complejos se pueden comparar por igualdad con @c(==) y @c(!=).
+   Dos numeros complejos son iguales si sus partes reales son iguales y sus
+   partes imaginarias son iguales.
 
    El paquete @c(math/cmplx) proporciona funciones de libreria para trabajar con
-   numeros complejos, tales como las raiz cuadrada compleja y las funciones de
+   numeros complejos, como raiz cuadrada compleja y las funciones de
    exponenciacion.
 
    ..src > go
@@ -4083,7 +4082,7 @@
    exige una gran precision aritmetica. Implementa el mismo fractal utilizando
    cuatro representaciones diferentes de numeros: @c(complex64), @c(complex128),
    @c(big.Float), y @c(big.Rat). (Los ultimos dos tipos se encuentran en el
-   paquete @c(math/big). @c(Float) utiliza arbitraria, pero delimitada precision
+   paquete @c(math/big). @c(Float) utiliza precision arbitraria, pero delimitada
    de punto flotante; @c(Rat) utiliza numeros racionales sin limites de
    precision.)  ¿Como se comparan en el rendimiento y uso de memoria? ¿A que
    niveles de zoom se hacen visibles los artefactos de renderizacion?
@@ -4154,7 +4153,7 @@
    simetria aqui esta:
 
    ..src > go
-     // itob reporta cuando i no es cero.
+     // itob informa cuando i no es cero.
      func itob(i int) bool { return i != 0 }
    < src..
 
@@ -4173,7 +4172,7 @@
    ..src > go
      s := "hello, world"
      fmt.Println(len(s))     // "12"
-     fmt.Println(s[0], s[7]) // "104 119"  ('h' and 'w')
+     fmt.Println(s[0], s[7]) // "104 119"  ('h' y 'w')
    < src..
 
    Intentar acceder a un byte fuera de este rango produce un panico:
@@ -4184,7 +4183,7 @@
 
    El @m(n)-esimo byte de una cadena no es necesariamente el @m(n)-esimo
    caracter de una cadena, porque la codificacion UTF-8 de un punto de codigo no
-   ASCII requiere dos o mas bytes. Como Trabajar con caracteres se discutira en
+   ASCII requiere dos o mas bytes. Como trabajar con caracteres se discutira en
    breve.
 
    La operacion de subcadena @c(s[i:j]) produce una nueva cadena que consta de
@@ -4226,9 +4225,9 @@
    ejemplo, podemos escribir
 
    ..src > go
-     s := "left foot"
+     s := "pie izquierdo"
      t := s
-     s += ", right foot"
+     s += ", pie derecho"
    < src..
 
    Esto no modifica la cadena que retenia @c(s) originalmente, pero hace que
@@ -4236,8 +4235,8 @@
    tanto, @c(t) aun contiene la cadena antigua.
 
    ..src > go
-     fmt.Println(s) // "left foot, right foot"
-     fmt.Println(t) // "left foot"
+     fmt.Println(s) // "pie izquierdo, pie derecho"
+     fmt.Println(t) // "pie izquierdo"
    < src..
 
    Dado que las cadenas son inmutables, no se permiten las construcciones que
@@ -4272,12 +4271,12 @@
     las cadenas de texto Go son interpretadas convencionalmente como UTF-8,
     podemos incluir puntos de codigo Unicode en literales de cadena.
 
-    Dentro de una literal de cadena entre comillas dobles, las secuencias de
-    escape que comienzan con una barra invertida @c(\) se pueden utilizar para
+    Dentro de una literal de cadena entre comillas dobles, las s@e(ecuencias de
+    escape) que comienzan con una barra invertida @c(\) se pueden utilizar para
     insertar valores arbitrarios de bytes en la cadena. Un conjunto de escape
-    maneja codigos de control ASCII como newline, retorno de carro y tabulacion:
+    maneja codigos de control ASCII como nueva linea, retorno de carro y tabulacion:
 
-    | @c(\a) | @"(alerta) o  campana                            |
+    | @c(\a) | @"(alerta) o campana                             |
     |--------|--------------------------------------------------|
     | @c(\b) | retroceso                                        |
     |--------|--------------------------------------------------|
@@ -4316,10 +4315,9 @@
     carro en archivos de texto.
 
     Las literales de cadenas sin formato son una manera conveniente de escribir
-    expresiones regulares, que tienden a tener un monton de barras
-    inversas. Tambien son utiles para plantillas HTML, literales JSON, mensajes
-    de uso de comandos y similares, que a menudo se extienden sobre varias
-    lineas.
+    expresiones regulares, que tienden a tener un monton de barras inversas.
+    Tambien son utiles para plantillas HTML, literales JSON, mensajes de uso de
+    comandos y similares, que a menudo se extienden sobre varias lineas.
 
     ..src > go
       const GoUsage = `Go is a tool for managing Go source code.
@@ -4354,7 +4352,7 @@
     Unicode version 8 define puntos de codigo para mas de 120.000 caracteres en
     mas de 100 idiomas y scripts. ¿Como se representan esto en los datos y
     programas de computadora? El tipo de datos naturales para almacenar una sola
-    runa es @c(int32), y eso es lo utiliza Go; tiene el sinonimo @c(rune)
+    runa es @c(int32), y eso es lo que utiliza Go; tiene el sinonimo @c(rune)
     precisamente para este proposito.
 
     Podriamos representar una secuencia de runas como una secuencia de valores
@@ -4390,8 +4388,8 @@
     acceder al @m(n)-esimo caracter de una cadena, pero UTF-8 tiene muchas
     propiedades deseables para compensar. La codificacion es compacta,
     compatible con ASCII y auto-sincronizada: es posible encontrar el inicio de
-    un caracter al realizar una copia de seguridad de no mas de tres
-    bytes. Tambien es un prefijo de codigo, por lo que se puede decodificar de
+    un caracter al realizar una copia de seguridad de no mas de tres bytes.
+    Tambien es un prefijo de codigo, por lo que se puede decodificar de
     izquierda a derecha sin ninguna ambigüedad o lookahead. La codificacion de
     ninguna runa es una subcadena de cualquier otra, o incluso de una secuencia
     de otras, por lo que puedes buscar una runa simplemente buscando sus bytes,
@@ -4434,11 +4432,11 @@
     ..pre >
       '世' '\u4e16' '\U00004e16'
 
-    Una runa cuyo valor es menor que 256 se puede escribir con una sola de
-    escape hexadecimal, por ejemplo @c('\x41') para @c('A'), pero para los
-    valores mas altos, debe utilizar un @c(\u) o @c(\U) de escape. En
-    consecuencia, @c('\xe4\xb8\x96') no es una runa literal legal, a pesar de
-    que esos tres bytes son un UTF-8 valido de un unico punto de codigo.
+    Una runa cuyo valor es menor que 256 se puede escribir con solo un escape
+    hexadecimal, por ejemplo @c('\x41') para @c('A'), pero para los valores mas
+    altos, debe utilizar un escape @c(\u) o @c(\U). En consecuencia,
+    @c('\xe4\xb8\x96') no es una runa literal legal, a pesar de que esos tres
+    bytes son un UTF-8 valido de un unico punto de codigo.
 
     Gracias a las buenas propiedades de UTF-8, muchas operaciones de cadena no
     requieren decodificacion. Podemos probar si una cadena contiene otra como
@@ -4509,7 +4507,7 @@
     runa en la cadena. Pero esto es torpe, y necesitamos bucles de este tipo
     todo el tiempo. Afortunadamente, Go tiene los bucles @c(range), cuando se
     aplica a una cadena, realiza decodificacion UTF-8 de forma implicita. La
-    salida del bucle de siguiente se muestra en la Figura 3.5; Observe como el
+    salida del bucle siguiente se muestra en la Figura 3.5; Observe como el
     indice salta en mas de 1 para cada runa no ASCII.
 
     ..src > go
@@ -4518,7 +4516,7 @@
       }
     < src..
 
-    ..figure > Figura 3.5. Un bucle @c(range) descodifica una cadena UTF-8-codificado.
+    ..figure > Figura 3.5. Un bucle @c(range) descodifica una cadena UTF-8.
 
       ..img  > img/Figure-3.5.jpg
 
@@ -4548,25 +4546,25 @@
     Ya hemos mencionado que es sobre todo una cuestion de convencion en Go que
     las cadenas de texto se interpretan como secuencias codificadas en UTF-8 de
     puntos de codigo Unicode, pero para el uso correcto de bucles @c(range) de
-    cadenas, es mas que una convencion, es una necesidad. ¿Que sucede si
-    aplicamos @c(range) en cadena que contiene datos binarios arbitrarios o, de
-    hecho, datos UTF-8 que contienen errores?
+    cadenas, mas que una convencion, es una necesidad. ¿Que sucede si aplicamos
+    @c(range) en una cadena que contiene datos binarios arbitrarios o, de hecho,
+    datos UTF-8 con errores?
 
     Cada vez que un decodificador UTF-8, ya sea explicito en una llamada a
     @c(utf8.DecodeRuneInString) o implicito en un bucle @c(range), consume un
     byte de entrada inesperado, se genera un caracter Unicode de reemplazo
     especial, @c('\uFFFD'), que generalmente se impreme como un signo de
     interrogacion dentro de una forma hexagonal o un diamante negro �. Cuando un
-    programa encuentra este valor de runa, a menudo es un signo de que parte del
+    programa encuentra este valor de runa, a menudo es signo de que parte del
     sistema que genero los datos de cadena ha sido descuidado en su tratamiento
     de las codificaciones de texto.
 
     UTF-8 es excepcionalmente conveniente como un formato de intercambio, pero
-    dentro de un programa las runas puede ser mas conveniente porque son de
+    dentro de un programa las runas puede ser mas convenientes porque son de
     tamaño uniforme y por lo tanto, de facil indexado en arreglos y slices.
 
-    Una conversion @c([]rune) aplicada a una cadena codificada en UTF-8 devuelve la
-    secuencia de codigos Unicode:
+    Aplicar una conversion @c([]rune) a una cadena codificada en UTF-8 devuelve
+    la secuencia en codigos Unicode:
 
     ..src > go
       // "programa" en katakana
@@ -4586,11 +4584,11 @@
       fmt.Println(string(r)) // "プログラム"
     < src..
 
-    Convertir un valor entero en una cadena interpre el entero como un valor
-    de runa, y produce la representacion UTF-8 de esa runa:
+    Convertir un valor entero en una cadena interpreta el entero como un valor de
+    runa, y produce la representacion UTF-8 de esa runa:
 
     ..src > go
-      fmt.Println(string(65))     // "A", not "65"
+      fmt.Println(string(65))     // "A", no "65"
       fmt.Println(string(0x4eac)) // "京"
     < src..
 
@@ -4608,18 +4606,18 @@
     reemplazo, comparacion, recorte, division, y union en cadenas.
 
     El paquete @c(bytes) tiene funciones similares para manipular slices de
-    bytes, de tipo @c([]byte), que comparten algunas propiedades con
-    @c(strings). Debido a que las cadenas son inmutables, la construccion de
-    cadenas de forma incremental puede implicar una gran cantidad de asignacion
-    y copiado. En tales casos, es mas eficaz utilizar el tipo @c(bytes.Buffer),
-    que vamos a mostrar en un momento.
+    bytes, de tipo @c([]byte), que comparten algunas propiedades con @c(strings).
+    Ya que las cadenas son inmutables, la construccion de cadenas de forma
+    incremental puede implicar una gran cantidad de asignacion y copiado. En
+    tales casos, es mas eficaz utilizar el tipo @c(bytes.Buffer), que vamos a
+    mostrar en un momento.
 
     El paquete @c(strconv) proporciona funciones para convertir booleanos,
     enteros, y valores de coma flotante hacia y desde sus representaciones en
     cadenas, y funciones para citar y des-citar cadenas.
 
     El paquete @c(unicode) proporciona funciones como @c(IsDigit), @c(IsLetter),
-    @c(IsUpper) y @c(IsLower) para la clasificacion de runas. Cada funcion toma
+    @c(IsUpper) e @c(IsLower) para la clasificacion de runas. Cada funcion toma
     un unico argumento de tipo runa y devuelve un booleano. Las funciones de
     conversion como @c(ToUpper) y @c(ToLower) convierten una runa en el caso
     concreto si se trata de una letra. Todas estas funciones utilizan las
@@ -4685,16 +4683,15 @@
 
     Los paquetes @c(path) y @c(path/filepath) proporcionan un conjunto general
     de funciones para manipular nombres jerarquicos. El paquete @c(path)
-    funciona con rutas delimitada por barras en cualquier plataforma. No se debe
+    funciona con rutas delimitadas por barras en cualquier plataforma. No se debe
     utilizar para nombres de archivo, pero es apropiado para otros dominios,
     como los componente de ruta de una URL. Por el contrario, @c(path/filepath)
     manipula los nombres de archivos usando las reglas para la plataforma
-    huesped, tales como @c(/foo/bar) para POSIX o @c(c:\foo\bar) en Microsoft
-    Windows.
+    huesped, como @c(/foo/bar) para POSIX o @c(c:\foo\bar) en Microsoft Windows.
 
     Vamos a continuar con otro ejemplo de subcadena. La tarea es tomar una
     representacion de cadena de un entero, como @c("12345"), e insertar comas
-    cada tres posiciones, como en @c("12,345") . Esta version solo funciona para
+    cada tres posiciones, como en @c("12,345"). Esta version solo funciona para
     enteros; El manejo de numeros de coma flotante se deja como un ejercicio.
 
     ..figure > @l(gopl.io/ch3/comma/main.go<>gopl.io/ch3/comma)
@@ -4713,13 +4710,13 @@
 
     El argumento de @c(comma) es una cadena. Si su longitud es menor o igual a
     3, no es necesaria una coma. De lo contrario, comma se llama a si misma de
-    forma recursiva con una subcadena formada por todos menos los tres ultimos
-    caracteres, y añåde una coma y los tres ultimos caracteres en el resultado
+    forma recursiva con una subcadena formada por todos los caracteres menos los
+    tres ultimos, y añåde una coma y los tres ultimos caracteres en el resultado
     de la llamada recursiva.
 
-    Una cadena contiene un arreglo de bytes que, una vez creado, es
-    inmutable. Por el contrario, los elementos de una slice de bytes se pueden
-    modificar libremente.
+    Una cadena contiene un arreglo de bytes que, una vez creado, es inmutable.
+    Por el contrario, los elementos de una slice de bytes se pueden modificar
+    libremente.
 
     Las cadenas se pueden convertir en slices de bytes y viceversa:
 
@@ -4735,12 +4732,12 @@
     capaz de evitar la asignacion y la copia en algunos casos, pero en general,
     la copia es necesaria para asegurar que los bytes de @c(s) se mantienen sin
     cambios incluso si los de @c(b) son modificados posteriormente. La
-    conversion de slice de byte de nuevo a cadena con @c[string(b)] tambien
-    genera una copia, para asegurar inmutabilidad de la cadena resultante
-    @c(s2).
+    conversion del slice de bytes de nuevo a una cadena con @c[string(b)]
+    tambien genera una copia, para asegurar inmutabilidad de la cadena
+    resultante @c(s2).
 
-    Para evitar conversiones y asignacion de memoria innecesaria, muchas
-    de las funciones de utilidad en el paquete @c(bytes) directamente paralelos a
+    Para evitar conversiones y asignacion de memoria innecesaria, muchas de las
+    funciones de utilidad en el paquete @c(bytes) son directamente paralelos a
     sus contrapartes en el paquete @c(strings). Por ejemplo, aqui hay una media
     docena de funciones en @c(strings):
 
@@ -4753,7 +4750,7 @@
       func Join(a []string, sep string) string
     < src..
 
-    y las correspondientes en bytes :
+    y las correspondientes en bytes:
 
     ..src > go
       func Contains(b, subslice []byte) bool
@@ -4805,16 +4802,15 @@
     El tipo @c(bytes.Buffer) es extremadamente versatil, y cuando hablemos de
     interfaces en el @l(#Capitulo 7), vamos a ver como se puede utilizar como un
     sustituto de un archivo cada vez que una funcion de E/S requiere un poso de
-    bytes (@c(io.Writer)) como @c(Fprintf), o una fuente de bytes
-    (@c(io.Reader)).
+    bytes (@c(io.Writer)) como @c(Fprintf), o una fuente de bytes (@c(io.Reader)).
 
    @b(Ejercicio 3.10): Escribir una version no recursiva de @c(comma),
    utilizando @c(bytes.Buffer) en lugar de la concatenacion de cadenas.
 
    @b(Ejercicio 3.11): Mejorar @c(comma) para que se maneje correctamente los
-   numeros de punto flotante y un opcionalmente con signo.
+   numeros de punto flotante y opcionalmente con signo.
 
-   @b(Ejercicio 3.12): Escribir una funcion que informa de si dos cadenas son
+   @b(Ejercicio 3.12): Escribir una funcion que informe de si dos cadenas son
    anagramas entre si, es decir, que contienen las mismas letras en un orden
    diferente.
 
@@ -4967,8 +4963,8 @@
     secuencia.
 
     He aqui un ejemplo del paquete @c(time), que define constantes de tipo
-    @c(Weekday) de los dias de la semana, a partir de cero para @c(Sunday).
-    Tipos de esta clase a menudo se conocen como @e(enumeraciones), o @e(enums),
+    @c(Weekday) de los dias de la semana, a partir de cero para @c(Sunday). Los
+    tipos de esta clase a menudo se conocen como @e(enumeraciones), o @e(enums),
     para abreviar.
 
     ..src > go
@@ -5004,10 +5000,10 @@
       )
     < src..
 
-    Como @c(iota) incrementa, a cada constante se le asigna el valor de @c(1 <<
-    iota), que evalua a potencias consecutivas de dos, cada un corresponde a un
-    solo bit. Podemos utilizar estas constantes dentro de funciones que prueban,
-    establecen o borran uno o mas de estos bits:
+    Como @c(iota) se incrementa, a cada constante se le asigna el valor de @c(1
+    << iota), que evalua a potencias consecutivas de dos, cada un corresponde a
+    un solo bit. Podemos utilizar estas constantes dentro de funciones que
+    prueban, establecen o borran uno o mas de estos bits:
 
     ..figure > @l(gopl.io/ch3/netflag/netflag.go<>gopl.io/ch3/netflag)
 
@@ -5099,11 +5095,11 @@
       var z complex128 = complex128(Pi64)
     < src..
 
-    Para literales, la sintaxis determina el sabor. Los literales de @c(0),
+    Para literales, la sintaxis determina el sabor. Los literales @c(0),
     @c(0.0), @c(0i), y @c('\u0000') representan constantes del mismo valor pero
     diferentes sabores: entero sin tipo, sin tipo de punto flotante, complejo
     sin tipo, y runa sin tipo, respectivamente. Del mismo modo, @c(true) y
-    @c(false) son booleanos sin tipo y literales de cadena son cadenas sin tipo.
+    @c(false) son booleanos sin tipo y las literales de cadena son cadenas sin tipo.
 
     Recordemos que @c(/) puede representar un numero entero o division de punto
     flotante dependiendo de sus operandos. En consecuencia, la eleccion de
@@ -5139,9 +5135,8 @@
     < src..
 
     Ya sea implicita o explicitamente, la conversion de una constante de un tipo
-    a otro requiere que el tipo de destino pueda representar el valor
-    original. Se permite el redondeo para numeros reales y complejos de coma
-    flotante:
+    a otro requiere que el tipo de destino pueda representar el valor original.
+    Se permite el redondeo para numeros reales y complejos de coma flotante:
 
     ..src > go
       const (
@@ -5192,7 +5187,7 @@
       fmt.Printf("%T\n", 0)      // "int"
       fmt.Printf("%T\n", 0.0)    // "float64"
       fmt.Printf("%T\n", 0i)     // "complex128"
-      fmt.Printf("%T\n", '\000') // "int32" (rune)
+      fmt.Printf("%T\n", '\000') // "int32" (runa)
     < src..
 
     Ahora hemos cubierto los tipos de datos basicos de Go. El siguiente paso es

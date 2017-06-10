@@ -5,19 +5,19 @@
   <head>
     <title>The Go Programming Language</title>
     <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    
+
     <meta name="author"      content="Alan A. A. Donovan" /><meta name="author"      content="Brian W. Kernighan" />
-    
-    
+
+
     <meta name="id"          content="isbn-10 0-13-419044-0" />
     <meta name="date"        content="29/09/2015" />
-    
-    
-    
+
+
+
 
     <link rel="stylesheet" type="text/css" href="worg-data/worg.css" />
 
-    
+
   </head>
   <body>
 
@@ -1956,7 +1956,7 @@ x = 7 eˣ = 1096.633</pre>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Notice that the function corner returns two values, the coordinates of the corner of the cell.</p>
+<p>Notice that the function <code>corner</code> returns two values, the coordinates of the corner of the cell.</p>
 <p>The explanation of how the program works requires only basic geometry, but it’s fine to skip over it, since the point is to illustrate floating-point computation. The essence of the program is mapping between three different coordinate systems, shown in Figure 3.2. The first is a 2-D grid of 100&amp;100 cells identified by integer coordinates <span class="math" >(i, j)</span>, starting at <span class="math" >(0, 0)</span> in the far back corner. We plot from the back to the front so that background polygons may be obscured by foreground ones.</p>
 <p>The second coordinate system is a mesh of 3-D floating-point coordinates <span class="math" >(x, y, z)</span>, where <span class="math" >x</span> and <span class="math" >y</span> are linear functions of <span class="math" >i</span> and <span class="math" >j</span>, translated so that the origin is in the center, and scaled by the constant <code>xyrange</code>. The height <span class="math" >z</span> is the value of the surface function <span class="math" >ƒ(x, y)</span>.</p>
 <p>The third coordinate system is the 2-D image canvas, with <span class="math" >(0, 0)</span> in the top left corner. Points in this plane are denoted <span class="math" >(sx, sy)</span>. We use an isometric projection to map each 3-D point</p>

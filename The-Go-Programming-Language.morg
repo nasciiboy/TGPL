@@ -3695,8 +3695,8 @@
      < src..
 
 
-   Notice that the function corner returns two values, the coordinates of the
-   corner of the cell.
+   Notice that the function @c(corner) returns two values, the coordinates of
+   the corner of the cell.
 
    The explanation of how the program works requires only basic geometry, but
    it’s fine to skip over it, since the point is to illustrate floating-point
