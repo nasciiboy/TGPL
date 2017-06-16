@@ -5221,15 +5221,15 @@
    versatiles, pero para entender los slices primero debemos entender los
    arreglos.
 
-   Los elementos individuales de arreglo se acceden con la notacion de
+   Los elementos individuales de un arreglo se acceden con la notacion de
    subindices convencional, donde los subindices abarcan desde cero a uno menos
-   que la longitud de la arreglo. La funcion nativa @c(len) devuelve el numero
-   de elementos de la arreglo.
+   que la longitud del arreglo. La funcion nativa @c(len) devuelve el numero de
+   elementos del arreglo.
 
    ..src > go
      var a [3]int             // arreglo de 3 enteros
      fmt.Println(a[0])        // imprime el primer elemento
-     fmt.Println(a[len(a)-1]) // imprime el ultime elemento, a[2]
+     fmt.Println(a[len(a)-1]) // imprime el ultimo elemento, a[2]
 
      // imprimir los indices y elementos.
      for i, v := range a {
@@ -5243,7 +5243,7 @@
    < src..
 
    Por defecto, los elementos de un nuevo arreglo de variables estan
-   configurados inicialmente a el valor cero para el tipo de elemento, que es 0
+   configurados inicialmente a el valor cero para el tipo del elemento, que es 0
    para los numeros. Podemos utilizar un @e(arreglo literal) para inicializar un
    arreglo con una lista de valores:
 
@@ -5253,8 +5253,8 @@
      fmt.Println(r[2]) // "0"
    < src..
 
-   En un arreglo literal, si aparece una elipsis @c("...") aparece en lugar de
-   la longitud, la longitud del arreglo se determina por el numero de
+   En un arreglo literal, si una elipsis @"(@c(...)) aparece en lugar de la
+   longitud, la longitud del arreglo se determina por el numero de
    inicializadores. La definicion de @c(q) se puede simplificar como
 
    ..src > go
@@ -5317,9 +5317,9 @@
    < src..
 
    Como un ejemplo mas plausible, la funcion @c(Sum256) en el paquete
-   @c(crypto/sha256) produce el @e(digest) o hash criptografico SHA256 o DIGEST
-   de un mensaje almacenado en un slice arbitrario de bytes. El hash tiene 256
-   bits, por lo que su tipo es @c([32]byte) . Si dos hash son los mismos, es muy
+   @c(crypto/sha256) produce el hash criptografico SHA256 o @e(digest) de un
+   mensaje almacenado en un slice arbitrario de bytes. El hash tiene 256 bits,
+   por lo que su tipo es @c([32]byte) . Si dos hash son los mismos, es muy
    probable que los dos mensajes sean iguales; Si los hash difieren, los dos
    mensajes son diferentes. Este programa imprime y compara los hash SHA256 de
    @c("x") y @c("X"):
@@ -5401,7 +5401,7 @@
    tienen el tipo @c(T); es como un tipo arreglo pero sin un tamaño.
 
    Arreglos y slices estan intimamente conectados. Un slice es una estructura de
-   datos ligera que da acceso a una subsecuencia de (o tal vez todos) los
+   datos ligera que da acceso a una subsecuencia de (o tal vez a todos) los
    elementos de un arreglo, que se conoce como @e(arreglo subyacente) del
    slice. Una slice tiene tres componentes: un puntero, una longitud y una
    capacidad. El puntero apunta al primer elemento del arreglo que se puede
@@ -5433,7 +5433,7 @@
    El @e(operador de slice) @c(s[i:j]), donde @c(0) ≤ @c(i) ≤ @c(j) ≤
    @c[cap(s)], crea un nuevo segmento que se refiere a los elementos de @c(i) a
    @c(j-1) de la secuencia @c(s), que puede ser una variable del arreglo, un
-   puntero a un arreglo u otra porcion. El slice resultante tiene @c(j-i)
+   puntero a un arreglo u otro slice. El slice resultante tiene @c(j-i)
    elementos. Si @c(i) se omite, es 0, y si @c(j) se omite, es @c[len(s)]. Asi,
    el slice @c(meses[1:13]) se refiere a toda la gama de meses validos, como lo
    hace el slice @c(meses[1:]); el slice @c(meses[:]) se refiere a todo el
@@ -5520,7 +5520,7 @@
    < src..
 
    Observe como la expresion que inicializa el slice @c(s) difiere de la del
-   arreglo de @c(a). Una @e(slice literal) se ve similar a un arreglo literal,
+   arreglo de @c(a). Un @e(slice literal) se ve similar a un arreglo literal,
    una secuencia de valores separados por comas y rodeada por llaves, pero el
    tamaño no se proporciona. Esto crea implicitamente una variable de arreglo
    del tamaño correcto y produce una division que apunta a el. Al igual que con
@@ -5554,7 +5554,7 @@
    funcionen tambien de esta manera. Hay dos razones por las cuales la
    equivalencia de profunda es problematica. En primer lugar, a diferencia de
    los elementos del arreglo, los elementos de un slice son indirectos, lo que
-   hace posible que una slice se contenga a si mismo. Aunque hay maneras de
+   hace posible que un slice se contenga a si mismo. Aunque hay maneras de
    tratar con tales casos, ninguno es simple, eficiente, y lo mas importante,
    obvio.
 
@@ -5583,7 +5583,7 @@
    subyacente. El slice nil tiene longitud y capacidad cero, pero tambien hay
    slices no nulos de longitud y capacidad cero, como @c([]int{}) o
    @c{make([]int, 3)[3:]}. Como con cualquier tipo que puede tener valores
-   nulos, el valor nulo de un tipo de segmento particular puede ser escrito
+   nulos, el valor nulo de un tipo de slice particular puede ser escrito
    utilizando una expresion de conversion como @c{[]int(nil)}.
 
    ..src > go
@@ -5593,7 +5593,7 @@
      s = []int{}    // len(s) == 0, s != nil
    < src..
 
-   Por lo tanto, si usted necesita probar si una slice esta vacio, utilice
+   Por lo tanto, si usted necesita probar si un slice esta vacio, utilice
    @c[len(s) == 0], no @c(s == nil). Ademas de comparar la igualdad con @c(nil),
    una slice nil se comporta como cualquier otro slice de longitud cero; por
    ejemplo, @c[reverse(nil)] es perfectamente seguro. A menos que se demuestre
@@ -5611,10 +5611,10 @@
 
    Bajo el capo, @c(make) crea una variable de arreglo sin nombre y devuelve un
    slice de este; El arreglo es accesible solo a traves del slice devuelto. En
-   la primera forma, el slice es una vista de todo el arreglo. En el segundo, el
+   la primer forma, el slice es una vista de todo el arreglo. En el segundo, el
    slice es una vista de solo los primeros @c(len) elementos, pero su capacidad
-   incluye toda el arreglo arreglo. Los elementos adicionales se reservan para
-   el futuro crecimiento.
+   incluye toda el arreglo. Los elementos adicionales se reservan para el futuro
+   crecimiento.
 
 *** Seccion 4.2.1 <> La Funcion @c(append)
 
@@ -5647,14 +5647,14 @@
             // Hay espacio para crecer. Extiende el slice
             z = x[:zlen]
           } else {
-            // No hay suficiente espacio.  Asigna un nuevo arreglo.
+            // No hay suficiente espacio. Asigna un nuevo arreglo.
             // Crecer al doble, para compenzar la complejidad lineal.
             zcap := zlen
             if zcap < 2*len(x) {
               zcap = 2 * len(x)
             }
             z = make([]int, zlen, zcap)
-            copy(z, x) // a built-in function; see text
+            copy(z, x) // una funcion nativa; ver texto
           }
           z[len(x)] = y
           return z
@@ -5664,18 +5664,18 @@
 
     Cada llamada a @c(appendInt) debe comprobar si el slice tiene capacidad
     suficiente para contener los nuevos elementos en el arreglo existente. Si es
-    asi, se extiende el slice mediante la definicion de una slice mas grande
+    asi, se extiende el slice mediante la definicion de un slice mas grande
     (todavia dentro de la arreglo original), copia el elemento @c(y) en el nuevo
     espacio, y devuelve el slice. La entrada @c(x) y el resultado @c(z)
     comparten el misma arreglo subyacente.
 
     Si no hay suficiente espacio para el crecimiento, @c(appendInt) debe asignar
-    un nueva arreglo lo suficientemente grande para contener el resultado,
-    copiar los valores de @c(x) en el y, a continuacion, añadir el nuevo
+    un nuevo arreglo lo suficientemente grande para contener el resultado,
+    copiar los valores de @c(x) en el, y a continuacion, añadir el nuevo
     elemento @c(y). Ahora el resultado @c(z) hace referencia a un arreglo
     subyacente diferente al que referia el arreglo @c(x).
 
-    Seria facil copiar los elementos con bucles explicitas, pero es mas facil
+    Seria facil copiar los elementos con bucles explicitos, pero es mas facil
     utilizar la funcion nativa @c(copy), que copia los elementos de un slice a
     otro del mismo tipo. Su primer argumento es el destino y el segundo es la
     fuente, parecido al orden de los operandos de una asignacion como @c(dst =
@@ -5685,7 +5685,7 @@
     por lo que no hay peligro de se acabe o sobreescriba algo fuera del rango.
 
     Por eficiencia, el nueva arreglo es generalmente algo mayor que el minimo
-    necesario para almacenar @c(x) y @c(y). La expandir el arreglo duplicando su
+    necesario para almacenar @c(x) y @c(y). Expandir el arreglo duplicando su
     tamaño en cada expansion evita un numero excesivo de asignaciones y asegura
     que anexar un solo elemento tome un tiempo constante en promedio. Este
     programa demuestra el efecto:
@@ -5758,13 +5758,13 @@
 
     La actualizacion de la variable slice se requiere no solo al llamar a
     @c(append), sino tambien a cualquier funcion que pueda cambiar la longitud o
-    la capacidad de una slice o hacer que se refiere a un arreglo subyacente
+    la capacidad de un slice o hacer que se refiera a un arreglo subyacente
     diferente. Para usar los slices correctamente, es importante tener en cuenta
     que aunque los elementos del arreglo subyacente son indirectos, el puntero,
-    la longitud y la capacidad de la slice no lo son. Para actualizarlos se
+    la longitud y la capacidad del slice no lo son. Para actualizarlos se
     requiere una asignacion como la anterior. En este sentido, los slices no son
-    los tipos de referencia @"(puros), sino que se asemejan a un tipo de
-    agregado como esta estructura:
+    tipos de referencia @"(puros), sino que se asemejan a un tipo de agregado
+    como esta estructura:
 
     ..src > go
       type IntSlice struct {
@@ -5786,7 +5786,7 @@
       fmt.Println(x)      // "[1 2 3 4 5 6 1 2 3 4 5 6]"
     < src..
 
-    Con la pequeña modificacion se muestra a continuacion, podemos hacer
+    Con la pequeña modificacion que se muestra a continuacion, podemos hacer
     coincidir el comportamiento con el @c(append) nativo. Los puntos suspensivos
     (@c("...")) en la declaracion de @c(appendInt) crean una funcion
     @e(variadic): acepta cualquier numero de argumentos finales. Los puntos
@@ -5798,7 +5798,7 @@
       func appendInt(x []int, y ...int) []int {
         var z []int
         zlen := len(x) + len(y)
-        // ...expand z to at least zlen...
+        // ...expandir z al menos zlen...
         copy(z[len(x):], y)
         return z
       }
@@ -5836,10 +5836,10 @@
       < src..
 
 
-    La parte sutil es que la porcion de entrada y la porcion de salida comparten
-    el mismo arreglo subyacente. Esto evita la necesidad de asignar otro
-    arreglo, aunque por supuesto los contenidos de datos se sobrescriben en
-    parte, como se evidencia por la segunda instruccion de impresion:
+    La parte sutil es que el slice de entrada y el slice de salida comparten el
+    mismo arreglo subyacente. Esto evita la necesidad de asignar otro arreglo,
+    aunque por supuesto los contenidos de datos se sobrescriben en parte, como
+    se evidencia por la segunda instruccion de impresion:
 
     ..src > go
       data := []string{"uno", "", "tres"}
@@ -5870,7 +5870,7 @@
     intrincado de un slice es la excepcion, no la regla, pero puede ser clara,
     eficiente y util en ocasiones.
 
-    Se puede usar un slice para implementar una pila. Dada que tenemos un slice
+    Se puede usar un slice para implementar una pila. Dado que tenemos un slice
     vacio @c(stack), podemos empujar un nuevo valor en el extremo del slice con
     @c(append):
 
@@ -5890,7 +5890,7 @@
       stack = stack[:len(stack)-1] // sacar
     < src..
 
-    Para eliminar un elemento a la mitad de una slice, preservando el orden de
+    Para eliminar un elemento a la mitad de un slice, preservando el orden de
     los elementos restantes, utilice @c(copy) para deslizar los elementos de
     numeros mas altos hacia abajo por uno, para llenar el hueco:
 
@@ -5926,15 +5926,15 @@
    pasada.
 
    @b(Ejercicio 4.5): Escribir una funcion in situ para eliminar duplicados
-   adyacentes en una slice @c([]string).
+   adyacentes en un slice @c([]string).
 
-   @b(Ejercicio 4.6): Escribir una funcion in situ que aplaste cada sequencia
-   Unicode de espacios adyacentes (ver @c(unicode.IsSpace)) en un slice
-   @c([]byte) codificado en UTF-8 en solo espacio ASCII.
+   @b(Ejercicio 4.6): Escribir una funcion in situ que en un slice @c([]byte)
+   codificado en UTF-8, aplaste cada sequencia Unicode de espacios adyacentes
+   (ver @c(unicode.IsSpace)) a un solo espacio ASCII.
 
    @b(Ejercicio 4.7): Modificar @c(reverse) para invertir in situ los caracteres
-   de una slice @c([]byte) que represente una cadena codificado en
-   UTF-8. ¿Puedes hacerlo sin asignar nueva memoria?
+   de un slice @c([]byte) que represente una cadena codificada en UTF-8.
+   ¿Puedes hacerlo sin asignar nueva memoria?
 
 ** Seccion 4.3 <> Mapas
 
@@ -5962,7 +5962,7 @@
      edades := make(map[string]int) // mapeo de cadenas a ints
    < src..
 
-   Tambien podemos usar un @e(mapa literal) para crear un nuevo mapa poblada con
+   Tambien podemos usar un @e(mapa literal) para crear un nuevo mapa poblado con
    algunos pares iniciales clave/valor:
 
    ..src > go
@@ -6033,8 +6033,8 @@
 
    Para enumerar todos los pares clave/valor en el mapa, se utiliza un bucle
    @c(for) basado en @c(range) similar al que vimos para los slices. Las
-   iteraciones sucesivas del bucle hacen que las variables @c(name) y @c(age) se
-   establecen en el siguiente par clave/valor:
+   iteraciones sucesivas del bucle hacen que las variables @c(nonmbre) y
+   @c(edad) se establescan en el siguiente par clave/valor:
 
    ..src > go
      for nombre, edad := range edades {
@@ -6099,7 +6099,7 @@
      ages["carol"] = 21 // panic: assignment to entry in nil map
    < src..
 
-   Debe asignar el mapa antes de poder almacenarlo.
+   Debe asignar el mapa antes de poder almacenar en el.
 
    El acceso a un elemento de un mapa mediante subindice siempre produce un
    valor. Si la clave esta presente en el mapa, se obtiene el valor
@@ -6126,9 +6126,9 @@
    a menudo se denomina @c(ok), especialmente si se utiliza inmediatamente en
    una condicion @c(if).
 
-   Como con los slices, los mapas no pueden ser compararse uno con otro; la
-   unica comparacion legal es con @c(nil). Para probar si dos mapas contienen
-   las mismas claves y los mismos valores asociados, debemos escribir un bucle:
+   Como con los slices, los mapas no pueden compararse uno con otro; la unica
+   comparacion legal es con @c(nil). Para probar si dos mapas contienen las
+   mismas claves y los mismos valores asociados, debemos escribir un bucle:
 
    ..src > go
      func equal(x, y map[string]int) bool {
@@ -6186,7 +6186,7 @@
 
    Los programadores de Go a menudo describen un mapa de esta manera
    utilizandolo como un @"(conjunto de cadenas) sin mas preambulos, pero
-   cuidado, no todo los valores @c(map[string]bool) son conjuntos simples;
+   cuidado, no todos los valores @c(map[string]bool) son conjuntos simples;
    algunos pueden contener valores tanto @c(true) y @c(false).
 
    A veces necesitamos un mapa o conjunto cuyas claves sean slices, pero ya que
@@ -6459,12 +6459,13 @@
    sea necesario, la repeticion cansaria. En cambio, los tipos estructura suelen
    aparecer dentro de la declaracion de un tipo con nombre como @c(Empleado).
 
-   Un llamado tipo de estructura @c(S) no puede declarar un campo del mismo tipo
-   @c(S): un valor agregado no puede contenerse a si mismo. (Una restriccion
-   analoga se aplica a los arreglos.) Pero @c(S) puede declarar un campo del
-   tipo puntero @c(*S), lo que nos permite crear estructuras de datos recursivas
-   como listas enlazadas y arboles. Esto se ilustra en el siguiente codigo, que
-   utiliza un arbol binario para implementar un tipo de insercion:
+   Un tipo de estructura con nombre @c(S) no puede declarar un campo del mismo
+   tipo @c(S): un valor agregado no puede contenerse a si mismo. (Una
+   restriccion analoga se aplica a los arreglos.) Pero @c(S) puede declarar un
+   campo del tipo puntero @c(*S), lo que nos permite crear estructuras de datos
+   recursivas como listas enlazadas y arboles. Esto se ilustra en el siguiente
+   codigo, que utiliza un arbol binario para implementar un tipo de insercion
+   ordenada:
 
    ..figure > @l(gopl.io/ch4/treesort/sort.go<>gopl.io/ch4/treesort)
 
@@ -6547,8 +6548,8 @@
       p := Point{1, 2}
     < src..
 
-    Hay dos formas de struct literal. La primer forma, mostrada arriba, requiere
-    que se especifique un valor de @e(cada) campo, en el orden correcto. Se
+    Hay dos formas de estructura literal. La primer forma, mostrada arriba, requiere
+    que se especifique un valor para @e(cada) campo, en el orden correcto. Se
     carga al escritor (y al lector) el recordar exactamente cuales son los
     campos, y hace que el codigo sea fragil si el conjunto de campos crece mas
     tarde o se reordena. En consequencia, esta forma tiende a ser utilizado solo
@@ -6608,8 +6609,8 @@
     funciones o se devuelven indirectamente mediante un puntero,
 
     ..src > go
-      func Bonus(e *Employee, percent int) int {
-        return e.Salary * percent / 100
+      func Bonus(e *Empleado, porcentage int) int {
+        return e.Salario * porcentage / 100
       }
     < src..
 
@@ -6618,8 +6619,8 @@
     copia, no una referencia al argumento original.
 
     ..src > go
-      func AwardAnnualRaise(e *Employee) {
-        e.Salary = e.Salary * 105 / 100
+      func PremioAnualAumento(e *Empleado) {
+        e.Salario = e.Salario * 105 / 100
       }
     < src..
 
@@ -6677,7 +6678,7 @@
     enbebida) de Go que nos permite usar una estructura como un @e(campo
     anonimo) de otra estructura, proporcionando un acceso directo,
     sintacticamente conveniente para que una simple expresion de punto como
-    @c(x.f) puede representar una cadena de campos como @c(x.d.e.f).
+    @c(x.f) pueda representar una cadena de campos como @c(x.d.e.f).
 
     Considere un programa de dibujo 2-D que proporciona una libreria de formas,
     como rectangulos, elipses, estrellas y ruedas. Aqui hay dos de los tipos que
@@ -6694,8 +6695,8 @@
 
     Un @c(Circulo) tiene campos para las coordenadas de su centro @c(X) y @c(Y),
     y un @c(Radio). Una @c(Rueda) tiene todas las caracteristicas de un
-    @c(Circulo), ademas de @c(Rayos), el numero de radios radiales
-    inscritos. Vamos a crear una rueda:
+    @c(Circulo), ademas de @c(Rayos), el numero de radios radiales inscritos.
+    Vamos a crear una rueda:
 
     ..src > go
       var w Rueda
@@ -6755,7 +6756,7 @@
     < src..
 
     Gracias al embebido, podemos referirnos a los nombres en las hojas
-    del arbol implicitamento sin dar los nombres participantes:
+    del arbol implicitamente sin dar los nombres participantes:
 
     ..src > go
       var w Rueda
@@ -6791,10 +6792,10 @@
 
           w = Rueda{
             Circulo: Circulo{
-              Punto:  Punto{X: 8, Y: 8},
+              Punto: Punto{X: 8, Y: 8},
               Radio: 5,
             },
-            Rayos: 20, // NOTA: comma necesaria aqui (y en el Radio)
+            Rayos: 20, // NOTA: comma necesaria aqui (y en Radio)
           }
 
           fmt.Printf("%#v\n", w)
@@ -6920,8 +6921,8 @@
 
    Las estructuras de datos como esta son un excelente ajuste para JSON, y es
    facil de convertir en ambas direcciones. Convertir una estructura de datos Go
-   como @c(movies) a JSON se denomina @e(marshaling). La ordenacion se se
-   realiza con @c(json.Marshal):
+   como @c(movies) a JSON se denomina @e(marshaling). El marshaling se realiza
+   con @c(json.Marshal):
 
    ..src > go
      data, err := json.Marshal(movies)
@@ -6931,7 +6932,7 @@
      fmt.Printf("%s\n", data)
    < src..
 
-   @c(Marshal) produce una slice de bytes que contiene una cadena muy grande sin
+   @c(Marshal) produce un slice de bytes que contiene una cadena muy grande sin
    ningun espacio en blanco:
 
    ..src > go
@@ -7016,12 +7017,12 @@
 
    La operacion inversa para marshaling, la decodificacion de JSON y rellenar
    una estructura de datos Go, se denomina @e(unmarshaling), y se realiza por
-   @c(json.Unmarshal). El codigo de abajo descoloca los datos de la pelicula
-   JSON en un slice de estructuras cuyo unico campo es Title . De esta manera,
-   al definir estructuras de datos Go adecuadas, podemos seleccionar que partes
-   de la entrada JSON se deben descifrar y cuales descartar. Cuando
-   @c(Unmarshal) regresa, se ha llenado el slice con la informacion de
-   @c(Title); Otros nombres en el JSON se ignoran.
+   @c(json.Unmarshal). El codigo de abajo aplica unmarshaling sobre los datos de
+   las peliculas JSON en un slice de estructuras cuyo unico campo es Title. De
+   esta manera, al definir estructuras de datos Go adecuadas, podemos
+   seleccionar que partes de la entrada JSON se deben descifrar y cuales
+   descartar. Cuando @c(Unmarshal) regresa, se ha llenado el slice con la
+   informacion de @c(Title); Otros nombres en el JSON se ignoran.
 
    ..src > go
      var titles []struct{ Title string }
@@ -7039,7 +7040,7 @@
    ..figure > @l(gopl.io/ch4/github/github.go<>gopl.io/ch4/github)
 
      ..src > go
-       // El paquete github proporciana una API en Go para el seguimiento de problemas.
+       // El paquete github proporciana una API en Go para el seguimiento de issues.
        // Ver https://developer.github.com/v3/search/#search-issues.
        package github
 
@@ -7125,7 +7126,7 @@
 
 
    Los ejemplos anteriores utilizaron @c(json.Unmarshal) para decodificar todo
-   el contenido de una slice de bytes como una sola entidad JSON. Para variar,
+   el contenido de un slice de bytes como una sola entidad JSON. Para variar,
    este ejemplo utiliza el decodificador de @e(flujo), @c(json.Decoder), que
    permite que varias entidades JSON sean decodificados en secuencia desde el
    mismo flujo, aunque aqui no necesitamos esa caracteristica. Como era de
@@ -7190,7 +7191,7 @@
    < src..
 
    La interfaz de servicio web en GitHub @l(https://developer.github.com/v3/)
-   tiene muchas mas funciones delas que tenemos espacio para mostrar aqui.
+   tiene muchas mas funciones de las que tenemos espacio para mostrar aqui.
 
    @b(Ejercicio 4.10): Modificar @c(issues) para reportar los resultados en
    categorias de edad, es decir menos de un mes de edad, menos de un año de
@@ -7229,10 +7230,10 @@
    parte de la cadena se imprime literalmente, pero las acciones desencadenan
    otros comportamientos. Cada accion contiene una expresion en el lenguaje de
    la plantilla, una notacion sencilla pero poderosa para imprimir valores,
-   seleccionar de campos de la estructura, llamar a la funciones y metodos,
-   expresar el flujo de control, como sentencias @c(if)-@c(else) y bucles
-   @c(range), y crear instancias de otras plantillas. A continuacion se muestra
-   una cadena de plantilla simple:
+   seleccionar campos de la estructura, llamar a funciones y metodos, expresar
+   el flujo de control, como sentencias @c(if)-@c(else) y bucles @c(range), y
+   crear instancias de otras plantillas. A continuacion se muestra una cadena de
+   plantilla simple:
 
    ..figure > @l(gopl.io/ch4/issuesreport/main.go<>gopl.io/ch4/issuesreport)
 
@@ -7280,7 +7281,7 @@
    Producir la salida con una plantilla es un proceso de dos pasos. Primero
    debemos analizar la plantilla en una representacion interna adecuada, y luego
    ejecutarla en entradas especificas. El analisis se debe hacer solo una
-   vez. El siguiente codigo crea y analiza la plantilla templ definida
+   vez. El siguiente codigo crea y analiza la plantilla @c(templ) definida
    anteriormente. Observe el encadenamiento de llamadas a metodos:
    @c(template.New) crea y devuelve una plantilla; @c(Funcs) añade @c(daysAgo)
    al conjunto de funciones accesibles dentro de esta plantilla, luego, devuelve
@@ -7298,9 +7299,9 @@
    Dado que las plantillas suelen fijarse en tiempo de compilacion, la falta de
    analisis de una plantilla indica un error fatal en el programa. La funcion
    auxiliar @c(template.Must) hace que el manejo de errores sea mas conveniente:
-   acepta una plantilla y un error, comprueba que el error es nil (y panicos de
-   lo contrario) y, luego devuelve la plantilla. Volveremos a esta idea en la
-   @l(#Seccion 5.9).
+   acepta una plantilla y un error, comprueba que el error es nil (y entra en
+   panico de lo contrario) y, luego devuelve la plantilla. Volveremos a esta
+   idea en la @l(#Seccion 5.9).
 
    Una vez la plantilla ha sido creada, aumentada con @c(daysAgo), analizada y
    comprobada, podemos ejecutarla utilizando como fuente de datos
@@ -7389,7 +7390,7 @@
      $ ./issueshtml repo:golang/go commenter:gopherbot json encoder >issues.html
    < src..
 
-   La figura 4.4 muestra la apariencia de la tabla en un navegador web. Los
+   La Figura 4.4 muestra la apariencia de la tabla en un navegador web. Los
    enlaces se conectan a las paginas web apropiadas en GitHub.
 
    ..figure > Figura 4.4. Una tabla HTML de los temas del proyecto Go
@@ -7418,7 +7419,7 @@
    Podemos suprimir este comportamiento de auto-escape para los campos que
    contienen datos HTML confiables mediante el uso de un  tipo de cadena
    denominada @c(template.HTML) en lugar de @c(string) . Existen tipos con nombres
-   similares para JavaScript, CSS y URL de confianza. El siguiente programa
+   similares para JavaScript, CSS y URLs de confianza. El siguiente programa
    demuestra el principio usando  campos con el mismo valor, pero
    con diferentes tipos: c(A) es un @c(string) y @c(B) es un @c(template.HTML).
 
@@ -7447,7 +7448,7 @@
 
 
    La Figura 4.6 muestra la salida de la plantilla tal como aparece en un
-   navegador. Podemos ver que @c(A) esta sujeto a escapar, pero @c(B) no.
+   navegador. Podemos ver que @c(A) es sujeto a escape, pero @c(B) no.
 
    ..figure > Figura 4.6. Los valores de cadena tinen escapado HTML escapado,
      pero los valores @c(template.HTML) no.
@@ -8948,7 +8949,7 @@
      fmt.Println(sum(values...)) // "10"
    < src..
 
-   Aunque el parametro @c(...int) se comporta como una slice dentro del cuerpo
+   Aunque el parametro @c(...int) se comporta como un slice dentro del cuerpo
    de la funcion, el tipo de una funcion variadic es distinto del tipo de una
    funcion con un parametro slice ordinario.
 
@@ -10315,7 +10316,7 @@
    los conjuntos tienen muchos elementos, y las operaciones de conjunto como
    union e interseccion son comunes, un vector de bits es ideal.
 
-   Un vector de bits utiliza una slice de valores o @"(palabras) de enteros sin
+   Un vector de bits utiliza un slice de valores o @"(palabras) de enteros sin
    signo, cada bit de los cuales representa un posible elemento del conjunto. El
    conjunto contiene @c(i) si se establece el enesimo bit. El siguiente programa
    muestra un tipo de vector de bits simple con tres metodos:
@@ -10460,7 +10461,7 @@
    conjuntos contiene los elementos presentes en un conjunto o el otro, pero no
    ambos.)
 
-   @b(Ejercicio 6.4): añadir un metodo @c(Elems) que devuelve una slice que
+   @b(Ejercicio 6.4): añadir un metodo @c(Elems) que devuelve un slice que
    contiene los elementos del conjunto, apto para iterar sobre el con una bucle
    @c(range).
 
@@ -11643,7 +11644,7 @@
      func (p StringSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
    < src..
 
-   Ahora podemos ordenar una slice de strings, @c(names), convirtiendo el slice
+   Ahora podemos ordenar un slice de strings, @c(names), convirtiendo el slice
    a un @c(StringSlice) como aqui:
 
    ..src > go
@@ -12987,7 +12988,7 @@
      }
    < src..
 
-   Debido a que el metodo @c(Write) requiere una slice de bytes, y el valor que
+   Debido a que el metodo @c(Write) requiere un slice de bytes, y el valor que
    desea escribir es una cadena, se requiere una conversion @c{[]byte(...)}.
    Esta conversion asigna memoria y hace una copia, pero la copia se tira casi
    inmediatamente despues. Vamos a pretender que esta es una parte fundamental
@@ -15297,7 +15298,7 @@
      < src..
 
 
-   la funcion @c(ioutil.ReadDir) devuelve una slice de @c(os.FileInfo)–la misma
+   la funcion @c(ioutil.ReadDir) devuelve un slice de @c(os.FileInfo)–la misma
    informacion que una llamada a @c(os.Stat) regresa para un solo archivo. Para
    cada subdirectorio, @c(walkDir) se llama a si misma recursivamente, y para
    cada archivo, @c(walkDir) envia un mensaje en el canal @c(fileSizes). El
@@ -21815,7 +21816,7 @@ pero no:
 
    En esta seccion vamos a definir una funcion @c(Equal) que compara valores
    arbitrarios. Al igual que @c(DeepEqual), compara slices y mapas en base a sus
-   elementos, pero a diferencia de @c(DeepEqual), considera una slice nil (o
+   elementos, pero a diferencia de @c(DeepEqual), considera un slice nil (o
    mapa) igual a uno no-nil vacio. La recursion basica sobre los argumentos se
    puede hacer con reflexion, usando un enfoque similar a @c(Display) del
    programa que vimos en la @l(#Seccion 12.3). Como de costumbre, definimos una
