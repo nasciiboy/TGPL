@@ -13425,7 +13425,7 @@
 #      }
 #    < src..
    ..src > go
-     func rombre(lista-de-parametros) (lista-de-resultados) {
+     func nombre(lista-de-parametros) (lista-de-resultados) {
        cuerpo
      }
    < src..
@@ -13437,14 +13437,14 @@
 #    results at all, parentheses are optional and usually omitted. Leaving off the
 #    result list entirely declares a function that does not return any value and
 #    is called only for its effects. In the @c(hypot) function,
-   La lista de parametros especifica el nombres y tipos de los @e(parametros) de
-   la funcion, que son las variables locales cuyos valores o argumentos son
+   La lista de parametros especifica los nombres y tipos de los @e(parametros)
+   de la funcion, que son las variables locales cuyos valores o argumentos son
    suministrados por quien hace la llamada. La lista de resultados especifica
    los tipos de los valores que devuelve la funcion. Si la funcion devuelve un
    resultado sin nombre o ningun resultado, los parentesis son opcionales y
-   normalmente se omiten. Dejar fuera la lista de resultados declara
-   completamente que una funcion que no devuelve ningun valor y se llama solo
-   por sus efectos. En la funcion @c(hypot),
+   normalmente se omiten. Dejar fuera la lista de resultados declara que una
+   funcion que no devuelve ningun valor y se llama solo por sus efectos. En la
+   funcion @c(hypot),
 
 #    ..src > go
 #      func hypot(x, y float64) float64 {
@@ -13616,7 +13616,7 @@
    @c(golang.org/x/net/html), que proporciona un analizador de HTML. Los
    repositorios @c(golang.org/x/...) tienen paquetes diseñados y mantenidos por
    el equipo de Go para aplicaciones tales como redes, procesamiento de texto
-   internacionalizado, plataformas moviles, manipulacion de imagenes,
+   internacionalizacion, plataformas moviles, manipulacion de imagenes,
    criptografia, y herramientas de desarrollo. Estos paquetes no estan en la
    libreria estandar porque todavia estan en desarrollo o porque son raramente
    necesarios por la mayoria de los programadores de Go.
@@ -13630,7 +13630,7 @@
    continuacion. La funcion @c(html.Parse) lee una secuencia de bytes, los analiza,
    y devuelve la raiz del arbol del documento HTML, que es un @c(html.Node). HTML
    tiene varios tipos de nodos–texto, comentarios, etc.–pero aqui solo nos
-   interesan con nodos de elemento de la forma @c(<nombre clave='valor'>).
+   interesan los nodos de elementos con la forma @c(<nombre clave='valor'>).
 
 #    ..figure > @c(golang.org/x/net/html)
    ..figure > @c(golang.org/x/net/html)
@@ -13692,7 +13692,7 @@
 #    The @c(main) function parses the standard input as HTML, extracts the links
 #    using a recursive @c(visit) function, and prints each discovered link:
    La funcion @c(main) analiza la entrada estandar como HTML, extrae los enlaces
-   usando un cuncion recursiva @c(visit), e imprime cada enlace descubierto:
+   usando la funcion recursiva @c(visit), e imprime cada enlace descubierto:
 
 #    ..figure > @l(gopl.io/ch5/findlinks1/main.go<>gopl.io/ch5/findlinks1)
    ..figure > @l(gopl.io/ch5/findlinks1/main.go<>gopl.io/ch5/findlinks1)
@@ -13786,7 +13786,7 @@
 #    To descend the tree for a node @c(n), @c(visit) recursively calls itself for
 #    each of @c(n)’s children, which are held in the @c(FirstChild) linked list.
    Para descender por el arbol a un nodo @c(n), @c(visit) se llama a si misma
-   recursivamente para cada uno de los hijos de @c(n), que se mantienen en el
+   recursivamente para cada uno de los hijos de @c(n), que se mantienen en la
    lista enlazada @c(FirstChild).
 
 #    Let’s run @$(findlinks) on the Go home page, piping the output of @$(fetch)
@@ -13904,7 +13904,7 @@
    slice, modificando de su arreglo subyacente e incluso asignando un nuevo
    arreglo, no modifica los elementos iniciales que son visibles para quien
    realiza la llamada, asi que cuando la funcion regresa, el @c(stack) del
-   llamantede es tal cual antes de la llamada.
+   llamador es tal cual antes de la llamada.
 
 #    Here’s the outline of @c(https://golang.org), again edited for brevity:
    Aqui esta el esquema de @c(https://golang.org), editado nuevamente por
@@ -13948,7 +13948,7 @@
 #    pathological web pages that require extremely deep recursion.
    Como puede ver mediante la experimentacion con @c(outline), la mayoria de los
    documentos HTML pueden ser procesados con solo unos pocos niveles de
-   recursividad, pero no es dificil de construir paginas web patologicas que
+   recursividad, pero no es dificil construir paginas web patologicas que
    requieren una recursion extremadamente profunda.
 
 #    Many programming language implementations use a fixed-size function call
@@ -13959,8 +13959,8 @@
 #    use variable-size stacks that start small and grow as needed up to a limit on
 #    the order of a gigabyte.  This lets us use recursion safely and without
 #    worrying about overflow.
-   Muchas implementaciones de lenguaje de programacion utilizan una funcion
-   stack de tamaño fijo; Tamaños de 64KB a 2MB son tipicos. Pilas de tamaño fijo
+   Muchas implementaciones de los lenguajes de programacion utilizan una pila de
+   tamaño fijo; son tipicos los tamaños de 64KB a 2MB. Las pilas de tamaño fijo
    imponen un limite en la profundidad de la recursividad, por lo que hay que
    tener cuidado para evitar un desbordamiento de pila cuando se atraviesa
    grandes estructuras de datos de forma recursiva; Las pilas de tamaño fijo
@@ -13981,7 +13981,7 @@
 #    names—@c(p), @c(div), @c(span), and so on—to the number of elements with that
 #    name in an HTML document tree.
    @b(Ejercicio 5.2): Escribir una funcion para rellenar un mapeo con los
-   nombres de los elementos–@c(p), @c(div), @c(span), y asi sucesivamente-al
+   nombres de los elementos–@c(p), @c(div), @c(span), y asi sucesivamente–al
    numero de elementos con ese nombre en un arbol de documentos HTML.
 
 #    @b(Exercise 5.3): Write a function to print the contents of all text nodes in
@@ -13994,8 +13994,8 @@
 
 #    @b(Exercise 5.4): Extend the @c(visit) function so that it extracts other
 #    kinds of links from the document, such as images, scripts, and style sheets.
-   @b(Ejercicio 5.4): Extender la funcion @c(visit) para que los extractos otros
-   tipos de enlaces desde el documento, como imagenes, scripts y hojas de
+   @b(Ejercicio 5.4): Extender la funcion @c(visit) para que extraiga otros
+   tipos de enlace desde el documento, como imagenes, scripts y hojas de
    estilo.
 
 # ** Section 5.3 <> Multiple Return Values
@@ -14018,11 +14018,11 @@
 #    @c(Parse) rarely fails; when it does, it’s typically due to underlying I/O
 #    errors.
    El programa siguiente es una variacion de @$(findlinks) que hace la peticion
-   HTTP por si mismo, asi que ya no necesitamos para ejecutar @$(fetch). Ya que
-   las operaciones de analisis y HTTP pueden fallar, @$(findLinks) declara dos
+   HTTP por si mismo, asi que ya no necesitamos ejecutar @$(fetch). Ya que las
+   operaciones de analisis y HTTP pueden fallar, @$(findLinks) declara dos
    resultados: la lista de enlaces descubiertos y un error. Por cierto, el
    analizador de HTML por lo general puede recuperarse de una entrada incorrecta
-   y construir un documento que contiene nodos de error, por lo @c(Parse)
+   y construir un documento que contiene nodos de error, por lo que @c(Parse)
    raramente falla; Cuando lo hace, normalmente se debe a errores de E/S
    subyacentes.
 
@@ -14104,8 +14104,8 @@
 #    third, it is augmented with additional context information by @c(fmt.Errorf)
 #    (@l(#Section 7.8<>§7.8)). If @c(findLinks) is successful, the final return
 #    statement returns the slice of links, with no error.
-   Hay cuatro sentencias @c(return) en @c(findLinks), cada uno de las cuales
-   devuelve un par de valores. Los tres primeros @c(return) hacen la funcion
+   Hay cuatro sentencias @c(return) en @c(findLinks), cada una de las cuales
+   devuelve un par de valores. Los tres primeros @c(return) hacen que la funcion
    pase los errores subyacentes de los paquetes @c(http) y @c(html) al
    llamador. En el primer caso, el error se devuelve sin cambios; en el segundo
    y tercero, que expande con informacion de contexto adicional con
@@ -14138,20 +14138,20 @@
    < src..
 
 #    To ignore one of the values, assign it to the blank identifier:
-   Para ignorar uno de los valores, asintelo al identificador en blanco:
+   Para ignorar uno de los valores, asignelo al identificador en blanco:
 
 #    ..src > go
 #      links, _ := findLinks(url) // errors ignored
 #    < src..
    ..src > go
-     links, _ := findLinks(url) // errors ignored
+     links, _ := findLinks(url) // ignorando errores
    < src..
 
 #    The result of a multi-valued call may itself be returned from a
 #    (multi-valued) calling function, as in this function that behaves like
 #    @c(findLinks) but logs its argument:
-   El resultado de una llamada multi-valor en si puede ser devuelto desde una
-   llamada funcion (multi-valor), como en esta funcion que se comporta como
+   El resultado de una llamada multi-valor en si, puede ser devuelto llamando a
+   una funcion (multi-valor), como en esta funcion que se comporta como
    @c(findLinks) pero registra su argumento:
 
 #    ..src > go
@@ -14221,7 +14221,7 @@
 #    In a function with named results, the operands of a return statement may be
 #    omitted. This is called a @e(bare return).
    En una funcion con resultados nombrados, se pueden omitir los operandos de
-   una sentencia de devolucion. Esto se llama un @c(retorno desnudo).
+   una sentencia de devolucion. Esto se denomina @c(retorno desnudo).
 
 #    ..src > go
 #      // CountWordsAndImages does an HTTP GET request for the HTML
@@ -14297,7 +14297,7 @@
 
 #    @b(Exercise 5.5): Implement @c(countWordsAndImages). (See Exercise 4.9 for
 #    word-splitting.)
-   @b(Ejercicio 5.5): Implementar @c(countWordsAndImages). (Ver el ejercicio 4.9
+   @b(Ejercicio 5.5): Implementar @c(countWordsAndImages). (Ver el Ejercicio 4.9
    para la division de palabras.)
 
 #    @b(Exercise 5.6): Modify the @c(corner) function in @c(gopl.io/ch3/surface)
@@ -14339,9 +14339,9 @@
 #    fail. Indeed, it’s when the most reliable operations fail unexpectedly that
 #    we most need to know why.
    Para muchas otras funciones, incluso en un programa bien escrito, el exito no
-   esta asegurado porque depende de factores ajenos al control del
-   programador. Cualquier funcion que haga E/S, por ejemplo, debe enfrentarse a
-   la posibilidad de error, y solo un programador ingenuo cree que una simple
+   esta asegurado porque depende de factores ajenos al control del programador.
+   Cualquier funcion que haga E/S, por ejemplo, debe enfrentarse a la
+   posibilidad de error, y solo un programador ingenuo cree que una simple
    lectura o escritura no puede fallar. De hecho, es cuando las operaciones mas
    confiables fallan inesperadamente que necesitamos saber por que.
 
@@ -14372,7 +14372,7 @@
    ..src > go
      value, ok := cache.Lookup(key)
      if !ok {
-       // ...cache[key] does not exist...
+       // ...cache[key] no existe...
      }
    < src..
 
@@ -14389,7 +14389,7 @@
 #    and non-nil implies failure, and that a non-nil @c(error) has an error
 #    message string which we can obtain by calling its @c(Error) method or print
 #    by calling @c[fmt.Println(err)] or @c[fmt.Printf("%v", err)].
-   El tipo nativo @c(error) es un tipo de interfaz. Veremos mas de lo que esto
+   El tipo nativo @c(error) es de tipo interfaz. Veremos mas de lo que esto
    significa y sus implicaciones para el manejo de errores en el @l(#Capitulo
    7). Por ahora es suficiente saber que un error puede ser o no @c(nil), que
    nil implica el exito y no-nil implica el fracaso, y que un error no-nil tiene
@@ -14411,7 +14411,7 @@
    numero de bytes que fue capaz de leer @e(y) un valor @c(error) que describe
    el problema. Para el comportamiento correcto, algunos llamadores pueden
    necesitar procesar los datos incompletos antes de manejar el error, por lo
-   que es importante que estas funciones documente claramente sus resultados.
+   que es importante que estas funciones documenten claramente sus resultados.
 
 #    Go’s approach sets it apart from many other languages in which failures are
 #    reported using @e(exceptions), not ordinary values. Although Go does have an
@@ -14464,8 +14464,8 @@
     La primera y mas comun, es @e(propagar) el error, por lo que un fallo en una
     subrutina se convierte en un fracaso de la rutina de llamada. Vimos ejemplos
     de esto en la funcion @c(findLinks) de la @l(#Seccion 5.3). Si la llamada a
-    @c(http.Get) falla, @c(findLinks) devuelve el error HTTP a la persona al
-    llamador sin mas preambulos:
+    @c(http.Get) falla, @c(findLinks) devuelve el error HTTP al llamador sin mas
+    preambulos:
 
 #     ..src > go
 #       resp, err := http.Get(url)
@@ -14488,7 +14488,7 @@
 #     underlying parse error:
     Por el contrario, si la llamada a @c(html.Parse) falla, @c(findLinks) no
     devuelve el error del analizador de HTML directamente, porque carece de dos
-    piezas cruciales de informacion: que se produjo el error en el analizador, y
+    piezas cruciales de informacion: que el error se produjo en el analizador, y
     la direccion URL del documento que se esta analizando. En este caso,
     @c(findLinks) construye un nuevo mensaje de error que incluye las dos piezas
     de informacion, asi como un analisis del error subyacente:
@@ -14519,8 +14519,8 @@
     generar errores descriptivos mediante el prefijo sucesivo de informacion de
     contexto adicional al mensaje de error original. Cuando el error es en
     ultima instancia, manejado por la funcion @c(main) del programa, se debe
-    proporcionar una cadena causal clara a partir de la raiz del problema de la
-    falta en su conjunto, que recuerda a una investigacion de accidentes de la
+    proporcionar una cadena causal clara a partir de la raiz del problema del
+    fallo en su conjunto, que recuerda a una investigacion de accidentes de la
     NASA:
 
 #     ..pre >
@@ -14535,7 +14535,7 @@
     Debido a que los mensajes de error con frecuencia se encadenan juntos, las
     cadenas de mensajes no deben ser mayusculas y las lineas nuevas deben
     evitarse. Los errores resultantes pueden ser largos, pero seran
-    autocontenidos cuando sean encuontrados por herramientas como grep.
+    autocontenidos cuando sean encuontrados por herramientas como @$(grep).
 
 #     When designing error messages, be deliberate, so that each one is a
 #     meaningful description of the problem with sufficient and relevant detail,
@@ -14556,7 +14556,7 @@
 #     constructs.
     Por ejemplo, el paquete @c(os) garantiza que cada error devuelto por una
     operacion de archivo, como @c(os.Open) o los metodos @c(Read), @c(Write), o
-    @c(Close) de un archivo abierto, no describen solo la naturaleza de la falla
+    @c(Close) de un archivo abierto, no describen solo la naturaleza del fallo
     (permiso denegado, directorio erroneo, etc), sino tambien el nombre del
     archivo, por lo el que llamador no necesita incluir esta informacion en el
     mensaje de error.
@@ -14569,7 +14569,7 @@
     En general, la llamada @c[f(x)] es responsable de informar el intento de
     operacion @c(f) y el valor del argumento @c(x) en su relacion con el
     contexto del error. El llamador es responsable de añadir mas informacion que
-    tiene, pero la llamada @c[f(x)] no, tal como la URL en la llamada a
+    tiene, pero la llamada @c[f(x)] no, como la URL de la llamada a
     @c(html.Parse) anterior.
 
 #     Let’s move on to the second strategy for handling errors. For errors that
@@ -14713,7 +14713,7 @@
     < src..
 
 #     and printing directly to the standard error stream:
-    e imprimir directamente a flujo de error estardar:
+    e imprimir directamente al flujo de error estardar:
 
 #     ..src > go
 #       if err := Ping(); err != nil {
@@ -14748,7 +14748,7 @@
         return fmt.Errorf("failed to create temp dir: %v", err)
       }
 
-      // ...use temp dir...
+      // ...usar directorio temporal...
 
       os.RemoveAll(dir) // ignorar errores; $TMPDIR se limpia periodicamente
     < src..
@@ -14759,12 +14759,12 @@
 #     be the same had we forgotten to deal with it. Get into the habit of
 #     considering errors after every function call, and when you deliberately
 #     ignore one, document your intention clearly.
-    La llamada a os.RemoveAll puede fallar, pero el programa lo ignora porque el
+    La llamada a @c(os.RemoveAll) puede fallar, pero el programa lo ignora porque el
     sistema operativo periodicamente limpia el directorio temporal. En este
     caso, descartar el error fue intencional, pero la logica del programa seria
     la misma si hubieramos olvidado tratar con el. Adquiera el habito de
     considerar errores despues de cada llamada de funcion, y cuando
-    deliberadamente ignora uno, documente claramente su intencion.
+    deliberadamente ignore uno, documente claramente su intencion.
 
 #     Error handling in Go has a particular rhythm. After checking an error,
 #     failure is usually dealt with before success. If failure causes the function
@@ -14803,9 +14803,9 @@
     lado, si el llamador trata repetidamente de leer fragmentos de tamaño fijo
     hasta que el archivo se agote, el llamador debe responder de manera
     diferente a una condicion de fin de archivo que a todos los demas
-    errores. Por esta razon, el paquete @c(io) garantiza que cualquier daño
-    causado por una condicion de fin de archivo siempre informa de un error
-    distinguida, @c(io.EOF), que se define de la siguiente manera:
+    errores. Por esta razon, el paquete @c(io) garantiza que cualquier fallo
+    producido por una condicion de fin de archivo siempre informa de un error
+    distinguido, @c(io.EOF), que se define de la siguiente manera:
 
 #     ..src > go
 #       package io
@@ -14870,10 +14870,10 @@
     @c("EOF"). Para otros errores, es posible que tengamos que informar tanto la
     calidad como la cantidad del error, por asi decirlo, por lo que un valor de
     error fijo no lo hara. En la @l(#Seccion 7.11), vamos a presentar de manera
-    mas sistematica a distinguir ciertos valores de error de los demas.
+    mas sistematica como distinguir ciertos valores de error de los demas.
 
 # ** Section 5.5 <> Function Values
-** Seccion 5.5 <> Valores de la Funcion
+** Seccion 5.5 <> Valores de Funcion
 
 #    Functions are @e(first-class values) in Go: like other values, function
 #    values have types, and they may be assigned to variables or passed to or
@@ -14881,8 +14881,8 @@
 #    function. For example:
    En Go las funciones son valores de primera clase: al igual que otros valores,
    los valores de funcion tienen tipos, y pueden ser asignados a variables o
-   pasarse a o regresarlas de funciones. Un valor de funcion puede ser llamado
-   como cualquier otra funcion. Por ejemplo:
+   pasarse o regresar de funciones. Un valor de funcion puede ser llamado como
+   cualquier otra funcion. Por ejemplo:
 
 #    ..src > go
 #      func square(n int) int     { return n * n }
@@ -14924,7 +14924,7 @@
 #    < src..
    ..src > go
      var f func(int) int
-     f(3) // panico: llamar a funcion nil
+     f(3) // panico: llamada a funcion nil
    < src..
 
 #    Function values may be compared with @c(nil):
@@ -15034,9 +15034,9 @@
 #    gives the caller a great deal of flexibility. For example, the functions
 #    @c(startElement) and @c(endElement) print the start and end tags of an HTML
 #    element like @c(<b>...</b>):
-   La funcion @c(forEachNode) acepta dos argumentos de funcion, una para llamar
-   antes de que se visiten los hijos de un nodo y otra para llamar despues. Esta
-   disposicion da a al lamador una gran flexibilidad. Por ejemplo, las funciones
+   La funcion @c(forEachNode) acepta dos argumentos de funcion, uno para llamar
+   antes de que se visiten los hijos de un nodo y otro para llamar despues. Esta
+   disposicion da al lamador una gran flexibilidad. Por ejemplo, las funciones
    @c(startElement) y @c(endElement) imprimen las etiquetas de inicio y fin de
    un elemento HTML, como @c(<b>...</b>):
 
@@ -15153,7 +15153,7 @@
    agradable impresora HTML general. Imprime los nodos de comentarios, nodos de
    texto y los atributos de cada elemento (@c(<a href='...'>)). Utilizar formas
    cortas como @c(<img/>) en lugar de @c(<img></img>) cuando un elemento no
-   tiene hijos. Escribir una prueba para asegurarse de que la salida se puede
+   tenga hijos. Escribir una prueba para asegurarse de que la salida se puede
    analizar con exito. (Vease el @l(#Capitulo 11)).
 
 #    @b(Exercise 5.8): Modify @c(forEachNode) so that the @c(pre) and @c(post)
@@ -15191,9 +15191,9 @@
 #    function literal is written like a function declaration, but without a name
 #    following the @c(func) keyword. It is an expression, and its value is called
 #    an @e(anonymous function).
-   Funciones con nombre se pueden declarar solo a nivel de paquete, pero podemos
+   Las funciones con nombre se pueden declarar solo a nivel de paquete, pero podemos
    utilizar un @e(literal de funcion) para denotar un valor de funcion dentro de
-   cualquier expresion. Un literal funcion se escribe como una declaracion de la
+   cualquier expresion. Un literal de funcion se escribe como una declaracion de la
    funcion, pero sin un nombre despues de la palabra clave @c(func). Es una
    expresion, y su valor se denomina @e(funcion anonima).
 
@@ -15214,7 +15214,7 @@
 #    enclosing function, as this example shows:
    Mas importante aun, las funciones definidas de esta manera tienen acceso a
    todo el entorno lexico, por lo que la funcion interna puede referirse a
-   variables de la funcion de inclusion, como muestra este ejemplo:
+   variables de la funcion que la encierra, como muestra este ejemplo:
 
 #    ..figure > @l(gopl.io/ch5/squares/main.go<>gopl.io/ch5/squares)
    ..figure > @l(gopl.io/ch5/squares/main.go<>gopl.io/ch5/squares)
@@ -15300,10 +15300,10 @@
 #    @c(prereqs) table below, which is a mapping from each course to the list of
 #    courses that must be completed before it.
    Como un ejemplo un tanto academico de funciones anonimas, considere el
-   problema de calcular una secuencia de los cursos de ciencias de la
-   computacion que satisfagan los requisitos previos de cada uno. Los
-   prerequisitos se dan en la tabla @c(prereqs) de abajo, que es un mapeo de
-   cada curso a la lista de cursos que se deben completar antes de ella.
+   problema de calcular la secuencia de los cursos de ciencias de computacion
+   que satisfagan los requisitos previos de cada uno. Los prerequisitos se dan
+   en la tabla @c(prereqs) de abajo, que es un mapa de cada curso a la lista de
+   cursos que se deben completar antes de ella.
 
 #    ..figure > @l(gopl.io/ch5/toposort/main.go<>gopl.io/ch5/toposort)
    ..figure > @l(gopl.io/ch5/toposort/main.go<>gopl.io/ch5/toposort)
@@ -15496,7 +15496,7 @@
      10:     bases de datos
      11:     sistemas operativos
      12:     redes
-     13:     Lenguajes de programacion
+     13:     lenguajes de programacion
    < pre..
 
 #    Let’s return to our @c(findLinks) example. We’ve moved the link-extraction
@@ -15565,7 +15565,7 @@
 #        }
 #      < src..
      ..src > go
-       // El paquete links proporciona una funcion de extraccion de links.
+       // El paquete links proporciona una funcion de extraccion de enlaces.
        package links
 
        import (
@@ -15621,7 +15621,7 @@
    En lugar de añadir el atributo @c(href) en bruto al slice @c(links), esta
    version lo analiza como una direccion URL relativa a la URL base del
    documento, @c(resp.Request.URL). El enlace resultante esta en formato
-   absoluta, adecuado para su uso en una llamada a @c(http.Get).
+   absoluto, adecuado para su uso en una llamada a @c(http.Get).
 
 #    Crawling the web is, at its heart, a problem of graph traversal. The
 #    @c(topoSort) example showed a depth-first traversal; for our web crawler,
@@ -15692,9 +15692,9 @@
 #    As we explained in passing in @l(#Chapter 3), the argument @"{@c[f(item)...]}
 #    causes all the items in the list returned by @c(f) to be appended to the
 #    worklist.
-   Como explicamos al pasar por el @l(#Capitulo 3), el argumento de
-   @"{@c[f(item)...]}  hace que todos los elementos de la lista devuelta por f
-   que se añadan a la lista de trabajo.
+   Como explicamos al pasar por el @l(#Capitulo 3), el argumento de @"{@c[f(item)...]}
+   hace que todos los elementos de la lista devuelta por @c(f)se añadan a la
+   lista de trabajo.
 
 #    In our crawler, items are URLs. The @c(crawl) function we’ll supply to
 #    @c(breadthFirst) prints the URL, extracts its links, and returns them so that
@@ -15792,9 +15792,9 @@
 #    @b(Exercise 5.11): The instructor of the linear algebra course decides that
 #    calculus is now a prerequisite. Extend the @c(topoSort) function to report
 #    cycles.
-   @b(Ejercicio 5.11): El instructor del curso de algebra lineal decide que
-   ahora es un requisito previo. Extender la funcion @c(topoSort) para reportar
-   ciclos.
+   @b(Ejercicio 5.11): El instructor del curso de algebra lineal decide que el
+   calculo ahora es un requisito previo. Extender la funcion @c(topoSort) para
+   reportar ciclos.
 
 #    @b(Exercise 5.12): The @c(startElement) and @c(endElement) functions in
 #    @c(gopl.io/ch5/outline2) (@l(#Section 5.5<>§5.5)) share a global variable,
@@ -15811,10 +15811,10 @@
 #    @l(https://golang.org<>golang.org), save all files from there, but exclude
 #    ones from @l(https://vimeo.com<>vimeo.com).
    @b(Ejercicio 5.13): Modificar @c(crawl) para hacer copias locales de las
-   paginas que encuentre, la creando directorios segun sea necesario. No haga
+   paginas que encuentre, creando directorios segun sea necesario. No haga
    copias de paginas que provengan de un dominio diferente. Por ejemplo, si la
    pagina original proviene de @l(https://golang.org<>golang.org), guarda todos
-   los archivos de alli, pero excluyen los de @l(https://vimeo.com<>vimeo.com).
+   los archivos de alli, pero excluir los de @l(https://vimeo.com<>vimeo.com).
 
 #    @b(Exercise 5.14): Use the @c(breadthFirst) function to explore a different
 #    structure. For example, you could use the course dependencies from the
@@ -15886,8 +15886,8 @@
 #     variable @c(dir) as in this subtly incorrect variant:
     Es posible que se pregunte por que asignamos la variable de bucle @c(d) a
     una nueva variable local @c(dir) dentro del cuerpo del bucle, en lugar de
-    simplemente nombrar a la variable de bucle @c(dir) que en esta variante
-    sutil incorrectos:
+    simplemente nombrar a la variable de bucle @c(dir) como en esta variante
+    sutilmente incorrecta:
 
 #     ..src > go
 #       var rmdirs []func()
@@ -15921,11 +15921,11 @@
     La razon es una consecuencia de las reglas de alcance para variables de
     bucle. En el programa inmediatamente anterior, el bucle @c(for) introduce un
     nuevo bloque lexico en el que se declara la variable @c(dir). Todos los
-    valores de la funcion creados por esta bucle @"(capturan) y comparten la
+    valores de la funcion creados por este bucle @"(capturan) y comparten la
     misma variable–Un lugar de almacenamiento direccionable, no su valor en ese
     momento en particular. El valor de @c(dir) se actualiza en iteraciones
-    sucesivas, de manera que cuando las funciones de limpieza son llamados, la
-    variable @c(dir) ha sido actualizado varias veces por el ahora completado
+    sucesivas, de manera que cuando las funciones de limpieza son llamadas, la
+    variable @c(dir) ha sido actualizada varias veces por el ahora completado
     bucle @c(for). Por lo tanto @c(dir) mantiene el valor de la iteracion final,
     y por lo tanto todas las llamadas a @c(os.RemoveAll) intentaran eliminar el
     mismo directorio.
@@ -15934,7 +15934,7 @@
 #     problem—@c(dir) in our example—is given the exact same name as the outer
 #     variable of which it is a copy, leading to odd-looking but crucial variable
 #     declarations like this:
-    Con frecuencia, la variable interna introducido para evitar este
+    Con frecuencia, a la variable interna introducida para evitar este
     problema–@c(dir) en nuestro ejemplo–se le da exactamente el mismo nombre que
     la variable externa de la que es una copia, lo que lleva a las declaraciones
     de variables de aspecto extraño pero cruciales como este:
@@ -15955,7 +15955,7 @@
 #     The risk is not unique to @c(range)-based @c(for) loops. The loop in the
 #     example below suffers from the same problem due to unintended capture of the
 #     index variable @c(i).
-    El riesgo no es unica para bucles @c(for) basados en @c(range). El bucle en
+    El riesgo no es unico para bucles @c(for) basados en @c(range). El bucle en
     el siguiente ejemplo adolece del mismo problema debido a la captura no
     intencionada de la variable de indice @c(i).
 
@@ -15975,7 +15975,7 @@
       for i := 0; i < len(dirs); i++ {
         os.MkdirAll(dirs[i], 0755) // OK
         rmdirs = append(rmdirs, func() {
-          os.RemoveAll(dirs[i]) // NOTA: incorrecto!
+          os.RemoveAll(dirs[i])    // NOTA: incorrecto!
         })
       }
     < src..
@@ -15998,7 +15998,7 @@
 #    arguments. The most familiar examples are @c(fmt.Printf) and its
 #    variants. @c(Printf) requires one fixed argument at the beginning, then
 #    accepts any number of subsequent arguments.
-   Una @e(funcion variadic) es uno que se puede llamar con un numero de
+   Una @e(funcion variadic) es una que se puede llamar con un numero de
    argumentos variable. Los ejemplos mas conocidos son @c(fmt.Printf) y sus
    variantes. @c(Printf) requiere un argumento fijo al principio, luego acepta
    cualquier numero de argumentos posteriores.
@@ -16006,9 +16006,9 @@
 #    To declare a variadic function, the type of the final parameter is preceded
 #    by an ellipsis, @"(@c(...)), which indicates that the function may be called with
 #    any number of arguments of this type.
-   Para declarar una funcion variadic, el tipo del parametro final va precedida
+   Para declarar una funcion variadic, el tipo del parametro final va precedido
    por una elipsis, @"(@c(...)), que indica que la funcion puede ser llamada con
-   cualquier numero de argumentos de este tipo.
+   cualquier numero de argumentos de ese tipo.
 
 #    ..figure > @l(gopl.io/ch5/sum/main.go<>gopl.io/ch5/sum)
    ..figure > @l(gopl.io/ch5/sum/main.go<>gopl.io/ch5/sum)
@@ -16039,8 +16039,8 @@
 #    for its @c(vals) parameter.
    La funcion @c(sum) anterior devuelve la suma de cero o mas argumentos
    @c(int). Dentro del cuerpo de la funcion, el tipo de @c(vals) es un slice
-   @c([]int). Cuando llame a @c(sum), cualquier numero de valores puede ser
-   proporcionado pora su parametro @c(vals).
+   @c([]int). Cuando llame a @c(sum), puede proporcionar cualquier numero de
+   valores en su parametro @c(vals).
 
 #    ..src > go
 #      fmt.Println(sum())           // "0"
@@ -16058,11 +16058,11 @@
 #    behaves the same as the call below, which shows how to invoke a variadic
 #    function when the arguments are already in a slice: place an ellipsis after
 #    the final argument.
-   Implicitamente, el llamador asigna un arreglo, copia los argumentos en ell y
-   pasa un slice de toda la arreglo a la funcion. La llamada anterior se
-   comporta de la misma manera que la llamada que se muestra a continuacion, que
-   muestra como invocar una funcion variadica cuando los argumentos ya estan en
-   un slice: coloca una elipsis despues del argumento final.
+   Implicitamente, el llamador asigna un arreglo, copia los argumentos en el y
+   pasa un slice de todo el arreglo a la funcion. La llamada anterior se
+   comporta de la misma manera que la siguiente, que muestra como invocar una
+   funcion variadica cuando los argumentos ya estan en un slice: coloca una
+   elipsis despues del argumento final.
 
 #    ..src > go
 #      values := []int{1, 2, 3, 4}
@@ -16099,11 +16099,11 @@
 #    function below constructs a formatted error message with a line number at the
 #    beginning. The suffix @c(f) is a widely followed naming convention for
 #    variadic functions that accept a @c(Printf)-style format string.
-   Las funciones variadic se utilizan a menudo para el formato de la
-   secuencia. La funcion @c(errorf) a continuacion construye un mensaje de error
-   con formato con un numero de linea en el principio. El sufijo @c(f) es una
-   convencion de nomenclatura ampliamente seguido para funciones variadic que
-   aceptan una cadena de formato de estilo @c(Printf).
+   Las funciones variadic se utilizan a menudo para el formateo de cadenas. La
+   funcion @c(errorf) a continuacion construye un mensaje de error con formato
+   con un numero de linea en el principio. El sufijo @c(f) es una convencion de
+   nomenclatura ampliamente seguido para funciones variadic que aceptan una
+   cadena de formato de estilo @c(Printf).
 
 #    ..src > go
 #      func errorf(linenum int, format string, args ...interface{}) {
@@ -16140,7 +16140,7 @@
    Escribir variantes que requieren al menos un argumento.
 
 #    @b(Exercise 5.16): Write a variadic version of @c(strings.Join).
-   @b(Ejercicio 5.16): Escribir una version variadic @c(de strings.Join) .
+   @b(Ejercicio 5.16): Escribir una version variadic @c(de strings.Join).
 
 #    @b(Exercise 5.17): Write a variadic function @c(ElementsByTagName) that,
 #    given an HTML node tree and zero or more names, returns all the elements that
@@ -16249,7 +16249,7 @@
 
 
 #    Here’s a typical session, slightly edited to fit:
-   Aqui esta una sesion tipica, ligeramente editada para encajar:
+   Aqui esta una sesion tipica:
 
 #    ..src > sh
 #      $ go build gopl.io/ch5/title1
@@ -16278,7 +16278,7 @@
 #    duplication of clean-up logic may become a maintenance problem. Let’s see how
 #    Go’s novel @c(defer) mechanism makes things simpler.
    Observe la llamada duplicada @c[resp.Body.Close()], que asegura que @c(title)
-   se cierre la conexion de red en todas las rutas de ejecucion, incluyendo las
+   cierre la conexion de red en todas las rutas de ejecucion, incluyendo las
    fallas. A medida que las funciones se vuelven mas complejas y tienen que
    manejar mas errores, tal duplicacion de la logica de limpieza puede
    convertirse en un problema de mantenimiento. Veamos como el nuevo mecanismo
@@ -16440,7 +16440,7 @@
    llama, hace la accion de @"(salida).  Al diferir una llamada a la funcion
    devuelta de esta manera, podemos instrumentar el punto de entrada y todos los
    puntos de salida de una funcion en una sola declaracion, e incluso pasar
-   valores, como el tiempo de inicion @c(start), entre las dos acciones. Pero no
+   valores, como el tiempo de inicio @c(start), entre las dos acciones. Pero no
    se olvide de los parentesis finales en el sentencia @c(defer), o la accion de
    @"(entrada) ocurrira en la salida y la accion en la salida no ocurrira en
    absoluto!
@@ -16479,8 +16479,8 @@
 #    Each time @c(bigSlowOperation) is called, it logs its entry and exit and the
 #    elapsed time between them. (We used @c(time.Sleep) to simulate a slow
 #    operation.)
-   Cada vez @c(bigSlowOperation) se llama, registra su entrada y salida y el
-   tiempo transcurrido entre ellos. (Utilizamos @c(time.Sleep) para simular una
+   Cada vez que llama a @c(bigSlowOperation), se registra su entrada y salida y el
+   tiempo transcurrido entre ello. (Utilizamos @c(time.Sleep) para simular una
    operacion lenta.)
 
 #    ..src > sh
@@ -16503,7 +16503,7 @@
    Las funciones diferidas se ejecutan despues de las declaraciones de retorno
    han actualizado las variables de resultado de la funcion. Debido a que una
    funcion anonima puede acceder a las variables de su funcion de inclusion,
-   incluidos los resultados con nombra, una funcion anonima diferida puede
+   incluidos los resultados con nombre, una funcion anonima diferida puede
    observar los resultados de la funcion.
 
 #    Consider the function @c(double):
@@ -16523,7 +16523,7 @@
 #    By naming its result variable and adding a @c(defer) statement, we can make
 #    the function print its arguments and results each time it is called.
    Al nombrar a su variable de resultado y agregar una sentecia @c(defer),
-   podemos hacer que la funcion imprimir sus argumentos y resultados cada vez
+   podemos hacer que la funcion imprima sus argumentos y resultados cada vez
    que se llame.
 
 #    ..src > go
@@ -16578,7 +16578,7 @@
 #    execution, a @c(defer) statement in a loop deserves extra scrutiny. The code
 #    below could run out of file descriptors since no file will be closed until
 #    all files have been processed:
-   Dado que las funciones diferidos no se ejecutan hasta el final de la
+   Dado que las funciones diferidas no se ejecutan hasta el final de la
    ejecucion de una funcion, una declaracion @c(defer) en un bucle merece un
    escrutinio adicional. El codigo siguiente podria quedar sin los descriptores
    de archivo ya que ningun archivo se cerrara hasta que todos los archivos se
@@ -16682,7 +16682,7 @@
 #        }
 #      < src..
      ..src > go
-       // Fetch descarga la URL y regresa el rombre
+       // Fetch descarga la URL y regresa el nombre
        // y la longitud del archivo local.
        func fetch(url string) (filename string, n int64, err error) {
          resp, err := http.Get(url)
@@ -16700,7 +16700,7 @@
            return "", 0, err
          }
          n, err = io.Copy(f, resp.Body)
-         // Close file, but prefer error from Copy, if any.
+         // Cerrar archivo, pero prefiera el error de Copy, si lo hay.
          if closeErr := f.Close(); err == nil {
            err = closeErr
          }
@@ -16721,14 +16721,13 @@
    La llamada diferida a @c(resp.Body.Close) deberia resultar familiar por
    ahora. Es tentador utilizar una segunda llamada diferida, a @c(f.Close), para
    cerrar el archivo local, pero esto seria sutilmente incorrecto porque
-   @c(os.Create) abre un archivo para escribir, crear, segun sea necesario. En
+   @c(os.Create) abre un archivo para escritura, creandolo si es necesario. En
    muchos sistemas de archivos, notablemente NFS, los errores de escritura no se
-   informan inmediatamente pero se pueden posponer hasta que se cierre el
-   archivo. Si no se comprueba el resultado de la operacion de cierre, la
-   perdida de datos graves podria pasar desapercibida. Sin embargo, si ambos
-   @c(io.Copy) y @c(f.Close) fallan, debemos preferir reportar el error de
-   @c(io.Copy) desde que ocurre por primera vez y es mas probable que nos diga
-   la causa raiz.
+   informan inmediatamente, pueden posponerse hasta que se cierre el archivo. Si
+   no se comprueba el resultado de la operacion de cierre, la perdida de datos
+   graves podria pasar desapercibida. Sin embargo, si ambos @c(io.Copy) y
+   @c(f.Close) fallan, debemos preferir reportar el error de @c(io.Copy) desde
+   que ocurre por primera vez y es mas probable que nos diga la causa raiz.
 
 #    @b(Exercise 5.18): Without changing its behavior, rewrite the @c(fetch)
 #    function to use @c(defer) to close the writable file.
@@ -16771,8 +16770,8 @@
    No todos los panicos provienen del tiempo de ejecucion. La funcion nativa
    @c(panic) se puede llamar directamente; acepta cualquier valor como
    argumento. Un panico es a menudo lo mejor que puede hacer cuando ocurre
-   alguna situacion @"(imposible), por ejemplo, la ejecucion llega a un caso que
-   logicamente, no puede suceder:
+   alguna situacion @"(imposible), por ejemplo, que la ejecucion llegue a un
+   caso que logicamente, no puede suceder:
 
 #    ..src > go
 #      switch s := suit(drawCard()); s {
@@ -17005,7 +17004,7 @@
 #    For diagnostic purposes, the @c(runtime) package lets the programmer dump the
 #    stack using the same machinery. By deferring a call to @c(printStack) in
 #    @c(main),
-   Por propositod de diagnostico, el paquete @c(runtime) permite al programador
+   Por propositos de diagnostico, el paquete @c(runtime) permite al programador
    volcar la pila utilizando la misma maquinaria. Al diferir una llamada a
    @c(printStack) en @c(main),
 
@@ -17107,7 +17106,7 @@
 #    returns @c(nil).
    Si la funcion nativa @c(recover) se llama dentro de una funcion diferida y la
    funcion que contiene la sentencia @c(defer) es presa del panico, @c(recover)
-   termina el actual estado de panico y devuelve el valor de panico. La funcion
+   termina el actual estado de panico y devuelve el valor del panico. La funcion
    que estaba en panico no continua donde lo dejo pero devuelve normalmente. Si
    @c(recover) se llama en cualquier otro momento, no tiene ningun efecto y
    devuelve @c(nil).
@@ -17117,12 +17116,12 @@
 #    still lurk in obscure corner cases. We might prefer that, instead of
 #    crashing, the parser turns these panics into ordinary parse errors, perhaps
 #    with an extra message exhorting the user to file a bug report.
-   Para ilustrar, considere el desarrollo de un analizador para un
-   lenguaje. Incluso cuando parece estar funcionando bien, dada la complejidad
-   de su trabajo, los bichos todavia pueden acechar en esquinas
-   oscuras. Podriamos preferir que, en lugar de fallar, el analizador convierta
-   estos panicos en errores comunes de analisis, quizas con un mensaje extra
-   exhortando al usuario a presentar un informe de error.
+   Para ilustrar, considere el desarrollo de un analizador para un lenguaje.
+   Incluso cuando parece estar funcionando bien, dada la complejidad de su
+   trabajo, los bichos todavia pueden acechar en esquinas oscuras. Podriamos
+   preferir que, en lugar de fallar, el analizador convierta estos panicos en
+   errores comunes de analisis, quizas con un mensaje extra, exhortando al
+   usuario a presentar un informe de error.
 
 #    ..src > go
 #      func Parse(input string) (s *Syntax, err error) {
@@ -17211,8 +17210,8 @@
    ser codificado mediante el uso de un tipo distinto, sin exportar para el
    valor de panico y probar si el valor devuelto por @c(recover) tiene ese
    tipo. (Veremos una manera de hacer esto en el siguiente ejemplo.) Si es asi,
-   el informamos el panico como un error ordinario; si no, que llamamos a
-   @c(panic) con el mismo valor para reanudar el estado de panico.
+   informamos el panico como un error ordinario; si no, llamamos a @c(panic) con
+   el mismo valor para reanudar el estado de panico.
 
 #    The example below is a variation on the @$(title) program that reports an
 #    error if the HTML document contains multiple @c(<title>) elements. If so, it

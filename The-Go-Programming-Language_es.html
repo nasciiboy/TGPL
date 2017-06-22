@@ -90,7 +90,7 @@
 <span class="toc" ><a class="h3" href="#Seccion-5.4" >Errores</a></span>
 <span class="toc" ><a class="h4" href="#Seccion-5.4.1" >Estrategias de Manejo de Errores</a></span>
 <span class="toc" ><a class="h4" href="#Seccion-5.4.2" >Fin de Archivo (EOF)</a></span>
-<span class="toc" ><a class="h3" href="#Seccion-5.5" >Valores de la Funcion</a></span>
+<span class="toc" ><a class="h3" href="#Seccion-5.5" >Valores de Funcion</a></span>
 <span class="toc" ><a class="h3" href="#Seccion-5.6" >Funciones Anonimas</a></span>
 <span class="toc" ><a class="h4" href="#Seccion-5.6.1" >Advertencia: Captura de Variables de Iteracion</a></span>
 <span class="toc" ><a class="h3" href="#Seccion-5.7" >Funciones Variadic</a></span>
@@ -3804,11 +3804,11 @@ $ go doc html/template
 <h3 id="Seccion-5.1" >Declaracion de Funciones</h3>
 <div class="hBody-3" >
 <p>Una declaracion de funcion tiene un nombre, una lista de parametros, una lista opcional de resultados y un cuerpo:</p>
-<div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">rombre</span><span class="p">(</span><span class="nx">lista</span><span class="o">-</span><span class="nx">de</span><span class="o">-</span><span class="nx">parametros</span><span class="p">)</span> <span class="p">(</span><span class="nx">lista</span><span class="o">-</span><span class="nx">de</span><span class="o">-</span><span class="nx">resultados</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">nombre</span><span class="p">(</span><span class="nx">lista</span><span class="o">-</span><span class="nx">de</span><span class="o">-</span><span class="nx">parametros</span><span class="p">)</span> <span class="p">(</span><span class="nx">lista</span><span class="o">-</span><span class="nx">de</span><span class="o">-</span><span class="nx">resultados</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">cuerpo</span>
 <span class="p">}</span>
 </pre></div>
-<p>La lista de parametros especifica el nombres y tipos de los <em>parametros</em> de la funcion, que son las variables locales cuyos valores o argumentos son suministrados por quien hace la llamada. La lista de resultados especifica los tipos de los valores que devuelve la funcion. Si la funcion devuelve un resultado sin nombre o ningun resultado, los parentesis son opcionales y normalmente se omiten. Dejar fuera la lista de resultados declara completamente que una funcion que no devuelve ningun valor y se llama solo por sus efectos. En la funcion <code>hypot</code>,</p>
+<p>La lista de parametros especifica los nombres y tipos de los <em>parametros</em> de la funcion, que son las variables locales cuyos valores o argumentos son suministrados por quien hace la llamada. La lista de resultados especifica los tipos de los valores que devuelve la funcion. Si la funcion devuelve un resultado sin nombre o ningun resultado, los parentesis son opcionales y normalmente se omiten. Dejar fuera la lista de resultados declara que una funcion que no devuelve ningun valor y se llama solo por sus efectos. En la funcion <code>hypot</code>,</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">hypot</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">float64</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">math</span><span class="p">.</span><span class="nx">Sqrt</span><span class="p">(</span><span class="nx">x</span><span class="o">*</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="o">*</span><span class="nx">y</span><span class="p">)</span>
 <span class="p">}</span>
@@ -3846,8 +3846,8 @@ $ go doc html/template
 <h3 id="Seccion-5.2" >Recursividad</h3>
 <div class="hBody-3" >
 <p>Las funciones pueden ser <em>recursivas</em>, es decir, que pueden llamarse a si mismas, ya sea directa o indirectamente. La recursion es una tecnica poderosa para muchos problemas, y por supuesto es esencial para procesar estructuras de datos recursivas. En la <a href="#Seccion-4.4" >Seccion 4.4</a>, se utilizo la recursividad sobre un arbol para implementar un mecanismo de insercion sencillo. En esta seccion, volveremos a usarlo para procesar documentos HTML.</p>
-<p>El siguiente programa de ejemplo utiliza un paquete no estandar, <code>golang.org/x/net/html</code>, que proporciona un analizador de HTML. Los repositorios <code>golang.org/x/...</code> tienen paquetes diseñados y mantenidos por el equipo de Go para aplicaciones tales como redes, procesamiento de texto internacionalizado, plataformas moviles, manipulacion de imagenes, criptografia, y herramientas de desarrollo. Estos paquetes no estan en la libreria estandar porque todavia estan en desarrollo o porque son raramente necesarios por la mayoria de los programadores de Go.</p>
-<p>Las partes de  la API <code>golang.org/x/net/html</code> que tendremos que se muestran a continuacion. La funcion <code>html.Parse</code> lee una secuencia de bytes, los analiza, y devuelve la raiz del arbol del documento HTML, que es un <code>html.Node</code>. HTML tiene varios tipos de nodos–texto, comentarios, etc.–pero aqui solo nos interesan con nodos de elemento de la forma <code>&lt;nombre clave='valor'&gt;</code>.</p>
+<p>El siguiente programa de ejemplo utiliza un paquete no estandar, <code>golang.org/x/net/html</code>, que proporciona un analizador de HTML. Los repositorios <code>golang.org/x/...</code> tienen paquetes diseñados y mantenidos por el equipo de Go para aplicaciones tales como redes, procesamiento de texto internacionalizacion, plataformas moviles, manipulacion de imagenes, criptografia, y herramientas de desarrollo. Estos paquetes no estan en la libreria estandar porque todavia estan en desarrollo o porque son raramente necesarios por la mayoria de los programadores de Go.</p>
+<p>Las partes de  la API <code>golang.org/x/net/html</code> que tendremos que se muestran a continuacion. La funcion <code>html.Parse</code> lee una secuencia de bytes, los analiza, y devuelve la raiz del arbol del documento HTML, que es un <code>html.Node</code>. HTML tiene varios tipos de nodos–texto, comentarios, etc.–pero aqui solo nos interesan los nodos de elementos con la forma <code>&lt;nombre clave='valor'&gt;</code>.</p>
 <div class="figure" >
 <p class="title"><code>golang.org/x/net/html</code></p>
 <div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">html</span>
@@ -3876,7 +3876,7 @@ $ go doc html/template
 <span class="kd">func</span> <span class="nx">Parse</span><span class="p">(</span><span class="nx">r</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">Node</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>La funcion <code>main</code> analiza la entrada estandar como HTML, extrae los enlaces usando un cuncion recursiva <code>visit</code>, e imprime cada enlace descubierto:</p>
+<p>La funcion <code>main</code> analiza la entrada estandar como HTML, extrae los enlaces usando la funcion recursiva <code>visit</code>, e imprime cada enlace descubierto:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/findlinks1/main.go" >gopl.io/ch5/findlinks1</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// Findlinks1 imprime los enlaces en un documento HTML leido en la entrada estandar</span>
@@ -3917,7 +3917,7 @@ $ go doc html/template
   <span class="k">return</span> <span class="nx">links</span>
 <span class="p">}</span>
 </pre></div>
-<p>Para descender por el arbol a un nodo <code>n</code>, <code>visit</code> se llama a si misma recursivamente para cada uno de los hijos de <code>n</code>, que se mantienen en el lista enlazada <code>FirstChild</code>.</p>
+<p>Para descender por el arbol a un nodo <code>n</code>, <code>visit</code> se llama a si misma recursivamente para cada uno de los hijos de <code>n</code>, que se mantienen en la lista enlazada <code>FirstChild</code>.</p>
 <p>Vamos a ejecutar <code class="command" >findlinks</code> en la pagina principal de Go, canalizando el resultado de <code class="command" >fetch</code> (<a href="#Seccion-1.5" >§1.5</a>) a la entrada de <code class="command" >findlinks</code>. Hemos modificado la salida ligeramente por brevedad.</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch1/fetch
 $ go build gopl.io/ch5/findlinks1
@@ -3959,7 +3959,7 @@ http://www.google.com/intl/en/policies/privacy/
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Considere una sutileza: aunque <code>outline</code> <q>empuja</q> un elemento en el <code>stack</code>, no hay ninguna extraccion correspondiente. Cuando <code>outline</code> se llama a si misma de forma recursiva, el receptor recibe una copia del <code>stack</code>. Aunque el destinatario de la llamada puede añadir elementos a este slice, modificando de su arreglo subyacente e incluso asignando un nuevo arreglo, no modifica los elementos iniciales que son visibles para quien realiza la llamada, asi que cuando la funcion regresa, el <code>stack</code> del llamantede es tal cual antes de la llamada.</p>
+<p>Considere una sutileza: aunque <code>outline</code> <q>empuja</q> un elemento en el <code>stack</code>, no hay ninguna extraccion correspondiente. Cuando <code>outline</code> se llama a si misma de forma recursiva, el receptor recibe una copia del <code>stack</code>. Aunque el destinatario de la llamada puede añadir elementos a este slice, modificando de su arreglo subyacente e incluso asignando un nuevo arreglo, no modifica los elementos iniciales que son visibles para quien realiza la llamada, asi que cuando la funcion regresa, el <code>stack</code> del llamador es tal cual antes de la llamada.</p>
 <p>Aqui esta el esquema de <code>https://golang.org</code>, editado nuevamente por razones de brevedad:</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch5/outline
 $ ./fetch https://golang.org <span class="p">|</span> ./outline
@@ -3976,17 +3976,17 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 <span class="o">[</span>html body div div form div<span class="o">]</span>
 <span class="o">[</span>html body div div form div a<span class="o">]</span>
 </pre></div>
-<p>Como puede ver mediante la experimentacion con <code>outline</code>, la mayoria de los documentos HTML pueden ser procesados con solo unos pocos niveles de recursividad, pero no es dificil de construir paginas web patologicas que requieren una recursion extremadamente profunda.</p>
-<p>Muchas implementaciones de lenguaje de programacion utilizan una funcion stack de tamaño fijo; Tamaños de 64KB a 2MB son tipicos. Pilas de tamaño fijo imponen un limite en la profundidad de la recursividad, por lo que hay que tener cuidado para evitar un desbordamiento de pila cuando se atraviesa grandes estructuras de datos de forma recursiva; Las pilas de tamaño fijo pueden incluso suponer un riesgo para la seguridad. En contraste, las implementaciones tipicas de Go usan pilas de tamaño variable que comienzan pequeñas y crecen segun sea necesario hasta un limite del orden de un gigabyte. Esto nos permite usar la recursion de forma segura y sin preocuparnos por el desbordamiento.</p>
+<p>Como puede ver mediante la experimentacion con <code>outline</code>, la mayoria de los documentos HTML pueden ser procesados con solo unos pocos niveles de recursividad, pero no es dificil construir paginas web patologicas que requieren una recursion extremadamente profunda.</p>
+<p>Muchas implementaciones de los lenguajes de programacion utilizan una pila de tamaño fijo; son tipicos los tamaños de 64KB a 2MB. Las pilas de tamaño fijo imponen un limite en la profundidad de la recursividad, por lo que hay que tener cuidado para evitar un desbordamiento de pila cuando se atraviesa grandes estructuras de datos de forma recursiva; Las pilas de tamaño fijo pueden incluso suponer un riesgo para la seguridad. En contraste, las implementaciones tipicas de Go usan pilas de tamaño variable que comienzan pequeñas y crecen segun sea necesario hasta un limite del orden de un gigabyte. Esto nos permite usar la recursion de forma segura y sin preocuparnos por el desbordamiento.</p>
 <p><b>Ejercicio 5.1</b>: Cambiar el programa <code class="command" >findlinks</code> para atravesar la lista enlazada <code>n.FirstChild</code> mediante llamadas recursivas a <code>visit</code> en lugar de un bucle.</p>
-<p><b>Ejercicio 5.2</b>: Escribir una funcion para rellenar un mapeo con los nombres de los elementos–<code>p</code>, <code>div</code>, <code>span</code>, y asi sucesivamente-al numero de elementos con ese nombre en un arbol de documentos HTML.</p>
+<p><b>Ejercicio 5.2</b>: Escribir una funcion para rellenar un mapeo con los nombres de los elementos–<code>p</code>, <code>div</code>, <code>span</code>, y asi sucesivamente–al numero de elementos con ese nombre en un arbol de documentos HTML.</p>
 <p><b>Ejercicio 5.3</b>: Escribir una funcion para imprimir el contenido de todos los nodos de texto en un arbol de documentos HTML. No descender dentro de elementos <code>&lt;script&gt;</code> o <code>&lt;style&gt;</code>, ya que sus contenidos no son visibles en un navegador web.</p>
-<p><b>Ejercicio 5.4</b>: Extender la funcion <code>visit</code> para que los extractos otros tipos de enlaces desde el documento, como imagenes, scripts y hojas de estilo.</p>
+<p><b>Ejercicio 5.4</b>: Extender la funcion <code>visit</code> para que extraiga otros tipos de enlace desde el documento, como imagenes, scripts y hojas de estilo.</p>
 </div>
 <h3 id="Seccion-5.3" >Multiples Valores de Retorno</h3>
 <div class="hBody-3" >
 <p>Una funcion puede devolver mas de un resultado. Hemos visto muchos ejemplos de funciones de paquetes estandar que devuelven dos valores, el resultado computacional deseado y un valor de error o booleano que indica si el calculo funciono. El siguiente ejemplo muestra como escribir una nosotros mismos.</p>
-<p>El programa siguiente es una variacion de <code class="command" >findlinks</code> que hace la peticion HTTP por si mismo, asi que ya no necesitamos para ejecutar <code class="command" >fetch</code>. Ya que las operaciones de analisis y HTTP pueden fallar, <code class="command" >findLinks</code> declara dos resultados: la lista de enlaces descubiertos y un error. Por cierto, el analizador de HTML por lo general puede recuperarse de una entrada incorrecta y construir un documento que contiene nodos de error, por lo <code>Parse</code> raramente falla; Cuando lo hace, normalmente se debe a errores de E/S subyacentes.</p>
+<p>El programa siguiente es una variacion de <code class="command" >findlinks</code> que hace la peticion HTTP por si mismo, asi que ya no necesitamos ejecutar <code class="command" >fetch</code>. Ya que las operaciones de analisis y HTTP pueden fallar, <code class="command" >findLinks</code> declara dos resultados: la lista de enlaces descubiertos y un error. Por cierto, el analizador de HTML por lo general puede recuperarse de una entrada incorrecta y construir un documento que contiene nodos de error, por lo que <code>Parse</code> raramente falla; Cuando lo hace, normalmente se debe a errores de E/S subyacentes.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/findlinks2/main.go" >gopl.io/ch5/findlinks2</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
@@ -4022,15 +4022,15 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Hay cuatro sentencias <code>return</code> en <code>findLinks</code>, cada uno de las cuales devuelve un par de valores. Los tres primeros <code>return</code> hacen la funcion pase los errores subyacentes de los paquetes <code>http</code> y <code>html</code> al llamador. En el primer caso, el error se devuelve sin cambios; en el segundo y tercero, que expande con informacion de contexto adicional con <code>fmt.Errorf</code> (<a href="#Seccion-7.8" >§7.8</a>). Si <code>findLinks</code> tiene exito, la ultima sentencia <code>return</code> devuelve el slice de enlaces, sin error.</p>
+<p>Hay cuatro sentencias <code>return</code> en <code>findLinks</code>, cada una de las cuales devuelve un par de valores. Los tres primeros <code>return</code> hacen que la funcion pase los errores subyacentes de los paquetes <code>http</code> y <code>html</code> al llamador. En el primer caso, el error se devuelve sin cambios; en el segundo y tercero, que expande con informacion de contexto adicional con <code>fmt.Errorf</code> (<a href="#Seccion-7.8" >§7.8</a>). Si <code>findLinks</code> tiene exito, la ultima sentencia <code>return</code> devuelve el slice de enlaces, sin error.</p>
 <p>Debemos asegurarnos de cerrar <code>resp.Body</code> para que los recursos de red se liberen adecuadamente, incluso en caso de error. El recolector de basura de Go recicla la memoria no utilizada, pero no asume que liberara recursos del sistema operativo no utilizados como archivos abiertos y conexiones de red. Deberan cerrarse explicitamente.</p>
 <p>El resultado de llamar a una funcion multi-valor es una tupla de valores. El llamador de tal funcion debe asignar explicitamente los valores a las variables si se desea utilizar alguna de ellas:</p>
 <div class="highlight"><pre><span></span><span class="nx">links</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">findLinks</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
 </pre></div>
-<p>Para ignorar uno de los valores, asintelo al identificador en blanco:</p>
-<div class="highlight"><pre><span></span><span class="nx">links</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">findLinks</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span> <span class="c1">// errors ignored</span>
+<p>Para ignorar uno de los valores, asignelo al identificador en blanco:</p>
+<div class="highlight"><pre><span></span><span class="nx">links</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">findLinks</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span> <span class="c1">// ignorando errores</span>
 </pre></div>
-<p>El resultado de una llamada multi-valor en si puede ser devuelto desde una llamada funcion (multi-valor), como en esta funcion que se comporta como <code>findLinks</code> pero registra su argumento:</p>
+<p>El resultado de una llamada multi-valor en si, puede ser devuelto llamando a una funcion (multi-valor), como en esta funcion que se comporta como <code>findLinks</code> pero registra su argumento:</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">findLinksLog</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="p">([]</span><span class="kt">string</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;findLinks %s&quot;</span><span class="p">,</span> <span class="nx">url</span><span class="p">)</span>
   <span class="k">return</span> <span class="nx">findLinks</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
@@ -4048,7 +4048,7 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 <span class="kd">func</span> <span class="nx">HourMinSec</span><span class="p">(</span><span class="nx">t</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">)</span> <span class="p">(</span><span class="nx">hour</span><span class="p">,</span> <span class="nx">minute</span><span class="p">,</span> <span class="nx">second</span> <span class="kt">int</span><span class="p">)</span>
 </pre></div>
 <p>Pero no siempre es necesario nombrar multiples resultados unicamente para la documentacion. Por ejemplo, la convencion dicta que un resultado final <code>bool</code> indica el exito; un resultado erroneo a menudo no necesita explicacion.</p>
-<p>En una funcion con resultados nombrados, se pueden omitir los operandos de una sentencia de devolucion. Esto se llama un <code>retorno desnudo</code>.</p>
+<p>En una funcion con resultados nombrados, se pueden omitir los operandos de una sentencia de devolucion. Esto se denomina <code>retorno desnudo</code>.</p>
 <div class="highlight"><pre><span></span><span class="c1">// CountWordsAndImages realiza una peticion HTTP GET para la URL del</span>
 <span class="c1">// documento HTML y regresa el numero de palabras e imagenes que contiene.</span>
 <span class="kd">func</span> <span class="nx">CountWordsAndImages</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">words</span><span class="p">,</span> <span class="nx">images</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
@@ -4073,7 +4073,7 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 <div class="highlight"><pre><span></span><span class="k">return</span> <span class="nx">words</span><span class="p">,</span> <span class="nx">images</span><span class="p">,</span> <span class="nx">err</span>
 </pre></div>
 <p>En funciones como esta, con muchas declaraciones de retorno y varios resultados, los resultados desnudos pueden reducir la duplicacion de codigo, pero rara vez hacen que el codigo sea mas facil de entender. Por ejemplo, no es obvio a primera vista que los dos primeros resultados son equivalentes a <code>return 0, 0, err</code> (porque las variables de resultado <code>words</code> e <code>images</code> se inicializan con sus valores cero) y que el ultimo <code>return</code> es equivalente a <code>return words, images, nil</code>. Por esta razon, es mejor utilizar los resultados desnudos con moderacion.</p>
-<p><b>Ejercicio 5.5</b>: Implementar <code>countWordsAndImages</code>. (Ver el ejercicio 4.9 para la division de palabras.)</p>
+<p><b>Ejercicio 5.5</b>: Implementar <code>countWordsAndImages</code>. (Ver el Ejercicio 4.9 para la division de palabras.)</p>
 <p><b>Ejercicio 5.6</b>: Modificar la funcion <code>corner</code> en <code>gopl.io/ch3/surface</code> (<a href="#Seccion-3.2" >§3.2</a>) para utilizar resultados con nombre y una declaracion de retorno desnudo.</p>
 </div>
 <h3 id="Seccion-5.4" >Errores</h3>
@@ -4085,12 +4085,12 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 <p>Una funcion cuyo fallo es un comportamiento esperado devuelve un resultado adicional, convencionalmente el ultimo. Si el fallo tiene solo una causa posible, el resultado es un valor booleano, generalmente llamado <code>ok</code>, como en este ejemplo de una busqueda en la cache que siempre tiene exito a menos que no hubiera ninguna entrada para esa clave:</p>
 <div class="highlight"><pre><span></span><span class="nx">value</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">Lookup</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span>
 <span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
-  <span class="c1">// ...cache[key] does not exist...</span>
+  <span class="c1">// ...cache[key] no existe...</span>
 <span class="p">}</span>
 </pre></div>
 <p>Mas a menudo, y especialmente para E/S, el fallo puede tener una variedad de causas para las cuales el llamador necesitara una explicacion. En tales casos, el tipo del resultado adicional es <code>error</code>.</p>
-<p>El tipo nativo <code>error</code> es un tipo de interfaz. Veremos mas de lo que esto significa y sus implicaciones para el manejo de errores en el <a href="#Capitulo-7" >Capitulo 7</a>. Por ahora es suficiente saber que un error puede ser o no <code>nil</code>, que nil implica el exito y no-nil implica el fracaso, y que un error no-nil tiene una cadena del mensaje de error que se puede obtener llamando a su metodo <code>Error</code> o imprimir mediante <code>fmt.Println(err)</code> o <code>fmt.Printf(&quot;%v&quot;, err)</code>.</p>
-<p>Normalmente cuando una funcion devuelve un error no-nil, sus otros resultados son indefinidos y se deben ignorar. Sin embargo, algunas funciones pueden devolver resultados parciales en casos de error. Por ejemplo, si se produce un error durante la lectura de un archivo, una llamada a <code>Read</code> devuelve el numero de bytes que fue capaz de leer <em>y</em> un valor <code>error</code> que describe el problema. Para el comportamiento correcto, algunos llamadores pueden necesitar procesar los datos incompletos antes de manejar el error, por lo que es importante que estas funciones documente claramente sus resultados.</p>
+<p>El tipo nativo <code>error</code> es de tipo interfaz. Veremos mas de lo que esto significa y sus implicaciones para el manejo de errores en el <a href="#Capitulo-7" >Capitulo 7</a>. Por ahora es suficiente saber que un error puede ser o no <code>nil</code>, que nil implica el exito y no-nil implica el fracaso, y que un error no-nil tiene una cadena del mensaje de error que se puede obtener llamando a su metodo <code>Error</code> o imprimir mediante <code>fmt.Println(err)</code> o <code>fmt.Printf(&quot;%v&quot;, err)</code>.</p>
+<p>Normalmente cuando una funcion devuelve un error no-nil, sus otros resultados son indefinidos y se deben ignorar. Sin embargo, algunas funciones pueden devolver resultados parciales en casos de error. Por ejemplo, si se produce un error durante la lectura de un archivo, una llamada a <code>Read</code> devuelve el numero de bytes que fue capaz de leer <em>y</em> un valor <code>error</code> que describe el problema. Para el comportamiento correcto, algunos llamadores pueden necesitar procesar los datos incompletos antes de manejar el error, por lo que es importante que estas funciones documenten claramente sus resultados.</p>
 <p>El enfoque de Go lo diferencia de muchos otros lenguajes en los que se reportan fallos utilizando <em>excepciones</em>, no valores normales. Aunque Go tiene un mecanismo de excepcion, como veremos en la <a href="#Seccion-5.9" >Seccion 5.9</a>, se utiliza solo para informar de los errores realmente inesperadas que indican un error, no los errores de rutina que un programa robusto deberia esperar.</p>
 <p>La razon de este diseño es que las excepciones tienden a enredar la descripcion de un error con el flujo de control requerido para manejarlo, conduciendo a menudo a un resultado indeseable: los errores de rutina se informan al usuario final en forma de un rastro de pila incomprensible, lleno de informacion sobre la estructura del programa pero carece de un contexto inteligible sobre lo que salio mal.</p>
 <p>Por el contrario, los programas Go utilizan mecanismos de control de flujo normales como <code>if</code> y <code>return</code> para responder a los errores. Este estilo indudablemente exige que se preste mas atencion a la logica de manejo de errores, pero ese es precisamente el punto.</p>
@@ -4098,25 +4098,25 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 <h4 id="Seccion-5.4.1" >Estrategias de Manejo de Errores</h4>
 <div class="hBody-4" >
 <p>Cuando una llamada de funcion devuelve un error, es responsabilidad del llamador comprobarlo y tomar la accion apropiada. Dependiendo de la situacion, puede haber una serie de posibilidades. Echemos un vistazo a cinco de ellas.</p>
-<p>La primera y mas comun, es <em>propagar</em> el error, por lo que un fallo en una subrutina se convierte en un fracaso de la rutina de llamada. Vimos ejemplos de esto en la funcion <code>findLinks</code> de la <a href="#Seccion-5.3" >Seccion 5.3</a>. Si la llamada a <code>http.Get</code> falla, <code>findLinks</code> devuelve el error HTTP a la persona al llamador sin mas preambulos:</p>
+<p>La primera y mas comun, es <em>propagar</em> el error, por lo que un fallo en una subrutina se convierte en un fracaso de la rutina de llamada. Vimos ejemplos de esto en la funcion <code>findLinks</code> de la <a href="#Seccion-5.3" >Seccion 5.3</a>. Si la llamada a <code>http.Get</code> falla, <code>findLinks</code> devuelve el error HTTP al llamador sin mas preambulos:</p>
 <div class="highlight"><pre><span></span><span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
 <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
   <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
 <span class="p">}</span>
 </pre></div>
-<p>Por el contrario, si la llamada a <code>html.Parse</code> falla, <code>findLinks</code> no devuelve el error del analizador de HTML directamente, porque carece de dos piezas cruciales de informacion: que se produjo el error en el analizador, y la direccion URL del documento que se esta analizando. En este caso, <code>findLinks</code> construye un nuevo mensaje de error que incluye las dos piezas de informacion, asi como un analisis del error subyacente:</p>
+<p>Por el contrario, si la llamada a <code>html.Parse</code> falla, <code>findLinks</code> no devuelve el error del analizador de HTML directamente, porque carece de dos piezas cruciales de informacion: que el error se produjo en el analizador, y la direccion URL del documento que se esta analizando. En este caso, <code>findLinks</code> construye un nuevo mensaje de error que incluye las dos piezas de informacion, asi como un analisis del error subyacente:</p>
 <div class="highlight"><pre><span></span><span class="nx">doc</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">html</span><span class="p">.</span><span class="nx">Parse</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">)</span>
 <span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
 <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
   <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;parsing %s as HTML: %v&quot;</span><span class="p">,</span> <span class="nx">url</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
-<p>La funcion <code>fmt.Errorf</code> da formato a un mensaje de error utilizando <code>fmt.Sprintf</code> y devuelve un nuevo valor <code>error</code>. Lo utilizamos para generar errores descriptivos mediante el prefijo sucesivo de informacion de contexto adicional al mensaje de error original. Cuando el error es en ultima instancia, manejado por la funcion <code>main</code> del programa, se debe proporcionar una cadena causal clara a partir de la raiz del problema de la falta en su conjunto, que recuerda a una investigacion de accidentes de la NASA:</p>
+<p>La funcion <code>fmt.Errorf</code> da formato a un mensaje de error utilizando <code>fmt.Sprintf</code> y devuelve un nuevo valor <code>error</code>. Lo utilizamos para generar errores descriptivos mediante el prefijo sucesivo de informacion de contexto adicional al mensaje de error original. Cuando el error es en ultima instancia, manejado por la funcion <code>main</code> del programa, se debe proporcionar una cadena causal clara a partir de la raiz del problema del fallo en su conjunto, que recuerda a una investigacion de accidentes de la NASA:</p>
 <pre class="pre" >genesis: crashed: no parachute: G-switch failed: bad relay orientation</pre>
-<p>Debido a que los mensajes de error con frecuencia se encadenan juntos, las cadenas de mensajes no deben ser mayusculas y las lineas nuevas deben evitarse. Los errores resultantes pueden ser largos, pero seran autocontenidos cuando sean encuontrados por herramientas como grep.</p>
+<p>Debido a que los mensajes de error con frecuencia se encadenan juntos, las cadenas de mensajes no deben ser mayusculas y las lineas nuevas deben evitarse. Los errores resultantes pueden ser largos, pero seran autocontenidos cuando sean encuontrados por herramientas como <code class="command" >grep</code>.</p>
 <p>Cuando diseñe mensajes de error, sea deliberado, de modo que cada uno sea una descripcion significativa del problema con detalles suficientes y relevantes, y sea consistente, de modo que los errores devueltos por la misma funcion o por un grupo de funciones en el mismo paquete sean similares en forma y se puedan tratar de la misma manera.</p>
-<p>Por ejemplo, el paquete <code>os</code> garantiza que cada error devuelto por una operacion de archivo, como <code>os.Open</code> o los metodos <code>Read</code>, <code>Write</code>, o <code>Close</code> de un archivo abierto, no describen solo la naturaleza de la falla (permiso denegado, directorio erroneo, etc), sino tambien el nombre del archivo, por lo el que llamador no necesita incluir esta informacion en el mensaje de error.</p>
-<p>En general, la llamada <code>f(x)</code> es responsable de informar el intento de operacion <code>f</code> y el valor del argumento <code>x</code> en su relacion con el contexto del error. El llamador es responsable de añadir mas informacion que tiene, pero la llamada <code>f(x)</code> no, tal como la URL en la llamada a <code>html.Parse</code> anterior.</p>
+<p>Por ejemplo, el paquete <code>os</code> garantiza que cada error devuelto por una operacion de archivo, como <code>os.Open</code> o los metodos <code>Read</code>, <code>Write</code>, o <code>Close</code> de un archivo abierto, no describen solo la naturaleza del fallo (permiso denegado, directorio erroneo, etc), sino tambien el nombre del archivo, por lo el que llamador no necesita incluir esta informacion en el mensaje de error.</p>
+<p>En general, la llamada <code>f(x)</code> es responsable de informar el intento de operacion <code>f</code> y el valor del argumento <code>x</code> en su relacion con el contexto del error. El llamador es responsable de añadir mas informacion que tiene, pero la llamada <code>f(x)</code> no, como la URL de la llamada a <code>html.Parse</code> anterior.</p>
 <p>Pasemos a la segunda estrategia para manejar errores. Para errores que representan problemas transitorios o impredecibles, puede tener sentido volver a intentar la operacion fallida, posiblemente con un retardo entre intentos, y tal vez con un limite en el numero de intentos o el tiempo dedicado a tratar antes de renunciar por completo.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/wait/wait.go" >gopl.io/ch5/wait</a></p>
@@ -4161,7 +4161,7 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
   <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;ping failed: %v; networking disabled&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
-<p>e imprimir directamente a flujo de error estardar:</p>
+<p>e imprimir directamente al flujo de error estardar:</p>
 <div class="highlight"><pre><span></span><span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">Ping</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Fprintf</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span><span class="p">,</span> <span class="s">&quot;ping failed: %v; networking disabled\n&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
 <span class="p">}</span>
@@ -4173,16 +4173,16 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
   <span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;failed to create temp dir: %v&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
 <span class="p">}</span>
 
-<span class="c1">// ...use temp dir...</span>
+<span class="c1">// ...usar directorio temporal...</span>
 
 <span class="nx">os</span><span class="p">.</span><span class="nx">RemoveAll</span><span class="p">(</span><span class="nx">dir</span><span class="p">)</span> <span class="c1">// ignorar errores; $TMPDIR se limpia periodicamente</span>
 </pre></div>
-<p>La llamada a os.RemoveAll puede fallar, pero el programa lo ignora porque el sistema operativo periodicamente limpia el directorio temporal. En este caso, descartar el error fue intencional, pero la logica del programa seria la misma si hubieramos olvidado tratar con el. Adquiera el habito de considerar errores despues de cada llamada de funcion, y cuando deliberadamente ignora uno, documente claramente su intencion.</p>
+<p>La llamada a <code>os.RemoveAll</code> puede fallar, pero el programa lo ignora porque el sistema operativo periodicamente limpia el directorio temporal. En este caso, descartar el error fue intencional, pero la logica del programa seria la misma si hubieramos olvidado tratar con el. Adquiera el habito de considerar errores despues de cada llamada de funcion, y cuando deliberadamente ignore uno, documente claramente su intencion.</p>
 <p>El manejo de errores en Go tiene un ritmo particular. Despues de comprobar un error, el fracaso suele tratarse antes del exito. Si el fallo hace que la funcion regrese, la logica para el exito no se sangra dentro de un bloque <code>else</code>, pero continua en el nivel externo. Las funciones tienden a exhibir una estructura comun, con una serie de comprobaciones iniciales para rechazar errores, seguidas por la esencia de la funcion al final, minimamente indentada.</p>
 </div>
 <h4 id="Seccion-5.4.2" >Fin de Archivo (EOF)</h4>
 <div class="hBody-4" >
-<p>Normalmente, la variedad de errores que una funcion puede devolver es interesante para el usuario final, pero no para la logica del programa intermedio. En ocasiones, sin embargo, un programa debe tomar diferentes acciones dependiendo del tipo de error que se ha producido. Considere un intento de leer <span class="math" >n</span> bytes de datos de un archivo. Si se elige <span class="math" >n</span> para ser la longitud del archivo, cualquier error representa un fracaso. Por otro lado, si el llamador trata repetidamente de leer fragmentos de tamaño fijo hasta que el archivo se agote, el llamador debe responder de manera diferente a una condicion de fin de archivo que a todos los demas errores. Por esta razon, el paquete <code>io</code> garantiza que cualquier daño causado por una condicion de fin de archivo siempre informa de un error distinguida, <code>io.EOF</code>, que se define de la siguiente manera:</p>
+<p>Normalmente, la variedad de errores que una funcion puede devolver es interesante para el usuario final, pero no para la logica del programa intermedio. En ocasiones, sin embargo, un programa debe tomar diferentes acciones dependiendo del tipo de error que se ha producido. Considere un intento de leer <span class="math" >n</span> bytes de datos de un archivo. Si se elige <span class="math" >n</span> para ser la longitud del archivo, cualquier error representa un fracaso. Por otro lado, si el llamador trata repetidamente de leer fragmentos de tamaño fijo hasta que el archivo se agote, el llamador debe responder de manera diferente a una condicion de fin de archivo que a todos los demas errores. Por esta razon, el paquete <code>io</code> garantiza que cualquier fallo producido por una condicion de fin de archivo siempre informa de un error distinguido, <code>io.EOF</code>, que se define de la siguiente manera:</p>
 <div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">io</span>
 
 <span class="kn">import</span> <span class="s">&quot;errors&quot;</span>
@@ -4203,11 +4203,11 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
   <span class="c1">// ...usar r...</span>
 <span class="p">}</span>
 </pre></div>
-<p>Puesto que en una condicion de fin de archivo no existe informacion que informar ademas del hecho de que, <code>io.EOF</code> tiene un mensaje de error fijo, <code>&quot;EOF&quot;</code>. Para otros errores, es posible que tengamos que informar tanto la calidad como la cantidad del error, por asi decirlo, por lo que un valor de error fijo no lo hara. En la <a href="#Seccion-7.11" >Seccion 7.11</a>, vamos a presentar de manera mas sistematica a distinguir ciertos valores de error de los demas.</p>
+<p>Puesto que en una condicion de fin de archivo no existe informacion que informar ademas del hecho de que, <code>io.EOF</code> tiene un mensaje de error fijo, <code>&quot;EOF&quot;</code>. Para otros errores, es posible que tengamos que informar tanto la calidad como la cantidad del error, por asi decirlo, por lo que un valor de error fijo no lo hara. En la <a href="#Seccion-7.11" >Seccion 7.11</a>, vamos a presentar de manera mas sistematica como distinguir ciertos valores de error de los demas.</p>
 </div>
-<h3 id="Seccion-5.5" >Valores de la Funcion</h3>
+<h3 id="Seccion-5.5" >Valores de Funcion</h3>
 <div class="hBody-3" >
-<p>En Go las funciones son valores de primera clase: al igual que otros valores, los valores de funcion tienen tipos, y pueden ser asignados a variables o pasarse a o regresarlas de funciones. Un valor de funcion puede ser llamado como cualquier otra funcion. Por ejemplo:</p>
+<p>En Go las funciones son valores de primera clase: al igual que otros valores, los valores de funcion tienen tipos, y pueden ser asignados a variables o pasarse o regresar de funciones. Un valor de funcion puede ser llamado como cualquier otra funcion. Por ejemplo:</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">square</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span>     <span class="p">{</span> <span class="k">return</span> <span class="nx">n</span> <span class="o">*</span> <span class="nx">n</span> <span class="p">}</span>
 <span class="kd">func</span> <span class="nx">negative</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span>   <span class="p">{</span> <span class="k">return</span> <span class="o">-</span><span class="nx">n</span> <span class="p">}</span>
 <span class="kd">func</span> <span class="nx">product</span><span class="p">(</span><span class="nx">m</span><span class="p">,</span> <span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">m</span> <span class="o">*</span> <span class="nx">n</span> <span class="p">}</span>
@@ -4223,7 +4223,7 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 </pre></div>
 <p>El valor cero para el tipo funcion es <code>nil</code>. Llamar a un valor de funcion nulo produce un panico:</p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">f</span> <span class="kd">func</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span>
-<span class="nx">f</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1">// panico: llamar a funcion nil</span>
+<span class="nx">f</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1">// panico: llamada a funcion nil</span>
 </pre></div>
 <p>Los valores de funcion pueden compararse con <code>nil</code>:</p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">f</span> <span class="kd">func</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span>
@@ -4262,7 +4262,7 @@ $ ./fetch https://golang.org <span class="p">|</span> ./outline
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>La funcion <code>forEachNode</code> acepta dos argumentos de funcion, una para llamar antes de que se visiten los hijos de un nodo y otra para llamar despues. Esta disposicion da a al lamador una gran flexibilidad. Por ejemplo, las funciones <code>startElement</code> y <code>endElement</code> imprimen las etiquetas de inicio y fin de un elemento HTML, como <code>&lt;b&gt;...&lt;/b&gt;</code>:</p>
+<p>La funcion <code>forEachNode</code> acepta dos argumentos de funcion, uno para llamar antes de que se visiten los hijos de un nodo y otro para llamar despues. Esta disposicion da al lamador una gran flexibilidad. Por ejemplo, las funciones <code>startElement</code> y <code>endElement</code> imprimen las etiquetas de inicio y fin de un elemento HTML, como <code>&lt;b&gt;...&lt;/b&gt;</code>:</p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">depth</span> <span class="kt">int</span>
 
 <span class="kd">func</span> <span class="nx">startElement</span><span class="p">(</span><span class="nx">n</span> <span class="o">*</span><span class="nx">html</span><span class="p">.</span><span class="nx">Node</span><span class="p">)</span> <span class="p">{</span>
@@ -4305,7 +4305,7 @@ $ ./outline2 http://gopl.io
             &lt;/img&gt;
 ...
 </pre></div>
-<p><b>Ejercicio 5.7</b>: Desarrolla <code>startElement</code> y <code>endElement</code> en una agradable impresora HTML general. Imprime los nodos de comentarios, nodos de texto y los atributos de cada elemento (<code>&lt;a href='...'&gt;</code>). Utilizar formas cortas como <code>&lt;img/&gt;</code> en lugar de <code>&lt;img&gt;&lt;/img&gt;</code> cuando un elemento no tiene hijos. Escribir una prueba para asegurarse de que la salida se puede analizar con exito. (Vease el <a href="#Capitulo-11" >Capitulo 11</a>).</p>
+<p><b>Ejercicio 5.7</b>: Desarrolla <code>startElement</code> y <code>endElement</code> en una agradable impresora HTML general. Imprime los nodos de comentarios, nodos de texto y los atributos de cada elemento (<code>&lt;a href='...'&gt;</code>). Utilizar formas cortas como <code>&lt;img/&gt;</code> en lugar de <code>&lt;img&gt;&lt;/img&gt;</code> cuando un elemento no tenga hijos. Escribir una prueba para asegurarse de que la salida se puede analizar con exito. (Vease el <a href="#Capitulo-11" >Capitulo 11</a>).</p>
 <p><b>Ejercicio 5.8</b>: Modificar <code>forEachNode</code> para que las funciones <code>pre</code> y <code>post</code> devuelvan un resultado booleano que señale si se debe continuar el recorrido. Utilicelo para escribir una funcion <code>ElementByID</code> con la siguiente firma que se encuentra el primer elemento HTML con el atributo id especificado. La funcion debe detener el recorrido tan pronto como se encuentre una coincidencia.</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">ElementByID</span><span class="p">(</span><span class="nx">doc</span> <span class="o">*</span><span class="nx">html</span><span class="p">.</span><span class="nx">Node</span><span class="p">,</span> <span class="nx">id</span> <span class="kt">string</span><span class="p">)</span> <span class="o">*</span><span class="nx">html</span><span class="p">.</span><span class="nx">Node</span>
 </pre></div>
@@ -4313,11 +4313,11 @@ $ ./outline2 http://gopl.io
 </div>
 <h3 id="Seccion-5.6" >Funciones Anonimas</h3>
 <div class="hBody-3" >
-<p>Funciones con nombre se pueden declarar solo a nivel de paquete, pero podemos utilizar un <em>literal de funcion</em> para denotar un valor de funcion dentro de cualquier expresion. Un literal funcion se escribe como una declaracion de la funcion, pero sin un nombre despues de la palabra clave <code>func</code>. Es una expresion, y su valor se denomina <em>funcion anonima</em>.</p>
+<p>Las funciones con nombre se pueden declarar solo a nivel de paquete, pero podemos utilizar un <em>literal de funcion</em> para denotar un valor de funcion dentro de cualquier expresion. Un literal de funcion se escribe como una declaracion de la funcion, pero sin un nombre despues de la palabra clave <code>func</code>. Es una expresion, y su valor se denomina <em>funcion anonima</em>.</p>
 <p>Los literales de la funcion definen una funcion en su punto de uso. A modo de ejemplo, la llamada anterior a <code>strings.Map</code> se puede reescribir como</p>
 <div class="highlight"><pre><span></span><span class="nx">strings</span><span class="p">.</span><span class="nx">Map</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">r</span> <span class="kt">rune</span><span class="p">)</span> <span class="kt">rune</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">r</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">},</span> <span class="s">&quot;HAL-9000&quot;</span><span class="p">)</span>
 </pre></div>
-<p>Mas importante aun, las funciones definidas de esta manera tienen acceso a todo el entorno lexico, por lo que la funcion interna puede referirse a variables de la funcion de inclusion, como muestra este ejemplo:</p>
+<p>Mas importante aun, las funciones definidas de esta manera tienen acceso a todo el entorno lexico, por lo que la funcion interna puede referirse a variables de la funcion que la encierra, como muestra este ejemplo:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/squares/main.go" >gopl.io/ch5/squares</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// squares regresa una funcion que devuelve el siguiente</span>
@@ -4342,7 +4342,7 @@ $ ./outline2 http://gopl.io
 <p>La funcion <code>squares</code> devuelve otra funcion, de tipo <code>func() int</code>. Una llamada a <code>squares</code> crea una variable local <code>x</code> y devuelve una funcion anonima que, cada vez que se llama, incrementa <code>x</code> y devuelve su cuadrado. Una segunda llamada a <code>squares</code> crearia una segunda variable <code>x</code> y devolvera una nueva funcion anonima que incremente esa variable.</p>
 <p>El ejemplo <code>squares</code> demuestra que los valores de funcion no son solo codigo, sino que pueden tener estado. La funcion anonima interna puede acceder y actualizar las variables locales dentro de la funcion <code>squares</code>. Estas referencias de variables ocultas son el por que clasificamos a las funciones como tipos de referencia y motivo de que los valores de las funciones no sean comparables. Los valores de funcion como estos se implementan utilizando una tecnica llamada <em>closures</em>, y los programadores Go a menudo utilizan este termino para los valores de la funcion.</p>
 <p>Aqui de nuevo vemos un ejemplo donde el tiempo de vida de una variable no esta determinada por su ambito de aplicacion: la variable <code>x</code> existe despues del retorno de <code>squares</code> dentro de <code>main</code>, aunque <code>x</code> este oculta dentro de <code>f</code>.</p>
-<p>Como un ejemplo un tanto academico de funciones anonimas, considere el problema de calcular una secuencia de los cursos de ciencias de la computacion que satisfagan los requisitos previos de cada uno. Los prerequisitos se dan en la tabla <code>prereqs</code> de abajo, que es un mapeo de cada curso a la lista de cursos que se deben completar antes de ella.</p>
+<p>Como un ejemplo un tanto academico de funciones anonimas, considere el problema de calcular la secuencia de los cursos de ciencias de computacion que satisfagan los requisitos previos de cada uno. Los prerequisitos se dan en la tabla <code>prereqs</code> de abajo, que es un mapa de cada curso a la lista de cursos que se deben completar antes de ella.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/toposort/main.go" >gopl.io/ch5/toposort</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// prereqs asigna cursos de ciencia de la computacion a sus prerequisitos.</span>
@@ -4418,11 +4418,11 @@ $ ./outline2 http://gopl.io
 10:     bases de datos
 11:     sistemas operativos
 12:     redes
-13:     Lenguajes de programacion</pre>
+13:     lenguajes de programacion</pre>
 <p>Volvamos a nuestro ejemplo <code>findLinks</code>. Hemos movido la funcion de extraccion de enlaces <code>links.Extract</code> a su propio paquete, ya que la usaremos de nuevo en el <a href="#Capitulo-8" >Capitulo 8</a>. Hemos sustituido la funcion <code>visit</code> con una funcion anonima que agrega directamente los <code>links</code> al slice, y utilizamos <code>forEachNode</code> para manejar el recorrido. Ya que <code>Extract</code> solo necesita la funcion <code>pre</code>, se pasa <code>nil</code> para el argumento <code>post</code>.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/links/links.go" >gopl.io/ch5/links</a></p>
-<div class="highlight"><pre><span></span><span class="c1">// El paquete links proporciona una funcion de extraccion de links.</span>
+<div class="highlight"><pre><span></span><span class="c1">// El paquete links proporciona una funcion de extraccion de enlaces.</span>
 <span class="kn">package</span> <span class="nx">links</span>
 
 <span class="kn">import</span> <span class="p">(</span>
@@ -4470,7 +4470,7 @@ $ ./outline2 http://gopl.io
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>En lugar de añadir el atributo <code>href</code> en bruto al slice <code>links</code>, esta version lo analiza como una direccion URL relativa a la URL base del documento, <code>resp.Request.URL</code>. El enlace resultante esta en formato absoluta, adecuado para su uso en una llamada a <code>http.Get</code>.</p>
+<p>En lugar de añadir el atributo <code>href</code> en bruto al slice <code>links</code>, esta version lo analiza como una direccion URL relativa a la URL base del documento, <code>resp.Request.URL</code>. El enlace resultante esta en formato absoluto, adecuado para su uso en una llamada a <code>http.Get</code>.</p>
 <p>El rastreador web es, en su corazon, un problema de grafico transversal. El ejemplo <code>topoSort</code> mostra un recorrido en profundidad; Para nuestro rastreador web, vamos a utilizar la anchura de primera transversal, al menos inicialmente. En el <a href="#Capitulo-8" >Capitulo 8</a>, vamos a explorar el recorrido concurrente.</p>
 <p>La siguiente funcion encapsula la esencia de un recorrido de primer-anchura. El llamador proporciona una lista inicial <code>worklist</code> de elementos a visitar y un valor de la funcion <code>f</code> a llamar para cada elemento. Cada elemento se identifica mediante una cadena. La funcion <code>f</code> devuelve una lista de elementos nuevos a añadir a la lista de trabajo. La funcion <code>breadthFirst</code> regresa cuando todos los elementos han sido visitados. Mantiene un conjunto de cadenas para garantizar que ningun elemento se visita dos veces.</p>
 <div class="figure" >
@@ -4493,7 +4493,7 @@ $ ./outline2 http://gopl.io
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Como explicamos al pasar por el <a href="#Capitulo-3" >Capitulo 3</a>, el argumento de <q><code>f(item)...</code></q>  hace que todos los elementos de la lista devuelta por f que se añadan a la lista de trabajo.</p>
+<p>Como explicamos al pasar por el <a href="#Capitulo-3" >Capitulo 3</a>, el argumento de <q><code>f(item)...</code></q> hace que todos los elementos de la lista devuelta por <code>f</code>se añadan a la lista de trabajo.</p>
 <p>En nuestro rastreador, los elementos son URL. La funcion <code>crawl</code> que suministramos a <code>breadthFirst</code> imprime la URL, extrae sus enlaces, y los devuelve para que tambien se visiten..</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">crawl</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="kt">string</span> <span class="p">{</span>
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
@@ -4526,9 +4526,9 @@ https://vimeo.com/53221560
 </pre></div>
 <p>El proceso finaliza cuando todas las paginas web alcanzables se han rastreado o se ha agotado la memoria del equipo.</p>
 <p><b>Ejercicio 5.10</b>: Vuelve a escribir <code>topoSort</code> para utilizar mapas en lugar de slices y eliminar la clasificacion inicial. Verifique que los resultados, aunque no deterministicos, sean ordenamientos topologicos validos.</p>
-<p><b>Ejercicio 5.11</b>: El instructor del curso de algebra lineal decide que ahora es un requisito previo. Extender la funcion <code>topoSort</code> para reportar ciclos.</p>
+<p><b>Ejercicio 5.11</b>: El instructor del curso de algebra lineal decide que el calculo ahora es un requisito previo. Extender la funcion <code>topoSort</code> para reportar ciclos.</p>
 <p><b>Ejercicio 5.12</b>: Las funciones <code>startElement</code> y <code>endElement</code> en <code>gopl.io/ch5/outline2</code> (<a href="#Seccion-5.5" >§5.5</a>) comparten una variable global, <code>depth</code>. Conviertalas en funciones anonimas que compartan una variable local de la funcion <code>outline</code>.</p>
-<p><b>Ejercicio 5.13</b>: Modificar <code>crawl</code> para hacer copias locales de las paginas que encuentre, la creando directorios segun sea necesario. No haga copias de paginas que provengan de un dominio diferente. Por ejemplo, si la pagina original proviene de <a href="https://golang.org" >golang.org</a>, guarda todos los archivos de alli, pero excluyen los de <a href="https://vimeo.com" >vimeo.com</a>.</p>
+<p><b>Ejercicio 5.13</b>: Modificar <code>crawl</code> para hacer copias locales de las paginas que encuentre, creando directorios segun sea necesario. No haga copias de paginas que provengan de un dominio diferente. Por ejemplo, si la pagina original proviene de <a href="https://golang.org" >golang.org</a>, guarda todos los archivos de alli, pero excluir los de <a href="https://vimeo.com" >vimeo.com</a>.</p>
 <p><b>Ejercicio 5.14</b>: Usar la funcion <code>breadthFirst</code> para explorar una estructura diferente. Por ejemplo, podria utilizar las dependencias de cursos del ejemplo <code>topoSort</code> (un grafo dirigido), la jerarquia del sistema de archivos en el ordenador (un arbol), o una lista de rutas de autobus o de metro descargados desde el sitio web de su gobierno de la ciudad (un grafo no dirigido).</p>
 </div>
 <h4 id="Seccion-5.6.1" >Advertencia: Captura de Variables de Iteracion</h4>
@@ -4550,7 +4550,7 @@ https://vimeo.com/53221560
   <span class="nx">rmdir</span><span class="p">()</span> <span class="c1">// clean up</span>
 <span class="p">}</span>
 </pre></div>
-<p>Es posible que se pregunte por que asignamos la variable de bucle <code>d</code> a una nueva variable local <code>dir</code> dentro del cuerpo del bucle, en lugar de simplemente nombrar a la variable de bucle <code>dir</code> que en esta variante sutil incorrectos:</p>
+<p>Es posible que se pregunte por que asignamos la variable de bucle <code>d</code> a una nueva variable local <code>dir</code> dentro del cuerpo del bucle, en lugar de simplemente nombrar a la variable de bucle <code>dir</code> como en esta variante sutilmente incorrecta:</p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">rmdirs</span> <span class="p">[]</span><span class="kd">func</span><span class="p">()</span>
 <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">dir</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">tempDirs</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">os</span><span class="p">.</span><span class="nx">MkdirAll</span><span class="p">(</span><span class="nx">dir</span><span class="p">,</span> <span class="mo">0755</span><span class="p">)</span>
@@ -4559,20 +4559,20 @@ https://vimeo.com/53221560
   <span class="p">})</span>
 <span class="p">}</span>
 </pre></div>
-<p>La razon es una consecuencia de las reglas de alcance para variables de bucle. En el programa inmediatamente anterior, el bucle <code>for</code> introduce un nuevo bloque lexico en el que se declara la variable <code>dir</code>. Todos los valores de la funcion creados por esta bucle <q>capturan</q> y comparten la misma variable–Un lugar de almacenamiento direccionable, no su valor en ese momento en particular. El valor de <code>dir</code> se actualiza en iteraciones sucesivas, de manera que cuando las funciones de limpieza son llamados, la variable <code>dir</code> ha sido actualizado varias veces por el ahora completado bucle <code>for</code>. Por lo tanto <code>dir</code> mantiene el valor de la iteracion final, y por lo tanto todas las llamadas a <code>os.RemoveAll</code> intentaran eliminar el mismo directorio.</p>
-<p>Con frecuencia, la variable interna introducido para evitar este problema–<code>dir</code> en nuestro ejemplo–se le da exactamente el mismo nombre que la variable externa de la que es una copia, lo que lleva a las declaraciones de variables de aspecto extraño pero cruciales como este:</p>
+<p>La razon es una consecuencia de las reglas de alcance para variables de bucle. En el programa inmediatamente anterior, el bucle <code>for</code> introduce un nuevo bloque lexico en el que se declara la variable <code>dir</code>. Todos los valores de la funcion creados por este bucle <q>capturan</q> y comparten la misma variable–Un lugar de almacenamiento direccionable, no su valor en ese momento en particular. El valor de <code>dir</code> se actualiza en iteraciones sucesivas, de manera que cuando las funciones de limpieza son llamadas, la variable <code>dir</code> ha sido actualizada varias veces por el ahora completado bucle <code>for</code>. Por lo tanto <code>dir</code> mantiene el valor de la iteracion final, y por lo tanto todas las llamadas a <code>os.RemoveAll</code> intentaran eliminar el mismo directorio.</p>
+<p>Con frecuencia, a la variable interna introducida para evitar este problema–<code>dir</code> en nuestro ejemplo–se le da exactamente el mismo nombre que la variable externa de la que es una copia, lo que lleva a las declaraciones de variables de aspecto extraño pero cruciales como este:</p>
 <div class="highlight"><pre><span></span><span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">dir</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">tempDirs</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">dir</span> <span class="o">:=</span> <span class="nx">dir</span> <span class="c1">// declara dir interno, inicializado a dir externo</span>
   <span class="c1">// ...</span>
 <span class="p">}</span>
 </pre></div>
-<p>El riesgo no es unica para bucles <code>for</code> basados en <code>range</code>. El bucle en el siguiente ejemplo adolece del mismo problema debido a la captura no intencionada de la variable de indice <code>i</code>.</p>
+<p>El riesgo no es unico para bucles <code>for</code> basados en <code>range</code>. El bucle en el siguiente ejemplo adolece del mismo problema debido a la captura no intencionada de la variable de indice <code>i</code>.</p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">rmdirs</span> <span class="p">[]</span><span class="kd">func</span><span class="p">()</span>
 <span class="nx">dirs</span> <span class="o">:=</span> <span class="nx">tempDirs</span><span class="p">()</span>
 <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">dirs</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
   <span class="nx">os</span><span class="p">.</span><span class="nx">MkdirAll</span><span class="p">(</span><span class="nx">dirs</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="mo">0755</span><span class="p">)</span> <span class="c1">// OK</span>
   <span class="nx">rmdirs</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">rmdirs</span><span class="p">,</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">os</span><span class="p">.</span><span class="nx">RemoveAll</span><span class="p">(</span><span class="nx">dirs</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="c1">// NOTA: incorrecto!</span>
+    <span class="nx">os</span><span class="p">.</span><span class="nx">RemoveAll</span><span class="p">(</span><span class="nx">dirs</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>    <span class="c1">// NOTA: incorrecto!</span>
   <span class="p">})</span>
 <span class="p">}</span>
 </pre></div>
@@ -4580,8 +4580,8 @@ https://vimeo.com/53221560
 </div>
 <h3 id="Seccion-5.7" >Funciones Variadic</h3>
 <div class="hBody-3" >
-<p>Una <em>funcion variadic</em> es uno que se puede llamar con un numero de argumentos variable. Los ejemplos mas conocidos son <code>fmt.Printf</code> y sus variantes. <code>Printf</code> requiere un argumento fijo al principio, luego acepta cualquier numero de argumentos posteriores.</p>
-<p>Para declarar una funcion variadic, el tipo del parametro final va precedida por una elipsis, <q><code>...</code></q>, que indica que la funcion puede ser llamada con cualquier numero de argumentos de este tipo.</p>
+<p>Una <em>funcion variadic</em> es una que se puede llamar con un numero de argumentos variable. Los ejemplos mas conocidos son <code>fmt.Printf</code> y sus variantes. <code>Printf</code> requiere un argumento fijo al principio, luego acepta cualquier numero de argumentos posteriores.</p>
+<p>Para declarar una funcion variadic, el tipo del parametro final va precedido por una elipsis, <q><code>...</code></q>, que indica que la funcion puede ser llamada con cualquier numero de argumentos de ese tipo.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/sum/main.go" >gopl.io/ch5/sum</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">sum</span><span class="p">(</span><span class="nx">vals</span> <span class="o">...</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
@@ -4593,12 +4593,12 @@ https://vimeo.com/53221560
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>La funcion <code>sum</code> anterior devuelve la suma de cero o mas argumentos <code>int</code>. Dentro del cuerpo de la funcion, el tipo de <code>vals</code> es un slice <code>[]int</code>. Cuando llame a <code>sum</code>, cualquier numero de valores puede ser proporcionado pora su parametro <code>vals</code>.</p>
+<p>La funcion <code>sum</code> anterior devuelve la suma de cero o mas argumentos <code>int</code>. Dentro del cuerpo de la funcion, el tipo de <code>vals</code> es un slice <code>[]int</code>. Cuando llame a <code>sum</code>, puede proporcionar cualquier numero de valores en su parametro <code>vals</code>.</p>
 <div class="highlight"><pre><span></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">sum</span><span class="p">())</span>           <span class="c1">// &quot;0&quot;</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">sum</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>          <span class="c1">// &quot;3&quot;</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="c1">// &quot;10&quot;</span>
 </pre></div>
-<p>Implicitamente, el llamador asigna un arreglo, copia los argumentos en ell y pasa un slice de toda la arreglo a la funcion. La llamada anterior se comporta de la misma manera que la llamada que se muestra a continuacion, que muestra como invocar una funcion variadica cuando los argumentos ya estan en un slice: coloca una elipsis despues del argumento final.</p>
+<p>Implicitamente, el llamador asigna un arreglo, copia los argumentos en el y pasa un slice de todo el arreglo a la funcion. La llamada anterior se comporta de la misma manera que la siguiente, que muestra como invocar una funcion variadica cuando los argumentos ya estan en un slice: coloca una elipsis despues del argumento final.</p>
 <div class="highlight"><pre><span></span><span class="nx">values</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">}</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">sum</span><span class="p">(</span><span class="nx">values</span><span class="o">...</span><span class="p">))</span> <span class="c1">// &quot;10&quot;</span>
 </pre></div>
@@ -4609,7 +4609,7 @@ https://vimeo.com/53221560
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%T\n&quot;</span><span class="p">,</span> <span class="nx">f</span><span class="p">)</span> <span class="c1">// &quot;func(...int)&quot;</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%T\n&quot;</span><span class="p">,</span> <span class="nx">g</span><span class="p">)</span> <span class="c1">// &quot;func([]int)&quot;</span>
 </pre></div>
-<p>Las funciones variadic se utilizan a menudo para el formato de la secuencia. La funcion <code>errorf</code> a continuacion construye un mensaje de error con formato con un numero de linea en el principio. El sufijo <code>f</code> es una convencion de nomenclatura ampliamente seguido para funciones variadic que aceptan una cadena de formato de estilo <code>Printf</code>.</p>
+<p>Las funciones variadic se utilizan a menudo para el formateo de cadenas. La funcion <code>errorf</code> a continuacion construye un mensaje de error con formato con un numero de linea en el principio. El sufijo <code>f</code> es una convencion de nomenclatura ampliamente seguido para funciones variadic que aceptan una cadena de formato de estilo <code>Printf</code>.</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">errorf</span><span class="p">(</span><span class="nx">linenum</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">format</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">args</span> <span class="o">...</span><span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Fprintf</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span><span class="p">,</span> <span class="s">&quot;Line %d: &quot;</span><span class="p">,</span> <span class="nx">linenum</span><span class="p">)</span>
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Fprintf</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span><span class="p">,</span> <span class="nx">format</span><span class="p">,</span> <span class="nx">args</span><span class="o">...</span><span class="p">)</span>
@@ -4621,7 +4621,7 @@ https://vimeo.com/53221560
 </pre></div>
 <p>El tipo <code>interface{}</code> significa que esta funcion puede aceptar cualquier valor en absoluto para sus argumentos finales, como explicaremos en el <a href="#Capitulo-7" >Capitulo 7</a>.</p>
 <p><b>Ejercicio 5.15</b>: Escribir funciones variadic <code>max</code> y <code>min</code>, analoga a <code>sum</code>. ¿Que deben hacer estas funciones cuando se llaman sin argumentos? Escribir variantes que requieren al menos un argumento.</p>
-<p><b>Ejercicio 5.16</b>: Escribir una version variadic <code>de strings.Join</code> .</p>
+<p><b>Ejercicio 5.16</b>: Escribir una version variadic <code>de strings.Join</code>.</p>
 <p><b>Ejercicio 5.17</b>: Escribir una funcion variadic <code>ElementsByTagName</code> que, dado un arbol de nodos HTML y cero o mas nombres, devuelve todos los elementos que coinciden con uno de esos nombres. Aqui hay dos ejemplos de llamadas:</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">ElementsByTagName</span><span class="p">(</span><span class="nx">doc</span> <span class="o">*</span><span class="nx">html</span><span class="p">.</span><span class="nx">Node</span><span class="p">,</span> <span class="nx">name</span> <span class="o">...</span><span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="o">*</span><span class="nx">html</span><span class="p">.</span><span class="nx">Node</span>
 
@@ -4665,7 +4665,7 @@ https://vimeo.com/53221560
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Aqui esta una sesion tipica, ligeramente editada para encajar:</p>
+<p>Aqui esta una sesion tipica:</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch5/title1
 $ ./title1 http://gopl.io
 The Go Programming Language
@@ -4675,7 +4675,7 @@ $ ./title1 https://golang.org/doc/gopher/frontpage.png
 title: https://golang.org/doc/gopher/frontpage.png
     has <span class="nb">type</span> image/png, not text/html
 </pre></div>
-<p>Observe la llamada duplicada <code>resp.Body.Close()</code>, que asegura que <code>title</code> se cierre la conexion de red en todas las rutas de ejecucion, incluyendo las fallas. A medida que las funciones se vuelven mas complejas y tienen que manejar mas errores, tal duplicacion de la logica de limpieza puede convertirse en un problema de mantenimiento. Veamos como el nuevo mecanismo <code>defer</code> de Go hace las cosas mas sencillas.</p>
+<p>Observe la llamada duplicada <code>resp.Body.Close()</code>, que asegura que <code>title</code> cierre la conexion de red en todas las rutas de ejecucion, incluyendo las fallas. A medida que las funciones se vuelven mas complejas y tienen que manejar mas errores, tal duplicacion de la logica de limpieza puede convertirse en un problema de mantenimiento. Veamos como el nuevo mecanismo <code>defer</code> de Go hace las cosas mas sencillas.</p>
 <p>Sintacticamente, una sentencia <code>defer</code> es una funcion ordinaria o una llamada a un metodo con la palabra clave <code>defer</code> como prefijo. Las expresiones de funcion y los argumentos se evaluan cuando se ejecuta la instruccion, pero la llamada real se aplaza hasta que la funcion que contiene la declaracion <code>defer</code> ha terminado, ya sea ejecutando una instruccion de retorno o llegando al final, o anormalmente, por un panico. Cualquier numero de llamadas puede ser diferido; se ejecutan en el orden inverso en que fueron aplazadas.</p>
 <p>Una sentencia <code>defer</code> se utiliza a menudo con operaciones pareadas como abrir y cerrar, conectar y desconectar o bloquear y desbloquear para garantizar que los recursos se liberan en todos los casos, independientemente de la complejidad del flujo de control. El lugar adecuado para una sentencia <code>defer</code> que libera un recurso es inmediatamente despues de que el recurso se ha adquirido con exito. En la funcion <code>title</code> a continuacion, una sola llamada diferida sustituye a las dos llamadas anteriores de <code>resp.Body.Close()</code>:</p>
 <div class="figure" >
@@ -4728,7 +4728,7 @@ title: https://golang.org/doc/gopher/frontpage.png
   <span class="k">return</span> <span class="nx">m</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
-<p>La sentencia <code>defer</code> tambien se puede utilizar para emparejar acciones de <q>entrada</q> y <q>salida</q> al depurar una funcion compleja. A continuacion la funcion <code>bigSlowOperation</code> llama inmediatamente a <code>trace</code>, lo que la hace una accion de <q>entrada</q> que devuelve un valor de funcion que, cuando se le llama, hace la accion de <q>salida</q>.  Al diferir una llamada a la funcion devuelta de esta manera, podemos instrumentar el punto de entrada y todos los puntos de salida de una funcion en una sola declaracion, e incluso pasar valores, como el tiempo de inicion <code>start</code>, entre las dos acciones. Pero no se olvide de los parentesis finales en el sentencia <code>defer</code>, o la accion de <q>entrada</q> ocurrira en la salida y la accion en la salida no ocurrira en absoluto!</p>
+<p>La sentencia <code>defer</code> tambien se puede utilizar para emparejar acciones de <q>entrada</q> y <q>salida</q> al depurar una funcion compleja. A continuacion la funcion <code>bigSlowOperation</code> llama inmediatamente a <code>trace</code>, lo que la hace una accion de <q>entrada</q> que devuelve un valor de funcion que, cuando se le llama, hace la accion de <q>salida</q>.  Al diferir una llamada a la funcion devuelta de esta manera, podemos instrumentar el punto de entrada y todos los puntos de salida de una funcion en una sola declaracion, e incluso pasar valores, como el tiempo de inicio <code>start</code>, entre las dos acciones. Pero no se olvide de los parentesis finales en el sentencia <code>defer</code>, o la accion de <q>entrada</q> ocurrira en la salida y la accion en la salida no ocurrira en absoluto!</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/trace/main.go" >gopl.io/ch5/trace</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">bigSlowOperation</span><span class="p">()</span> <span class="p">{</span>
@@ -4744,19 +4744,19 @@ title: https://golang.org/doc/gopher/frontpage.png
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Cada vez <code>bigSlowOperation</code> se llama, registra su entrada y salida y el tiempo transcurrido entre ellos. (Utilizamos <code>time.Sleep</code> para simular una operacion lenta.)</p>
+<p>Cada vez que llama a <code>bigSlowOperation</code>, se registra su entrada y salida y el tiempo transcurrido entre ello. (Utilizamos <code>time.Sleep</code> para simular una operacion lenta.)</p>
 <div class="highlight"><pre><span></span>$ go build gopl.io/ch5/trace
 $ ./trace
 <span class="m">2015</span>/11/18 <span class="m">09</span>:53:26 enter bigSlowOperation
 <span class="m">2015</span>/11/18 <span class="m">09</span>:53:36 <span class="nb">exit</span> bigSlowOperation <span class="o">(</span><span class="m">10</span>.000589217s<span class="o">)</span>
 </pre></div>
-<p>Las funciones diferidas se ejecutan despues de las declaraciones de retorno han actualizado las variables de resultado de la funcion. Debido a que una funcion anonima puede acceder a las variables de su funcion de inclusion, incluidos los resultados con nombra, una funcion anonima diferida puede observar los resultados de la funcion.</p>
+<p>Las funciones diferidas se ejecutan despues de las declaraciones de retorno han actualizado las variables de resultado de la funcion. Debido a que una funcion anonima puede acceder a las variables de su funcion de inclusion, incluidos los resultados con nombre, una funcion anonima diferida puede observar los resultados de la funcion.</p>
 <p>Considere la funcion <code>doble</code>:</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">doble</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">x</span>
 <span class="p">}</span>
 </pre></div>
-<p>Al nombrar a su variable de resultado y agregar una sentecia <code>defer</code>, podemos hacer que la funcion imprimir sus argumentos y resultados cada vez que se llame.</p>
+<p>Al nombrar a su variable de resultado y agregar una sentecia <code>defer</code>, podemos hacer que la funcion imprima sus argumentos y resultados cada vez que se llame.</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">doble</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="nx">resultado</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;doble(%d) = %d\n&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">resultado</span><span class="p">)</span> <span class="p">}()</span>
   <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">x</span>
@@ -4775,7 +4775,7 @@ $ ./trace
 
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">triple</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span> <span class="c1">// &quot;12&quot;</span>
 </pre></div>
-<p>Dado que las funciones diferidos no se ejecutan hasta el final de la ejecucion de una funcion, una declaracion <code>defer</code> en un bucle merece un escrutinio adicional. El codigo siguiente podria quedar sin los descriptores de archivo ya que ningun archivo se cerrara hasta que todos los archivos se hayan procesado:</p>
+<p>Dado que las funciones diferidas no se ejecutan hasta el final de la ejecucion de una funcion, una declaracion <code>defer</code> en un bucle merece un escrutinio adicional. El codigo siguiente podria quedar sin los descriptores de archivo ya que ningun archivo se cerrara hasta que todos los archivos se hayan procesado:</p>
 <div class="highlight"><pre><span></span><span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">filename</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">filenames</span> <span class="p">{</span>
   <span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="nx">filename</span><span class="p">)</span>
   <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
@@ -4804,7 +4804,7 @@ $ ./trace
 <p>El siguiente ejemplo es una mejora del programa <code class="command" >fetch</code> (<a href="#Seccion-1.5" >§1.5</a>) que escribe la respuesta HTTP a un archivo local en lugar de a la salida estandar. Deriva el nombre del archivo del el ultimo componente de la ruta URL, que obtiene utilizando la funcion <code>path.Base</code>.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/fetch/main.go" >gopl.io/ch5/fetch</a></p>
-<div class="highlight"><pre><span></span><span class="c1">// Fetch descarga la URL y regresa el rombre</span>
+<div class="highlight"><pre><span></span><span class="c1">// Fetch descarga la URL y regresa el nombre</span>
 <span class="c1">// y la longitud del archivo local.</span>
 <span class="kd">func</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">filename</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">n</span> <span class="kt">int64</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
@@ -4822,7 +4822,7 @@ $ ./trace
     <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">err</span>
   <span class="p">}</span>
   <span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Copy</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">)</span>
-  <span class="c1">// Close file, but prefer error from Copy, if any.</span>
+  <span class="c1">// Cerrar archivo, pero prefiera el error de Copy, si lo hay.</span>
   <span class="k">if</span> <span class="nx">closeErr</span> <span class="o">:=</span> <span class="nx">f</span><span class="p">.</span><span class="nx">Close</span><span class="p">();</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
     <span class="nx">err</span> <span class="p">=</span> <span class="nx">closeErr</span>
   <span class="p">}</span>
@@ -4830,14 +4830,14 @@ $ ./trace
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>La llamada diferida a <code>resp.Body.Close</code> deberia resultar familiar por ahora. Es tentador utilizar una segunda llamada diferida, a <code>f.Close</code>, para cerrar el archivo local, pero esto seria sutilmente incorrecto porque <code>os.Create</code> abre un archivo para escribir, crear, segun sea necesario. En muchos sistemas de archivos, notablemente NFS, los errores de escritura no se informan inmediatamente pero se pueden posponer hasta que se cierre el archivo. Si no se comprueba el resultado de la operacion de cierre, la perdida de datos graves podria pasar desapercibida. Sin embargo, si ambos <code>io.Copy</code> y <code>f.Close</code> fallan, debemos preferir reportar el error de <code>io.Copy</code> desde que ocurre por primera vez y es mas probable que nos diga la causa raiz.</p>
+<p>La llamada diferida a <code>resp.Body.Close</code> deberia resultar familiar por ahora. Es tentador utilizar una segunda llamada diferida, a <code>f.Close</code>, para cerrar el archivo local, pero esto seria sutilmente incorrecto porque <code>os.Create</code> abre un archivo para escritura, creandolo si es necesario. En muchos sistemas de archivos, notablemente NFS, los errores de escritura no se informan inmediatamente, pueden posponerse hasta que se cierre el archivo. Si no se comprueba el resultado de la operacion de cierre, la perdida de datos graves podria pasar desapercibida. Sin embargo, si ambos <code>io.Copy</code> y <code>f.Close</code> fallan, debemos preferir reportar el error de <code>io.Copy</code> desde que ocurre por primera vez y es mas probable que nos diga la causa raiz.</p>
 <p><b>Ejercicio 5.18</b>: Sin cambiar su comportamiento, reescriba la funcion <code>fetch</code> utilizando <code>defer</code> para cerrar el archivo de escritura.</p>
 </div>
 <h3 id="Seccion-5.9" >Panico</h3>
 <div class="hBody-3" >
 <p>El sistema de tipado de Go captura muchos errores en tiempo de compilacion, pero otros, como un acceso a un arreglo fuera de limites o una desreferencia de puntero nulo, requieren comprobaciones en tiempo de ejecucion. Cuando go detecta errores en tiempo de ejecucion, entra en <em>panico</em>.</p>
 <p>Durante un panico tipico, la ejecucion normal se detiene, todas las llamadas de funcion diferida en esa gorutina se ejecutan, y el programa se bloquea con un mensaje de registro. Este mensaje de registro incluye el <em>valor de panico</em>, que suele ser un mensaje de error de algun tipo, y, para cada goroutine, un <em>seguimiento de pila</em> que muestra la pila de llamadas a funciones que estaban activas en el momento del panico. Este mensaje de registro a menudo tiene suficiente informacion para diagnosticar la causa raiz del problema sin ejecutar el programa de nuevo, por lo que siempre debe incluirse en un informe de error acerca de un programa de panico.</p>
-<p>No todos los panicos provienen del tiempo de ejecucion. La funcion nativa <code>panic</code> se puede llamar directamente; acepta cualquier valor como argumento. Un panico es a menudo lo mejor que puede hacer cuando ocurre alguna situacion <q>imposible</q>, por ejemplo, la ejecucion llega a un caso que logicamente, no puede suceder:</p>
+<p>No todos los panicos provienen del tiempo de ejecucion. La funcion nativa <code>panic</code> se puede llamar directamente; acepta cualquier valor como argumento. Un panico es a menudo lo mejor que puede hacer cuando ocurre alguna situacion <q>imposible</q>, por ejemplo, que la ejecucion llegue a un caso que logicamente, no puede suceder:</p>
 <div class="highlight"><pre><span></span><span class="k">switch</span> <span class="nx">s</span> <span class="o">:=</span> <span class="nx">suit</span><span class="p">(</span><span class="nx">drawCard</span><span class="p">());</span> <span class="nx">s</span> <span class="p">{</span>
 <span class="k">case</span> <span class="s">&quot;Spades&quot;</span><span class="p">:</span>   <span class="c1">// ...</span>
 <span class="k">case</span> <span class="s">&quot;Hearts&quot;</span><span class="p">:</span>   <span class="c1">// ...</span>
@@ -4909,7 +4909,7 @@ defer 3</pre>
  main.main()
          src/gopl.io/ch5/defer1/defer.go:10</pre>
 <p>Como veremos mas adelante, es posible que una funcion se recupere de un panico para que no termine el programa.</p>
-<p>Por propositod de diagnostico, el paquete <code>runtime</code> permite al programador volcar la pila utilizando la misma maquinaria. Al diferir una llamada a <code>printStack</code> en <code>main</code>,</p>
+<p>Por propositos de diagnostico, el paquete <code>runtime</code> permite al programador volcar la pila utilizando la misma maquinaria. Al diferir una llamada a <code>printStack</code> en <code>main</code>,</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/defer2/defer.go" >gopl.io/ch5/defer2</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
@@ -4943,8 +4943,8 @@ defer 3</pre>
 <h3 id="Seccion-5.10" >Recover</h3>
 <div class="hBody-3" >
 <p>Desistir es generalmente la respuesta correcta a un panico, pero no siempre. Podria ser posible recuperarse de alguna manera, o al menos limpiar el lio antes de marcharse. Por ejemplo, un servidor web que encuentra un problema inesperado podria cerrar la conexion en lugar de dejar al cliente colgado y, durante el desarrollo, podria informar el error al cliente tambien.</p>
-<p>Si la funcion nativa <code>recover</code> se llama dentro de una funcion diferida y la funcion que contiene la sentencia <code>defer</code> es presa del panico, <code>recover</code> termina el actual estado de panico y devuelve el valor de panico. La funcion que estaba en panico no continua donde lo dejo pero devuelve normalmente. Si <code>recover</code> se llama en cualquier otro momento, no tiene ningun efecto y devuelve <code>nil</code>.</p>
-<p>Para ilustrar, considere el desarrollo de un analizador para un lenguaje. Incluso cuando parece estar funcionando bien, dada la complejidad de su trabajo, los bichos todavia pueden acechar en esquinas oscuras. Podriamos preferir que, en lugar de fallar, el analizador convierta estos panicos en errores comunes de analisis, quizas con un mensaje extra exhortando al usuario a presentar un informe de error.</p>
+<p>Si la funcion nativa <code>recover</code> se llama dentro de una funcion diferida y la funcion que contiene la sentencia <code>defer</code> es presa del panico, <code>recover</code> termina el actual estado de panico y devuelve el valor del panico. La funcion que estaba en panico no continua donde lo dejo pero devuelve normalmente. Si <code>recover</code> se llama en cualquier otro momento, no tiene ningun efecto y devuelve <code>nil</code>.</p>
+<p>Para ilustrar, considere el desarrollo de un analizador para un lenguaje. Incluso cuando parece estar funcionando bien, dada la complejidad de su trabajo, los bichos todavia pueden acechar en esquinas oscuras. Podriamos preferir que, en lugar de fallar, el analizador convierta estos panicos en errores comunes de analisis, quizas con un mensaje extra, exhortando al usuario a presentar un informe de error.</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">Parse</span><span class="p">(</span><span class="nx">input</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Syntax</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">if</span> <span class="nx">p</span> <span class="o">:=</span> <span class="nb">recover</span><span class="p">();</span> <span class="nx">p</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
@@ -4958,7 +4958,7 @@ defer 3</pre>
 <p>La recuperacion indiscriminada de los panicos es una practica dudosa porque el estado de las variables de un paquete despues de un panico raramente esta bien definido o documentado. Quizas una actualizacion critica de una estructura de datos estaba incompleta, se abrio una conexion de archivo o de red pero no se cerro o se obtuvo un bloqueo pero no se libero. Ademas, al reemplazar un bloqueo con, por ejemplo, una linea en un archivo de registro, la recuperacion indiscriminada puede hacer que los errores pasen desapercibidos.</p>
 <p>La recuperacion de un panico dentro del mismo paquete puede ayudar a simplificar el manejo de errores complejos o inesperados, pero como regla general, no debe intentar recuperarse del panico de otro paquete. Las APIs publicas deben informar de fallos como <code>errores</code>. Del mismo modo, no debe recuperarse de un panico que puede pasar a traves de una funcion que no mantiene, como una llamador de devolucion de lllamada, ya que no puede razonar sobre su seguridad.</p>
 <p>Por ejemplo, el paquete <code>net/http</code> proporciona un servidor web que envia las solicitudes entrantes a funciones de controlador proporcionados por el usuario. En lugar de permitir que un panico en uno de estos controladores elimine el proceso, el servidor llama a <code>recover</code>, imprime un seguimiento de la pila, y sigue atendiendo. Esto es conveniente en la practica, pero se corre el riesgo de perder recursos o dejar al manejador fallido en un estado no especificado que podria conducir a otros problemas.</p>
-<p>Por todas las razones anteriores, es mas seguro recuperarse selectivamente si es necesario. En otras palabras, recuperar solo de los panicos que estaban destinados a ser recuperados, lo que deberia ser raro. Esta intencion puede ser codificado mediante el uso de un tipo distinto, sin exportar para el valor de panico y probar si el valor devuelto por <code>recover</code> tiene ese tipo. (Veremos una manera de hacer esto en el siguiente ejemplo.) Si es asi, el informamos el panico como un error ordinario; si no, que llamamos a <code>panic</code> con el mismo valor para reanudar el estado de panico.</p>
+<p>Por todas las razones anteriores, es mas seguro recuperarse selectivamente si es necesario. En otras palabras, recuperar solo de los panicos que estaban destinados a ser recuperados, lo que deberia ser raro. Esta intencion puede ser codificado mediante el uso de un tipo distinto, sin exportar para el valor de panico y probar si el valor devuelto por <code>recover</code> tiene ese tipo. (Veremos una manera de hacer esto en el siguiente ejemplo.) Si es asi, informamos el panico como un error ordinario; si no, llamamos a <code>panic</code> con el mismo valor para reanudar el estado de panico.</p>
 <p>El ejemplo siguiente es una variacion sobre el programa <code class="command" >title</code> que informa de un error si el documento HTML contiene multiples elementos <code>&lt;title&gt;</code>. Si es asi, se aborta la recursividad llamando a <code>panic</code> con un valor del tipo especial <code>bailout</code>.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch5/title3/title.go" >gopl.io/ch5/title3</a></p>
