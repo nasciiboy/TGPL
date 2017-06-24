@@ -9638,10 +9638,10 @@
 
 * Capitulo 6 <> Metodos
 
-  Desde principios de los noventa, la programacion orientada a objetos (OOP) ha
+  Desde principios de los noventa, la programacion orientada a objetos (POO) ha
   sido el paradigma de programacion dominante en la industria y la educacion, y
-  casi todos las lenguajes ampliamente utilizadas desarrolladas desde entonces
-  han incluido el soporte para ello. Go no es una excepcion.
+  casi todos los lenguajes ampliamente utilizadas desarrolladas desde entonces
+  han incluido soporte para ello. Go no es una excepcion.
 
   Aunque no existe una definicion universalmente aceptada de la programacion
   orientada a objetos, para nuestros propositos, un @e(objeto) es simplemente un
@@ -9659,8 +9659,8 @@
     fmt.Println(day.Seconds()) // "86400"
   < src..
 
-  y definimos un metodo de propia en la @l(#Seccion 2.5), una metodo @c(String)
-  para el Tipo @c(Celsius):
+  y definimos un metodo en la @l(#Seccion 2.5), una metodo @c(String) para el
+  tipo @c(Celsius):
 
   ..src > go
     func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }
@@ -9722,10 +9722,10 @@
      fmt.Println(p.Distancia(q))  // "5", llamada a metodo
    < src..
 
-   No hay conflicto entre las dos declaraciones de funcion llamadas @c(Distancia)
-   anteriores. La primera declara una funcion de nivel paquete llamada
-   @c(geometria.Distancia). La segunda declara un procedimiento del tipo @c(Punto), por
-   lo que su nombre es @c(Punto.Distancia).
+   No hay conflicto entre las dos anteriores declaraciones de funcion llamadas
+   @c(Distancia). La primera declara una funcion de nivel paquete llamada
+   @c(geometria.Distancia). La segunda declara un procedimiento del tipo
+   @c(Punto), por lo que su nombre es @c(Punto.Distancia).
 
    La expresion @c(p.Distancia) se denomina un @e(selector), porque selecciona
    el metodo apropiado @c(Distancia) para el receptor @c(p) de tipo @c(Punto).
@@ -9741,7 +9741,7 @@
    @c(Distancia) tambien.
 
    ..src > go
-     // Una Ruta es un caminoA que conecta los puntos con lineas reactas.
+     // Una Ruta es un camino que conecta los puntos con lineas rectas.
      type Ruta []Punto
 
      // Distancia devuelve la distancia recorrida a lo largo de la Ruta.
@@ -9790,11 +9790,11 @@
      ..img > img/perim.Distance.jpg
 
 
-   En las dos llamadas anterior a metodos con nombre @c(Distancia), el
+   En las dos llamadas anteriores a metodos con nombre @c(Distancia), el
    compilador determina que funcion debe llamar basandose tanto en el nombre del
    metodo y el tipo de receptor. En el primero, @c(ruta[i-1]) tiene tipo
    @c(Punto), asi que se llama a @c(Punto.Distancia); en el segundo, @c(perim)
-   tiene el tipo Ruta, por lo que se llama a @c(Ruta.Distancia).
+   tiene el tipo @c(Ruta), por lo que se llama a @c(Ruta.Distancia).
 
    Todos los metodos de un tipo dado deben tener nombres unicos, pero diferentes
    tipos pueden utilizar el mismo nombre para un metodo, al igual que los
@@ -9803,7 +9803,7 @@
    eliminar la ambigüedad. Aqui vemos el primer beneficio al usar metodos sobre
    funciones ordinarias: los nombres de metodos pueden ser mas cortos. El
    beneficio se magnifica para las llamadas que se originan fuera del paquete,
-   ya que pueden utilizar el nombre mas corto y omitir el nombre del paquete:
+   ya que puede utilizar el nombre mas corto y omitir el nombre del paquete:
 
    ..src > go
      import "gopl.io/ch6/geometry"
@@ -9839,7 +9839,7 @@
 
    Tipos con nombre (@c(Point)) y punteros a ellos @c[(*Point)] son los unicos
    tipos que pueden aparecer en una declaracion receptor. Ademas, para evitar
-   ambigüedades, las declaraciones de metodos no estan permitidas en tipos con
+   ambiguedades, las declaraciones de metodos no estan permitidas en tipos con
    nombre que son ellos mismos tipos de puntero:
 
    ..src > go
@@ -9888,7 +9888,7 @@
    porque no hay manera de obtener la direccion de un valor temporal.
 
    ..src > go
-     Point{1, 2}.ScaleBy(2) // compile error: can't take address of Point literal
+     Point{1, 2}.ScaleBy(2) // error de compilacion: no se puede tomar la direccion de un Point literal
    < src..
 
    Sin embargo, podemos llamar a un metodo @c(Point) como @c(Point.Distance) con
@@ -10006,11 +10006,11 @@
     ..figure > @l(gopl.io/ch6/urlvalues/main.go<>gopl.io/ch6/urlvalues)
 
       ..src > go
-        m := url.Values{"lang": {"en"}} // construccion directa
+        m := url.Values{"lang": {"es"}} // construccion directa
         m.Add("item", "1")
         m.Add("item", "2")
 
-        fmt.Println(m.Get("lang")) // "en"
+        fmt.Println(m.Get("lang")) // "es"
         fmt.Println(m.Get("q"))    // ""
         fmt.Println(m.Get("item")) // "1"      (primer valor)
         fmt.Println(m["item"])     // "[1 2]"  (acceso directo al mapa)
@@ -10070,7 +10070,7 @@
    < src..
 
    Un mecanismo similar se aplica a los @e(metodos) de @c(Point). Podemos llamar
-   a los metodos del enbebido @c(Point) utilizando un receptor de tipo
+   a los metodos del @c(Point) enbebido utilizando un receptor de tipo
    @c(ColoredPoint), a pesar de que @c(ColoredPoint) no tiene metodos
    declarados:
 
@@ -10163,13 +10163,13 @@
    compilador informa de un error si el selector es ambiguo porque se
    promocionaron dos metodos desde el mismo rango.
 
-   Los metodos pueden ser declaradas solo en tipos con nombre (como @c(Point)) y
+   Los metodos pueden ser declarados solo en tipos con nombre (como @c(Point)) y
    punteros a ellos (@c(*Point)), pero gracias al embedido, es posible y, a
    veces util que los tipos de estructura @e(sin nombre) tambien tengan metodos.
 
    Aqui hay un buen truco para ilustrarlo. Este ejemplo muestra parte de una
    cache simple implementada usando dos variables a nivel de paquete, un mutex
-   (@l(#Seccion 9.2<>§9.2)) y el mapa que lo protege:
+   (@l(#Seccion 9.2<>§9.2)) y el mapa que protege:
 
    ..src > go
      var (
@@ -10223,7 +10223,7 @@
      p := Point{1, 2}
      q := Point{4, 6}
 
-     distanceFromP := p.Distance        // volor del metodo
+     distanceFromP := p.Distance        // valor del metodo
      fmt.Println(distanceFromP(q))      // "5"
      var origin Point                   // {0, 0}
      fmt.Println(distanceFromP(origin)) // "2.23606797749979", √5
@@ -10299,7 +10299,7 @@
          op = Point.Sub
        }
        for i := range path {
-         // llama en cada path[i].Add(offset) o path[i].Sub(offset).
+         // en cada interaccion llama a path[i].Add(offset) o path[i].Sub(offset).
          path[i] = op(path[i], offset)
        }
      }
@@ -10310,10 +10310,10 @@
    Los conjuntos en Go se implementan generalmente como un @c(map[T]bool), donde
    @c(T) es el tipo del elemento. Un conjunto representado por un mapa es muy
    flexible pero, para ciertos problemas, una representacion especializada puede
-   superarla. Por ejemplo, en dominios tales como el analisis de flujo de datos
-   donde los elementos del conjunto son pequeños numeros enteros no negativos,
-   los conjuntos tienen muchos elementos, y las operaciones de conjunto como
-   union e interseccion son comunes, un vector de bits es ideal.
+   superarla. Por ejemplo, en dominios como el analisis de flujo de datos donde
+   los elementos del conjunto son pequeños numeros enteros no negativos, los
+   conjuntos tienen muchos elementos, y las operaciones de conjunto como union e
+   interseccion son comunes, un vector de bits es ideal.
 
    Un vector de bits utiliza un slice de valores o @"(palabras) de enteros sin
    signo, cada bit de los cuales representa un posible elemento del conjunto. El
@@ -10357,17 +10357,17 @@
      < src..
 
 
-   Ya que cada palabra tiene 64 bits, para localizar el bit para @c(x), se
-   utiliza el cociente @c(x/64) como el indice de la palabra y el resto @c(x%64)
-   como el indice de bit dentro de esa palabra. La operacion @c(UnionWith)
-   utiliza el operador binario OR @c(|) Para calcular la union de 64 elementos a
-   la vez. (Vamos a revisar la eleccion de palabras de 64 bits en el Ejercicio
+   Ya que cada palabra tiene 64 bits, para localizar el bit @c(x), se utiliza el
+   cociente @c(x/64) como el indice de la palabra y el resto @c(x%64) como el
+   indice de bit dentro de esa palabra. La operacion @c(UnionWith) utiliza el
+   operador binario OR @c(|) Para calcular la union de 64 elementos a la
+   vez. (Vamos a revisar la eleccion de palabras de 64 bits en el Ejercicio
    6.5.)
 
    Esta aplicacion carece de muchas caracteristicas deseables, algunas de las
-   cuales se plantean como ejercicios, pero es dificil vivir sin : una forma de
-   imprimir un @c(IntSet) como una cadena. Vamos a darle una String metodo como
-   lo hicimos con @c(Celsius) en la @l(#Seccion 2.5):
+   cuales se plantean como ejercicios, pero es dificil vivir sin: una forma de
+   imprimir un @c(IntSet) como una cadena. Vamos a darle un metodo @c(String)
+   como lo hicimos con @c(Celsius) en la @l(#Seccion 2.5):
 
    ..src > go
      // String regresa el conjunto como una cadena de la forma "{1 2 3}".
@@ -10401,7 +10401,7 @@
    llama al metodo @c(String). El mecanismo se basa en interfaces y tipo de
    afirmaciones, que vamos a explicar en el @l(#Capitulo 7).
 
-   Ahora podemos demostrar @c(IntSet) en accion:
+   Ahora podemos mostrar @c(IntSet) en accion:
 
    ..src > go
      var x, y IntSet
@@ -10420,10 +10420,10 @@
      fmt.Println(x.Has(9), x.Has(123)) // "true false"
    < src..
 
-   Una palabra de precaucion: declaramos @c(String) y @c(Has) como metodos del
-   tipo de puntero @c(*IntSet) no por necesidad, sino por coherencia con los
-   otros dos metodos, los cuales necesitan un receptor puntero porque asignan a
-   @c(s.words). En consecuencia, un valor @c(IntSet) no tiene una metodo
+   Una palabra de precaucion: declaramos @c(String) y @c(Has) como metodos de
+   tipo puntero @c(*IntSet) no por necesidad, sino por coherencia con los otros
+   dos metodos, los cuales necesitan un receptor puntero porque asignan a
+   @c(s.words). En consecuencia, un valor @c(IntSet) no tiene un metodo
    @c(String), en ocasiones, conduce a sorpresas como esta:
 
    ..src > go
@@ -10433,13 +10433,14 @@
    < src..
 
    En el primer caso, Imprimimos un puntero @c(*IntSet), que tiene un metodo
-   @c(String). En el segundo caso, que llamamos a @c[String()] en una variable
+   @c(String). En el segundo caso, llamamos a @c[String()] en una variable
    @c(IntSet); el compilador inserta la operacion @c(&) implicita, que nos da un
    puntero, que tiene el metodo @c(String). Sin embargo, en el tercer caso,
-   debido a que el valor @c(IntSet) no tiene un metodo @c(String), fmt.Println
-   imprime la representacion de la estructura en su lugar. Es importante no
-   olvidar el operador @c(&). Hacer @c(String) un metodo de @c(IntSet), no
-   @c(*IntSet), podria ser una buena idea, pero esto es un juicio caso por caso.
+   debido a que el valor @c(IntSet) no tiene un metodo @c(String),
+   @c(fmt.Println) imprime la representacion de la estructura en su lugar. Es
+   importante no olvidar el operador @c(&). Hacer @c(String) un metodo de
+   @c(IntSet), no @c(*IntSet), podria ser una buena idea, pero esto requiere un
+   juicio caso por caso.
 
    @b(Ejercicio 6.1): Implementar estos metodos adicionales:
 
@@ -10480,7 +10481,7 @@
    orientada a objetos.
 
    Go solo tiene un mecanismo para controlar la visibilidad de los nombres: los
-   identificadores en mayusculas se exportan desde el paquete en el que estan
+   identificadores capitalizados se exportan desde el paquete en el que estan
    definidos y los nombres no capitalizados no. El mismo mecanismo que limita el
    acceso a los miembros de un paquete tambien limita el acceso a los campos de
    una estructura o los metodos de un tipo. Como consecuencia, para encapsular
@@ -10526,16 +10527,15 @@
    mayor libertad para evolucionar la implementacion sin romper la
    compatibilidad de la API.
 
-   Como ejemplo, considere el tipo @c(bytes.Buffer) tipo. Se utiliza con
-   frecuencia para acumular cadenas muy cortas, por lo que es una optimizacion
-   rentable para reservar un poco mas de espacio en el objeto para evitar la
-   asignacion de memoria en este caso comun. Ya que @c(Buffer) es un tipo
-   @c(struct), este espacio tiene la forma de un campo adicional de tipo
-   @c([64]byte) con un nombre en minusculas. Cuando se añadio este campo, ya que
-   no se exporto, los clientes de @c(Buffer) fuera del paquete @c(bytes) no eran
-   conscientes de ningun cambio, excepto un rendimiento mejorado. @c(Buffer) y
-   su metodo @c(Grow) se muestran a continuacion, simplificado para mayor
-   claridad:
+   Como ejemplo, considere el tipo @c(bytes.Buffer). Se utiliza con frecuencia
+   para acumular cadenas muy cortas, por lo que es una optimizacion rentable
+   para reservar un poco mas de espacio en el objeto para evitar la asignacion
+   de memoria en este caso comun. Ya que @c(Buffer) es un tipo @c(struct), este
+   espacio tiene la forma de un campo adicional de tipo @c([64]byte) con un
+   nombre en minusculas. Ya que se añadio este campo, y no es exportado, los
+   clientes de @c(Buffer) fuera del paquete @c(bytes) no son conscientes de
+   ningun cambio, excepto un rendimiento mejorado. @c(Buffer) y su metodo
+   @c(Grow) se muestran a continuacion, simplificado para mayor claridad:
 
    ..src > go
      type Buffer struct {
@@ -10545,10 +10545,10 @@
      }
 
      // Grow apmlia la capacidad del buffer, si es necesario,
-     // para garantizar espacio por otron n bytes. [...]
+     // para garantizar espacio por otros n bytes. [...]
      func (b *Buffer) Grow(n int) {
        if b.buf == nil {
-         b.buf = b.initial[:0] // use preallocated space initially
+         b.buf = b.initial[:0] // Utilizar inicialmente el espacio previamente asignado
        }
        if len(b.buf)+n > cap(b.buf) {
          buf := make([]byte, b.Len(), 2*cap(b.buf) + n)
@@ -10563,7 +10563,7 @@
    un objeto. Debido a que las variables del objeto solo pueden ser definidas
    por funciones en el mismo paquete, el autor de ese paquete puede garantizar
    que todas esas funciones mantengan las invariantes internas del objeto. Por
-   ejemplo, el tipo @c(Counter) continuacion permite a los clientes incrementar
+   ejemplo, el tipo @c(Counter) a continuacion permite a los clientes incrementar
    el contador o reestablecerlo a cero, pero no ponerlo en un valor arbitrario:
 
    ..src > go
@@ -10574,13 +10574,13 @@
      func (c *Counter) Reset()     { c.n = 0 }
    < src..
 
-   Las Funciones que simplemente acceso o modifican los valores internos de un
+   Las Funciones que simplemente acceden o modifican los valores internos de un
    tipo, como los metodos del tipo @c(Logger) del paquete @c(log), a
    continuacion, se denominan @e(getters) (optenedores) y @e(setters)
    (definidores). Sin embargo, al nombrar a un metodo getter, por lo general
    omitimos el prefijo @c(Get). Esta preferencia por razones de brevedad se
    extiende a todos los metodos, no solo a los accesores de campo, y para otros
-   prefijos redundantes, asi como @c(Fetch), @c(Find), y @c(Lookup).
+   prefijos redundantes, como @c(Fetch), @c(Find), y @c(Lookup).
 
    ..src > go
      package log
@@ -10597,7 +10597,7 @@
      func (l *Logger) SetPrefix(prefix string)
    < src..
 
-   El stilo de Go no prohibe exportar los campos. Por supuesto, una vez
+   El estilo de Go no prohibe exportar los campos. Por supuesto, una vez
    exportado, un campo no puede ser exportado sin un cambio incompatible a la
    API, por lo que la eleccion inicial debe ser deliberada y debe considerar la
    complejidad de los invariantes que deben mantenerse, la probabilidad de
@@ -10607,7 +10607,7 @@
    La encapsulacion no siempre es deseable. Al revelar su representacion como un
    numero @c(int64) de nanosegundos, @c(time.Duration) nos permite usar todas
    las operaciones aritmeticas y de comparacion con duraciones habituales, e
-   incluso para definir constantes de este tipo:
+   incluso definir constantes de este tipo:
 
    ..src > go
      const day = 24 * time.Hour
