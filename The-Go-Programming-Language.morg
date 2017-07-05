@@ -251,19 +251,19 @@
    variable to point to it.  The @$(go) tool will create the directory if
    necessary. For example:
 
-   ..src > sh
-     $ export GOPATH=$HOME/gobook        # choose workspace directory
-     $ go get gopl.io/ch1/helloworld     # fetch, build, install
-     $ $GOPATH/bin/helloworld            # run
+   ..srci > sh
+     > export GOPATH=$HOME/gobook        # choose workspace directory
+     > go get gopl.io/ch1/helloworld     # fetch, build, install
+     > $GOPATH/bin/helloworld            # run
      Hello, 世界
-   < src..
+   < srci..
 
    To run the examples, you will need at least version 1.5 of Go.
 
-   ..src > sh
-     $ go version
+   ..srci > sh
+     > go version
      go version go1.5 linux/amd64
-   < src..
+   < srci..
 
    Follow the instructions at @l(https://golang.org/doc/install) if the @$(go)
    tool on your computer is older or missing.
@@ -397,15 +397,15 @@
    executable file.  (We will use @$($) as the command prompt throughout the
    book.)
 
-   ..src > sh
-     $ go run helloworld.go
-   < src..
+   ..srci > sh
+     > go run helloworld.go
+   < srci..
 
    Not surprisingly, this prints
 
-   ..src > sh
+   ..srci > sh
      Hello, 世界
-   < src..
+   < srci..
 
    Go natively handles Unicode, so it can process text in all the world’s languages.
 
@@ -413,17 +413,17 @@
    want to compile it once and save the compiled result for later use. That is
    done with @$(go build):
 
-   ..src > sh
-     $ go build helloworld.go
-   < src..
+   ..srci > sh
+     > go build helloworld.go
+   < srci..
 
    This creates an executable binary file called @$(helloworld) that can be run
    any time without further processing:
 
-   ..src > sh
-     $ ./helloworld
+   ..srci > sh
+     > ./helloworld
      Hello, 世界
-   < src..
+   < srci..
 
    We have labeled each significant example as a reminder that you can obtain
    the code from the book’s source code repository at
@@ -505,9 +505,9 @@
    declarations as needed. It is not part of the standard distribution but you
    can obtain it with this command:
 
-   ..src > sh
-     $ go get golang.org/x/tools/cmd/goimports
-   < src..
+   ..srci > sh
+     > go get golang.org/x/tools/cmd/goimports
+   < srci..
 
    For most users, the usual way to download and build packages, run their
    tests, show their documentation, and so on, is with the @$(go) tool, which
@@ -1192,10 +1192,10 @@
    to the standard output, so this command produces an animated GIF with frames
    like those in Figure 1.1:
 
-   ..src > sh
-     $ go build gopl.io/ch1/lissajous
-     $ ./lissajous >out.gif
-   < src..
+   ..srci > sh
+     > go build gopl.io/ch1/lissajous
+     > ./lissajous >out.gif
+   < srci..
 
    @b(Exercise 1.5): Change the Lissajous program’s color palette to green on
    black, for added authenticity. To create the web color @c(#RRGGBB), use
@@ -1260,21 +1260,21 @@
    @c(b). The @c(Body) stream is closed to avoid leaking resources, and
    @c(Printf) writes the response to the standard output.
 
-   ..src > sh
-     $ go build gopl.io/ch1/fetch
-     $ ./fetch http://gopl.io
+   ..srci > sh
+     > go build gopl.io/ch1/fetch
+     > ./fetch http://gopl.io
      <html>
      <head>
      <title>The Go Programming Language</title>
      ...
-   < src..
+   < srci..
 
    If the HTTP request fails, @$(fetch) reports the failure instead:
 
-   ..src > sh
-     $ ./fetch http://bad.gopl.io
+   ..srci > sh
+     > ./fetch http://bad.gopl.io
      fetch: Get http://bad.gopl.io: dial tcp: lookup bad.gopl.io: no such host
-   < src..
+   < srci..
 
    In either error case, @c[os.Exit(1)] causes the process to exit with a status
    code of 1.
@@ -1351,14 +1351,14 @@
 
    Here’s an example:
 
-   ..src > sh
-     $ go build gopl.io/ch1/fetchall
-     $ ./fetchall https://golang.org http://gopl.io https://godoc.org
+   ..srci > sh
+     > go build gopl.io/ch1/fetchall
+     > ./fetchall https://golang.org http://gopl.io https://godoc.org
      0.14s     6852 https://godoc.org
      0.16s     7261 https://golang.org
      0.48s     2475 http://gopl.io
      0.48s elapsed
-   < src..
+   < srci..
 
    A @e(goroutine) is a concurrent function execution. A @e(channel) is a
    communication mechanism that allows one goroutine to pass values of a
@@ -1440,19 +1440,19 @@
    ampersand (@c(&)) to the command; on Microsoft Windows, you will need to run
    the command without the ampersand in a separate command window.
 
-   ..src > sh
-     $ go run src/gopl.io/ch1/server1/main.go &
-   < src..
+   ..srci > sh
+     > go run src/gopl.io/ch1/server1/main.go &
+   < srci..
 
    We can then make client requests from the command line:
 
-   ..src > sh
-     $ go build gopl.io/ch1/fetch
-     $ ./fetch http://localhost:8000
+   ..srci > sh
+     > go build gopl.io/ch1/fetch
+     > ./fetch http://localhost:8000
      URL.Path = "/"
-     $ ./fetch http://localhost:8000/help
+     > ./fetch http://localhost:8000/help
      URL.Path = "/help"
-   < src..
+   < srci..
 
    Alternatively, we can access the server from a web browser, as shown in
    Figure 1.2.
@@ -1733,15 +1733,15 @@
      the packages contributed by the community at @l(https://godoc.org). The @$(go
      doc) tool makes these documents easily accessible from the command line:
 
-     ..src > sh
-       $ go doc http.ListenAndServe
+     ..srci > sh
+       > go doc http.ListenAndServe
        package http // import "net/http"
 
        func ListenAndServe(addr string, handler Handler) error
            ListenAndServe listens on the TCP network address addr and then
            calls Serve with handler to handle requests on incoming connections.
        ...
-     < src..
+     < srci..
 
    - Comments :: We have already mentioned documentation comments at the
      beginning of a program or package. It’s also good style to write a comment
@@ -2209,20 +2209,20 @@
 
     Let’s run some test cases on @$(echo):
 
-    ..src > sh
-      $ go build gopl.io/ch2/echo4
-      $ ./echo4 a bc def
+    ..srci > sh
+      > go build gopl.io/ch2/echo4
+      > ./echo4 a bc def
       a bc def
-      $ ./echo4 -s / a bc def
+      > ./echo4 -s / a bc def
       a/bc/def
-      $ ./echo4 -n a bc def
+      > ./echo4 -n a bc def
       a bc def$
-      $ ./echo4 -help
+      > ./echo4 -help
       Usage of ./echo4:
         -n    omit trailing newline
         -s string
               separator (default " ")
-    < src..
+    < srci..
 
 *** Section 2.3.3 <> The @c(new) Function
 
@@ -2821,15 +2821,15 @@
     The @$(cf) program converts a single numeric command-line argument to its value
     in both Celsius and Fahrenheit:
 
-    ..src > sh
-      $ go build gopl.io/ch2/cf
-      $ ./cf 32
+    ..srci > sh
+      > go build gopl.io/ch2/cf
+      > ./cf 32
       32°F = 0°C, 32°C = 89.6°F
-      $ ./cf 212
+      > ./cf 212
       212°F = 100°C, 212°C = 413.6°F
-      $ ./cf -40
+      > ./cf -40
       -40°F = -40°C, -40°C = -40°F
-    < src..
+    < srci..
 
     It is an error to import a package and then not refer to it. This check
     helps eliminate dependencies that become unnecessary as the code evolves,
@@ -6860,9 +6860,9 @@
    queries the Go project’s issue tracker for the list of open bugs related to
    JSON decoding:
 
-   ..src > sh
-     $ go build gopl.io/ch4/issues
-     $ ./issues repo:golang/go is:open json decoder
+   ..srci > sh
+     > go build gopl.io/ch4/issues
+     > ./issues repo:golang/go is:open json decoder
      13 issues:
      #5680    eaigner encoding/json: set key converter on en/decoder
      #6050  gopherbot encoding/json: provide tokenizer
@@ -6877,7 +6877,7 @@
      #6384    joeshaw encoding/json: encode precise floating point integers u
      #6647    btracey x/tools/cmd/godoc: display type kind of each named type
      #4237  gjemiller encoding/base64: URLEncoding padding is optional
-   < src..
+   < srci..
 
    The GitHub web-service interface at @l(https://developer.github.com/v3/) has
    many more features than we have space for here.
@@ -7006,9 +7006,9 @@
 
    The program prints a plain text report like this:
 
-   ..src > sh
-     $ go build gopl.io/ch4/issuesreport
-     $ ./issuesreport repo:golang/go is:open json decoder
+   ..srci > sh
+     > go build gopl.io/ch4/issuesreport
+     > ./issuesreport repo:golang/go is:open json decoder
      13 issues:
      ---------------------------------------
      Number: 5680
@@ -7022,7 +7022,7 @@
      Age:    695 days
      ---------------------------------------
      ...
-   < src..
+   < srci..
 
    Now let’s turn to the @c(html/template) package. It uses the same API and
    expression language as @c(text/template) but adds features for automatic and
@@ -7065,10 +7065,10 @@
    The command below executes the new template on the results of a slightly
    different query:
 
-   ..src > sh
-     $ go build gopl.io/ch4/issueshtml
-     $ ./issueshtml repo:golang/go commenter:gopherbot json encoder >issues.html
-   < src..
+   ..srci > sh
+     > go build gopl.io/ch4/issueshtml
+     > ./issueshtml repo:golang/go commenter:gopherbot json encoder >issues.html
+   < srci..
 
    Figure 4.4 shows the appearance of the table in a web browser. The links
    connect to the appropriate web pages at GitHub.
@@ -7083,9 +7083,9 @@
    the effect more clearly with issues whose titles contain HTML metacharacters
    like @c(&) and @c(<). We’ve selected two such issues for this example:
 
-   ..src > sh
-     $ ./issueshtml repo:golang/go 3133 10535 >issues2.html
-   < src..
+   ..srci > sh
+     > ./issueshtml repo:golang/go 3133 10535 >issues2.html
+   < srci..
 
    Figure 4.5 shows the result of this query. Notice that the @c(html/template)
    package automatically HTML-escaped the titles so that they appear
@@ -7138,10 +7138,10 @@
    We have space here to show only the most basic features of the template
    system. As always, for more information, consult the package documentation:
 
-   ..src > sh
-     $ go doc text/template
-     $ go doc html/template
-   < src..
+   ..srci > sh
+     > go doc text/template
+     > go doc html/template
+   < srci..
 
    @b(Exercise 4.14): Create a web server that queries GitHub once and then
    allows navigation of the list of bug reports, milestones, and users.
@@ -7368,10 +7368,10 @@
    (@l(#Section 1.5<>§1.5)) to the input of @$(findlinks). We’ve edited the
    output slightly for brevity.
 
-   ..src > sh
-     $ go build gopl.io/ch1/fetch
-     $ go build gopl.io/ch5/findlinks1
-     $ ./fetch https://golang.org | ./findlinks1
+   ..srci > sh
+     > go build gopl.io/ch1/fetch
+     > go build gopl.io/ch5/findlinks1
+     > ./fetch https://golang.org | ./findlinks1
      #
      /doc/
      /pkg/
@@ -7384,7 +7384,7 @@
      /LICENSE
      /doc/tos.html
      http://www.google.com/intl/en/policies/privacy/
-   < src..
+   < srci..
 
    Notice the variety of forms of links that appear in the page. Later we’ll see
    how to resolve them relative to the base URL, @c(https://golang.org), to make
@@ -7428,9 +7428,9 @@
 
    Here’s the outline of @c(https://golang.org), again edited for brevity:
 
-   ..src > sh
-     $ go build gopl.io/ch5/outline
-     $ ./fetch https://golang.org | ./outline
+   ..srci > sh
+     > go build gopl.io/ch5/outline
+     > ./fetch https://golang.org | ./outline
      [html]
      [html head]
      [html head meta]
@@ -7443,7 +7443,7 @@
      [html body div div form]
      [html body div div form div]
      [html body div div form div a]
-   < src..
+   < srci..
 
    As you can see by experimenting with @c(outline), most HTML documents can be
    processed with only a few levels of recursion, but it’s not hard to construct
@@ -8062,9 +8062,9 @@
    we get a more elaborate variation on the output of our earlier @$(outline)
    program:
 
-   ..src > sh
-     $ go build gopl.io/ch5/outline2
-     $ ./outline2 http://gopl.io
+   ..srci > sh
+     > go build gopl.io/ch5/outline2
+     > ./outline2 http://gopl.io
      <html>
        <head>
          <meta>
@@ -8083,7 +8083,7 @@
                  <img>
                  </img>
      ...
-   < src..
+   < srci..
 
    @b(Exercise 5.7): Develop @c(startElement) and @c(endElement) into a general
    HTML pretty-printer.  Print comment nodes, text nodes, and the attributes of
@@ -8405,9 +8405,9 @@
    Let’s crawl the web starting from @c(https://golang.org). Here are some of
    the resulting links:
 
-   ..src > sh
-     $ go build gopl.io/ch5/findlinks3
-     $ ./findlinks3 https://golang.org
+   ..srci > sh
+     > go build gopl.io/ch5/findlinks3
+     > ./findlinks3 https://golang.org
      https://golang.org/
      https://golang.org/doc/
      https://golang.org/pkg/
@@ -8417,7 +8417,7 @@
      https://www.youtube.com/watch?v=XCsL89YtqCs
      http://research.swtch.com/gotour
      https://vimeo.com/53221560
-   < src..
+   < srci..
 
    The process ends when all reachable web pages have been crawled or the memory
    of the computer is exhausted.
@@ -8675,16 +8675,16 @@
 
    Here’s a typical session, slightly edited to fit:
 
-   ..src > sh
-     $ go build gopl.io/ch5/title1
-     $ ./title1 http://gopl.io
+   ..srci > sh
+     > go build gopl.io/ch5/title1
+     > ./title1 http://gopl.io
      The Go Programming Language
-     $ ./title1 https://golang.org/doc/effective_go.html
+     > ./title1 https://golang.org/doc/effective_go.html
      Effective Go - The Go Programming Language
-     $ ./title1 https://golang.org/doc/gopher/frontpage.png
+     > ./title1 https://golang.org/doc/gopher/frontpage.png
      title: https://golang.org/doc/gopher/frontpage.png
          has type image/png, not text/html
-   < src..
+   < srci..
 
    Observe the duplicated @c[resp.Body.Close()] call, which ensures that
    @c(title) closes the network connection on all execution paths, including
@@ -8797,12 +8797,12 @@
    elapsed time between them. (We used @c(time.Sleep) to simulate a slow
    operation.)
 
-   ..src > sh
-     $ go build gopl.io/ch5/trace
-     $ ./trace
+   ..srci > sh
+     > go build gopl.io/ch5/trace
+     > ./trace
      2015/11/18 09:53:26 enter bigSlowOperation
      2015/11/18 09:53:36 exit bigSlowOperation (10.000589217s)
-   < src..
+   < srci..
 
    Deferred functions run @e(after) return statements have updated the function’s
    result variables.  Because an anonymous function can access its enclosing
@@ -10721,11 +10721,11 @@
    the @c(time.Duration)’s @c(String) method to print the period not as a number
    of nanoseconds, but in a user-friendly notation:
 
-   ..src > sh
-     $ go build gopl.io/ch7/sleep
-     $ ./sleep
+   ..srci > sh
+     > go build gopl.io/ch7/sleep
+     > ./sleep
      Sleeping for 1s...
-   < src..
+   < srci..
 
    By default, the sleep period is one second, but it can be controlled through
    the @c(-period) command-line flag. The @c(flag.Duration) function creates a
@@ -10734,16 +10734,16 @@
    printed by the @c(String) method. This symmetry of design leads to a nice
    user interface.
 
-   ..src > sh
-     $ ./sleep -period 50ms
+   ..srci > sh
+     > ./sleep -period 50ms
      Sleeping for 50ms...
-     $ ./sleep -period 2m30s
+     > ./sleep -period 2m30s
      Sleeping for 2m30s...
-     $ ./sleep -period 1.5h
+     > ./sleep -period 1.5h
      Sleeping for 1h30m0s...
-     $ ./sleep -period "1 day"
+     > ./sleep -period "1 day"
      invalid value "1 day" for flag -period: time: invalid duration 1 day
-   < src..
+   < srci..
 
    Because duration-valued flags are so useful, this feature is built into the
    @c(flag) package, but it’s easy to define new flag notations for our own data
@@ -10837,24 +10837,24 @@
 
    Here’s a typical session:
 
-   ..src > sh
-     $ go build gopl.io/ch7/tempflag
-     $ ./tempflag
+   ..srci > sh
+     > go build gopl.io/ch7/tempflag
+     > ./tempflag
      20°C
-     $ ./tempflag -temp -18C
+     > ./tempflag -temp -18C
      -18°C
-     $ ./tempflag -temp 212°F
+     > ./tempflag -temp 212°F
      100°C
-     $ ./tempflag -temp 273.15K
+     > ./tempflag -temp 273.15K
      invalid value "273.15K" for flag -temp: invalid temperature "273.15K"
      Usage of ./tempflag:
        -temp value
              the temperature (default 20°C)
-     $ ./tempflag -help
+     > ./tempflag -help
      Usage of ./tempflag:
        -temp value
              the temperature (default 20°C)
-   < src..
+   < srci..
 
 
    @b(Exercise 7.6): Add support for Kelvin temperatures to @c(tempflag).
@@ -11510,20 +11510,20 @@
 
    If we start the server,
 
-   ..src > sh
-     $ go build gopl.io/ch7/http1
-     $ ./http1 &
-   < src..
+   ..srci > sh
+     > go build gopl.io/ch7/http1
+     > ./http1 &
+   < srci..
 
    then connect to it with the @$(fetch) program from @l(#Section 1.5) (or a web
    browser if you prefer), we get the following output:
 
-   ..src > sh
-     $ go build gopl.io/ch1/fetch
-     $ ./fetch http://localhost:8000
+   ..srci > sh
+     > go build gopl.io/ch1/fetch
+     > ./fetch http://localhost:8000
      shoes: $50.00
      socks: $5.00
-   < src..
+   < srci..
 
    So far, the server can only list its entire inventory and will do this for
    every request, regardless of URL. A more realistic server defines multiple
@@ -11578,22 +11578,22 @@
 
    Here’s an example session with the new server:
 
-   ..src > sh
-     $ go build gopl.io/ch7/http2
-     $ go build gopl.io/ch1/fetch
-     $ ./http2 &
-     $ ./fetch http://localhost:8000/list
+   ..srci > sh
+     > go build gopl.io/ch7/http2
+     > go build gopl.io/ch1/fetch
+     > ./http2 &
+     > ./fetch http://localhost:8000/list
      shoes: $50.00
      socks: $5.00
-     $ ./fetch http://localhost:8000/price?item=socks
+     > ./fetch http://localhost:8000/price?item=socks
      $5.00
-     $ ./fetch http://localhost:8000/price?item=shoes
+     > ./fetch http://localhost:8000/price?item=shoes
      $50.00
-     $ ./fetch http://localhost:8000/price?item=hat
+     > ./fetch http://localhost:8000/price?item=hat
      no such item: "hat"
-     $ ./fetch http://localhost:8000/help
+     > ./fetch http://localhost:8000/help
      no such page: /help
-   < src..
+   < srci..
 
    Obviously we could keep adding cases to @c(ServeHTTP), but in a realistic
    application, it’s convenient to define the logic for each case in a separate
@@ -12055,15 +12055,15 @@
 
    The @$(go test) command (@l(#Section 11.1<>§11.1)) runs a package’s tests:
 
-   ..src > sh
-     $ go test -v gopl.io/ch7/eval
-   < src..
+   ..srci > sh
+     > go test -v gopl.io/ch7/eval
+   < srci..
 
    The @c(-v) flag lets us see the printed output of the test, which is normally
    suppressed for a successful test like this one. Here is the output of the
    test’s @c(fmt.Printf) statements:
 
-   ..src > sh
+   ..srci > sh
      sqrt(A / pi)
          map[A:87616 pi:3.141592653589793] => 167
 
@@ -12075,7 +12075,7 @@
          map[F:-40] => -40
          map[F:32] => 0
          map[F:212] => 100
-   < src..
+   < srci..
 
    Fortunately the inputs so far have all been well formed, but our luck is
    unlikely to last. Even in interpreted languages, it is common to check the
@@ -12868,9 +12868,9 @@
    two levels of @c(div) elements. Its input is the XML specification, itself an
    XML document.
 
-   ..src > sh
-     $ go build gopl.io/ch1/fetch
-     $ ./fetch http://www.w3.org/TR/2006/REC-xml11-20060816 |
+   ..srci > sh
+     > go build gopl.io/ch1/fetch
+     > ./fetch http://www.w3.org/TR/2006/REC-xml11-20060816 |
          ./xmlselect div div h2
      html body div div h2: 1 Introduction
      html body div div h2: 2 Documents
@@ -12881,7 +12881,7 @@
      html body div div h2: A References
      html body div div h2: B Definitions for Character Normalization
      ...
-   < src..
+   < srci..
 
    @b(Exercise 7.17): Extend @$(xmlselect) so that elements may be selected not
    just by name, but by their attributes too, in the manner of CSS, so that, for
@@ -13132,16 +13132,16 @@
    (@"(netcat)), a standard utility program for manipulating network
    connections:
 
-   ..src > sh
-     $ go build gopl.io/ch8/clock1
-     $ ./clock1 &
-     $ nc localhost 8000
+   ..srci > sh
+     > go build gopl.io/ch8/clock1
+     > ./clock1 &
+     > nc localhost 8000
      13:58:54
      13:58:55
      13:58:56
      13:58:57
      ^C
-   < src..
+   < srci..
 
    The client displays the time sent by the server each second until we
    interrupt the client with Control-C, which on Unix systems is echoed as
@@ -13187,29 +13187,29 @@
 
    ..cols >
 
-     ..src > sh
-       $ go build gopl.io/ch8/netcat1
-       $ ./netcat1
+     ..srci > sh
+       > go build gopl.io/ch8/netcat1
+       > ./netcat1
        13:58:54
        13:58:55
        13:58:56
        ^C
-     < src..
+     < srci..
 
-     ..src > sh
-       $ killall clock1
-     < src..
+     ..srci > sh
+       > killall clock1
+     < srci..
 
      ::
 
-     ..src > sh
-       $ ./netcat1
+     ..srci > sh
+       > ./netcat1
 
        13:58:57
        13:58:58
        13:58:59
        ^C
-     < src..
+     < srci..
 
 
    The @$(killall) command is a Unix utility that kills all processes with the
@@ -13239,11 +13239,11 @@
 
    ..cols >
 
-     ..src > sh
-       $ go build gopl.io/ch8/clock2
-       $ ./clock2 &
-       $ go build gopl.io/ch8/netcat1
-       $ ./netcat1
+     ..srci > sh
+       > go build gopl.io/ch8/clock2
+       > ./clock2 &
+       > go build gopl.io/ch8/netcat1
+       > ./netcat1
        14:02:54
        14:02:55
        14:02:56
@@ -13253,28 +13253,28 @@
        14:03:00
        14:03:01
        ^C
-     < src..
+     < srci..
 
-     ..src > sh
-       $ killall clock1
-     < src..
+     ..srci > sh
+       > killall clock1
+     < srci..
 
      ::
 
-     ..src > sh
-       $ ./netcat1
+     ..srci > sh
+       > ./netcat1
        14:02:55
        14:02:56
        ^C
-     < src..
+     < srci..
 
-     ..src > sh
-       $ ./netcat1
+     ..srci > sh
+       > ./netcat1
        14:03:00
        14:03:01
        14:03:02
        ^C
-     < src..
+     < srci..
 
 
    @b(Exercise 8.1): Modify @$(clock2) to accept a port number, and write a
@@ -13284,12 +13284,12 @@
    to geographically distributed computers, run instances remotely ; otherwise
    run local instances on different ports with fake time zones.
 
-   ..src > sh
-     $ TZ=US/Eastern    ./clock2 -port 8010 &
-     $ TZ=Asia/Tokyo    ./clock2 -port 8020 &
-     $ TZ=Europe/London ./clock2 -port 8030 &
-     $ clockwall NewYork=localhost:8010 London=localhost:8020 Tokyo=localhost:8030
-   < src..
+   ..srci > sh
+     > TZ=US/Eastern    ./clock2 -port 8010 &
+     > TZ=Asia/Tokyo    ./clock2 -port 8020 &
+     > TZ=Europe/London ./clock2 -port 8030 &
+     > clockwall NewYork=localhost:8010 London=localhost:8020 Tokyo=localhost:8030
+   < srci..
 
 
    @b(Exercise 8.2): Implement a concurrent File Transfer Protocol (FTP)
@@ -13369,11 +13369,11 @@
    In the session below, the client’s input is left-aligned and the server’s
    responses are indented.  The client shouts at the echo server three times:
 
-   ..src > sh
-     $ go build gopl.io/ch8/reverb1
-     $ ./reverb1 &
-     $ go build gopl.io/ch8/netcat2
-     $ ./netcat2
+   ..srci > sh
+     > go build gopl.io/ch8/reverb1
+     > ./reverb1 &
+     > go build gopl.io/ch8/netcat2
+     > ./netcat2
      Hello?
          HELLO?
          Hello?
@@ -13387,8 +13387,8 @@
          Yooo-hooo!
          yooo-hooo!
      ^D
-     $ killall reverb1
-   < src..
+     > killall reverb1
+   < srci..
 
    Notice that the third shout from the client is not dealt with until the
    second shout has petered out, which is not very realistic. A real echo would
@@ -13414,10 +13414,10 @@
    statement itself is executed; thus @c[input.Text()] is evaluated in the main
    goroutine.  Now the echoes are concurrent and overlap in time:
 
-   ..src > sh
-     $ go build gopl.io/ch8/reverb2
-     $ ./reverb2 &
-     $ ./netcat2
+   ..srci > sh
+     > go build gopl.io/ch8/reverb2
+     > ./reverb2 &
+     > ./netcat2
      Is there anybody there?
          IS THERE ANYBODY THERE?
 
@@ -13428,8 +13428,8 @@
          Yooo-hooo!
          yooo-hooo!
      ^D
-     $ killall reverb2
-   < src..
+     > killall reverb2
+   < srci..
 
    All that was required to make the server use concurrency, not just to handle
    connections from multiple clients but even within a single connection, was
@@ -14324,9 +14324,9 @@
    two problems.  The first problem manifests itself as error messages in the
    log after a few seconds of operation:
 
-   ..src > sh
-     $ go build gopl.io/ch8/crawl1
-     $ ./crawl1 http://gopl.io/
+   ..srci > sh
+     > go build gopl.io/ch8/crawl1
+     > ./crawl1 http://gopl.io/
      http://gopl.io/
      https://golang.org/help/
 
@@ -14336,7 +14336,7 @@
      2015/07/15 18:22:12 Get ...: dial tcp: lookup blog.golang.org: no such host
      2015/07/15 18:22:12 Get ...: dial tcp 23.21.222.120:443: socket: too many open files
      ...
-   < src..
+   < srci..
 
    The initial error message is a surprising report of a DNS lookup failure for
    a reliable domain.  The subsequent error message reveals the cause: the
@@ -14794,11 +14794,11 @@
 
    This program pauses for a long while before printing its result:
 
-   ..src > sh
-     $ go build gopl.io/ch8/du1
-     $ ./du1 $HOME /usr /bin /etc
+   ..srci > sh
+     > go build gopl.io/ch8/du1
+     > ./du1 $HOME /usr /bin /etc
      213201 files 62.7 GB
-   < src..
+   < srci..
 
    The program would be nicer if it kept us informed of its progress. However,
    simply moving the @c(printDiskUsage) call into the loop would cause it to
@@ -14854,16 +14854,16 @@
 
    The program now gives us a leisurely stream of updates:
 
-   ..src > sh
-     $ go build gopl.io/ch8/du2
-     $ ./du2 -v $HOME /usr /bin /etc
+   ..srci > sh
+     > go build gopl.io/ch8/du2
+     > ./du2 -v $HOME /usr /bin /etc
      28608 files 8.3 GB
      54147 files 10.3 GB
      93591 files 15.1 GB
      127169 files 52.9 GB
      175931 files 62.2 GB
      213201 files 62.7 GB
-   < src..
+   < srci..
 
    However, it still takes too long to finish. There’s no reason why all the
    calls to @c(walkDir) can’t be done concurrently, thereby exploiting
@@ -15213,16 +15213,16 @@
    The display below shows the server in action with two clients in separate
    windows on the same computer, using @c(netcat) to chat:
 
-   ..src > sh
-     $ go build gopl.io/ch8/chat
-     $ go build gopl.io/ch8/netcat3
-   < src..
+   ..srci > sh
+     > go build gopl.io/ch8/chat
+     > go build gopl.io/ch8/netcat3
+   < srci..
 
    ..cols >
 
-     ..src > sh
-       $ ./chat &
-       $ ./netcat3
+     ..srci > sh
+       > ./chat &
+       > ./netcat3
        You are 127.0.0.1:64208
        127.0.0.1:64211 has arrived
        Hi!
@@ -15230,21 +15230,21 @@
 
        127.0.0.1:64211: Hi yourself.
        ^C
-     < src..
+     < srci..
 
-     ..src > sh
-       $ ./netcat3
+     ..srci > sh
+       > ./netcat3
        You are 127.0.0.1:64216
 
        127.0.0.1:64211: Welcome.
 
        127.0.0.1:64211 has left
-     < src..
+     < srci..
 
      ::
 
-     ..src > sh
-       $ ./netcat3
+     ..srci > sh
+       > ./netcat3
        You are 127.0.0.1:64211
        127.0.0.1:64208: Hi!
        Hi yourself.
@@ -15256,7 +15256,7 @@
        Welcome.
        127.0.0.1:64211: Welcome.
        ^C
-     < src..
+     < srci..
 
 
    While hosting a chat session for @m(n) clients, this program runs @m(2n+2)
@@ -16243,8 +16243,8 @@
    first call to @c[(*Memo).Get] for each URL takes hundreds of milliseconds,
    the second request returns the same amount of data in under a millisecond.
 
-   ..src > sh
-     $ go test -v gopl.io/ch9/memo1
+   ..srci > sh
+     > go test -v gopl.io/ch9/memo1
      === RUN   Test
      https://golang.org, 175.026418ms, 7537 bytes
      https://godoc.org, 172.686825ms, 6878 bytes
@@ -16257,7 +16257,7 @@
      --- PASS: Test (1.21s)
      PASS
      ok gopl.io/ch9/memo1   1.257s
-   < src..
+   < srci..
 
    This test executes all calls to @c(Get) sequentially.
 
@@ -16294,8 +16294,8 @@
    the race detector (@l(#Section 9.6<>§9.6)) often prints a report such as this
    one:
 
-   ..src > sh
-     $ go test -run=TestConcurrent -race -v gopl.io/ch9/memo1
+   ..srci > sh
+     > go test -run=TestConcurrent -race -v gopl.io/ch9/memo1
      === RUN   TestConcurrent
      ...
      WARNING: DATA RACE
@@ -16312,7 +16312,7 @@
      ...
      Found 1 data race(s)
      FAIL    gopl.io/ch9/memo1   2.393s
-   < src..
+   < srci..
 
    The reference to @c(memo.go:32) tells us that two goroutines have updated the
    @c(cache) map without any intervening synchronization. @c(Get) is not
@@ -16696,12 +16696,12 @@
       }
     < src..
 
-    ..src > sh
-      $ GOMAXPROCS=1 go run hacker-cliché.go
+    ..srci > sh
+      > GOMAXPROCS=1 go run hacker-cliché.go
       111111111111111111110000000000000000000011111...
-      $ GOMAXPROCS=2 go run hacker-cliché.go
+      > GOMAXPROCS=2 go run hacker-cliché.go
       010101010101010101011001100101011010010100110...
-    < src..
+    < srci..
 
     In the first run, at most one goroutine was executed at a time. Initially,
     it was the main goroutine, which prints ones. After a period of time, the Go
@@ -17014,22 +17014,22 @@
    to the converter program, it detects the PNG input format and writes a JPEG
    version of Figure 3.3.
 
-   ..src > sh
-     $ go build gopl.io/ch3/mandelbrot
-     $ go build gopl.io/ch10/jpeg
-     $ ./mandelbrot | ./jpeg >mandelbrot.jpg
+   ..srci > sh
+     > go build gopl.io/ch3/mandelbrot
+     > go build gopl.io/ch10/jpeg
+     > ./mandelbrot | ./jpeg >mandelbrot.jpg
      Input format = png
-   < src..
+   < srci..
 
    Notice the blank import of @c(image/png). Without that line, the program
    compiles and links as usual but can no longer recognize or decode input in
    PNG format:
 
-   ..src > sh
-     $ go build gopl.io/ch10/jpeg
-     $ ./mandelbrot | ./jpeg >mandelbrot.jpg
+   ..srci > sh
+     > go build gopl.io/ch10/jpeg
+     > ./mandelbrot | ./jpeg >mandelbrot.jpg
      jpeg: image: unknown format
-   < src..
+   < srci..
 
    Here’s how it works. The standard library provides decoders for GIF, PNG, and
    JPEG, and users may provide others, but to keep executables small, decoders
@@ -17181,8 +17181,8 @@
    built-in documentation, but for reference, we’ve listed the most commonly
    used commands below:
 
-   ..src > sh
-     $ go
+   ..srci > sh
+     > go
      ...
          build       compile packages and dependencies
          clean       remove object files
@@ -17202,7 +17202,7 @@
 
      Use "go help [command]" for more information about a command.
      ...
-   < src..
+   < srci..
 
    To keep the need for configuration to a minimum, the @$(go) tool relies
    heavily on conventions. For example, given the name of a Go source file, the
@@ -17219,10 +17219,10 @@
     different workspace, users update the value of @c(GOPATH). For instance, we
     set @c(GOPATH) to @c($HOME/gobook) while working on this book:
 
-    ..src > sh
-      $ export GOPATH=$HOME/gobook
-      $ go get gopl.io/...
-    < src..
+    ..srci > sh
+      > export GOPATH=$HOME/gobook
+      > go get gopl.io/...
+    < srci..
 
     After you download all the programs for this book using the command above,
     your workspace will contain a hierarchy like this one:
@@ -17276,13 +17276,13 @@
     @c(arm). Although @c(GOPATH) is the only variable you must set, the others
     occasionally appear in our explanations.
 
-    ..src > sh
-      $ go env
+    ..srci > sh
+      > go env
       GOPATH="/home/gopher/gobook"
       GOROOT="/usr/local/go"
       GOARCH="amd64"
       GOOS="darwin"
-    < src..
+    < srci..
 
 *** Section 10.7.2 <> Downloading Packages
 
@@ -17304,12 +17304,12 @@
     on @c(gopl.io/ch2/popcount) from @l(#Section 2.6.2). It helpfully reports
     that we have forgotten to write a doc comment for the package:
 
-    ..src > sh
-      $ go get github.com/golang/lint/golint
-      $ $GOPATH/bin/golint gopl.io/ch2/popcount
+    ..srci > sh
+      > go get github.com/golang/lint/golint
+      > $GOPATH/bin/golint gopl.io/ch2/popcount
       src/gopl.io/ch2/popcount/main.go:1:1:
         package comment should be of the form "Package popcount ..."
-    < src..
+    < srci..
 
     The @$(go get) command has support for popular code-hosting sites like
     GitHub, Bitbucket, and Launchpad and can make the appropriate requests to
@@ -17323,12 +17323,12 @@
     different revision. For example, the @f(golang.org/x/net) directory is a Git
     client:
 
-    ..src > sh
-      $ cd $GOPATH/src/golang.org/x/net
-      $ git remote -v
+    ..srci > sh
+      > cd $GOPATH/src/golang.org/x/net
+      > git remote -v
       origin  https://go.googlesource.com/net (fetch)
       origin  https://go.googlesource.com/net (push)
-    < src..
+    < srci..
 
     Notice that the apparent domain name in the package’s import path,
     @c(https://golang.org<>golang.org), differs from the actual domain name of
@@ -17339,12 +17339,12 @@
     @l(https://golang.org/x/net/html) include the metadata shown below, which
     redirects the @$(go) tool to the Git repository at the actual hosting site:
 
-    ..src > sh
-      $ go build gopl.io/ch1/fetch
-      $ ./fetch https://golang.org/x/net/html | grep go-import
+    ..srci > sh
+      > go build gopl.io/ch1/fetch
+      > ./fetch https://golang.org/x/net/html | grep go-import
       <meta name="go-import"
             content="golang.org/x/net git https://go.googlesource.com/net">
-    < src..
+    < srci..
 
     If you specify the @c(-u) flag, @$(go get) will ensure that all packages it
     visits, including dependencies, are updated to their latest version before
@@ -17391,40 +17391,40 @@
     package, though each writes the executable to the directory in which @$(go
     build) is run:
 
-    ..src > sh
-      $ cd $GOPATH/src/gopl.io/ch1/helloworld
-      $ go build
-    < src..
+    ..srci > sh
+      > cd $GOPATH/src/gopl.io/ch1/helloworld
+      > go build
+    < srci..
 
     and:
 
-    ..src > sh
-      $ cd anywhere
-      $ go build gopl.io/ch1/helloworld
-    < src..
+    ..srci > sh
+      > cd anywhere
+      > go build gopl.io/ch1/helloworld
+    < srci..
 
     and:
 
-    ..src > sh
-      $ cd $GOPATH
-      $ go build ./src/gopl.io/ch1/helloworld
-    < src..
+    ..srci > sh
+      > cd $GOPATH
+      > go build ./src/gopl.io/ch1/helloworld
+    < srci..
 
     but not:
 
-    ..src > sh
-      $ cd $GOPATH
-      $ go build src/gopl.io/ch1/helloworld
+    ..srci > sh
+      > cd $GOPATH
+      > go build src/gopl.io/ch1/helloworld
       Error: cannot find package "src/gopl.io/ch1/helloworld".
-    < src..
+    < srci..
 
     Packages may also be specified as a list of file names, though this tends to
     be used only for small programs and one-off experiments. If the package name
     is @c(main), the executable name comes from the basename of the first @f(.go)
     file.
 
-    ..src > sh
-      $ cat quoteargs.go
+    ..srci > sh
+      > cat quoteargs.go
       package main
 
       import (
@@ -17435,19 +17435,19 @@
       func main() {
         fmt.Printf("%q\n", os.Args[1:])
       }
-      $ go build quoteargs.go
-      $ ./quoteargs one "two three" four\ five
+      > go build quoteargs.go
+      > ./quoteargs one "two three" four\ five
       ["one" "two three" "four five"]
-    < src..
+    < srci..
 
     Particularly for throwaway programs like this one, we want to run the
     executable as soon as we’ve built it. The @$(go run) command combines these
     two steps:
 
-    ..src > sh
-      $ go run quoteargs.go one "two three" four\ five
+    ..srci > sh
+      > go run quoteargs.go one "two three" four\ five
       ["one" "two three" "four five"]
-    < src..
+    < srci..
 
     The first argument that doesn’t end in @f(.go) is assumed to be the
     beginning of the list of arguments to the Go executable.
@@ -17493,14 +17493,14 @@
 
     The following commands produce 64-bit and 32-bit executables respectively:
 
-    ..src > sh
-      $ go build gopl.io/ch10/cross
-      $ ./cross
+    ..srci > sh
+      > go build gopl.io/ch10/cross
+      > ./cross
       darwin amd64
-      $ GOARCH=386 go build gopl.io/ch10/cross
-      $ ./cross
+      > GOARCH=386 go build gopl.io/ch10/cross
+      > ./cross
       darwin 386
-    < src..
+    < srci..
 
     Some packages may need to compile different versions of the code for certain
     platforms or processors, to deal with low-level portability issues or to
@@ -17526,9 +17526,9 @@
     For more details, see the @e(Build Constraints) section of the @c(go/build)
     package’s documentation:
 
-    ..src > sh
-      $ go doc go/build
-    < src..
+    ..srci > sh
+      > go doc go/build
+    < srci..
 
 *** Section 10.7.4 <> Documenting Packages
 
@@ -17567,8 +17567,8 @@
     The @$(go doc) tool prints the declaration and doc comment of the entity
     specified on the command line, which may be a package:
 
-    ..src > sh
-      $ go doc time
+    ..srci > sh
+      > go doc time
       package time // import "time"
 
       Package time provides functionality for measuring and displaying time.
@@ -17581,38 +17581,38 @@
       type Duration int64
       type Time struct { ... }
       ...many more...
-    < src..
+    < srci..
 
     or a package member:
 
-    ..src > sh
-      $ go doc time.Since
+    ..srci > sh
+      > go doc time.Since
       func Since(t Time) Duration
 
           Since returns the time elapsed since t.
           It is shorthand for time.Now().Sub(t).
-    < src..
+    < srci..
 
     or a method:
 
-    ..src > sh
-      $ go doc time.Duration.Seconds
+    ..srci > sh
+      > go doc time.Duration.Seconds
       func (d Duration) Seconds() float64
 
           Seconds returns the duration as a floating-point number of seconds.
-    < src..
+    < srci..
 
     The tool does not need complete import paths or correct identifier
     case. This command prints the documentation of @c[(*json.Decoder).Decode]
     from the @c(encoding/json) package:
 
-    ..src > sh
-      $ go doc json.decode
+    ..srci > sh
+      > go doc json.decode
       func (dec *Decoder) Decode(v interface{}) error
 
           Decode reads the next JSON-encoded value from its input and stores
           it in the value pointed to by v.
-    < src..
+    < srci..
 
     The second tool, confusingly named @$(godoc), serves cross-linked HTML pages
     that provide the same information as @$(go doc) and much more. The @$(godoc)
@@ -17626,9 +17626,9 @@
     browse your own packages. Visit @l(http://localhost:8000/pkg) in your
     browser while running this command:
 
-    ..src > sh
-      $ godoc -http :8000
-    < src..
+    ..srci > sh
+      > godoc -http :8000
+    < srci..
 
     Its @c(-analysis=type) and @c(-analysis=pointer) flags augment the
     documentation and the source code with the results of advanced static
@@ -17674,17 +17674,17 @@
     simplest form, @$(go list) tests whether a package is present in the
     workspace and prints its import path if so:
 
-    ..src > sh
-      $ go list github.com/go-sql-driver/mysql
+    ..srci > sh
+      > go list github.com/go-sql-driver/mysql
       github.com/go-sql-driver/mysql
-    < src..
+    < srci..
 
     An argument to @$(go list) may contain the @"(@c(...)) wildcard, which
     matches any substring of a package’s import path. We can use it to enumerate
     all the packages within a Go workspace:
 
-    ..src > sh
-      $ go list ...
+    ..srci > sh
+      > go list ...
       archive/tar
       archive/zip
       bufio
@@ -17692,12 +17692,12 @@
       cmd/addr2line
       cmd/api
       ...many more...
-    < src..
+    < srci..
 
     or within a specific subtree:
 
-    ..src > sh
-      $ go list gopl.io/ch3/...
+    ..srci > sh
+      > go list gopl.io/ch3/...
       gopl.io/ch3/basename1
       gopl.io/ch3/basename2
       gopl.io/ch3/comma
@@ -17705,23 +17705,23 @@
       gopl.io/ch3/netflag
       gopl.io/ch3/printints
       gopl.io/ch3/surface
-    < src..
+    < srci..
 
     or related to a particular topic:
 
-    ..src > sh
-      $ go list ...xml...
+    ..srci > sh
+      > go list ...xml...
       encoding/xml
       gopl.io/ch7/xmlselect
-    < src..
+    < srci..
 
     The @$(go list) command obtains the complete metadata for each package, not
     just the import path, and makes this information available to users or other
     tools in a variety of formats. The @c(-json) flag causes @$(go list) to
     print the entire record of each package in JSON format:
 
-    ..src > sh
-      $ go list -json hash
+    ..srci > sh
+      > go list -json hash
       {
           "Dir": "/home/gopher/go/src/hash",
           "ImportPath": "hash",
@@ -17746,29 +17746,29 @@
               "unsafe"
           ]
       }
-    < src..
+    < srci..
 
     The @c(-f) flag lets users customize the output format using the template
     language of package @c(text/template) (@l(#Section 4.6<>§4.6)). This command
     prints the transitive dependencies of the @c(strconv) package, separated by
     spaces:
 
-    ..src > sh
-      $ go list -f '{{join .Deps " "}}' strconv
+    ..srci > sh
+      > go list -f '{{join .Deps " "}}' strconv
       errors math runtime unicode/utf8 unsafe
-    < src..
+    < srci..
 
     and this command prints the direct imports of each package in the
     @c(compress) subtree of the standard library:
 
-    ..src > sh
-      $ go list -f '{{.ImportPath}} -> {{join .Imports " "}}' compress/...
+    ..srci > sh
+      > go list -f '{{.ImportPath}} -> {{join .Imports " "}}' compress/...
       compress/bzip2 -> bufio io sort
       compress/flate -> bufio fmt io math sort strconv
       compress/gzip -> bufio compress/flate errors fmt hash hash/crc32 io time
       compress/lzw -> bufio errors fmt io
       compress/zlib -> bufio compress/flate errors fmt hash hash/adler32 io
-    < src..
+    < srci..
 
     The @$(go list) command is useful for both one-off interactive queries and
     for build and test automation scripts. We’ll use it again in @l(#Section
@@ -17928,11 +17928,11 @@
    the package in the current directory. We can build and run the tests with the
    following command.
 
-   ..src > sh
-     $ cd $GOPATH/src/gopl.io/ch11/word1
-     $ go test
+   ..srci > sh
+     > cd $GOPATH/src/gopl.io/ch11/word1
+     > go test
      ok   gopl.io/ch11/word1 0.008s
-   < src..
+   < srci..
 
    Satisfied, we ship the program, but no sooner have the launch party guests
    departed than the bug reports start to arrive. A French user named Noelle Eve
@@ -17961,15 +17961,15 @@
    When the two new tests have been added, the @$(go test) command fails with
    informative error messages.
 
-   ..src > sh
-     $ go test
+   ..srci > sh
+     > go test
      --- FAIL: TestFrenchPalindrome (0.00s)
          word_test.go:28: IsPalindrome("été") = false
      --- FAIL: TestCanalPalindrome (0.00s)
          word_test.go:35: IsPalindrome("A man, a plan, a canal: Panama") = false
      FAIL
      FAIL    gopl.io/ch11/word1 0.014s
-   < src..
+   < srci..
 
    It’s good practice to write the test first and observe that it triggers the
    same failure described by the user’s bug report. Only then can we be
@@ -17983,8 +17983,8 @@
    The @c(-v) flag prints the name and execution time of each test in the
    package:
 
-   ..src > sh
-     $ go test -v
+   ..srci > sh
+     > go test -v
      === RUN TestPalindrome
      --- PASS: TestPalindrome (0.00s)
      === RUN TestNonPalindrome
@@ -17998,13 +17998,13 @@
      FAIL
      exit status 1
      FAIL    gopl.io/ch11/word1 0.017s
-   < src..
+   < srci..
 
    and the @c(-run) flag, whose argument is a regular expression, causes @$(go
    test) to run only those tests whose function name matches the pattern:
 
-   ..src > sh
-     $ go test -v -run="French|Canal"
+   ..srci > sh
+     > go test -v -run="French|Canal"
      === RUN TestFrenchPalindrome
      --- FAIL: TestFrenchPalindrome (0.00s)
      word_test.go:28: IsPalindrome("été") = false
@@ -18014,7 +18014,7 @@
      FAIL
      exit status 1
      FAIL    gopl.io/ch11/word1 0.014s
-   < src..
+   < srci..
 
    Of course, once we’ve gotten the selected tests to pass, we should invoke
    @$(go test) with no flags to run the entire test suite one last time before
@@ -18088,10 +18088,10 @@
 
    Our new tests pass:
 
-   ..src > sh
-     $ go test gopl.io/ch11/word2
+   ..srci > sh
+     > go test gopl.io/ch11/word2
      ok      gopl.io/ch11/word2        0.015s
-   < src..
+   < srci..
 
    This style of @e(table-driven) testing is very common in Go. It is
    straightforward to add new table entries as needed, and since the assertion
@@ -18311,13 +18311,13 @@
 
     @$(go test) prints
 
-    ..src > sh
-      $ go test gopl.io/ch11/echo
+    ..srci > sh
+      > go test gopl.io/ch11/echo
       --- FAIL: TestEcho (0.00s)
           echo_test.go:31: echo(true, ",", ["a" "b" "c"]) = "a,b,c", want "a b c\n"
       FAIL
       FAIL    gopl.io/ch11/echo   0.006s
-    < src..
+    < srci..
 
     The error message describes the attempted operation (using Go-like syntax),
     the actual behavior, and the expected behavior, in that order. With an
@@ -18559,19 +18559,19 @@
     of files that contain the production code; these are the files that @$(go
     build) will include in your application:
 
-    ..src > sh
-      $ go list -f={{.GoFiles}} fmt
+    ..srci > sh
+      > go list -f={{.GoFiles}} fmt
       [doc.go format.go print.go scan.go]
-    < src..
+    < srci..
 
     @c(TestGoFiles) is the list of files that also belong to the @c(fmt)
     package, but these files, whose names all end in @f(_test.go), are included
     only when building tests:
 
-    ..src > sh
-      $ go list -f={{.TestGoFiles}} fmt
+    ..srci > sh
+      > go list -f={{.TestGoFiles}} fmt
       [export_test.go]
-    < src..
+    < srci..
 
     The package’s tests would usually reside in these files, though unusually
     @c(fmt) has none; we’ll explain the purpose of @f(export_test.go) in a
@@ -18581,10 +18581,10 @@
     package, @c(fmt_test), so these files must import the @c(fmt) package in
     order to use it. Again, they are included only during testing:
 
-    ..src > sh
-      $ go list -f={{.XTestGoFiles}} fmt
+    ..srci > sh
+      > go list -f={{.XTestGoFiles}} fmt
       [fmt_test.go scan_test.go stringer_test.go]
-    < src..
+    < srci..
 
     Sometimes an external test package may need privileged access to the
     internals of the package under test, if for example a white-box test must
@@ -18803,24 +18803,24 @@
 
    First, let’s check that the test passes:
 
-   ..src > sh
-     $ go test -v -run=Coverage gopl.io/ch7/eval
+   ..srci > sh
+     > go test -v -run=Coverage gopl.io/ch7/eval
      === RUN TestCoverage
      --- PASS: TestCoverage (0.00s)
      PASS
      ok      gopl.io/ch7/eval    0.011s
-   < src..
+   < srci..
 
    This command displays the usage message of the coverage tool:
 
-   ..src > sh
-     $ go tool cover
+   ..srci > sh
+     > go tool cover
      Usage of 'go tool cover':
      Given a coverage profile produced by 'go test':
          go test -coverprofile=c.out
      Open a web browser displaying annotated source code:
          go tool cover -html=c.out
-   < src..
+   < srci..
 
    The @$(go tool) command runs one of the executables from the Go
    toolchain. These programs live in the directory
@@ -18829,10 +18829,10 @@
 
    Now we run the test with the @c(-coverprofile) flag:
 
-   ..src > sh
-     $ go test -run=Coverage -coverprofile=c.out gopl.io/ch7/eval
+   ..srci > sh
+     > go test -run=Coverage -coverprofile=c.out gopl.io/ch7/eval
      ok      gopl.io/ch7/eval    0.032s  coverage: 68.5% of statements
-   < src..
+   < srci..
 
    This flag enables the collection of coverage data by @e(instrumenting) the
    production code. That is, it modifies a copy of the source code so that
@@ -18851,9 +18851,9 @@
    Having gathered the data, we run the @$(cover) tool, which processes the log,
    generates an HTML report, and opens it in a new browser window (Figure 11.3).
 
-   ..src > sh
-     $ go tool cover -html=c.out
-   < src..
+   ..srci > sh
+     > go tool cover -html=c.out
+   < srci..
 
    ..figure > Figure 11.3. A coverage report.
 
@@ -18912,13 +18912,13 @@
    match all benchmarks in the @c(word) package, but since there’s only one,
    @c(-bench=IsPalindrome) would have been equivalent.
 
-   ..src > sh
-     $ cd $GOPATH/src/gopl.io/ch11/word2
-     $ go test -bench=.
+   ..srci > sh
+     > cd $GOPATH/src/gopl.io/ch11/word2
+     > go test -bench=.
      PASS
      BenchmarkIsPalindrome-8 1000000               1035 ns/op
      ok      gopl.io/ch11/word2      2.179s
-   < src..
+   < srci..
 
    The benchmark name’s numeric suffix, @c(8) here, indicates the value of
    @c(GOMAXPROCS), which is important for concurrent benchmarks.
@@ -18955,12 +18955,12 @@
    expected benefit.  This one delivered a mere 4% improvement in one
    experiment.
 
-   ..src > sh
-     $ go test -bench=.
+   ..srci > sh
+     > go test -bench=.
      PASS
      BenchmarkIsPalindrome-8 1000000                992 ns/op
      ok      gopl.io/ch11/word2      2.093s
-   < src..
+   < srci..
 
    Another idea is to pre-allocate a sufficiently large array for use by
    @c(letters), rather than expand it by successive calls to
@@ -18978,31 +18978,31 @@
    yields an improvement of nearly 35%, and the benchmark runner now reports the
    average over 2,000,000 iterations.
 
-   ..src > sh
-     $ go test -bench=.
+   ..srci > sh
+     > go test -bench=.
      PASS
      BenchmarkIsPalindrome-8 2000000                697 ns/op
      ok      gopl.io/ch11/word2      1.468s
-   < src..
+   < srci..
 
    As this example shows, the fastest program is often the one that makes the
    fewest memory allocations. The @c(-benchmem) command-line flag will include
    memory allocation statistics in its report. Here we compare the number of
    allocations before the optimization:
 
-   ..src > sh
-     $ go test -bench=. -benchmem
+   ..srci > sh
+     > go test -bench=. -benchmem
      PASS
      BenchmarkIsPalindrome    1000000  1026 ns/op    304 B/op  4 allocs/op
-   < src..
+   < srci..
 
    and after it:
 
-   ..src > sh
-     $ go test -bench=. -benchmem
+   ..srci > sh
+     > go test -bench=. -benchmem
      PASS
      BenchmarkIsPalindrome    2000000   807 ns/op    128 B/op  1 allocs/op
-   < src..
+   < srci..
 
    Consolidating the allocations in a single call to @c(make) eliminated 75% of
    the allocations and halved the quantity of allocated memory.
@@ -19111,11 +19111,11 @@
    flags below. Be careful when using more than one flag at a time, however: the
    machinery for gathering one kind of profile may skew the results of others.
 
-   ..src > sh
-     $ go test -cpuprofile=cpu.out
-     $ go test -blockprofile=block.out
-     $ go test -memprofile=mem.out
-   < src..
+   ..srci > sh
+     > go test -cpuprofile=cpu.out
+     > go test -blockprofile=block.out
+     > go test -memprofile=mem.out
+   < srci..
 
    It’s easy to add profiling support to non-test programs too, though the
    details of how we do that vary between short-lived command-line tools and
@@ -19143,15 +19143,15 @@
    almost never representative, which is why we disabled them by using the
    filter @c(-run=NONE).
 
-   ..src > sh
-     $ go test -run=NONE -bench=ClientServerParallelTLS64 \
+   ..srci > sh
+     > go test -run=NONE -bench=ClientServerParallelTLS64 \
          -cpuprofile=cpu.log net/http
      PASS
      BenchmarkClientServerParallelTLS64-8 1000
         3141325 ns/op  143010 B/op  1747 allocs/op
      ok      net/http       3.395s
 
-     $ go tool pprof -text -nodecount=10 ./http.test cpu.log
+     > go tool pprof -text -nodecount=10 ./http.test cpu.log
      2570ms of 3590ms total (71.59%)
      Dropped 129 nodes (cum <= 17.95ms)
      Showing top 10 nodes out of 166 (cum >= 60ms)
@@ -19166,7 +19166,7 @@
       60ms 1.67%   68.80%   190ms  5.29%  math/big.nat.montgomery
       50ms 1.39%   70.19%    50ms  1.39%  crypto/elliptic.p256ReduceCarry
       50ms 1.39%   71.59%    60ms  1.67%  crypto/elliptic.p256Sum
-   < src..
+   < srci..
 
    The @c(-text) flag specifies the output format, in this case, a textual table
    with one row per function, sorted so the @"(hottest) functions—those that
@@ -19493,7 +19493,7 @@
    expression evaluator in @l(#Section 7.9). The output of @c(Display) is shown
    below:
 
-   ..src > sh
+   ..srci > sh
      Display e (eval.call):
      e.fn = "sqrt"
      e.args[0].type = eval.binary
@@ -19502,7 +19502,7 @@
      e.args[0].value.x.value = "A"
      e.args[0].value.y.type = eval.Var
      e.args[0].value.y.value = "pi"
-   < src..
+   < srci..
 
    Where possible, you should avoid exposing reflection in the API of a
    package. We’ll define an unexported function @c(display) to do the real work
@@ -20495,22 +20495,22 @@
    If we add the @c(server) handler to a web server, this might be a typical
    session:
 
-   ..src > sh
-     $ go build gopl.io/ch12/search
-     $ ./search &
-     $ ./fetch 'http://localhost:12345/search'
+   ..srci > sh
+     > go build gopl.io/ch12/search
+     > ./search &
+     > ./fetch 'http://localhost:12345/search'
      Search: {Labels:[] MaxResults:10 Exact:false}
-     $ ./fetch 'http://localhost:12345/search?l=golang&l=programming'
+     > ./fetch 'http://localhost:12345/search?l=golang&l=programming'
      Search: {Labels:[golang programming] MaxResults:10 Exact:false}
-     $ ./fetch 'http://localhost:12345/search?l=golang&l=programming&max=100'
+     > ./fetch 'http://localhost:12345/search?l=golang&l=programming&max=100'
      Search: {Labels:[golang programming] MaxResults:100 Exact:false}
-     $ ./fetch 'http://localhost:12345/search?x=true&l=golang&l=programming'
+     > ./fetch 'http://localhost:12345/search?x=true&l=golang&l=programming'
      Search: {Labels:[golang programming] MaxResults:10 Exact:true}
-     $ ./fetch 'http://localhost:12345/search?q=hello&x=123'
+     > ./fetch 'http://localhost:12345/search?q=hello&x=123'
      x: strconv.ParseBool: parsing "123": invalid syntax
-     $ ./fetch 'http://localhost:12345/search?q=hello&max=lots'
+     > ./fetch 'http://localhost:12345/search?q=hello&max=lots'
      max: strconv.ParseInt: parsing "lots": invalid syntax
-   < src..
+   < srci..
 
    @b(Exercise 12.11): Write the corresponding @c(Pack) function. Given a struct
    value, @c(Pack) should return a URL incorporating the parameter values from
@@ -21362,16 +21362,16 @@
    giving us confidence that the compressor is working correctly. (If you don’t
    have @$(sha256sum) on your system, use your solution to Exercise 4.2.)
 
-   ..src > sh
-     $ go build gopl.io/ch13/bzipper
-     $ wc -c < /usr/share/dict/words
+   ..srci > sh
+     > go build gopl.io/ch13/bzipper
+     > wc -c < /usr/share/dict/words
      938848
-     $ sha256sum < /usr/share/dict/words
+     > sha256sum < /usr/share/dict/words
      126a4ef38493313edc50b86f90dfdaf7c59ec6c948451eac228f2f3a8ab1a6ed $ ./bzipper < /usr/share/dict/words | wc -c
      335405
-     $ ./bzipper < /usr/share/dict/words | bunzip2 | sha256sum
+     > ./bzipper < /usr/share/dict/words | bunzip2 | sha256sum
      126a4ef38493313edc50b86f90dfdaf7c59ec6c948451eac228f2f3a8ab1a6ed -
-   < src..
+   < srci..
 
    We’ve demonstrated linking a C library into a Go program. Going in the other
    direction, it’s also possible to compile a Go program as a static archive
