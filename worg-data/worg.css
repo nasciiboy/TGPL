@@ -222,15 +222,13 @@ div.quote-author p { text-align: right; padding-right: 2%; color: var( --FGCaquo
 pre.code,
 div.highlight  { overflow: auto;
                  margin: 1em 1em; padding: 0.5em 1em;
-                 margin-top:
                  text-align: left; font-family: codeblock; font-size: 1.2em;
                }
 
 /* CODE */
 pre.srci { overflow: auto;
            margin: 1em 1em; padding: 0.5em 1em;
-           margin-top:
-           text-align: left; font-family: codeblock; font-size: 1.2em;
+           text-align: left; font-family: codeblock; font-size: 1em;
          }
 .srci-text { color: #FFB; }
 .srci-code { }

@@ -6,7 +6,7 @@
 ..id      > isbn-13 978-0-13-419044-0
 ..id      > isbn-10 0-13-419044-0
 ..style   > worg-data/worg.css
-..options > toc pygments
+..options > pygments toc
 
 @ revision 3b600c, date 29 Sep 2015
 
@@ -12494,8 +12494,8 @@
    funcion recorre una tabla de entradas que define tres expresiones y entornos
    diferentes para cada una. La primer expresion calcula el radio de un circulo
    dada su area @c(A), la segunda calcula la suma de los cubos de dos variables
-   @c(x) e @c(y), y la tercera convierte una temperatura @c(Fahrenheit) de @c(F)
-   a @c(Celsius).
+   @c(x) e @c(y), y la tercera convierte una temperatura de Fahrenheit @c(F)
+   a Celsius.
 
    ..src > go
      func TestEval(t *testing.T) {
@@ -12568,7 +12568,7 @@
    interpretados, es comun comprobar la sintaxis de errores @e(estaticos), es
    decir, errores que pueden ser detectados sin ejecutar el programa. Al separar
    los controles estaticos de los dinamicos, podemos detectar errores antes y
-   realizar muchas verificaciones solo una vez en lugar de cada vez que se
+   realizar muchas verificaciones de una sola vez en lugar de cada vez que se
    evalua una expresion.
 
    Vamos a añadir otro metodo a la interfaz @c(Expr). El metodo @c(Check)
@@ -12586,10 +12586,10 @@
    El metodo concreto @c(Check) se muestran a continuacion. La evaluacion de
    @c(literal) y @c(Var) no puede fallar, por lo que los metodos @c(Check) para
    estos tipos devuelven @c(nil). Los metodos para @c(unary) y @c(binary)
-   primera verifican que el operador es valido, luego comprueban recursivamente
-   los operandos. Del mismo modo, el metodo para de @c(call) comprueba primero
-   que la funcion se conoce y tiene el numero correcto de argumentos, entonces,
-   de forma recursiva comprueba cada argumento.
+   primero verifican que el operador es valido, luego comprueban recursivamente
+   los operandos. Del mismo modo, el metodo de @c(call) primero comprueba que la
+   funcion se conoce y tiene el numero correcto de argumentos, entonces, de
+   forma recursiva comprueba cada argumento.
 
    ..src > go
      func (v Var) Check(vars map[Var]bool) error {
@@ -12668,9 +12668,9 @@
    expresion es una funcion de dos variables, @c(x) e @c(y)–tres, en realidad,
    ya que proporcionamos @c(r), el radio, como una conveniencia. Y usaremos el
    metodo @c(Check) para rechazar expresiones mal formadas antes de que comience
-   la evaluacion, de mono que no repitamos esas verificaciones durante las
+   la evaluacion, de modo que no repitamos esas verificaciones durante las
    40.000 evaluaciones (100×100 celulas, cada una con cuatro esquinas) de la
-   funcion que le sigue.
+   funcion siguiente.
 
    La funcion @c(parseAndCheck) combina estos pasos de analisis y comprobacion:
 
@@ -12759,19 +12759,19 @@
 
    @b(Ejercicio 7.16): Escribia un programa de calculadora basado en la web.
 
-** Seccion 7.10 <> Afirmacion de Tipo
+** Seccion 7.10 <> Aserciones de Tipo
 
-   Una @e(afirmacion de tipo) es una operacion aplicada a un valor de interfaz.
+   Una @e(asercion de tipo) es una operacion aplicada a un valor de interfaz.
    Sintacticamente, se ve como @c[x.(T)], donde @c(x) es una expresion de un
    tipo de interfaz y @c[T] es un tipo, denominado el tipo @"(afirmado). Una
-   afirmacion de tipo comprueba que el tipo dinamico de su operando coincide con
+   asercion de tipo comprueba que el tipo dinamico de su operando coincide con
    el tipo declarado.
 
    Hay dos posibilidades. En primer lugar, si el tipo afirmado @c(T) es un tipo
    concreto, entonces la asercion de tipo comprueba si el tipo dinamico @c(x) es
    @e(identico a) @c(T). Si esta comprobacion tiene exito, el resultado de la
-   afirmacion tipo es el valor dinamico @c(x), cuyo tipo es, por supuesto,
-   @c(T). En otras palabras, una afirmacion de tipo a un tipo concreto extrae el
+   asercion de tipo es el valor dinamico @c(x), cuyo tipo es, por supuesto,
+   @c(T). En otras palabras, una asercion de tipo a un tipo concreto extrae el
    valor concreto de su operando. Si la comprobacion falla, entonces la
    operacion entra en panico. Por ejemplo:
 
@@ -12783,16 +12783,16 @@
    < src..
 
    En segundo lugar, si en lugar del tipo afirmado @c(T) es un tipo de interfaz,
-   entonces, la afirmacion de tipo comprueba si el tipo dinamico @c(x)
+   entonces, la asercion de tipo comprueba si el tipo dinamico @c(x)
    @e(satisface) a @c(T). Si esta comprobacion tiene exito, el valor dinamico no
-   se extrae; el resultado sigue siendo un valor de interfaz con el mismo y
-   varol de componentes, pero el resultado tiene el tipo de interfaz @c(T). En
-   otras palabras, una asercion de tipo a un tipo de interfaz cambia el tipo de
-   la expresion, haciendo accesible un conjunto de metodos diferente (y
+   se extrae; el resultado sigue siendo una interfaz con el mismo tipo y valor
+   de componentes, pero el resultado tiene el tipo de interfaz @c(T). En otras
+   palabras, una asercion de tipo a un tipo de interfaz cambia el tipo de la
+   expresion, haciendo accesible un conjunto de metodos diferente (y
    generalmente mas grande), pero conserva los componentes dinamicos de tipo y
    valor dentro del valor de la interfaz.
 
-   Despues de la afirmacion del primer tipo a continuacion, tanto @c(w) y @c(rw)
+   Despues de la asercion del primer tipo a continuacion, tanto @c(w) y @c(rw)
    contienen @c(os.Stdout) por lo que cada uno tiene un tipo dinamico de
    @c(*os.File), pero @c(w), un @c(io.Writer), expone solo el metodo @c(Write)
    del archivo, mientras que @c(rw) expone tambien su metodo @c(Read).
@@ -12806,10 +12806,10 @@
      rw = w.(io.ReadWriter)  // panico: *ByteCounter no tiene metodo Read
    < src..
 
-   No importa que tipo se afirmo, si el operando es un valor de interfaz nil, la
-   afirmacion de tipo falla. Rara vez se necesita una asercion de tipo a un tipo
-   de interfaz menos restrictivo (uno con menos metodos), ya que se comporta
-   como una asignacion, excepto en el caso nulo.
+   No importa el tipo bajo la asercion, si el operando es un valor de interfaz
+   nil, la asercion de tipo falla. Rara vez se necesita una asercion de tipo a
+   un tipo de interfaz menos restrictivo (uno con menos metodos), ya que se
+   comporta como una asignacion, excepto en el caso nulo.
 
    ..src > go
      w = rw             // io.ReadWriter es asignable a io.Writer
@@ -12817,7 +12817,7 @@
    < src..
 
    A menudo no estamos seguros del tipo dinamico de un valor de interfaz, y nos
-   gustaria probar si es algun tipo particular. Si la afirmacion de tipo aparece
+   gustaria probar si es algun tipo particular. Si la asercion de tipo aparece
    en una asignacion en la que se esperan dos resultados, como las siguientes
    declaraciones, la operacion no entra en panico cuando se produce un error,
    sino que devuelve un segundo resultado adicional, un booleano que indica
@@ -12843,7 +12843,7 @@
      }
    < src..
 
-   Cuando el operando de una afirmacion de tipo es una variable, en lugar de
+   Cuando el operando de una asercion de tipo es una variable, en lugar de
    inventar otro nombre para la nueva variable local, a veces vera el nombre
    original reutilizado, ocultando el original, asi:
 
@@ -12853,15 +12853,15 @@
      }
    < src..
 
-** Seccion 7.11 <> Discriminacion de Errores con Afirmaciones de Tipo
+** Seccion 7.11 <> Discriminacion de Errores con Aserciones de Tipo
 
    Consideremos el conjunto de errores devueltos por las operaciones de archivos
-   en el paquete @c(os). Las E/S pueden fallar por varias razones, pero tres
+   en el paquete @c(os). La E/S pueden fallar por varias razones, pero tres
    tipos de fallos a menudo deben manejarse de manera diferente: el archivo ya
    existe (para las operaciones de creacion), el archivo no se encuentra (para
    operaciones de lectura) y el permiso esta denegado. El paquete @c(os)
    proporciona estas tres funciones de ayuda para clasificar el fallo indicado
-   por un determinado valor @c(error):
+   por un determinado valor de @c(error):
 
    ..src > go
      package os
@@ -12892,7 +12892,7 @@
    utilizando un tipo especifico. El paquete OS define un tipo llamado
    @c(PathError) para describir las fallas que implican una operacion en una
    ruta de archivo, como @c(Open) o @c(Delete), y una variante llamada
-   @c(LinkError) para describir los frallos de las operaciones que implican dos
+   @c(LinkError) para describir los fallos de las operaciones que implican dos
    rutas de archivos, como @c(Symlink) y @c(Rename). Aqui esta @c(os.PathError):
 
    ..src > go
@@ -12915,7 +12915,7 @@
    @c(Error). Aunque el metodo @c(Error) de @c(PathError) forma un mensaje
    simplemente concatenando los campos, la estructura de @c(PathError) conserva
    los componentes subyacentes del error. Los clientes que necesitan distinguir
-   un tipo de fallo de otro pueden usar una afirmacion de tipo para detectar el
+   un tipo de fallo de otro pueden usar una asercion de tipo para detectar el
    tipo especifico del error; el tipo especifico proporciona mas detalle que una
    simple cadena.
 
@@ -12959,13 +12959,13 @@
      fmt.Println(os.IsNotExist(err)) // "true"
    < src..
 
-   Por supuesto, la estructura @c(PathError) se pierde pierde si el mensaje de
-   error se combina en una cadena mas grande, por ejemplo, mediante una llamada
-   a @c(fmt.Errorf). La discriminacion de errores se debe hacer generalmente
+   Por supuesto, la estructura @c(PathError) se pierde si el mensaje de error se
+   combina en una cadena mas grande, por ejemplo, mediante una llamada a
+   @c(fmt.Errorf). La discriminacion de errores se debe hacer generalmente
    inmediatamente despues de la operacion fallida, antes de que un error se
    propague al llamador.
 
-** Seccion 7.12 <> Consultar Comportamientos con Afirmaciones de Tipo de Interfaz
+** Seccion 7.12 <> Consultar Comportamientos con Aserciones de Tipo de Interfaz
 
    La siguiente logica es similar a la parte del servidor web @c(net/http)
    responsable de escribir campos de cabecera HTTP como @c("Content-type:
@@ -12989,7 +12989,7 @@
    Esta conversion asigna memoria y hace una copia, pero la copia se tira casi
    inmediatamente despues. Vamos a pretender que esta es una parte fundamental
    del servidor web y que nuestro perfil ha revelado que esta asignacion de
-   memoria se esta ralentizando. ¿Podemos evitar asignar memoria aqui?
+   memoria lo esta ralentizando. ¿Podemos evitar asignar memoria aqui?
 
    La interfaz @c(io.Writer) nos informa solo un hecho sobre el tipo concreto
    que @c(w) almacena: que los bytes se pueden escribir en el. Si miramos detras
@@ -13003,7 +13003,7 @@
 
    No podemos asumir que un @c(w) @c(io.Writer) arbitrario tambien tiene el
    metodo @c(WriteString). Pero podemos definir una nueva interfaz que tiene
-   solo este metodo y utilizar una afirmacion de tipo para probar si el tipo
+   solo este metodo y utilizar una asercion de tipo para probar si el tipo
    dinamico de @c(w) satisface esta nueva interfaz.
 
    ..src > go
@@ -13054,13 +13054,13 @@
    llaman probablemente documenten que estas tambien hacen el mismo
    supuesto. Definir un metodo de un tipo particular se toma como un
    asentimiento implicito para un determinado contrato de comportamiento. Los
-   recien llegados a Go, especialmente aquellos de un fondo en lenguajes
+   recien llegados a Go, especialmente aquellos con antecedentes en lenguajes
    fuertemente tipados, pueden encontrar esta falta de intencion explicita
    inquietante, pero rara vez es un problema en la practica. Con la excepcion de
    la interfaz vacia @c(interface{}), los tipos de interfaz rara vez son
    satisfechas por coincidencia involuntaria.
 
-   La anterior funcion @c(writeString) utiliza una afirmacion de tipo para ver
+   La anterior funcion @c(writeString) utiliza una asercion de tipo para ver
    si un valor de un tipo de interfaz general tambien satisface un tipo de
    interfaz mas especifico, y de ser asi, se utiliza el comportamiento de la
    interfaz especifica. Esta tecnica se puede poner en uso, sea o no la interfaz
@@ -13081,7 +13081,7 @@
        if str, ok := x.(Stringer); ok {
          return str.String()
        }
-       // ...all other types...
+       // ...todos los demas tipos...
      }
    < src..
 
@@ -13105,12 +13105,12 @@
 
    El segundo estilo explota la capacidad de un valor interfaz para contener
    valores de una variedad de tipos concretos y considera que la interfaz es la
-   @e(union) de esos tipos. Las afirmaciones de tipo se utilizan para
+   @e(union) de esos tipos. Las aserciones de tipo se utilizan para
    discriminar entre estos tipos dinamicamente y tratar cada caso de manera
    diferente. En este estilo, el enfasis esta en los tipos concretos que
    satisfacen la interfaz, no en los metodos de la interfaz (si de hecho tiene
    alguno), y no se oculta la informacion. Vamos a describir interfaces
-   utilizadas de esta manera como los @e(uniones discriminadas).
+   utilizadas de esta manera como @e(uniones discriminadas).
 
    Si esta familiarizado con la programacion orientada a objetos, es posible
    reconocer estos dos estilos como @e(polimorfismo de subtipos) y el
@@ -13164,15 +13164,15 @@
 
    Una sentencia @c(switch) simplifica una cadena @c(if)-@c(else) que realiza
    una serie de pruebas de igualdad de valor. De forma analoga una sentencia
-   @c(switch de tipos) simplifica una cadena @c(if)-@c(else) de afirmaciones de
+   @c(switch de tipos) simplifica una cadena @c(if)-@c(else) de aserciones de
    tipo.
 
    En su forma mas simple, un switch de tipos se parece a una sentencia switch
    ordinaria en la que el operando es @c[x.(type)]–esto es, literalmente, la
-   palabra clave @c(type)–y cada caso tiene uno o mas tipos. Un conmutador de
-   tipo habilita una ramificacion multidireccional basada en el tipo dinamico
-   del valor de la interfaz. El caso @c(nil) coincide si @c(x == nil), y el caso
-   @c(default) coincide si lo hace ningun otro caso. Un switch de tipos para
+   palabra clave @c(type)–y cada caso tiene uno o mas tipos. Un switch de tipo
+   habilita una ramificacion multidireccional basada en el tipo dinamico del
+   valor de la interfaz. El caso @c(nil) coincide si @c(x == nil), y el caso
+   @c(default) coincide si no lo hace ningun otro caso. Un switch de tipos para
    @c(sqlQuote) tendria estos casos:
 
    ..src > go
@@ -13190,10 +13190,10 @@
    ejecuta el cuerpo del caso. El orden de los casos se vuelve significativo
    cuando uno o mas tipos de casos son interfaces, ya que entonces existe la
    posibilidad de que dos casos coincidan. La posicion del caso @c(default) en
-   relacion con los demas es irrelevante. no esta permitido @c(fallthrough).
+   relacion con los demas es irrelevante. @c(fallthrough) no esta permitido.
 
    Observe que en la funcion original, la logica de los casos @c(bool) y
-   @c(string) necesita acceso al valor extraido por la afirmacion tipo. Dado que
+   @c(string) necesita acceso al valor extraido por la asercion de tipo. Dado que
    esto es tipico, la instruccion switch de tipo tiene una forma extendida que
    enlaza el valor extraido con una nueva variable dentro de cada caso:
 
@@ -13245,7 +13245,7 @@
    inesperado). Aunque el tipo de @c(x) es @c(interface{}), lo consideramos una
    union discriminada de @c(int), @c(uint), @c(bool), @c(string), y @c(nil).
 
-** Seccion 7.14 <> Ejemplo: Decodificacion XML Basada en Token
+** Seccion 7.14 <> Ejemplo: Decodificacion XML Basada en Tokens
 
    La @l(#Seccion 4.5) mostro como decodificar documentos JSON en estructuras de
    datos Go con las funciones @c(Marshal) y @c(Unmarshal) del paquete
@@ -13253,7 +13253,7 @@
    Este enfoque es conveniente cuando queremos construir una representacion del
    arbol de documentos, pero eso es innecesario para muchos programas. El
    paquete @c(encoding/xml) tambien proporciona una API de bajo nivel @e(basada
-   en tokens) para decodificar XML. En el estilo basada en tokens, el analizador
+   en tokens) para decodificar XML. En el estilo basado en tokens, el analizador
    consume la entrada y produce un flujo de tokens, principalmente de cuatro
    tipos–@c(StartElement), @c(EndElement), @c(CharData), y @c(Comment)–cada uno
    de los cuales es un tipo concreto en el paquete @c(encoding/xml). Cada
@@ -13303,7 +13303,7 @@
    utilizando un switch de tipo, con logica diferente en cada caso.
 
    El programa @$(xmlselect) a continuacion, extrae e imprime el texto encontrado
-   bajo de ciertos elementos en un arbol de documentos XML. Usando la API
+   bajo ciertos elementos en un arbol de documentos XML. Usando la API
    anterior, puede hacer su trabajo en un solo paso sobre la entrada sin
    materializar el arbol.
 
@@ -13336,7 +13336,7 @@
            case xml.StartElement:
              stack = append(stack, tok.Name.Local) // push
            case xml.EndElement:
-             stack = stack[:len(stack)-1] // pop
+             stack = stack[:len(stack)-1]          // pop
            case xml.CharData:
              if containsAll(stack, os.Args[1:]) {
                fmt.Printf("%s: %s\n", strings.Join(stack, " "), tok)
@@ -13375,8 +13375,8 @@
 
    ..srci > sh
      > go build gopl.io/ch1/fetch
-     > ./fetch http://www.w3.org/TR/2006/REC-xml11-20060816 |
-         ./xmlselect div div h2
+     > ./fetch http://www.w3.org/TR/2006/REC-xml11-20060816 | \ \
+       ./xmlselect div div h2
      html body div div h2: 1 Introduction
      html body div div h2: 2 Documents
      html body div div h2: 3 Logical Structures
@@ -13394,7 +13394,7 @@
    class="wide">) podria ser seleccionado encontrando su @c(id) o @c(class),
    asi como su nombre.
 
-   @b(Ejercicio 7.18): Utilizando el API decodificador basado en token, escribir
+   @b(Ejercicio 7.18): Utilizando el API decodificador basado en tokens, escribir
    un programa que lea un documento XML arbitrario y construya un arbol de nodos
    genericos que lo represente. Los nodos son de dos tipos: los nodos
    @c(CharData) representan cadenas de texto, y los nodos @c(Element)
@@ -13437,8 +13437,8 @@
 
    Debido a que las interfaces se usan en Go solo cuando estan satisfechas por
    dos o mas tipos, necesariamente se abstraen de los detalles de cualquier
-   implementacion en particular. El resultado es interfaces mas pequeños con
-   pocos, metodos mas simples, a menudo, solo como uno con @c(io.Writer) o
+   implementacion en particular. El resultado es interfaces mas pequeñas con
+   pocos metodos mas simples, a menudo, solo con uno como @c(io.Writer) o
    @c(fmt.Stringer). Las interfaces pequeñas son mas faciles de satisfacer
    cuando aparecen nuevos tipos. Una buena regla de oro para el diseño de
    interfaces es @e(pedir solo lo que necesitas).
@@ -18825,7 +18825,7 @@ pero no:
    resultado real, y @c(z) el resultado esperado. Cuando es conveniente, como en
    nuestro ejemplo palindromo, se utiliza la sintaxis actual para la parte
    @c[f(x)]. La visualizacion de @c(x) es particularmente importante en una
-   prueba basada en tablas, ya que una afirmacion dada se ejecuta muchas veces
+   prueba basada en tablas, ya que una asercion dada se ejecuta muchas veces
    con diferentes valores. Evite la informacion repetitiva y redundante. Cuando
    se prueba una funcion booleana como @c(IsPalindrome), omita la parte @c(z)
    puesto que no agrega ninguna informacion. Si @c(x), @c(y) o @c(z) es largo,

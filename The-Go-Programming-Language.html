@@ -6516,7 +6516,7 @@ value ┃        2        ┃
 <span class="p">}</span>
 </pre></div>
 <p>Several of these methods can fail. For example, a <code>call</code> expression could have an unknown function or the wrong number of arguments. It’s also possible to construct a <code>unary</code> or <code>binary</code> expression with an invalid operator such as <code>!</code> or <code>&lt;</code> (although the <code>Parse</code> function mentioned below will never do this). These errors cause <code>Eval</code> to panic. Other errors, like evaluating a <code>Var</code> not present in the environment, merely cause <code>Eval</code> to return the wrong result. All of these errors could be detected by inspecting the <code>Expr</code> before evaluating it. That will be the job of the <code>Check</code> method, which we will show soon, but first let’s test <code>Eval</code>.</p>
-<p>The <code>TestEval</code> function below is a test of the evaluator. It uses the <code>testing</code> package, which we’ll explain in <a href="#Chapter-11" >Chapter 11</a>, but for now it’s enough to know that calling <code>t.Errorf</code> reports an error. The function loops over a table of inputs that defines three expressions and different environments for each one. The first expression computes the radius of a circle given its area <code>A</code>, the second computes the sum of the cubes of two variables <code>x</code> and <code>y</code>, and the third converts a Fahrenheit temperature <code>F</code> to <code>Celsius</code>.</p>
+<p>The <code>TestEval</code> function below is a test of the evaluator. It uses the <code>testing</code> package, which we’ll explain in <a href="#Chapter-11" >Chapter 11</a>, but for now it’s enough to know that calling <code>t.Errorf</code> reports an error. The function loops over a table of inputs that defines three expressions and different environments for each one. The first expression computes the radius of a circle given its area <code>A</code>, the second computes the sum of the cubes of two variables <code>x</code> and <code>y</code>, and the third converts a Fahrenheit temperature <code>F</code> to Celsius.</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">TestEval</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">tests</span> <span class="o">:=</span> <span class="p">[]</span><span class="kd">struct</span> <span class="p">{</span>
     <span class="nx">expr</span> <span class="kt">string</span>
@@ -7018,9 +7018,9 @@ sqrt(1, 2)        call to sqrt has 2 args, want 1</pre></div>
 <p>Each time the loop in <code>main</code> encounters a <code>StartElement</code>, it pushes the element’s name onto a stack, and for each <code>EndElement</code> it pops the name from the stack. The API guarantees that the sequence of <code>StartElement</code> and <code>EndElement</code> tokens will be properly matched, even in illformed documents. <code>Comments</code> are ignored. When <code>xmlselect</code> encounters a <code>CharData</code>, it prints the text only if the stack contains all the elements named by the command-line arguments, in order.</p>
 <p>The command below prints the text of any <code>h2</code> elements appearing beneath two levels of <code>div</code> elements. Its input is the XML specification, itself an XML document.</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go build gopl.io/ch1/fetch
-<span class="prompt">$ </span>./fetch http://www.w3.org/TR/2006/REC-xml11-20060816 <span class="p">|</span>
-<span class="srci-text">    ./xmlselect div div h2
-html body div div h2: 1 Introduction
+<span class="prompt">$ </span>./fetch http://www.w3.org/TR/2006/REC-xml11-20060816 <span class="p">|</span> <span class="se">\</span>
+./xmlselect div div h2
+<span class="srci-text">html body div div h2: 1 Introduction
 html body div div h2: 2 Documents
 html body div div h2: 3 Logical Structures
 html body div div h2: 4 Physical Structures

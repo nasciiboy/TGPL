@@ -6,7 +6,7 @@
 ..id      > isbn-13 978-0-13-419044-0
 ..id      > isbn-10 0-13-419044-0
 ..style   > worg-data/worg.css
-..options > toc
+..options > pygments toc
 
 @ revision 3b600c, date 29 Sep 2015
 
@@ -12010,7 +12010,7 @@
    environments for each one. The first expression computes the radius of a
    circle given its area @c(A), the second computes the sum of the cubes of two
    variables @c(x) and @c(y), and the third converts a Fahrenheit temperature
-   @c(F) to @c(Celsius).
+   @c(F) to Celsius.
 
    ..src > go
      func TestEval(t *testing.T) {
@@ -12870,8 +12870,8 @@
 
    ..srci > sh
      > go build gopl.io/ch1/fetch
-     > ./fetch http://www.w3.org/TR/2006/REC-xml11-20060816 |
-         ./xmlselect div div h2
+     > ./fetch http://www.w3.org/TR/2006/REC-xml11-20060816 | \ \
+       ./xmlselect div div h2
      html body div div h2: 1 Introduction
      html body div div h2: 2 Documents
      html body div div h2: 3 Logical Structures
