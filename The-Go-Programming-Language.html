@@ -8187,8 +8187,7 @@ https://golang.org/blog/
 
 <span class="c1">// dirents returns the entries of directory dir.</span>
 <span class="kd">func</span> <span class="nx">dirents</span><span class="p">(</span><span class="nx">dir</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="nx">os</span><span class="p">.</span><span class="nx">FileInfo</span> <span class="p">{</span>
-  <span class="nx">sema</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
-  <span class="c1">// acquire token</span>
+  <span class="nx">sema</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>        <span class="c1">// acquire token</span>
   <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="o">&lt;-</span><span class="nx">sema</span> <span class="p">}()</span> <span class="c1">// release token</span>
   <span class="c1">// ...</span>
 </pre></div>

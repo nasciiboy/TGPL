@@ -14919,8 +14919,7 @@
 
      // dirents returns the entries of directory dir.
      func dirents(dir string) []os.FileInfo {
-       sema <- struct{}{}
-       // acquire token
+       sema <- struct{}{}        // acquire token
        defer func() { <-sema }() // release token
        // ...
    < src..

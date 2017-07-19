@@ -131,7 +131,7 @@
 <span class="toc" ><a class="h4" href="#Seccion-8.4.1" >Canales sin Buffer</a></span>
 <span class="toc" ><a class="h4" href="#Seccion-8.4.2" >Tuberias</a></span>
 <span class="toc" ><a class="h4" href="#Seccion-8.4.3" >Tipos de Canal Unidireccional</a></span>
-<span class="toc" ><a class="h4" href="#Seccion-8.4.4" >Buffered Channels</a></span>
+<span class="toc" ><a class="h4" href="#Seccion-8.4.4" >Canales con Buffer</a></span>
 <span class="toc" ><a class="h3" href="#Seccion-8.5" >Bucle en Paralelo</a></span>
 <span class="toc" ><a class="h3" href="#Seccion-8.6" >Ejemplo: Rastreador Web Concurrente</a></span>
 <span class="toc" ><a class="h3" href="#Seccion-8.7" >Multiplexacion con <code>select</code></a></span>
@@ -7059,18 +7059,18 @@ html body div div h2: B Definitions for Character Normalization
 <h2 id="Capitulo-8" >Gorutinas y Canales</h2>
 <div class="hBody-2" >
 <p>La programación concurrente, la expresión de un programa como una composición de varias actividades autónomas, nunca ha sido tan importante como lo es hoy en día. Los servidores Web gestionan solicitudes para miles de clientes a la vez. Las aplicaciones de tabletas y teléfonos generan animaciones en la interfaz de usuario al tiempo que realizan simultáneamente solicitudes de cálculo y de red en segundo plano. Incluso los problemas tradicionales de lotes–leer algunos datos, calcular, escribir algo–utilizan concurrencia para ocultar la latencia de operaciones E/S y para explotar los procesadores de una computadora moderna, que cada año crecen en número pero no en velocidad.</p>
-<p>Go permite dos estilos de programación concurrente. Este capítulo presenta las goroutines y canales que soportan <em>procesos secuenciales comunicantes</em> o <span class="acronym" >CSP</span>, un modelo de concurrencia en el cual los valores se pasan entre actividades independientes (goroutines) pero las variables están en su mayor parte confinadas a una sola actividad. El <a href="#Capítulo-9" >Capítulo 9</a> cubre algunos aspectos del modelo más tradicional de memoria compartida multihilo, que será familiar si ha utilizado hilos en otros lenguajes populares. El <a href="#Capítulo-9" >Capítulo 9</a> también señala algunos peligros y trampas importantes de la programación concurrente que no profundizaremos en este capítulo.</p>
-<p>A pesar de que el soporte de Go para la concurrencia es una de sus grandes fortalezas, el razonamiento sobre los programas concurrentes es intrínsecamente más difícil que los secuenciales, y las intuiciones adquiridas a partir de la programación secuencial pueden a veces desviarnos. Si este es tu primer encuentro con la concurrencia, recomendamos dedicar un poco más de tiempo para pensar en los ejemplos de estos dos capítulos.</p>
+<p>Go permite dos estilos de programación concurrente. Este capítulo presenta las gorutinas y canales que soportan <em>procesos secuenciales comunicantes</em> o <span class="acronym" >CSP</span>, un modelo de concurrencia en el cual los valores se pasan entre actividades independientes (goroutines) pero las variables están en su mayor parte confinadas a una sola actividad. El <a href="#Capítulo-9" >Capítulo 9</a> cubre algunos aspectos del modelo más tradicional de memoria compartida multihilo, que será familiar si ha utilizado hilos en otros lenguajes populares. El <a href="#Capítulo-9" >Capítulo 9</a> también señala algunos peligros y trampas importantes de la programación concurrente que no profundizaremos en este capítulo.</p>
+<p>A pesar de que el soporte de Go para la concurrencia es una de sus grandes fortalezas, el razonamiento sobre los programas concurrentes es intrínsecamente más difícil que los secuenciales, y las intuiciones adquiridas a partir de la programación secuencial a veces pueden desviarnos. Si este es tu primer encuentro con la concurrencia, recomendamos dedicar un poco más de tiempo para pensar en los ejemplos de estos dos capítulos.</p>
 </div>
 <h3 id="Seccion-8.1" >Gorutinas</h3>
 <div class="hBody-3" >
-<p>En Go, cada actividad que se ejecuta simultáneamente se denomina <em>gorutina</em>. Considere un programa que tiene dos funciones, una que hace algún cálculo y otra que escribe alguna salida, y asume que ninguna de las dos funciones llama a la otra. Un programa secuencial puede llamar a una función y luego llamar a la otra, pero en un programa <em>concurrente</em> con dos o más gorutinas, las llamadas a <em>ambas</em> funciones pueden estar activas al mismo tiempo. Veremos tal programa en un momento.</p>
+<p>En Go, cada actividad que se ejecuta simultáneamente se denomina <em>gorutina</em>. Considere un programa que tiene dos funciones, una que hace algún cálculo y otra que escribe alguna salida, y asume que ninguna de las dos funciones llama a la otra. Un programa secuencial puede llamar a una función y luego llamar a la otra, pero en un programa <em>concurrente</em> con dos o más gorutinas, las llamadas a <em>ambas</em> funciones pueden estar activas al mismo tiempo. Veremos un programa asi en un momento.</p>
 <p>Si ha utilizado subprocesos o subprocesos del sistema operativo en otros lenguajes, puede suponer que una gorutina es similar a un subproceso y que podrá escribir programas correctos. Las diferencias entre hilos y gorutinas son esencialmente cuantitativas, no cualitativas, y serán descritas en la <a href="#Sección-9.8" >Sección 9.8</a>.</p>
-<p>Cuando un programa inicia, su única goroutine es el que a llama la función <code>main</code>, así que la llamamos la <em>gorutina principal</em>. Las nuevos gorutinas son creados por la declaración <code>go</code>. Sintácticamente, una sentencia <code>go</code> es una función ordinaria o un llamado a un método prefijado por la palabra clave <code>go</code>. Una sentencia <code>go</code> hace que la función sea llamada en una gorutina recién creada. La sentencia <code>go</code> en si misma se completa inmediatamente:</p>
+<p>Cuando un programa inicia, su única gorutina es la que llama a la función <code>main</code>, así que la llamamos la <em>gorutina principal</em>. Las nuevos gorutinas son creadas por la declaración <code>go</code>. Sintácticamente, una sentencia <code>go</code> es una función ordinaria o una llamada a un método prefijado por la palabra clave <code>go</code>. Una sentencia <code>go</code> hace que la función sea llamada en una gorutina recién creada. La sentencia <code>go</code> en si misma se completa inmediatamente:</p>
 <div class="highlight"><pre><span></span><span class="nx">f</span><span class="p">()</span>    <span class="c1">// llamar a f(); Espera el retorno</span>
 <span class="k">go</span> <span class="nx">f</span><span class="p">()</span> <span class="c1">// crea una nueva gorutina que llama a f(); no espera</span>
 </pre></div>
-<p>En el ejemplo a continuación, la gorutina principal calcula el 45 número de Fibonacci. Dado que utiliza un algoritmo recursivo terriblemente ineficiente, se ejecuta durante un tiempo apreciable, durante el cual nos gustaría proporcionar al usuario una indicación visual de que el programa sigue en ejecución, mediante la visualización de un texto animado <q>spinner</q>.</p>
+<p>En el ejemplo a continuación, la gorutina principal calcula el 45 número de Fibonacci. Dado que utiliza un algoritmo recursivo terriblemente ineficiente, se ejecuta durante un tiempo apreciable, durante el cual nos gustaría proporcionar al usuario una indicación visual de que el programa sigue en ejecución, mediante la visualización de un texto <q>spinner</q> animado.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/spinner/main.go" >gopl.io/ch8/spinner</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
@@ -7101,7 +7101,7 @@ html body div div h2: B Definitions for Character Normalization
 <div class="pre-block" >
 <pre class="pre" >Fibonacci(45) = 1134903170</pre></div>
 <p>Luego regresa la función <code>main</code> principal. Cuando esto sucede, todas las gorutinas terminan abruptamente y el programa sale. Aparte de regresar de <code>main</code> o salir del programa, no hay ninguna forma programática para que una goroutine detenga a otra, pero como veremos más adelante, hay maneras de comunicarse con una gorutina para pedirle que se detenga.</p>
-<p>Observe cómo el promaga se expresa como la composición de dos actividades autónomas, <code>spinning</code> y el cálculo de Fibonacci. Cada uno se escribe como una función separada pero ambos hacen progreso simultáneamente.</p>
+<p>Observe cómo el programa se expresa como la composición de dos actividades autónomas, la animacion y el cálculo de Fibonacci. Cada uno se escribe como una función separada pero ambos avanzan simultáneamente.</p>
 </div>
 <h3 id="Seccion-8.2" >Ejemplo: Servidor de Reloj Concurrente</h3>
 <div class="hBody-3" >
@@ -7159,7 +7159,7 @@ html body div div h2: B Definitions for Character Normalization
 13:58:57
 ^C</span>
 </code></pre>
-<p>El cliente muestra el tiempo enviado por el servidor cada segundo hasta que interrumpimos el cliente con Control-C, que en los sistemas Unix se hace eco como <code>^C</code> por el shell. Si <code class="command" >nc</code> o netcat no está instalado en su sistema, puede usar <code class="command" >telnet</code> o esta versión simple de <code class="command" >netcat</code> que utiliza <code>net.Dial</code> para conectarse a un servidor TCP:</p>
+<p>El cliente muestra el tiempo enviado por el servidor cada segundo hasta que interrumpimos el cliente con Control-C, que en los sistemas Unix produce el eco <code>^C</code> por el shell. Si <code class="command" >nc</code> o netcat no está instalado en su sistema, puede usar <code class="command" >telnet</code> o esta versión simple de <code class="command" >netcat</code> que utiliza <code>net.Dial</code> para conectarse a un servidor TCP:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/netcat1/netcat.go" >gopl.io/ch8/netcat1</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// Netcat1 es un cliente TCP de solo lectura.</span>
@@ -7188,7 +7188,7 @@ html body div div h2: B Definitions for Character Normalization
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Este programa lee datos de la conexión y los escribe en la salida estándar hasta que se produce una condición de fin de archivo o un error. La función <code>mustCopy</code> es una utilidad utilizada en varios ejemplos en esta sección. Vamos a correr dos clientes al mismo tiempo en diferentes terminales, una mostrada a la izquierda y otra a la derecha:</p>
+<p>Este programa lee datos de la conexión y los escribe en la salida estándar hasta que se produce una condición de fin de archivo o un error. La función <code>mustCopy</code> es una utilidad usada en varios ejemplos en esta sección. Vamos a correr dos clientes al mismo tiempo en diferentes terminales, una mostrada a la izquierda y otra a la derecha:</p>
 <div class="cols" style="width: 100%; display: inline-flex; flex-flow: row nowrap; flex-direction: row; ">
 <div class="cols-element" style=" order: 1; width: 50%; ">
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go build gopl.io/ch8/netcat1
@@ -7212,16 +7212,16 @@ html body div div h2: B Definitions for Character Normalization
 </div>
 </div>
 <p>El comando <code class="command" >killall</code> es una utilidad Unix que elimina todos los procesos con el nombre dado.</p>
-<p>El segundo cliente debe esperar hasta que finalice el primer cliente porque el servidor es secuencial; Sólo se maneja un cliente a la vez. Sólo se necesita un pequeño cambio para hacer que el servidor sea concurrente: agregar la palabra clave <code>go</code> a la llamada a <code>handleConn</code> hace que cada llamada se ejecute en su propia goroutine.</p>
+<p>El segundo cliente debe esperar hasta que finalice el primer cliente porque el servidor es secuencial; Sólo se maneja un cliente a la vez. Sólo se necesita un pequeño cambio para hacer que el servidor sea concurrente: agregar la palabra clave <code>go</code> a la llamada a <code>handleConn</code> hace que cada llamada se ejecute en su propia gorutina.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/clock2/clock.go" >gopl.io/ch8/clock2</a></p>
 <div class="highlight"><pre><span></span><span class="k">for</span> <span class="p">{</span>
   <span class="nx">conn</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">listener</span><span class="p">.</span><span class="nx">Accept</span><span class="p">()</span>
   <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-    <span class="nx">log</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="c1">// e.g., connection aborted</span>
+    <span class="nx">log</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>    <span class="c1">// por ejemplo, coneccion anulada</span>
     <span class="k">continue</span>
   <span class="p">}</span>
-  <span class="k">go</span> <span class="nx">handleConn</span><span class="p">(</span><span class="nx">conn</span><span class="p">)</span> <span class="c1">// handle connections concurrently</span>
+  <span class="k">go</span> <span class="nx">handleConn</span><span class="p">(</span><span class="nx">conn</span><span class="p">)</span> <span class="c1">// maneja conecciones concurrentemente</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -7275,7 +7275,7 @@ html body div div h2: B Definitions for Character Normalization
   <span class="nx">c</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
 <span class="p">}</span>
 </pre></div>
-<p>Un servidor de eco más interesante podría simular las reverberaciones de un eco real, con la respuesta fuerte al principio (<code>&quot;HELLO!&quot;</code>), Luego moderado (<code>&quot;¡Hello!&quot;</code>) después de un retraso, luego callado (<code>&quot;¡hola!&quot;</code> como en esta versión de <code>handleConn</code>:</p>
+<p>Un servidor de eco más interesante podría simular las reverberaciones de un eco real, con la respuesta fuerte al principio (<code>&quot;HELLO!&quot;</code>), Luego moderado (<code>&quot;¡Hello!&quot;</code>) después de un retraso, luego callado (<code>&quot;¡hello!&quot;</code> como en esta versión de <code>handleConn</code>:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/reverb1/reverb.go" >gopl.io/ch8/reverb1</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">echo</span><span class="p">(</span><span class="nx">c</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Conn</span><span class="p">,</span> <span class="nx">shout</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">delay</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">)</span> <span class="p">{</span>
@@ -7291,7 +7291,7 @@ html body div div h2: B Definitions for Character Normalization
   <span class="k">for</span> <span class="nx">input</span><span class="p">.</span><span class="nx">Scan</span><span class="p">()</span> <span class="p">{</span>
     <span class="nx">echo</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">input</span><span class="p">.</span><span class="nx">Text</span><span class="p">(),</span> <span class="mi">1</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
   <span class="p">}</span>
-  <span class="c1">// NOTE: ignoring potential errors from input.Err()</span>
+  <span class="c1">// NOTA: ignorando posibles errores de input.Err()</span>
   <span class="nx">c</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
 <span class="p">}</span>
 </pre></div>
@@ -7310,8 +7310,8 @@ html body div div h2: B Definitions for Character Normalization
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Mientras la gorutina principal lee la entrada estándar y la envía al servidor, una segunda gorutina lee e imprime la respuesta del servidor. Cuando la gorutina principal encuentra el final de la entrada, por ejemplo, después de que el usuario teclee Control-D (<code>^D</code>) en el terminal (o el equivalente Control-Z en Microsoft Windows), el programa se detiene, incluso si el otra gorutina aun tiene trabajo que hacer. (Veremos cómo hacer que el programa espere a que ambos lados terminen una vez que hayamos introducido los canales en <a href="#Sección-8.4.1" >Sección 8.4.1</a>.)</p>
-<p>En la siguiente sesión, la entrada del cliente está alineada a la izquierda y las respuestas del servidor tienen indentacion. El cliente grita en el servidor de eco tres veces:</p>
+<p>Mientras la gorutina principal lee la entrada estándar y la envía al servidor, una segunda gorutina lee e imprime la respuesta del servidor. Cuando la gorutina principal encuentra el final de la entrada, por ejemplo, después de que el usuario teclee Control-D (<code>^D</code>) en el terminal (o el equivalente Control-Z en Microsoft Windows), el programa se detiene, incluso si la otra gorutina aun tiene trabajo que hacer. (Veremos cómo hacer que el programa espere a que ambos lados terminen una vez que hayamos introducido los canales en <a href="#Sección-8.4.1" >Sección 8.4.1</a>.)</p>
+<p>En la siguiente sesion, la entrada del cliente está alineada a la izquierda y las respuestas del servidor tienen indentacion. El cliente grita en el servidor de eco tres veces:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go build gopl.io/ch8/reverb1
 <span class="prompt">$ </span>./reverb1 <span class="p">&amp;</span>
 <span class="prompt">$ </span>go build gopl.io/ch8/netcat2
@@ -7360,12 +7360,12 @@ Yooo-hooo!
 ^D</span>
 <span class="prompt">$ </span>killall reverb2
 </code></pre>
-<p>Todo lo que se requería para hacer que el servidor utilizara la concurrencia, no sólo para manejar las conexiones de varios clientes, sino incluso dentro de una sola conexión, era la inserción de dos palabras clave.</p>
+<p>Todo lo que se requería para hacer que el servidor utilizara la concurrencia, no sólo para manejar las conexiones de varios clientes, sino incluso dentro de una sola conexión, era la inserción de dos palabras clave <code>go</code>.</p>
 <p>Sin embargo, al agregar estas palabras clave, tuvimos que considerar cuidadosamente que métodos de <code>net.Conn</code> es seguro llamar simultáneamente, lo cual no es cierto para la mayoría de los tipos. Discutiremos el concepto crucial de la seguridad de la concurrencia en el próximo capítulo.</p>
 </div>
 <h3 id="Seccion-8.4" >Canales</h3>
 <div class="hBody-3" >
-<p>Si las gorutinas son las actividades concurrentes de un programa Go, los <em>canales</em> son las conexiones entre ellas. Un canal es un mecanismo de comunicacion que permite a un gorutina enviar valores a otra gorutina. Cada canal es un conducto para los valores de un tipo particular, llamado canal de <em>tipo canal</em>. El tipo de un canal cuyos elementos tienen tipo <code>int</code> se escribe <code>chan int</code>.</p>
+<p>Si las gorutinas son las actividades concurrentes de un programa Go, los <em>canales</em> son las conexiones entre ellas. Un canal es un mecanismo de comunicacion que permite a una gorutina enviar valores a otra gorutina. Cada canal es un conducto para los valores de un tipo particular, llamado el <em>tipo de elemento</em> del canal. El tipo de un canal cuyos elementos tienen tipo <code>int</code> se escribe <code>chan int</code>.</p>
 <p>Para crear un canal, se utiliza la funcion nativa <code>make</code>:</p>
 <div class="highlight"><pre><span></span><span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span> <span class="c1">// ch tiene tipo &#39;chan int&#39;</span>
 </pre></div>
@@ -7377,22 +7377,22 @@ Yooo-hooo!
 <span class="nx">x</span> <span class="p">=</span> <span class="o">&lt;-</span><span class="nx">ch</span> <span class="c1">// una sentencia de recepcion en una instruccion de asignacion</span>
 <span class="o">&lt;-</span><span class="nx">ch</span>     <span class="c1">// una sentencia de recepcion; el resultado se descarta</span>
 </pre></div>
-<p>Los canales soportan una tercera operacion, <em>cierre</em>, que establece una bandera que indica que no se eviaran mas valores en este canal; los intentos subsiguientes de envio seran panico. Las operaciones de recepcion en un canal cerrado generan los valores que se han enviado hasta que no quedan mas valores; Cualquier operacion de recepcion se completa inmediatamente y produce el valor cero del tipo de elemento del canal.</p>
-<p>Para cerrar un canal, que llamamos la funcion nativa <code>close</code>:</p>
+<p>Los canales soportan una tercera operacion, <em>cierre</em>, que establece una bandera que indica que no se eviaran mas valores en este canal; los intentos subsiguientes de envio probocaran un panico. Las operaciones de recepcion en un canal cerrado generan los valores que se han enviado hasta que no quedan mas valores; Cualquier operacion de recepcion se completa inmediatamente y produce el valor cero del tipo de elemento del canal.</p>
+<p>Para cerrar un canal, llamamos a la funcion nativa <code>close</code>:</p>
 <div class="highlight"><pre><span></span><span class="nb">close</span><span class="p">(</span><span class="nx">ch</span><span class="p">)</span>
 </pre></div>
-<p>Un canal creado con una simple llamada a <code>make</code> se denomina un canal <em>sin bufer</em>, pero <code>make</code> acepta un segundo argumento opcional, un entero llamado la <em>capacidad</em> del canal. Si la capacidad es distinta de cero, <code>make</code> crea un canal <em>con bufer</em>.</p>
+<p>Un canal creado con una simple llamada a <code>make</code> se denomina un canal <em>sin bufer</em>, pero <code>make</code> acepta un segundo argumento opcional, un entero denominado la <em>capacidad</em> del canal. Si la capacidad es distinta de cero, <code>make</code> crea un canal <em>con bufer</em>.</p>
 <div class="highlight"><pre><span></span><span class="nx">ch</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>    <span class="c1">// canal sin bufer</span>
 <span class="nx">ch</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// canal sin bufer</span>
 <span class="nx">ch</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="c1">// canal cor bufer con capacidad 3</span>
 </pre></div>
-<p>Veremos primero los canales sin bufer y canales con buffer en la <a href="#Seccion-8.4.4" >Seccion 8.4.4</a>.</p>
+<p>Veremos primero los canales sin bufer y en la <a href="#Seccion-8.4.4" >Seccion 8.4.4</a> los canales con buffer.</p>
 </div>
 <h4 id="Seccion-8.4.1" >Canales sin Buffer</h4>
 <div class="hBody-4" >
-<p>Una operacion de envio en un canal sin bufer, bloquea la gorutina enviada hasta que otra gorutina ejecute una recepcion correspondiente en el mismo canal, momento en el que se transmite el valor y ambas gorutinas pueden continuar. Por el contrario, si la operacion de recepcion se intento en primer lugar, la gorutina de recepcion se bloquea hasta que otra gorutina realice un envio en el mismo canal.</p>
-<p>La comunicacion a traves de un canal sin bufer hace que las gorutinas de envio y recepcion se sincronicen. Debido a esto, los canales sin bufer a veces se llaman canales sincronos. Cuando se envia un valor en un canal sin bufer, la recepcion del valor <em>ocurre antes</em> del re-despertar de la gorutina enviada.</p>
-<p>En discusiones de concurrencia, cuando decimos <em>x sucede antes de y</em>, no queremos decir simplemente que <em>x</em> ocurre antes en el tiempo que <em>y</em>; queremos decir que esta garantizado para hacerlo y que todos sus efectos anteriores, como actualizaciones a las variables, estan completos y que usted puede confiar en ellos.</p>
+<p>Una operacion de envio en un canal sin bufer, bloquea la gorutina de envio hasta que otra gorutina ejecute la recepcion correspondiente en el mismo canal, momento en el que se transmite el valor y ambas gorutinas pueden continuar. Por el contrario, si la operacion de recepcion se intenta primero, la gorutina de recepcion se bloquea hasta que otra gorutina realice un envio en el mismo canal.</p>
+<p>La comunicacion a traves de un canal sin bufer hace que las gorutinas de envio y recepcion se sincronicen. Debido a esto, los canales sin bufer a veces se llaman canales <em>sincronos</em>. Cuando se envia un valor en un canal sin bufer, la recepcion del valor <em>ocurre antes</em> del re-despertar de la gorutina enviada.</p>
+<p>En discusiones de concurrencia, cuando decimos <em>x sucede antes de y</em>, no queremos decir simplemente que <em>x</em> ocurre antes en el tiempo que <em>y</em>; queremos decir que se garantiza que lo haga y que todos sus efectos anteriores, como actualizaciones a las variables, estan completos y que usted puede confiar en ellos.</p>
 <p>Cuando <em>x</em> no ocurre antes de <em>y</em> ni despues <em>y</em>, decimos que <em>x es concurrente con y</em>. Esto no significa que <em>x</em> e <em>y</em> son necesariamente simultaneas, simplemente que no podemos asumir nada acerca de su ordenacion. Como veremos en el siguiente capitulo, es necesario ordenar ciertos eventos durante la ejecucion del programa para evitar los problemas que surgen cuando dos gorutinas acceden simultaneamente a la misma variable.</p>
 <p>El programa cliente en la <a href="#Seccion-8.3" >Seccion 8.3</a> copia la entrada al servidor en su gorutina principal, por lo que el programa cliente termina tan pronto como la corriente de entrada se cierra, incluso si la gorutina de fondo continua trabajando. Para hacer que el programa espere a que la gorutina de fondo se complete antes de salir, usamos un canal para sincronizar las dos gorutinas:</p>
 <div class="figure" >
@@ -7414,14 +7414,14 @@ Yooo-hooo!
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Cuando el usuario cierra el flujo de entrada estandar, <code>mustCopy</code> regresa y la gorutina principal llama a <code>conn.Close()</code>, cerrando las dos mitades de la conexion de red. Cerrar la mitad de escritura de la conexion hace que el servidor vea una condicion de fin de archivo. Cerrar la mitad de leectura hace que la gorutina de fondo llame a <code>io.Copy</code> para devolver <q>error de lectura por conexion cerrada</q>, por lo que hemos eliminado el registro de errores; El ejercicio 8.3 sugiere una mejor solucion. (Observe que la sentencia go llama a una funcion literal, una construccion comun.)</p>
+<p>Cuando el usuario cierra el flujo de entrada estandar, <code>mustCopy</code> regresa y la gorutina principal llama a <code>conn.Close()</code>, cerrando las dos mitades de la conexion de red. Cerrar la mitad de escritura de la conexion hace que el servidor vea una condicion de fin de archivo. Cerrar la mitad de leectura hace que la gorutina de fondo llame a <code>io.Copy</code> para devolver <q>error de lectura por conexion cerrada</q>, por lo que hemos eliminado el registro de errores; El Ejercicio 8.3 sugiere una mejor solucion. (Observe que la sentencia <code>go</code> llama a una funcion literal, una construccion comun.)</p>
 <p>Antes de que regrese, la gorutina de fondo registra un mensaje, luego envia un valor en el canal <code>done</code>. La gorutina principal espera hasta que haya recibido este valor antes de volver. Como resultado, el programa siempre registra el mensaje <q>done</q> antes de salir.</p>
-<p>Los mensajes enviados a traves de canales tienen dos aspectos importantes. Cada mensaje tiene un valor, pero a veces el hecho de la comunicacion y el momento en que ocurre son igualmente importantes. Llamamos a los mensajes <em>eventos</em> cuando se quiere hacer hincapie en este aspecto. Cuando el evento no contiene informacion adicional, es decir, su unico proposito es la sincronizacion, vamos a enfatizar esto mediante el uso de un canal cuyo tipo de elemento es <code>struct{}</code>, aunque es comun el uso de un canal de <code>bool</code> o <code>int</code> para el mismo proposito, ya <code>done &lt;- 1</code> es mas corto que <code>done &lt;- struct{}{}</code>.</p>
-<p><b>Ejercicio 8.3</b>: En <code class="command" >netcat3</code>, el valor de interfaz <code>conn</code> tiene el tipo concreto <code>*net.TCPConn</code>, lo que representa una conexion TCP. Una conexion TCP se compone de dos mitades que pueden ser cerradas de forma independiente utilizando sus metedos <code>CloseRead</code> y <code>CloseWrite</code>. Modifica la gorutina principal de <code class="command" >netcat3</code> para cerrar solo la mitad de escritura de la conexion para que el programa continue imprimiendo los ultimos ecos del servidor <code class="command" >reverb1</code> incluso despues de que la entrada estandar ha sido cerrada. (Hacer esto para el servidor <code class="command" >reverb2</code> es mas dificil; Consulte el Ejercicio 8.4.)</p>
+<p>Los mensajes enviados a traves de canales tienen dos aspectos importantes. Cada mensaje tiene un valor, pero a veces el hecho de la comunicacion y el momento en que ocurre son igualmente importantes. Llamamos a los mensajes <em>eventos</em> cuando se quiere hacer hincapie en este aspecto. Cuando el evento no contiene informacion adicional, es decir, su unico proposito es la sincronizacion, vamos a enfatizar esto mediante el uso de un canal cuyo tipo de elemento es <code>struct{}</code>, aunque es comun el uso de un canal de <code>bool</code> o <code>int</code> para el mismo proposito, ya que <code>done &lt;- 1</code> es mas corto que <code>done &lt;- struct{}{}</code>.</p>
+<p><b>Ejercicio 8.3</b>: En <code class="command" >netcat3</code>, el valor de interfaz <code>conn</code> tiene el tipo concreto <code>*net.TCPConn</code>, lo que representa una conexion TCP. Una conexion TCP se compone de dos mitades que pueden ser cerradas de forma independiente utilizando sus metedos <code>CloseRead</code> y <code>CloseWrite</code>. Modifica la gorutina principal de <code class="command" >netcat3</code> para cerrar solo la mitad de escritura de la conexion para que el programa continue imprimiendo los ultimos ecos del servidor <code class="command" >reverb1</code> incluso despues de que la entrada estandar ha sido cerrada. (Hacer esto en el servidor <code class="command" >reverb2</code> es mas dificil; Consulte el Ejercicio 8.4.)</p>
 </div>
 <h4 id="Seccion-8.4.2" >Tuberias</h4>
 <div class="hBody-4" >
-<p>Los canales se pueden utilizar para conectar gorutinas a la vez, de modo que la salida de una sea la entrada a otra. Esto se llama una tuberia. El programa siguiente consta de tres gorutas conectadas por dos canales, como se muestra esquematicamente en la Figura 8.1.</p>
+<p>Los canales se pueden utilizar para conectar gorutinas a la vez, de modo que la salida de una sea la entrada a otra. Esto se llama una tuberia. El siguiente programa consta de tres gorutinas conectadas por dos canales, como se muestra esquematicamente en la Figura 8.1.</p>
 <div class="figure" >
 <p class="title">Figura 8.1. Una tuberia de tres etapas.</p>
 <figure>
@@ -7457,12 +7457,12 @@ Yooo-hooo!
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Como es de esperar, el programa imprime la serie infinita de cuadrados 0, 1, 4, 9 y asi sucesivamente. Pipelines como este se pueden encontrar en los programas de servidor de larga duracion donde los canales se utilizan para la comunicacion a lo largo de la vida entre gorutinas que contienen bucles infinitos. Pero ¿y si queremos enviar solo un numero finito de valores a traves de la tuberia?</p>
-<p>Si el remitente sabe que nunca se enviaran valores adicionales en un canal, es util comunicar este hecho a las gorutinas receptor para que puedan dejar de esperar. Esto se logra cerrando el cierre utilizando la funcion nativa <code>close</code>:</p>
+<p>Como es de esperar, el programa imprime la serie infinita de cuadrados 0, 1, 4, 9 y asi sucesivamente. Tuberias como esta se pueden encontrar en los programas de servidor de larga duracion donde los canales se utilizan para la comunicacion a lo largo de la vida entre gorutinas que contienen bucles infinitos. Pero ¿y si queremos enviar solo un numero finito de valores a traves de la tuberia?</p>
+<p>Si el remitente sabe que nunca se enviaran valores adicionales en un canal, es util comunicar este hecho a las gorutinas receptor para que puedan dejar de esperar. Esto se logra <em>cerrando</em> el canal utilizando la funcion nativa <code>close</code>:</p>
 <div class="highlight"><pre><span></span><span class="nb">close</span><span class="p">(</span><span class="nx">naturals</span><span class="p">)</span>
 </pre></div>
-<p>Despues de que se haya cerrado un canal, cualquier otra operacion de envio se pondra en panico. Despues de que el canal cerrado ha sido drenado, es decir, despues de que el ultimo elemento enviado ha sido recibido, todas las operaciones subsigientes de recepcion se llevaran a cabo si bloqueo, pero daran un valor cero. Cerrar el canal <code>naturals</code> haria que el bucle de cuadrados girara mientras recive un flujo interminable de valores cero que recibe un flujo interminable de valores cero, y enviar estos ceros a la impresora.</p>
-<p>No hay manera de probar directamente si un canal ha sido cerrado, pero hay una variante de la operacion de recepcion que produce dos resultados: el elemento de canal recibido, ademas de un valor booleano, convencionalmente llamado <code>ok</code>, que es <code>true</code> para una recepcion exitosa y <code>false</code> para una recepcion en un canal cerrado y drenado. Usando esta caracteristica, podemos modificar el bucle de <code>squares</code> para parar cuando el canal <code>naturals</code> se drene y cerrar el canal <code>squares</code> a su vez.</p>
+<p>Despues de que se haya cerrado un canal, cualquier otra operacion de envio producira un panico. Despues de que el canal cerrado ha sido <em>drenado</em>, es decir, despues de que el ultimo elemento enviado ha sido recibido, todas las operaciones subsiguientes de recepcion se llevaran a cabo sin bloqueo, pero daran un valor cero. Cerrar el canal <code>naturals</code> haria que el bucle de cuadrados girara mientras recive un flujo interminable de valores cero, y enviaria estos ceros a la impresora.</p>
+<p>No hay manera de probar directamente si un canal ha sido cerrado, pero hay una variante de la operacion de recepcion que produce dos resultados: el elemento de canal recibido, ademas de un valor booleano, convencionalmente llamado <code>ok</code>, que es <code>true</code> para una recepcion exitosa y <code>false</code> para una recepcion en un canal cerrado y drenado. Usando esta caracteristica, podemos modificar el bucle de <code>squares</code> para parar cuando el canal <code>naturals</code> se drene y a su vez cerrar el canal <code>squares</code>.</p>
 <div class="highlight"><pre><span></span><span class="c1">// Squarer</span>
 <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">for</span> <span class="p">{</span>
@@ -7475,8 +7475,8 @@ Yooo-hooo!
   <span class="nb">close</span><span class="p">(</span><span class="nx">squares</span><span class="p">)</span>
 <span class="p">}()</span>
 </pre></div>
-<p>Debido a que la sintaxis anterior es torpe y este patron es comun, el lenguaje nos permite utilizar un bucle <code>range</code> para iterar a traves de canales tambien. Esta es una sintaxis mas conveniente para recibir todos los valores enviados en un canal y finalizar el bucle despues del ultimo.</p>
-<p>En la tuberia de abajo, cuando la gorutina <code>counter</code> termina su bucle despues de 100 elementos, se cierra el canal <code>naturals</code>, haciendo que <code>squarer</code> termine su bucle y cerrar el canal <code>squares</code>. (En un programa mas complejo, podria tener sentido para el contador y las funciones de <code>squarer</code> con llamadas diferidas a <code>close</code> desde el principio.) Por ultimo, la gorutina principal termina su bucle y el programa se cierra.</p>
+<p>Debido a que la sintaxis anterior es torpe y este patron es comun, el lenguaje nos permite utilizar un bucle <code>range</code> para iterar a traves de canales. Esta es una sintaxis mas conveniente para recibir todos los valores enviados en un canal y finalizar el bucle despues del ultimo.</p>
+<p>En la tuberia de abajo, cuando la gorutina <code>counter</code> termina su bucle despues de 100 elementos, se cierra el canal <code>naturals</code>, haciendo que <code>squarer</code> termine su bucle y cerrar el canal <code>squares</code>. (En un programa mas complejo, podria tener sentido para el contador y las funciones <code>squarer</code> diferir las llamadas a <code>close</code> desde el principio.) Por ultimo, la gorutina principal termina su bucle y el programa se cierra.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/pipeline2/main.go" >gopl.io/ch8/pipeline2</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
@@ -7516,10 +7516,10 @@ Yooo-hooo!
 <span class="kd">func</span> <span class="nx">squarer</span><span class="p">(</span><span class="nx">out</span><span class="p">,</span> <span class="nx">in</span> <span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
 <span class="kd">func</span> <span class="nx">printer</span><span class="p">(</span><span class="nx">in</span> <span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
 </pre></div>
-<p>La funcion <code>squarer</code>, situada en el centro de la tuberia, toma dos parametros, el canal de entrada y el canal de salida. Ambos tienen el mismo tipo, pero sus usos previstos son opuestas: <code>in</code> es solo para ser recibida desde, y <code>out</code> es solo para enviar a. Los nombres <code>in</code> y <code>out</code> transmiten esta intencion, pero aun asi, nada impide que <code>squarer</code> enviar enviar a <code>in</code> o recibir desde <code>out</code>.</p>
+<p>La funcion <code>squarer</code>, situada en el centro de la tuberia, toma dos parametros, el canal de entrada y el canal de salida. Ambos tienen el mismo tipo, pero sus usos previstos son opuestas: <code>in</code> es solo para recivir de, y <code>out</code> es solo para enviar a. Los nombres <code>in</code> y <code>out</code> transmiten esta intencion, pero aun asi, nada impide a <code>squarer</code> enviar a <code>in</code> o recibir desde <code>out</code>.</p>
 <p>Esta disposicion es tipica. Cuando un canal se suministra como un parametro de funcion, es casi siempre con la intencion de que se utilice exclusivamente para enviar o exclusivamente para recibir.</p>
-<p>Para documentar esta intencion y evitar el mal uso, el sistema de tipos Go proporciano tipos de canale <em>unidireccionales</em> que exponen solo una u otra de las operaciones de envio y recepcion. El tipo <code>chan&lt;- int</code>, un canal <em>solo de envio</em> de <code>int</code>, permite envio pero no recepcion. Por el contrario, el tipo <code>&lt;-chan int</code>, <code>&lt;-chan int</code> un canal solo de recepcion de <code>int</code>, permite recivir pero enviar. (La posicion de la flecha <code>&lt;-</code> en relacion con la palabra clave <code>chan</code> es un mnemonico. Las infracciones de esta disciplina se detectan en tiempo de compilacion.</p>
-<p>Dado que la operacion <code>close</code> asegura que no se produciran mas envios en un canal, solo el envio de gorutina esta en una posicion llamarlo, y por esta razon es un error en tiempo de compilacion intentar cerrar un canal solo de recepcion.</p>
+<p>Para documentar esta intencion y evitar el mal uso, el sistema de tipos Go proporciona tipos de canal <em>unidireccionales</em> que exponen solo una u otra de las operaciones de envio y recepcion. El tipo <code>chan&lt;- int</code>, un canal <em>solo de envio</em> de <code>int</code>, permite envio pero no recepcion. Por el contrario, el tipo <code>&lt;-chan int</code>, <code>&lt;-chan int</code> un canal solo de recepcion de <code>int</code>, permite recivir pero no enviar. (La posicion de la flecha <code>&lt;-</code> en relacion con la palabra clave <code>chan</code> es un mnemonico. Las infracciones de esta disciplina se detectan en tiempo de compilacion.</p>
+<p>Dado que la operacion <code>close</code> asegura que no se produciran mas envios en un canal, solo la gorutina de envio esta en una posicion llamarla, y por esta razon es un error en tiempo de compilacion intentar cerrar un canal de solo recepcion.</p>
 <p>Esta es la tuberia de <code>squaring</code> una vez mas, esta vez con canales unidireccionales:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/pipeline3/main.go" >gopl.io/ch8/pipeline3</a></p>
@@ -7555,18 +7555,18 @@ Yooo-hooo!
 </div>
 <p>La llamada <code>counter(naturals)</code> convierte implicitamente <code>naturals</code>, en un valor de tipo <code>chan int</code>, con el tipo del parametro, <code>chan&lt;- int</code>. La llamada <code>printer(squares)</code> hace una conversion implicita a <code>&lt;-chan int</code>. Las conversiones de tipos de canal bidireccionales a unidireccionales se permiten en cualquier asignacion. Sin embargo, no hay vuelta atras: una vez que tenga un valor de un tipo unidireccional como <code>chan&lt;- int</code>, no hay forma de obtener de el un valor de tipo <code>chan int</code> que se refiera a la misma estructura de datos del canal..</p>
 </div>
-<h4 id="Seccion-8.4.4" >Buffered Channels</h4>
+<h4 id="Seccion-8.4.4" >Canales con Buffer</h4>
 <div class="hBody-4" >
-<p>un canal almacenado en bufer tiene una cola de elementos. El tamaño maximo de la cola se determina cuando se crea, por el argumento de capacidad de <code>make</code>. La declaracion siguiente crea un canal de buffer capaz de mantener tres valores <code>string</code>. La Figura 8.2 es una representacion grafica de <code>ch</code> y el canal al que se refiere.</p>
+<p>un canal almacenado en buffer tiene una cola de elementos. El tamaño maximo de la cola se determina cuando se crea, por el argumento de capacidad de <code>make</code>. La declaracion siguiente crea un canal con buffer capaz de mantener tres valores <code>string</code>. La Figura 8.2 es una representacion grafica de <code>ch</code> y el canal al que se refiere.</p>
 <div class="highlight"><pre><span></span><span class="nx">ch</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">string</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 </pre></div>
 <div class="figure" >
-<p class="title">Figura 8.2. Un canal de buffer vacio.</p>
+<p class="title">Figura 8.2. Un canal con buffer vacio.</p>
 <figure>
 <img src="img/Figure-8.2.jpg" />
 </figure>
 </div>
-<p>Una operacion de envio en un canal de buffer inserta un elemento en la parte posterior de la cola, y una operacion de recepcion elimina un elemento del frente. Si el canal esta lleno, la operacion de envio bloquea su canal hasta que el espacio sea puesto a disposicion por otro receptor de gorutina. Por el contrario, si el canal esta vacio, una operacion de recepcion se bloquea hasta que un valor es enviado por otro canal.</p>
+<p>Una operacion de envio en un canal con buffer inserta un elemento en la parte posterior de la cola, y una operacion de recepcion elimina un elemento del frente. Si el canal esta lleno, la operacion de envio bloquea su gorutina hasta que el espacio sea puesto a disposicion por la recepcion de otra gorutina. Por el contrario, si el canal esta vacio, una operacion de recepcion se bloquea hasta que un valor es enviado por otra gorutina.</p>
 <p>Podemos enviar hasta tres valores en este canal sin bloquear la gorutina:</p>
 <div class="highlight"><pre><span></span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="s">&quot;A&quot;</span>
 <span class="nx">ch</span> <span class="o">&lt;-</span> <span class="s">&quot;B&quot;</span>
@@ -7574,7 +7574,7 @@ Yooo-hooo!
 </pre></div>
 <p>En este punto, el canal esta lleno (Figura 8.3), y una cuarta sentencia de envio lo bloquearia.</p>
 <div class="figure" >
-<p class="title">Figura 8.3. Un canal completo con bufer.</p>
+<p class="title">Figura 8.3. Un canal con bufer lleno.</p>
 <figure>
 <img src="img/Figure-8.3.jpg" />
 </figure>
@@ -7582,14 +7582,14 @@ Yooo-hooo!
 <p>Si recibimos un valor,</p>
 <div class="highlight"><pre><span></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="o">&lt;-</span><span class="nx">ch</span><span class="p">)</span> <span class="c1">// &quot;A&quot;</span>
 </pre></div>
-<p>El canal no esta lleno ni vacio (Figura 8.4), de modo que una operacion de envio o de recepcion podria continuar sin bloquear. De esta manera, el bufer del canal desacopla los canales de envio y recepcion de gorutinas.</p>
+<p>El canal no esta lleno ni vacio (Figura 8.4), de modo que una operacion de envio o de recepcion podria continuar sin bloqueo. De esta manera, el bufer del canal desacopla las gorutinas de envio y recepcion.</p>
 <div class="figure" >
-<p class="title">Figura 8.4. Un canal parcialmente almacenado en buffer.</p>
+<p class="title">Figura 8.4. Un canal con buffer parcialmente lleno.</p>
 <figure>
 <img src="img/Figure-8.3.jpg" />
 </figure>
 </div>
-<p>En el caso improbable de que un programa necesita saber la capacidad de buffer del canal, se puede obtener llamando a la funcion nawiva <code>cap</code>:</p>
+<p>En el caso improbable de que un programa necesite conocer la capacidad de conal con buffer, se puede obtener llamando a la funcion nativa <code>cap</code>:</p>
 <div class="highlight"><pre><span></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nb">cap</span><span class="p">(</span><span class="nx">ch</span><span class="p">))</span> <span class="c1">// &quot;3&quot;</span>
 </pre></div>
 <p>Cuando se aplica a un canal, la funcion nativa <code>len</code> devuelve el numero de elementos actualmente almacenados en el buffer. Ya que en un programa concurrente esta informacion es probable que sea obsoleta tan pronto como se recupera, su valor es limitado, pero podria ser util durante el diagnostico de fallos u optimizacion de rendimiento.</p>
@@ -7599,8 +7599,8 @@ Yooo-hooo!
 <div class="highlight"><pre><span></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="o">&lt;-</span><span class="nx">ch</span><span class="p">)</span> <span class="c1">// &quot;B&quot;</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="o">&lt;-</span><span class="nx">ch</span><span class="p">)</span> <span class="c1">// &quot;C&quot;</span>
 </pre></div>
-<p>En este ejemplo, las operaciones de envio y recepcion fueron todas realizadas por la misma gorutina, pero en programas reales generalmente son ejecutadas por gorutinas diferentes. Los principiantes a veces se sienten tentados a usar canales de buffer dentro de una unica gorutina como una cola, atraidos por su sintaxis agradablemente sencilla, pero esto es un error. Los canales estan profundamente conectados con la programacion de las gorutas, y sin que otra gorutina que recibe del canal, un remitente –y tal vez todo el programa–corre el riesgo de quedar bloqueado para siempre. Si todo lo que necesita es una simple cola, haga una utilizando un slice.</p>
-<p>El siguiente ejemplo muestra una aplicacion de un canal con bufer. Se realiza solicitudes paralelas a tres <code>mirrors</code>, es decir, servidores equivalente pero geograficamente distribuidos. Envia sus respuestas a traves de un canal con bufer, luego recibe y devuelve solo la primer respuesta, que es la mas rapida en llegar. Por lo tanto <code>mirroredQuery</code> devuelve un resultado incluso antes de que los dos servidores mas lentos han respondido. (Por cierto, es normal que varias gorutinas envien valores al mismo canal de forma concurrente, como en este ejemplo, o para recibir del mismo canal).</p>
+<p>En este ejemplo, las operaciones de envio y recepcion fueron todas realizadas por la misma gorutina, pero en programas reales generalmente son ejecutadas por gorutinas diferentes. Los principiantes a veces se sienten tentados a usar canales con buffer dentro de una unica gorutina como una cola, atraidos por su sintaxis agradablemente sencilla, pero esto es un error. Los canales estan profundamente conectados con la programacion de las gorutinas, y sin  otra gorutina que reciba del canal, un remitente –y tal vez todo el programa–corre el riesgo de quedar bloqueado para siempre. Si todo lo que necesita es una simple cola, haga una utilizando un slice.</p>
+<p>El siguiente ejemplo muestra una aplicacion de un canal con bufer. Realiza solicitudes paralelas a tres <code>mirrors</code>, es decir, servidores equivalentes pero geograficamente distribuidos. Envia sus respuestas a traves de un canal con bufer, luego recibe y devuelve solo la primer respuesta, que es la mas rapida en llegar. Por lo tanto <code>mirroredQuery</code> devuelve un resultado incluso antes de que los dos servidores mas lentos hayan respondido. (Por cierto, es normal que varias gorutinas envien valores al mismo canal de forma concurrente, como en este ejemplo, o para recibir del mismo canal).</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">mirroredQuery</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
   <span class="nx">responses</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">string</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
   <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="nx">responses</span> <span class="o">&lt;-</span> <span class="nx">request</span><span class="p">(</span><span class="s">&quot;asia.gopl.io&quot;</span><span class="p">)</span> <span class="p">}()</span>
@@ -7611,9 +7611,9 @@ Yooo-hooo!
 
 <span class="kd">func</span> <span class="nx">request</span><span class="p">(</span><span class="nx">hostname</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">response</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span>
 </pre></div>
-<p>Si hubieramos utilizado un canal sin bufer, las dos gorutinas mas lentos se habrian atascado tratando de enviar sus respuestas en un canal del cual ninguna gorutina jamas recibira. Esta situacion, denominada una <em>fuga de gorutina</em>, seria un error. A diferencia de las variables basura, las gorutinas filtradas no se recogen automaticamente, por lo que es importante asegurarse de que las gorutinas terminan cuando ya no se necesitan.</p>
-<p>La eleccion entre canales con o sin bufer, y la eleccion de la capacidad de un canal con bufer, pueden afectar a la correccion de un programa. Los canales sin bufer proporcionan mayores garantias de sincronizacion porque cada operacion de envio se sincroniza con su recepcion correspondiente; Con canales con buffer, estas operaciones se desacoplan. Ademas, cuando conocemos un limite superior en el numero de valores que se enviaran en un canal, no es inusual crear un canal con buffer de ese tamaño y realizar todos los envios antes de que se reciba el primer valor. Si no se asigna suficiente capacidad de buffer, el programa se bloqueara.</p>
-<p>Los canales con buffer tambien puede afectar el rendimiento del programa. Imaginese tres cocineros en una pasteleria, una horno, y un frigorifico y otra decorando cada pastel antes de pasarlo al siguiente cocinero en la linea de montaje. En una cocina con poco espacio, cada cocinero que ha terminado un pastel debe esperar a que el cocinero siguiente este listo para aceptarlo; Esta cita es analoga a la comunicacion a traves de un canal sin bufer.</p>
+<p>Si hubieramos utilizado un canal sin bufer, las dos gorutinas mas lentas se habrian atascado tratando de enviar sus respuestas a un canal del cual ninguna gorutina jamas recibira. Esta situacion, denominada una <em>fuga de gorutina</em>, seria un error. A diferencia de las variables basura, las gorutinas filtradas no se recogen automaticamente, por lo que es importante asegurarse de que las gorutinas terminan cuando ya no se necesitan.</p>
+<p>La eleccion entre canales con o sin bufer, y la eleccion de la capacidad de un canal con bufer, pueden afectar a la correccion de un programa. Los canales sin bufer proporcionan mayores garantias de sincronizacion porque cada operacion de envio se sincroniza con su recepcion correspondiente; Con canales con buffer, estas operaciones se desacoplan. Ademas, cuando conocemos un limite superior en el numero de valores que se enviaran en un canal, no es inusual crear un canal con buffer de ese tamaño y realizar todos los envios antes de que se reciba el primer valor. Si no se asigna suficiente capacidad al buffer, el programa se bloqueara.</p>
+<p>Los canales con buffer tambien puede afectar el rendimiento del programa. Imaginese tres cocineros en una pasteleria, un horno, y un frigorifico y otro decorando cada pastel antes de pasarlo al siguiente cocinero en la linea de montaje. En una cocina con poco espacio, cada cocinero que ha terminado un pastel debe esperar a que el cocinero siguiente este listo para aceptarlo; Esta cita es analoga a la comunicacion a traves de un canal sin bufer.</p>
 <p>Si hay espacio para un pastel entre cada cocinero, un cocinero puede colocar un pastel terminado alli e inmediatamente comenzar a trabajar en el siguiente; Esto es analogo a un canal con buffer con capacidad 1. Mientras los cocineros trabajen aproximadamente a la misma velocidad en promedio, la mayoria de estos traspasos proceden rapidamente, suavizando las diferencias transitorias en sus respectivas velocidades. Mas espacio entre los cocineros–buffers mas grandes–puede suavizar las variaciones transitorias mas grandes en sus tarifas sin parar la linea de ensamblaje, tal como sucede cuando un cocinero toma una pequeño descanso, luego se apresura para alcanzar a los demas.</p>
 <p>Por otro lado, si una etapa anterior de la linea de montaje es consistentemente mas rapida que la siguiente etapa, el buffer entre ellos pasara la mayor parte de su tiempo lleno. Por el contrario, si la etapa posterior es mas rapida, el bufer estara normalmente vacio. Un buffer no proporciona ningun beneficio en este caso.</p>
 <p>La metafora de la linea de montaje es util para los canales y gorutinas. Por ejemplo, si la segunda etapa es mas elaborada, un solo cocinero puede no ser capaz de mantenerse al dia con el suministro del primer cocinero o satisfacer la demanda del tercero. Para resolver el problema, podriamos contratar a otro cocinero para ayudar al segundo, realizando la misma tarea pero trabajando independientemente. Esto es analogo a crear otra gorutina que se comunica sobre los mismos canales.</p>
@@ -7643,7 +7643,7 @@ Yooo-hooo!
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Obviamente, el orden en que procesamos los archivos no importa, ya que cada operacion de escalado es independiente de todas los demas. Problemas como este que consisten enteramente de subproblemas que son completamente independientes entre si se describen como <em>vergonzosamente paralelos</em>.  Los problemas vergonzosamente paralelos son el tipo mas facil para implementar concurrencia y disfrutar de un rendimiento que linealmente escala con la cantidad de paralelismo.</p>
+<p>Obviamente, el orden en que procesamos los archivos no importa, ya que cada operacion de escalado es independiente de todas los demas. Problemas como este que consisten enteramente en subproblemas que son completamente independientes entre si, se describen como <em>vergonzosamente paralelos</em>.  Los problemas vergonzosamente paralelos son el tipo mas facil para implementar concurrencia y disfrutar de un rendimiento que linealmente escala con la cantidad de paralelismo.</p>
 <p>Vamos a ejecutar todas estas operaciones en paralelo, ocultando asi la latencia de la E/S de archivos y el uso de varias CPU para los calculos de escalado de imagen. Nuestro primer intento de una version concurrente solo añade una palabras clave <code>go</code>. Ignoraremos los errores por ahora y los abordaremos mas adelante.</p>
 <div class="highlight"><pre><span></span><span class="c1">// NOTA: incorrecto!</span>
 <span class="kd">func</span> <span class="nx">makeThumbnails2</span><span class="p">(</span><span class="nx">filenames</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
@@ -7653,7 +7653,7 @@ Yooo-hooo!
 <span class="p">}</span>
 </pre></div>
 <p>Esta version se ejecuta realmente rapido–demasiado rapido, de hecho, tarda menos tiempo que el original, incluso cuando la porcion de nombres de archivo contiene solo un elemento. Si no hay paralelismo, ¿como puede la version concurrente posiblemente correr mas rapido? La respuesta es que <code>makeThumbnails</code> regresa antes de que haya terminado de hacer lo que tenia que hacer. Comienza todas las gorutinas, una por cada nombre de archivo, pero no espera a que terminen.</p>
-<p>No hay manera directa de esperar hasta que una gorutina haya terminado, pero podemos cambiar la gorutina interior para reportar su terminacion a la gorutina exterior enviando un acontecimiento en un canal compartido. Dado que sabemos que hay exactamente <code>len(filenames)</code> gorutinas interiores, la gorutina exterior solo necesita contar estos eventos antes de que regresar:</p>
+<p>No hay una forma directa de esperar hasta que una gorutina haya terminado, pero podemos cambiar la gorutina interior para reportar su terminacion a la gorutina exterior enviando un evento en un canal compartido. Dado que sabemos que hay exactamente <code>len(filenames)</code> gorutinas interiores, la gorutina exterior solo necesita contar estos eventos antes de regresar:</p>
 <div class="highlight"><pre><span></span><span class="c1">// makeThumbnails3 crea miniaturas de los archivos especificados en paralelo.</span>
 <span class="kd">func</span> <span class="nx">makeThumbnails3</span><span class="p">(</span><span class="nx">filenames</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
@@ -7678,8 +7678,8 @@ Yooo-hooo!
   <span class="p">}()</span>
 <span class="p">}</span>
 </pre></div>
-<p>Recordemos que el problema de la capturar la variable del bucle dentro de una funcion anonima, se describe en la <a href="#Seccion-5.6.1" >Seccion 5.6.1</a>. Arriba, la unica variable <code>f</code> es compartida por todos los valores de la funcion anonima y actualizado por sucesivas iteraciones del bucle. Por el momento las nuevas gorutinas comenzar a ejecutar la funcion literal, el bucle <code>for</code> puede tener actualizada <code>f</code> e iniciar otra iteracion o (mas probablemente) terminado en su totalidad, por lo que cuando estas gorutinas leen el valor de <code>f</code>, todas ellas observan tener el valor del elemento final del slice. Mediante la adicion de un parametro explicito, nos aseguramos de que se utiliza el valor de <code>f</code> actual cuando se ejecuta la sentencia <code>go</code>.</p>
-<p>¿Que pasa si queremos devolver los valores de cada trabajador a la principal? Si la llamada a <code>thumbnail.ImageFile</code> no puede crear un archivo, se devuelve un error. La proxima version de <code>makeThumbnails</code> devuelve el primer error que recibe de cualquiera de las operaciones de escalado:</p>
+<p>Recordemos que el problema de capturar la variable del bucle dentro de una funcion anonima, se describe en la <a href="#Seccion-5.6.1" >Seccion 5.6.1</a>. Arriba, la unica variable <code>f</code> es compartida por todos los valores de la funcion anonima y actualizado por sucesivas iteraciones del bucle. Por el momento las nuevas gorutinas comenzar a ejecutar la funcion literal, el bucle <code>for</code> puede tener actualizada <code>f</code> e iniciar otra iteracion o (mas probablemente) terminarlo en su totalidad, por lo que cuando estas gorutinas leen el valor de <code>f</code>, todas ellas observan el valor del elemento final del slice. Mediante la adicion de un parametro explicito, nos aseguramos de que se utiliza el valor de <code>f</code> actual cuando se ejecuta la sentencia <code>go</code>.</p>
+<p>¿Que pasa si queremos devolver los valores de cada gorutina de trabajo a la principal?  Si la llamada a <code>thumbnail.ImageFile</code> no puede crear un archivo, devuelve un error. La proxima version de <code>makeThumbnails</code> devuelve el primer error que recibe de cualquiera de las operaciones de escalado:</p>
 <div class="highlight"><pre><span></span><span class="c1">// makeThumbnails4 crea miniaturas de los archivos especificados en paralelo.</span>
 <span class="c1">// Devuelve un error si ocurrio alguno.</span>
 <span class="kd">func</span> <span class="nx">makeThumbnails4</span><span class="p">(</span><span class="nx">filenames</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
@@ -7700,9 +7700,9 @@ Yooo-hooo!
   <span class="k">return</span> <span class="kc">nil</span>
 <span class="p">}</span>
 </pre></div>
-<p>Esta funcion tiene un error sutil. Cuando encuentra el primer error no nil, se devuelve el error al llamador, sin dejar drenado la gorutina de canal <code>errors</code>. Cada gorutina trabajador restante se bloqueara para siempre cuando intente enviar un valor en ese canal, y nunca terminara. Esta situacion, una fuga de gorutina (<a href="#Seccion-8.4.4" >§8.4.4</a>), puede hacer que todo el programa se atasque o se quede sin memoria.</p>
-<p>La solucion mas sencilla es utilizar un canal con capacidad suficiente que ningun trabajador bloqueara cuando envie un mensaje. (Una solucion alternativa es crear otro canal para drenar el canal, mientras que la gorutina principal devuelve el primer error sin demora).</p>
-<p>La siguiente version de <code>makeThumbnails</code> utiliza un canal tamponada para devolver los nombres de los archivos de imagen generados junto con cualquier error.</p>
+<p>Esta funcion tiene un error sutil. Cuando encuentra el primer error no nil, se devuelve el error al llamador, sin dejar drenada la gorutina de canal <code>errors</code>. Cada gorutina trabajador restante se bloqueara para siempre cuando intente enviar un valor en ese canal, y nunca terminara. Esta situacion, una fuga de gorutina (<a href="#Seccion-8.4.4" >§8.4.4</a>), puede hacer que todo el programa se atasque o se quede sin memoria.</p>
+<p>La solucion mas sencilla es utilizar un canal con capacidad suficiente para que ningun trabajador se bloque cuando envie un mensaje. (Una solucion alternativa es crear otra gorutina para drenar el canal, mientras la gorutina principal devuelve el primer error sin demora).</p>
+<p>La siguiente version de <code>makeThumbnails</code> utiliza un canal con buffer para devolver los nombres de los archivos de imagen generados junto con cualquier error.</p>
 <div class="highlight"><pre><span></span><span class="c1">// makeThumbnails5 crea miniaturas de los archivos especificados en paralelo.</span>
 <span class="c1">// Devuelve los errores de archivo generados en un orden arbitrario,</span>
 <span class="c1">// o un error si algun paso falla.</span>
@@ -7732,10 +7732,10 @@ Yooo-hooo!
   <span class="k">return</span> <span class="nx">thumbfiles</span><span class="p">,</span> <span class="kc">nil</span>
 <span class="p">}</span>
 </pre></div>
-<p>Nuestra version final de <code>makeThumbnails</code>, a continuacion, devuelve el numero total de bytes ocupados por los nuevos archivos. A diferencia de las versiones anteriores, sin embargo, recibe los nombres de archivo no como un slice sino a traves de un canal de cadenas, por lo que no podemos predecir el numero de iteraciones del bucle.</p>
-<p>Para saber cuando ha terminado la ultima gorutina (que puede no ser el ultimo en comenzar), necesitamos incrementar un contador antes de que cada gorutina comience y decrementarlo cuando cada gorutina termine. Esto exige un tipo especial de contador, que se puede manipular con seguridad desde multiples gorutinas y que proporciona una manera de esperar hasta que se convierte en cero. Este tipo de contador se conoce como <code>sync.WaitGroup</code>, y el codigo siguiente muestra como usarlo:</p>
+<p>Nuestra version final de <code>makeThumbnails</code>, a continuacion, devuelve el numero total de bytes ocupados por los nuevos archivos. A diferencia de las versiones anteriores, recibe los nombres de archivo no como un slice sino a traves de un canal de cadenas, por lo que no podemos predecir el numero de iteraciones del bucle.</p>
+<p>Para saber cuando ha terminado la ultima gorutina (que puede no ser la ultima en comenzar), necesitamos incrementar un contador antes de que cada gorutina comience y decrementarlo cuando cada gorutina termine. Esto exige un tipo especial de contador, que se puede manipular con seguridad desde multiples gorutinas y que proporciona una manera de esperar hasta que se convierte en cero. Este tipo de contador se conoce como <code>sync.WaitGroup</code>, y el siguiente codigo muestra como usarlo:</p>
 <div class="highlight"><pre><span></span><span class="c1">// makeThumbnails6 crea miniaturas de los archivos especificados en paralelo.</span>
-<span class="c1">// Devuelve el numero de bytes ocupados por los archives que crea.</span>
+<span class="c1">// Devuelve el numero de bytes ocupados por los archivos que crea.</span>
 <span class="kd">func</span> <span class="nx">makeThumbnails6</span><span class="p">(</span><span class="nx">filenames</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">int64</span> <span class="p">{</span>
   <span class="nx">sizes</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int64</span><span class="p">)</span>
   <span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span> <span class="c1">// numero de gorutinas de trabajo</span>
@@ -7768,21 +7768,21 @@ Yooo-hooo!
   <span class="k">return</span> <span class="nx">total</span>
 <span class="p">}</span>
 </pre></div>
-<p>Observe la asimetria en los metodos <code>Add</code> y <code>Done</code>. <code>Add</code>, que incrementa el contador, debe ser llamado antes de que el trabajador empiece la gorutina, no dentro de ella; de lo contrario no estariamos seguros de que el <code>Add</code> <em>ocurre antes</em> antes de que la gorutina <q>close</q> llame a <code>Wait</code>. Ademas, <code>Add</code> toma un parametro, pero <code>Done</code> no; que es equivalente a <code>Add(-1)</code>. Utilizamos <code>defer</code> para asegurar que el contador se decrementa incluso en el caso de error. La estructura del codigo anterior es un patron comun e idiomatico para realizar bucle en paralelo cuando no conocemos el numero de iteraciones.</p>
-<p>El canal <code>sizes</code> lleva cada tamaño de archivo de nuevo a la gorutina principal, que recibe de ellos usando un range de bucle y calcula la suma. Observamos como creamos un gorutina mas cerca que espera a los trabajadores para terminar antes de cerrar el canal <code>sizes</code>. Estas dos operaciones, <q>wait</q> y <q>close</q>, deben ser concurrentes con el bucle sobre <code>sizes</code>. Consideremos las alternativas: si la operacion de espera se coloca en la goruta principal antes del bucle, nunca terminaria, y si se colocaba despues del bucle, seria inalcanzable ya que sin nada cerrando el canal, el bucle nunca terminaria.</p>
-<p>La Figura 8.5 ilustra la secuencia de eventos en la funcion <code>makeThumbnails6</code>. Las lineas verticales representan gorutinas. Los segmentos delgados indican el sueño, los segmentos gruesos actividad. Las flechas diagonales indican eventos que sincronizan una gorutina con otra. El tiempo fluye hacia abajo. Notese como la gorutina principal pasa la mayor parte de su tiempo en el range de bucle dormido, esperando a que un trabajador para enviar un valor o el mas cerca para cerrar el canal.</p>
+<p>Observe la asimetria en los metodos <code>Add</code> y <code>Done</code>. <code>Add</code>, que incrementa el contador, debe ser llamado antes de que el trabajador empiece la gorutina, no dentro de ella; de lo contrario no estariamos seguros de que <code>Add</code> <em>ocurre antes</em> de que la gorutina de <q>cierre</q> llame a <code>Wait</code>. Ademas, <code>Add</code> toma un parametro, pero <code>Done</code> no; que es equivalente a <code>Add(-1)</code>. Utilizamos <code>defer</code> para asegurar que el contador se decrementa incluso en el caso de error. La estructura del codigo anterior es un patron comun e idiomatico para realizar un bucle en paralelo cuando no conocemos el numero de iteraciones.</p>
+<p>El canal <code>sizes</code> transporta el tamaño de cada archivo de nuevo a la gorutina principal, que los recibe usando un bucle <code>range</code> y calcula la suma. Observe como creamos un gorutina para esperar que los trabajadores terminen antes de cerrar el canal <code>sizes</code>. Estas dos operaciones, espera y cierre, deben ser concurrentes con el bucle sobre <code>sizes</code>.  Consideremos las alternativas: si la operacion de espera se coloca en la goruta principal antes del bucle, nunca terminaria, y si se colocaba despues del bucle, seria inalcanzable ya que sin nada cerrando el canal, el bucle nunca terminaria.</p>
+<p>La Figura 8.5 ilustra la secuencia de eventos en la funcion <code>makeThumbnails6</code>. Las lineas verticales representan gorutinas. Los segmentos delgados indican la espera, los segmentos gruesos actividad. Las flechas diagonales indican eventos que sincronizan una gorutina con otra. El tiempo fluye hacia abajo. Note como la gorutina principal pasa la mayor parte de su tiempo en el bucle <code>range</code>, esperando a que un trabajador envie un valor o al cierre del canal.</p>
 <div class="figure" >
 <p class="title">Figura 8.5. La secuencia de eventos en <code>makeThumbnails6</code>.</p>
 <figure>
 <img src="img/Figure-8.5.jpg" />
 </figure>
 </div>
-<p><b>Ejercicio 8.4</b>: Modificar el servidor <code class="command" >reverb2</code> para utilizar un <code>sync.WaitGroup</code> por conexion para contar el numero de gorutinas <code>echo</code> activas. Cuando cae a cero, cierre la mitad de escritura de la conexion TCP como se describe en el Ejercicio 8.3. Compruebe que su cliente <code class="command" >netcat3</code> modificado de ese ejercicio espera los ecos finales de varios gritos simultaneos, incluso despues de la entrada estandar ha sido cerrada.</p>
-<p><b>Ejercicio 8.5</b>: Tome un programa secuencial CPU dependiente existente, tal como el programa de Mandelbrot de la <a href="#Seccion-3.3" >Seccion 3.3</a> o el calculo de superficie 3-D de la <a href="#Seccion-3.2" >Seccion 3.2</a>, y ejecutar su bucle principal utilizando canales paralelos para la comunicacion. ¿Cuanto mas rapido se ejecuta en una maquina multiprocesador? ¿Cual es el numero optimo de gorutinas a usar?</p>
+<p><b>Ejercicio 8.4</b>: Modificar el servidor <code class="command" >reverb2</code> para utilizar un <code>sync.WaitGroup</code> por conexion para contar el numero de gorutinas <code>echo</code> activas. Cuando cae a cero, cierre la mitad de escritura de la conexion TCP como se describe en el Ejercicio 8.3. Compruebe que su cliente <code class="command" >netcat3</code> modificado de ese ejercicio espera los ecos finales de varios gritos simultaneos, incluso despues de haber cerrado la entrada estandar.</p>
+<p><b>Ejercicio 8.5</b>: Tome un programa secuencial CPU dependiente existente, como el programa de Mandelbrot de la <a href="#Seccion-3.3" >Seccion 3.3</a> o el calculo de superficie 3-D de la <a href="#Seccion-3.2" >Seccion 3.2</a>, y ejecutar su bucle principal utilizando canales paralelos para la comunicacion. ¿Cuanto mas rapido se ejecuta en una maquina multiprocesador? ¿Cual es el numero optimo de gorutinas a usar?</p>
 </div>
 <h3 id="Seccion-8.6" >Ejemplo: Rastreador Web Concurrente</h3>
 <div class="hBody-3" >
-<p>En la <a href="#Seccion-5.6" >Seccion 5.6</a>, hicimos un simple rastreador web que exploro el grafico de enlace de la web con primer onden de amplitud. En esta seccion, lo haremos concurrente para que las llamadas independientes a <code>crawl</code> puedan explotar el paralelismo de E/S disponible en la web. la funcion <code>crawl</code> sigue siendo exactamente como lo fue en <code>gopl.io/ch5/findlinks3</code>:</p>
+<p>En la <a href="#Seccion-5.6" >Seccion 5.6</a>, hicimos un simple rastreador web que exploro el grafo de un enlace web con primer onden de amplitud. En esta seccion, lo haremos concurrente para que las llamadas independientes a <code>crawl</code> puedan explotar el paralelismo de E/S disponible en la web. la funcion <code>crawl</code> sigue siendo exactamente que en <code>gopl.io/ch5/findlinks3</code>:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/crawl1/findlinks.go" >gopl.io/ch8/crawl1</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">crawl</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="kt">string</span> <span class="p">{</span>
@@ -7795,11 +7795,11 @@ Yooo-hooo!
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>La funcion principal se asemeja a <code>breadthFirst</code> (<a href="#Seccion-5.6" >§5.6</a>). Como antes, una lista de trabajo registra la cola de elementos que necesitan procesamiento, cada elemento que es una lista de URL para rastrear, pero esta vez, en lugar de representar la cola utilizando un slice, usamos un canal. Cada llamada al <code>crawl</code> se produce en su propia gorutina y envia los enlaces que descubre de nuevo a la lista de trabajo.</p>
+<p>La funcion principal se asemeja a <code>breadthFirst</code> (<a href="#Seccion-5.6" >§5.6</a>). Como antes, una lista de trabajo registra la cola de elementos que necesitan procesamiento, cada elemento es una lista de URLs a rastrear, pero esta vez, en lugar de representar la cola utilizando un slice, usamos un canal. Cada llamada al <code>crawl</code> se produce en su propia gorutina y envia los enlaces que descubre de nuevo a la lista de trabajo.</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">worklist</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span>
 
-  <span class="c1">// Comiencza con los argumentos de la linea de comandos.</span>
+  <span class="c1">// Comienza con los argumentos de la linea de comandos.</span>
   <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="nx">worklist</span> <span class="o">&lt;-</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="p">}()</span>
 
   <span class="c1">// Rastrea la red concurrentemente.</span>
@@ -7816,7 +7816,7 @@ Yooo-hooo!
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-<p>Observe que la gouritina de rastreo toma <code>link</code> como un parametro explicito para evitar el problema de captura de variables de bucle que vimos por primera vez en la <a href="#Seccion-5.6.1" >Seccion 5.6.1</a>. Observe tambien que el envio inicial de los argumentos de linea de comandos a la lista de trabajo debe ejecutarse en su propia gorutina para evitar un <em>punto muerto</em>, una situacion en la cual tanto la gorutina principal y como la gorutina de rastreo intentan enviarse el uno al otro mientran que ninguno esta recibiendo. Una solucion alternativa seria utilizar un canal con buffer.</p>
+<p>Observe que la gorutina de rastreo toma a <code>link</code> como un parametro explicito para evitar el problema de captura de variables de bucle que vimos por primera vez en la <a href="#Seccion-5.6.1" >Seccion 5.6.1</a>. Observe tambien que el envio inicial de los argumentos de linea de comandos a la lista de trabajo debe ejecutarse en su propia gorutina para evitar un <em>punto muerto</em>, una situacion en la cual tanto la gorutina principal y como la gorutina de rastreo intentan enviarse el uno al otro mientran que ninguno esta recibiendo. Una solucion alternativa seria utilizar un canal con buffer.</p>
 <p>El rastreador ahora es altamente concurrente e imprime una tormenta de direcciones URL, pero tiene dos problemas. El primer problema se manifiesta como mensajes de error en el registro despues de unos segundos de operacion:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go build gopl.io/ch8/crawl1
 <span class="prompt">$ </span>./crawl1 http://gopl.io/
@@ -7831,10 +7831,9 @@ https://golang.org/blog/
 ...</span>
 </code></pre>
 <p>El mensaje inicial de error es un informe sorprendente de un fallo de busqueda de DNS para un dominio confiable. El mensaje de error siguiente revela la causa: el programa a creado tantas conexiones de red a la vez que se supero el limite por proceso en el numero de archivos abiertos, haciendo que operaciones como las busquedas de DNS y la llama a <code>net.Dial</code> empiecen a fallar.</p>
-<p>El programa es demasiado paralelo. El paralelismo ilimitado rara vez es una buena idea ya que siempre hay un factor limitante en el sistema, como el numero de nucleos de CPU para cargas de trabajo de calculo, el numero de husos y cabeceras para operaciones de E/S de disco local, el ancho de banda de la red para descargas de streaming, o la capacidad de servicio de un servicio web. La solucion es limitar el numero de usos paralelos del recurso para que coincida con el nivel de paralelismo que esta disponible. Una manera sencilla de hacerlo en nuestro ejemplo es asegurarse de que no hay mas de <em>n</em> llamadas a <code>links.Extract</code> activas a la vez, donde <em>n</em> esta comodamente inferior que el descriptor de ficheros limite–20 por ejemplo. Esto es analogo a la manera en que un portero en un club nocturno atestado admite a un huesped solamente cuando algun otro huesped sale.</p>
-<p>Podemos limitar el paralelismo utilizando un canal con buffer de capacidad <em>n</em> para modelar una concurrencia primitiva denominada <em>semaforo contador</em>.</p>
-<p>Conceptualmente, cada una de las <em>n</em> ranuras vacantes en el buffer del canal representa una señal que autoriza al titular a proceder. Enviar un valor al canal adquiere un token, y recibir un valor del canal libera un token, creando una nueva ranura vacante. Esto asegura que a la mayoria de los <em>n</em> envios puedan producirse sin una recepcion intermedia. (Aunque podria ser mas intuitivo tratar las ranuras <em>ocupadas</em> en canal con bufer como tokens, utilizando ranuras vacias evita la necesidad de llenar el buffer.) Dado que el tipo de elemento de canal no es importante, vamos a utilizar <code>struct{}</code>, Que tiene el tamaño cero.</p>
-<p>Vamos a reescribir la funcion <code>crawl</code> para que la llamada a <code>links.Extract</code> se encuentre entre corchetes por las operaciones de adquirir y liberar un token, asegurando asi que a lo sumo 20 llamadas activas al mismo tiempo. Es una buena practica mantener las operaciones de semaforo lo mas cerca posible de la operacion de E/S que regulan.</p>
+<p>El programa es demasiado paralelo. El paralelismo ilimitado rara vez es una buena idea ya que siempre hay un factor limitante en el sistema, como el numero de nucleos de CPU para cargas de trabajo de calculo, el numero de usos y cabeceras para operaciones de E/S de disco local, el ancho de banda de la red para descargas de streaming, o la capacidad de servicio de un servicio web. La solucion es limitar el numero de usos paralelos del recurso para que coincida con el nivel de paralelismo que esta disponible. Una manera sencilla de hacerlo en nuestro ejemplo es asegurarse de que no hay mas de <em>n</em> llamadas a <code>links.Extract</code> activas a la vez, donde <em>n</em> es holgadamente inferior al limite del descriptor de ficheros–20 por ejemplo. Esto es analogo a la manera en que un portero en un club nocturno atestado admite a un huesped solamente cuando algun otro huesped sale.</p>
+<p>Podemos limitar el paralelismo utilizando un canal con buffer de capacidad <em>n</em> para modelar una concurrencia primitiva denominada <em>semaforo contador</em>. Conceptualmente, cada una de las <em>n</em> ranuras vacantes en el buffer del canal representa una señal que autoriza al titular a proceder. Enviar un valor al canal adquiere un token, y recibe un valor del canal libera un token, creando una nueva ranura vacante. Esto asegura que a la mayoria de los <em>n</em> envios puedan producirse sin una recepcion intermedia. (Aunque podria ser mas intuitivo tratar las ranuras <em>ocupadas</em> en canal con bufer como tokens, utilizando ranuras vacias evita la necesidad de llenar el buffer.) Dado que el tipo de elemento de canal no es importante, vamos a utilizar <code>struct{}</code>, Que tiene tamaño cero.</p>
+<p>Vamos a reescribir la funcion <code>crawl</code> para que la llamada a <code>links.Extract</code> se encuentre entre corchetes para las operaciones de adquirir y liberar un token, asegurando asi que a lo sumo hay 20 llamadas activas al mismo tiempo. Es una buena practica mantener las operaciones de semaforo lo mas cerca posible de la operacion de E/S que regulan.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/crawl2/findlinks.go" >gopl.io/ch8/crawl2</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// tokens es un semaforo de conteo usado para</span>
@@ -7854,12 +7853,12 @@ https://golang.org/blog/
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>El segundo problema es que el programa nunca termina, incluso cuando ha descubierto todos los enlaces accesibles desde las URLs iniciales. (Por supuesto, es poco probable que note este problema a menos que elija las URL inicialmente o implemente la caracteristica de limitacion de profundidad del Ejercicio 8.6). Para que el programa termine, necesitamos romper el bucle principal cuando la lista de trabajo este <em>y</em> no existan gorutinas de rastreo activas.</p>
+<p>El segundo problema es que el programa nunca termina, incluso cuando ha descubierto todos los enlaces accesibles desde las URLs iniciales. (Por supuesto, es poco probable que note este problema a menos que elija las URLs inicialmente o implemente la caracteristica de limitacion de profundidad del Ejercicio 8.6). Para que el programa termine, necesitamos romper el bucle principal cuando la lista de trabajo este vacia <em>y</em> no existan gorutinas de rastreo activas.</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">worklist</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span>
   <span class="kd">var</span> <span class="nx">n</span> <span class="kt">int</span> <span class="c1">// numero de envios pendientes a la lista de trabajo</span>
 
-  <span class="c1">// Start with the command-line arguments.</span>
+  <span class="c1">// Comienza con los argumentos de la linea de comandos.</span>
   <span class="nx">n</span><span class="o">++</span>
   <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="nx">worklist</span> <span class="o">&lt;-</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="p">}()</span>
 
@@ -7880,7 +7879,7 @@ https://golang.org/blog/
 <span class="p">}</span>
 </pre></div>
 <p>En esta version, el contador <code>n</code> mantiene un registro del numero de envios a la lista de trabajo que aun esta por ocurrir. Cada vez que sabemos que un elemento necesita ser enviado a la lista de trabajo, incrementamos <code>n</code>, una vez antes de enviar los argumentos iniciales de linea de comandos, y de nuevo cada vez que se inicie una gorutina rastreador. El bucle principal termina cuando <code>n</code> cae a cero, ya que no hay mas trabajo por hacer.</p>
-<p>Ahora el rastreador concurrente se ejecuta aproximadamente 20 veces mas rapido que el rastreador primero con primer orden de amplitud de la <a href="#Seccion-5.6" >Seccion 5.6</a>, sin errores, y termina correctamente si se debe completar su tarea.</p>
+<p>Ahora el rastreador concurrente se ejecuta aproximadamente 20 veces mas rapido que el rastreador con primer orden de amplitud de la <a href="#Seccion-5.6" >Seccion 5.6</a>, sin errores, y termina correctamente si se debe completar su tarea.</p>
 <p>El siguiente programa muestra una solucion alternativa al problema de la concurrencia excesiva. Esta version utiliza la funcion de rastreo original que no tiene semaforo de conteo, sino que la llama desde una de las 20 rutinas de rastreo de larga duracion, garantizando asi que al menos 20 solicitudes HTTP esten activas simultaneamente.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/crawl3/findlinks.go" >gopl.io/ch8/crawl3</a></p>
@@ -7915,12 +7914,12 @@ https://golang.org/blog/
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Las gorutinas de rastreo son todas alimentadas por el mismo canal, <code>unseenLinks</code>.  la gorutina principal es responsable de deduplicar los elementos que recibe de la lista de trabajo, y luego enviar cada enlace no visto sobre el canal <code>unseenLinks</code> a un gorutina rastreador.</p>
-<p>El mapa <code>seen</code> esta <em>confinado</em> dentro de la gorutina principal; Es decir, solo puede ser accedido por ese gorutina. Al igual que otras formas de ocultar la informacion, el confinamiento nos ayuda a razonar sobre la correccion de un programa. Por ejemplo, las variables locales no pueden mencionarse por su nombre fuera de la funcion en la que se declaran; variables que no escapan (<a href="#Seccion-2.3.4" >§2.3.4</a>) de una funcion no se puede acceder desde fuera de esa funcion; Y los campos encapsulados de un objeto no se puede acceder excepto por los metodos de ese objeto. En todos los casos, la ocultacion de la informacion ayuda a limitar las interacciones no deseadas entre partes del programa.</p>
+<p>Las gorutinas de rastreo son todas alimentadas por el mismo canal, <code>unseenLinks</code>. La gorutina principal es responsable de deduplicar los elementos que recibe de la lista de trabajo, y luego enviar cada enlace no visto sobre el canal <code>unseenLinks</code> a una gorutina de rastreo.</p>
+<p>El mapa <code>seen</code> esta <em>confinado</em> dentro de la gorutina principal; Es decir, solo puede ser accedido por esa gorutina. Al igual que otras formas de ocultar la informacion, el confinamiento nos ayuda a razonar sobre la correccion de un programa. Por ejemplo, las variables locales no pueden mencionarse por su nombre fuera de la funcion en la que se declaran; variables que no escapan (<a href="#Seccion-2.3.4" >§2.3.4</a>) de una funcion no se puede acceder desde fuera de esa funcion; y los campos encapsulados de un objeto no se puede acceder excepto por los metodos de ese objeto. En todos los casos, la ocultacion de la informacion ayuda a limitar las interacciones no deseadas entre partes del programa.</p>
 <p>Los enlaces encontrados por <code>crawl</code> se envian a la lista de trabajo desde una gorutina dedicada para evitar un punto muerto.</p>
 <p>Para ahorrar espacio, no hemos abordado el problema de la terminacion en este ejemplo.</p>
 <p><b>Ejercicio 8.6</b>: Añadir limite de profundidad al rastreador concurrente. Es decir, si el usuario establece <code>-depth=3</code>, entonces solo se obtendran las URL accesibles como un maximo de tres enlaces.</p>
-<p><b>Ejercicio 8.7</b>: Escribir un programa concurrente que cree un espejo local de un sitio web, obteniendo cada pagina accesible y escribiendola en un directorio en el disco local. Solo se deben buscar las paginas dentro del dominio original (por ejemplo, <a href="https://golang.org" >golang.org</a>). Las URL de las paginas reflejadas deben modificarse segun sea necesario para que se refieran a la pagina reflejada, no al original.</p>
+<p><b>Ejercicio 8.7</b>: Escribir un programa concurrente que cree un espejo local de un sitio web, obteniendo cada pagina accesible y escribiendola en un directorio en el disco local. Solo se deben buscar las paginas dentro del dominio original (por ejemplo, <a href="https://golang.org" >golang.org</a>). Las URL de las paginas reflejadas deben modificarse segun sea necesario para que se refieran a la pagina espejo, no al original.</p>
 </div>
 <h3 id="Seccion-8.7" >Multiplexacion con <code>select</code></h3>
 <div class="hBody-3" >
@@ -7948,7 +7947,7 @@ https://golang.org/blog/
 <span class="p">}()</span>
 </pre></div>
 </div>
-<p>Ahora cada iteracion del bucle de cuenta atras tiene que esperar a que un evento llegue a uno de los dos canales: el canal tinker si todo esta bien (<q>nominal</q> en la jerga de la NASA) o un evento de aborto si hubo una anomalia. No podemos recibir solo de cada canal porque cualquiera de las operaciones que intentamos primero bloqueara hasta su finalizacion. Necesitamos multiplexar estas operaciones, y para ello, necesitamos una (sentencia de selecion).</p>
+<p>Ahora cada iteracion del bucle de cuenta atras tiene que esperar a que un evento llegue a uno de los dos canales: el canal tinker si todo esta bien (<q>nominal</q> en la jerga de la NASA) o un evento de aborto si hubo una anomalia. No podemos recibir de cada canal porque cualquiera de las operaciones que intentamos primero bloqueara hasta su finalizacion. Necesitamos multiplexar estas operaciones, y para ello, necesitamos una <em>sentencia select</em>.</p>
 <div class="highlight"><pre><span></span><span class="k">select</span> <span class="p">{</span>
 <span class="k">case</span> <span class="o">&lt;-</span><span class="nx">ch1</span><span class="p">:</span>
   <span class="c1">// ...</span>
@@ -7960,9 +7959,9 @@ https://golang.org/blog/
   <span class="c1">// ...</span>
 <span class="p">}</span>
 </pre></div>
-<p>La forma general de una sentencia <code>select</code> se muestra arriba. Al igual que una sentencia <code>switch</code>, tiene un numero de casos y una opcion <code>default</code>. Cada caso especifica una comunicacion (un envio o recepcion en el algun canal) y un bloque asociado de los estados. Una expresion de recepcion puede aparecer por si misma, como en el primer caso, o dentro de una declaracion de variable compacta, como en el segundo caso; La segunda forma le permite referirse al valor recibido.</p>
+<p>La forma general de una sentencia <code>select</code> se muestra arriba. Al igual que una sentencia <code>switch</code>, tiene un numero de casos y una opcion <code>default</code>. Cada caso especifica una comunicacion (un envio o recepcion en el algun canal) y un bloque de los estados asociados. Puede aparecen una expresion de recepcion en si misma, como en el primer caso, o dentro de una declaracion de variable compacta, como en el segundo caso; La segunda forma le permite referirse al valor recibido.</p>
 <p>Un <code>select</code> espera hasta que una comunicacion por algun caso esta lista para proceder. A continuacion, realiza esa comunicacion y ejecuta las declaraciones asociadas del caso; Las otras comunicaciones no suceden. Un <code>select</code> sin casos, <code>select{}</code>, espera por siempre.</p>
-<p>Volvamos a nuestro programa de lanzamiento de cohetes. la funcion <code>time.After</code> devuelve inmediatamente un canal, e inicia una nueva gorutina que envia un unico valor en ese canal despues del tiempo especificado. La instruccion de seleccion a continuacion espera hasta que llegue el primero de dos eventos, ya sea un evento de anulacion o el evento que indica que han transcurrido 10 segundos. Si pasan 10 segundos sin abortar, el lanzamiento continua.</p>
+<p>Volvamos a nuestro programa de lanzamiento de cohetes. La funcion <code>time.After</code> devuelve inmediatamente un canal, e inicia una nueva gorutina que envia un unico valor en ese canal despues del tiempo especificado. La instruccion de seleccion a continuacion espera hasta que llegue el primero de dos eventos, ya sea un evento de anulacion o el evento que indica que han transcurrido 10 segundos. Si pasan 10 segundos sin abortar, el lanzamiento continua.</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
   <span class="c1">// ...crear canal abort...</span>
 
@@ -8010,8 +8009,8 @@ https://golang.org/blog/
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>la funcion <code>time.Tick</code> se comporta como si se crea un gorutina que llama a <code>time.Sleep</code> en un bucle, enviando un evento cada vez que se despierta. Cuando la funcion de cuenta atras regresa, se detiene la recepcion de eventos de <code>tick</code>, pero la gorutina ticker sigue  alli, tratando en vano de enviar en un canal desde el que no esta recibiendo gorutina–una fuga de gorutina (<a href="#Seccion-8.4.4" >§8.4.4</a>).</p>
-<p>la funcion <code>Tick</code> es conveniente, pero es apropiada solo cuando se necesitan los ticks durante todo el tiempo de vida de la aplicacion. De lo contrario, deberiamos usar este patron:</p>
+<p>la funcion <code>time.Tick</code> se comporta como si se crea un gorutina que llama a <code>time.Sleep</code> en un bucle, enviando un evento cada vez que se despierta. Cuando la funcion de cuenta atras regresa, se detiene la recepcion de eventos de <code>tick</code>, pero la gorutina de conteo sigue alli, tratando en vano de enviar en un canal donde no hay una gorutina recibiendo–una fuga de gorutina (<a href="#Seccion-8.4.4" >§8.4.4</a>).</p>
+<p>la funcion <code>Tick</code> es conveniente, pero solo es apropiada cuando se necesitan ticks durante todo el tiempo de vida de la aplicacion. De lo contrario, deberiamos usar este patron:</p>
 <div class="highlight"><pre><span></span><span class="nx">ticker</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">NewTicker</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
 
 <span class="o">&lt;-</span><span class="nx">ticker</span><span class="p">.</span><span class="nx">C</span>    <span class="c1">// recibir desde el canal tiker</span>
@@ -8019,7 +8018,7 @@ https://golang.org/blog/
 <span class="nx">ticker</span><span class="p">.</span><span class="nx">Stop</span><span class="p">()</span> <span class="c1">// hace que la gorutina tiker termine</span>
 </pre></div>
 <p>A veces queremos intentar enviar o recibir en un canal, pero evitando el bloqueo si el canal no esta listo–una comunicacion <em>no bloqueante</em>. Una sentencia <code>select</code> puede hacer eso tambien. Un <code>select</code> pueden tener un caso <code>default</code> que especifica que hacer cuando ninguna de las otras comunicaciones puede proceder de inmediato.</p>
-<p>La instruccion <code>select</code> a continuacion recibe un valor del canal <code>abort</code> si hay uno para recibir; De lo contrario no hace nada. Se trata de una operacion de recepcion no bloqueante; haciendolo repetidamente se denomina un canal de <em>sondeo</em>.</p>
+<p>La instruccion <code>select</code> a continuacion recibe un valor del canal <code>abort</code> si hay uno para recibir; De lo contrario no hace nada. Se trata de una operacion de recepcion no bloqueante; hacerlo repetidamente se denomina un canal de <em>sondeo</em>.</p>
 <div class="highlight"><pre><span></span><span class="k">select</span> <span class="p">{</span>
 <span class="k">case</span> <span class="o">&lt;-</span><span class="nx">abort</span><span class="p">:</span>
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Launch aborted!\n&quot;</span><span class="p">)</span>
@@ -8028,12 +8027,12 @@ https://golang.org/blog/
   <span class="c1">// no hacer nada</span>
 <span class="p">}</span>
 </pre></div>
-<p>El valor cero para un canal es <code>nil</code>. Tal vez sorprendentemente, los canales nil a veces son utiles. Debido a que las operaciones de envio y recepcion en un bloque de canal nil, nunca se selecciona un caso en una sentencia <code>select</code> cuyo canal es <code>nil</code>. Esto nos permite utilizar <code>nil</code> para activar o desactivar los casos que corresponden a caracteristicas como el manejo de tiempos de espera o cancelacion, en respuesta a otros eventos de entrada o de salida que emite. Veremos un ejemplo en la siguiente seccion.</p>
+<p>El valor cero para un canal es <code>nil</code>. Tal vez sorprendentemente, los canales nil a veces son utiles. Debido a que las operaciones de envio y recepcion en un canal nil se bloquean para siempre, nunca se selecciona un caso en una sentencia <code>select</code> cuyo canal es <code>nil</code>. Esto nos permite utilizar <code>nil</code> para activar o desactivar los casos que corresponden a caracteristicas como el manejo de tiempos de espera o cancelacion, en respuesta a otros eventos de entrada o de salida que emite. Veremos un ejemplo en la siguiente seccion.</p>
 <p><b>Ejercicio 8.8</b>: Utilizando una instruccion <code>select</code>, agregue un tiempo de espera al servidor de eco de la <a href="#Seccion-8.3" >Seccion 8.3</a> para que se desconecte cualquier cliente que no grite nada en 10 segundos.</p>
 </div>
 <h3 id="Seccion-8.8" >Ejemplo: Trayecto de Directorio Concurrente</h3>
 <div class="hBody-3" >
-<p>En esta seccion, vamos a construir un programa que informa del uso de disco de uno o mas directorios especificados en la linea de comandos, como el comando Unix <code class="command" >du</code>. La mayor parte de su trabajo es realizado por la funcion <code>walkDir</code> a continuacion, que enumera las entradas del directorio <code>dir</code> utilizando la funcion auxiliar <code>dirents</code>.</p>
+<p>En esta seccion, vamos a construir un programa que informa del uso de disco de uno o mas directorios especificados por linea de comandos, como el comando Unix <code class="command" >du</code>. La mayor parte de su trabajo es realizado por la funcion <code>walkDir</code> a continuacion, que enumera las entradas del directorio <code>dir</code> utilizando la funcion auxiliar <code>dirents</code>.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/du1/main.go" >gopl.io/ch8/du1</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// walkDir camina recursivamente el arbol de archivos raiz en dir</span>
@@ -8061,7 +8060,7 @@ https://golang.org/blog/
 </pre></div>
 </div>
 <p>la funcion <code>ioutil.ReadDir</code> devuelve un slice de <code>os.FileInfo</code>–la misma informacion que una llamada a <code>os.Stat</code> regresa para un solo archivo. Para cada subdirectorio, <code>walkDir</code> se llama a si misma recursivamente, y para cada archivo, <code>walkDir</code> envia un mensaje en el canal <code>fileSizes</code>. El mensaje es el tamaño del archivo en bytes.</p>
-<p>La funcion principal, que se muestra a continuacion, utiliza dos gorutinas. La gorutina de fondo se llama <code>walkDir</code> por cada directorio especificado en la linea de comandos y finalmente cierra el canal <code>fileSizes</code>. la gorutina principal calcula la suma de los tamaños del archivo que recibe del canal y finalmente imprime el total.</p>
+<p>La funcion principal, que se muestra a continuacion, utiliza dos gorutinas. La gorutina de fondo se llama <code>walkDir</code> por cada directorio especificado en la linea de comandos y finalmente cierra el canal <code>fileSizes</code>. La gorutina principal calcula la suma de los tamaños del archivo que recibe del canal y finalmente imprime el total.</p>
 <div class="highlight"><pre><span></span><span class="c1">// El comando du1 calcula el uso de disco de los archivos en el directorio.</span>
 <span class="kn">package</span> <span class="nx">main</span>
 
@@ -8108,7 +8107,7 @@ https://golang.org/blog/
 <span class="prompt">$ </span>./du1 <span class="nv">$HOME</span> /usr /bin /etc
 <span class="srci-text">213201 files 62.7 GB</span>
 </code></pre>
-<p>El programa seria mas agradable si nos mantiene informados de su progreso. Sin embargo, simplemente moviendo el llamada a <code>printDiskUsage</code> en el bucle, lo haria que imprimir miles de lineas de salida.</p>
+<p>El programa seria mas agradable si nos mantiene informados de su progreso. Sin embargo, simplemente moviendo la llamada a <code>printDiskUsage</code> en el bucle, lo haria imprimir miles de lineas de salida.</p>
 <p>La variante de <code class="command" >du</code> a continuacion, imprime los totales de forma periodica, pero solo si se especifica la bandera <code>-v</code> ya que no todos los usuarios querra ver mensajes de progreso. la gorutina de fondo que se repite sobre <code>roots</code> se mantiene sin cambios. la gorutina principal ahora utiliza un <code>ticker</code> para generar acontecimientos cada 500ms, y una declaracion <code>select</code> para esperar un mensaje del tamaño del archivo, en cuyo caso actualiza el total, o un evento tick, en cuyo caso imprime el total actual. Si no se especifica la bandera <code>-v</code>, el canal <code>tick</code> sigue siendo nil, y en efecto se desactiva en su caso en el <code>select</code>.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/du2/main.go" >gopl.io/ch8/du2</a></p>
@@ -8140,7 +8139,7 @@ https://golang.org/blog/
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Dado que el programa ya no utiliza una bucle <code>range</code>, el primer caso <code>select</code> debe probar explicitamente si el canal <code>fileSizes</code> se ha cerrado, utilizando la forma de dos resultado de recepcion de operacion. Si el canal se ha cerrado, el programa rompe fuera del bucle. Las sentencia <code>break</code> rompe la etiqueta tanto en <code>selec</code> y el bucle <code>for</code>; una marcada <code>break</code> no etiquetada saldria solo fera de <code>select</code>, haciendo que el bucle comience la siguiente iteracion.</p>
+<p>Dado que el programa ya no utiliza una bucle <code>range</code>, el primer caso <code>select</code> debe probar explicitamente si el canal <code>fileSizes</code> se ha cerrado, utilizando la forma de dos resultados para recibir la operacion. Si el canal se ha cerrado, el programa rompe fuera del bucle. Las sentencia <code>break</code> rompe la etiqueta tanto en <code>selec</code> y el bucle <code>for</code>; una marcada <code>break</code> no etiquetada saldria solo fuera de <code>select</code>, haciendo que el bucle comience la siguiente iteracion.</p>
 <p>El programa ahora nos da un flujo de actualizaciones:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go build gopl.io/ch8/du2
 <span class="prompt">$ </span>./du2 -v <span class="nv">$HOME</span> /usr /bin /etc
@@ -8151,7 +8150,7 @@ https://golang.org/blog/
 175931 files 62.2 GB
 213201 files 62.7 GB</span>
 </code></pre>
-<p>Sin embargo, todavia toma demasiado tiempo para terminar. No hay ninguna razon por la cual todas las llamadas a <code>walkDir</code> no se pueden hacer al mismo tiempo, explotando de esta manera el paralelismo en el disco del sistema. La tercera version de <code class="command" >du</code>, a continuacion, crea una nueva gorutina para cada llamada a <code>walkDir</code>. Se utiliza un <code>sync.WaitGroup</code> (<a href="#Seccion-8.5" >§8.5</a>) para contar el numero de llamadas a <code>walkDir</code> que aun estan activas, y una gorutina mas cerca para cerrar el canal <code>fileSizes</code> cuando el contador llega a cero.</p>
+<p>Sin embargo, todavia toma demasiado tiempo para terminar. No hay ninguna razon por la cual todas las llamadas a <code>walkDir</code> no se pueden hacer al mismo tiempo, explotando de esta manera el paralelismo en el disco del sistema. La tercera version de <code class="command" >du</code>, a continuacion, crea una nueva gorutina para cada llamada a <code>walkDir</code>. Se utiliza un <code>sync.WaitGroup</code> (<a href="#Seccion-8.5" >§8.5</a>) para contar el numero de llamadas a <code>walkDir</code> que aun estan activas, y una gorutina mas para cerrar el canal <code>fileSizes</code> cuando el contador llega a cero.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch8/du3/main.go" >gopl.io/ch8/du3</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
@@ -8191,19 +8190,18 @@ https://golang.org/blog/
 
 <span class="c1">// dirents devuelve las entradas de directorio dir</span>
 <span class="kd">func</span> <span class="nx">dirents</span><span class="p">(</span><span class="nx">dir</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="nx">os</span><span class="p">.</span><span class="nx">FileInfo</span> <span class="p">{</span>
-  <span class="nx">sema</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
-  <span class="c1">// adquirir token</span>
+  <span class="nx">sema</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>        <span class="c1">// adquirir token</span>
   <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="o">&lt;-</span><span class="nx">sema</span> <span class="p">}()</span> <span class="c1">// liberar token</span>
   <span class="c1">// ...</span>
 </pre></div>
 <p>Esta version se ejecuta varias veces mas rapido que la anterior, aunque hay mucha variabilidad de sistema a sistema.</p>
-<p><b>Ejercicio 8.9</b>: Escribir una version de <code class="command" >du</code> que calcule y muestre periodicamente totales separados para cada una de los directorios <code>root</code>.</p>
+<p><b>Ejercicio 8.9</b>: Escribir una version de <code class="command" >du</code> que calcule y muestre periodicamente totales separados por cada uno de los directorios <code>root</code>.</p>
 </div>
 <h3 id="Seccion-8.9" >Cancelacion</h3>
 <div class="hBody-3" >
 <p>A veces necesitamos instruir a una gorutina para que detenga lo que esta haciendo, por ejemplo, en un servidor web que realiza un calculo en nombre de un cliente que se ha desconectado.</p>
 <p>No hay manera de que una gorutina termine directamente a otra, ya que dejaria todas sus variables compartidas en estados indefinidos. En el programa de lanzamiento de cohetes (<a href="#Seccion-8.7" >§8.7</a>) enviamos un solo valor en un canal llamado <code>abort</code>, que la gorutina de cuenta regresiva interpreto como una peticion para detenerse. Pero ¿y si necesitamos cancelar dos gorutinas, o un numero arbitrario?</p>
-<p>Una posibilidad podria ser la de enviar tantos eventos en el canal <code>abort</code> como gorutinas haya que cancelar. Sin embargo, si algunas de las gorutinas ya se han terminado, nuestra cuenta sera demasiado grande, y nuestros envios quedaran atascados. Por otra parte, si esas gorutinas han generado otros gorutinas, nuestra cuenta sera demasiado pequeña, y algunas gorutinas permaneceran inconscientes de la cancelacion. En general, es dificil saber cuantos gorutinas estan trabajando en nuestro nombre en un momento dado. Ademas, cuando un gorutina recibe un valor del canal <code>abort</code>, consume ese valor para que otros gorutinas no lo vean. Para la cancelacion, lo que necesitamos es un mecanismo fiable para <em>transmitir</em> un evento sobre un canal de modo que muchos gorutinas puedan verlo <em>tal</em> como ocurre y ver mas tarde que <em>ha</em> ocurrido.</p>
+<p>Una posibilidad podria ser la de enviar tantos eventos en el canal <code>abort</code> como gorutinas haya que cancelar. Sin embargo, si algunas de las gorutinas ya se han terminado, nuestra cuenta sera demasiado grande, y nuestros envios quedaran atascados. Por otra parte, si esas gorutinas han generado otras gorutinas, nuestra cuenta sera demasiado pequeña, y algunas gorutinas permaneceran inconscientes de la cancelacion. En general, es dificil saber cuantos gorutinas estan trabajando en nuestro nombre en un momento dado. Ademas, cuando un gorutina recibe un valor del canal <code>abort</code>, consume ese valor para que otros gorutinas no lo vean. Para la cancelacion, lo que necesitamos es un mecanismo fiable para <em>transmitir</em> un evento sobre un canal de modo que muchas gorutinas puedan verlo <em>tal</em> como ocurre y ver mas tarde que <em>ha</em> ocurrido.</p>
 <p>Recuerde que despues de que un canal ha sido cerrado y drenado de todos los valores enviados, las operaciones de recepcion posteriores proceden inmediatamente, dando valores cero. Podemos explotar esto para crear un mecanismo de difusion: no enviar un valor en el canal, cerrarlo.</p>
 <p>Podemos agregar la cancelacion al programa <code class="command" >du</code> de la seccion anterior con algunos cambios simples. En primer lugar, creamos un canal de cancelacion en el que no se envian valores, pero cuyo cierre indica que es hora de que el programa detenga lo que esta haciendo. Tambien definimos una funcion de utilidad, <code>cancelled</code>, que verifica o sondea el estado de cancelacion en el instante en que se llama.</p>
 <div class="figure" >
@@ -8220,8 +8218,8 @@ https://golang.org/blog/
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>A continuacion, creamos una gorutina que leera desde la entrada estandar, que normalmente esta conectada al terminal. Tan pronto como se lee cualquier entrada (por ejemplo, el usuario pulsa la tecla de retorno), este gorutina difunde la cancelacion cerrando el canal <code>done</code>.</p>
-<div class="highlight"><pre><span></span><span class="c1">// cancelar el recorrido cuando se detecta entrada</span>
+<p>A continuacion, creamos una gorutina que leera desde la entrada estandar, que normalmente esta conectada al terminal. Tan pronto como se lee cualquier entrada (por ejemplo, el usuario pulsa la tecla de retorno), esta gorutina difunde la cancelacion cerrando el canal <code>done</code>.</p>
+<div class="highlight"><pre><span></span><span class="c1">// cancelar el recorrido cuando se detecta una entrada</span>
 <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">.</span><span class="nx">Read</span><span class="p">(</span><span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c1">// lee un solo byte</span>
   <span class="nb">close</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span>
@@ -8231,7 +8229,7 @@ https://golang.org/blog/
 <div class="highlight"><pre><span></span><span class="k">for</span> <span class="p">{</span>
   <span class="k">select</span> <span class="p">{</span>
   <span class="k">case</span> <span class="o">&lt;-</span><span class="nx">done</span><span class="p">:</span>
-    <span class="c1">// Drenar fileSizes para permitir que las gorutinas existentes terminen.</span>
+    <span class="c1">// Drena fileSizes para permitir que las gorutinas existentes terminen.</span>
     <span class="k">for</span> <span class="k">range</span> <span class="nx">fileSizes</span> <span class="p">{</span>
       <span class="c1">// no hacer nada.</span>
     <span class="p">}</span>
@@ -8252,7 +8250,7 @@ https://golang.org/blog/
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-<p>Puede ser que sea rentable sondear el estado de cancelacion de nuevo dentro del bucle <code>walkDir</code>, para evitar la creacion gorutinas despues del evento de cancelacion. La cancelacion implica un trade-off; Una respuesta mas rapida a menudo requiere cambios mas intrusivos a la logica del programa. Asegurarse de que ninguna operacion costosa ocurre despues del evento de cancelacion puede requerir la actualizacion de muchos lugares en su codigo, pero a menudo la mayoria del beneficio se puede obtener comprobando la cancelacion en algunos lugares importantes.</p>
+<p>Puede ser rentable sondear el estado de cancelacion de nuevo dentro del bucle <code>walkDir</code>, para evitar la creacion gorutinas despues del evento de cancelacion. La cancelacion implica una compensacion; Una respuesta mas rapida a menudo requiere cambios mas intrusivos a la logica del programa. Asegurarse de que ninguna operacion costosa ocurre despues del evento de cancelacion puede requerir la actualizacion de muchos lugares en su codigo, pero a menudo la mayoria del beneficio se puede obtener comprobando la cancelacion en algunos lugares importantes.</p>
 <p>Un poco de perfilado de este programa revelo que el cuello de botella es la adquisicion de un token de semaforos en <code>dirents</code>. El <code>select</code> a continuacion hace que esta operacion sea cancelable y reduce la latencia tipica del programa de cientos a decenas de milisegundos:</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">dirents</span><span class="p">(</span><span class="nx">dir</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="nx">os</span><span class="p">.</span><span class="nx">FileInfo</span> <span class="p">{</span>
   <span class="k">select</span> <span class="p">{</span>
@@ -8265,7 +8263,7 @@ https://golang.org/blog/
   <span class="c1">// ...leer directorio...</span>
 <span class="p">}</span>
 </pre></div>
-<p>Ahora, cuando se produce la cancelacion, todas las gorutinas de fondo se detienen rapidamente y la funcion <code>main</code> regresa. Por supuesto, cuando <code>main</code> regresa, un programa sale, por lo que puede ser dificil distinguir una funcion principal que limpia despues de si mismo de una que no lo hace. Hay un truco muy util que podemos utilizar durante las pruebas: si en lugar de regresar de <code>main</code> en caso de cancelacion, llevamos a cabo una llamada a <code>panic</code>, entonces en tiempo de ejecucion se volcara la pila de cada gorutina en el programa. Si la gorutina principal es la unica que queda, sera limpiada despues a si misma. Pero si otros gorutinas permanecen, pueden no haber sido canceladas correctamente, o quizas se han cancelado pero la cancelacion toma tiempo; Una pequeña investigacion puede valer la pena. El volcado de un panico a menudo contiene informacion suficiente para distinguir estos casos.</p>
+<p>Ahora, cuando se produce la cancelacion, todas las gorutinas de fondo se detienen rapidamente y la funcion <code>main</code> regresa. Por supuesto, cuando <code>main</code> regresa, un programa sale, por lo que puede ser dificil distinguir una funcion principal que limpia despues de si misma de una que no lo hace. Hay un truco muy util que podemos utilizar durante las pruebas: si en lugar de regresar de <code>main</code> en caso de cancelacion, llevamos a cabo una llamada a <code>panic</code>, entonces en tiempo de ejecucion se volcara la pila de cada gorutina en el programa. Si la gorutina principal es la unica que queda, sera limpiada despues a si misma. Pero si otras gorutinas permanecen, pueden no haber sido canceladas correctamente, o quizas se han cancelado pero la cancelacion toma tiempo; Una pequeña investigacion puede valer la pena. El volcado de un panico a menudo contiene informacion suficiente para distinguir estos casos.</p>
 <p><b>Ejercicio 8.10</b>: Las peticiones HTTP pueden cancelarce cerrando el canal opcional <code>Cancel</code> en la estructura <code>http.Request</code>. Modificar el rastreador web de la <a href="#Seccion-8.6" >Seccion 8.6</a> para admitir la cancelacion.</p>
 <p>Sugerencia: la conveniente funcion <code>http.Get</code> no le brinda la oportunidad de personalizar una <code>Request</code>. En su lugar, cree la solicitud utilizando <code>http.NewRequest</code>, establezca su campo <code>Cancel</code> y, a continuacion, realice la solicitud llamando a <code>http.DefaultClient.Do(req)</code>.</p>
 <p><b>Ejercicio 8.11</b>: Siguiendo el enfoque de <code>mirroredQuery</code> en la <a href="#Seccion-8.4.4" >Seccion 8.4.4</a>, impremente una variante de <code class="command" >fetch</code> que solicite varias direcciones URL al mismo tiempo. Tan pronto como llegue la primera respuesta, cancele las otras solicitudes.</p>
@@ -8294,12 +8292,12 @@ https://golang.org/blog/
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>A continuacion esta el emisor. Sus variable local <code>clients</code> registra el conjunto actual de los clientes conectados. La unica informacion registrada sobre cada cliente es la identidad de su canal de mensajes salientes, sobre el cual mas tarde.</p>
+<p>A continuacion esta el emisor. Su variable local <code>clients</code> registra el conjunto actual de los clientes conectados. La unica informacion registrada sobre cada cliente es la identidad de su canal de mensajes salientes, sobre este mas tarde.</p>
 <div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">client</span> <span class="kd">chan</span><span class="o">&lt;-</span> <span class="kt">string</span>          <span class="c1">// un canal de mensajes salientes</span>
 
 <span class="kd">var</span> <span class="p">(</span>
   <span class="nx">entering</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">client</span><span class="p">)</span>
-  <span class="nx">leaving</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">client</span><span class="p">)</span>
+  <span class="nx">leaving</span>  <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">client</span><span class="p">)</span>
   <span class="nx">messages</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">string</span><span class="p">)</span>     <span class="c1">// todos los mensajes de los clientes entrantes</span>
 <span class="p">)</span>
 
@@ -8322,8 +8320,8 @@ https://golang.org/blog/
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-<p>La emisora escucha los canales globales <code>entering</code> y <code>leaving</code> para anuncios la llegada y salida de <code>clients</code>. Cuando recibe uno de estos eventos, actualiza el conjunto de clientes, y si el evento fue una salida, cierra el canal de mensajes de salida del cliente. La emisora tambien escucha los eventos globales en el canal <code>messages</code>, a la que cada cliente envia todos sus mensajes entrantes. Cuando el emisor recibe uno de estos eventos, transmite el mensaje a cada cliente conectado.</p>
-<p>Ahora echemos un vistazo a las gorutinas por cliente. La funcion <code>handleConn</code> crea un nuevo canal de mensaje de salida para su cliente y anuncia la llegada de este cliente a la emisora atravez del canal <code>entering</code>. A continuacion, lee cada linea de texto del cliente, enviando cada linea a la emisora ​​a traves del canal de mensajes entrantes global, prefijando cada mensaje con la identidad de su remitente. Una vez que no hay nada mas que leer desde el cliente, <code>handleConn</code> anuncia la salida del cliente a traves del canal <code>leaving</code> y cierra la conexion.</p>
+<p>El emisor escucha los canales globales <code>entering</code> y <code>leaving</code> para anunciar la llegada y salida de <code>clients</code>. Cuando recibe uno de estos eventos, actualiza el conjunto de clientes, y si el evento fue una salida, cierra el canal de mensajes de salida del cliente. El emisor tambien escucha los eventos globales en el canal <code>messages</code>, al que cada cliente envia todos sus mensajes entrantes. Cuando el emisor recibe uno de estos eventos, transmite el mensaje a cada cliente conectado.</p>
+<p>Ahora echemos un vistazo a las gorutinas por cliente. La funcion <code>handleConn</code> crea un nuevo canal de mensaje de salida para su cliente y anuncia la llegada de este cliente a la emisora atravez del canal <code>entering</code>. A continuacion, lee cada linea de texto del cliente, enviando cada linea al emisor ​​a traves del canal de mensajes entrantes global, prefijando cada mensaje con la identidad de su remitente. Una vez que no hay nada mas que leer desde el cliente, <code>handleConn</code> anuncia la salida del cliente a traves del canal <code>leaving</code> y cierra la conexion.</p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">handleConn</span><span class="p">(</span><span class="nx">conn</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Conn</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">string</span><span class="p">)</span> <span class="c1">// mensajes salientes del cliente</span>
   <span class="k">go</span> <span class="nx">clientWriter</span><span class="p">(</span><span class="nx">conn</span><span class="p">,</span> <span class="nx">ch</span><span class="p">)</span>
@@ -8350,7 +8348,7 @@ https://golang.org/blog/
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-<p>Ademas, <code>handleConn</code> crea una gorutina <code>clientWriter</code> para cada cliente que recibe los mensajes difundidos al canal de mensaje de salida del cliente y los escribe en la conexion de red del cliente. El bucle del criente escritor termina cuando el difusor cierra el canal despues de recibir una notificacion de salida (<code>leaving</code>).</p>
+<p>Ademas, <code>handleConn</code> crea una gorutina <code>clientWriter</code> para cada cliente que recibe los mensajes difundidos al canal de mensaje de salida del cliente y los escribe en la conexion de red del cliente. El bucle de escritura del criente termina cuando el difusor cierra el canal despues de recibir una notificacion de salida (<code>leaving</code>).</p>
 <p>La pantalla muestra el servidor en accion con dos clientes en ventanas separadas en el mismo equipo, utilizando <code>netcat</code> para charlar:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go build gopl.io/ch8/chat
 <span class="prompt">$ </span>go build gopl.io/ch8/netcat3
@@ -8391,7 +8389,7 @@ Welcome.
 </code></pre>
 </div>
 </div>
-<p>Al hospedar una sesion de chat para <span class="math" >n</span> clientes, este programa ejecuta <span class="math" >2n+2</span> gorutinas al mismo tiempo que se comunican, sin embargo, no necesita operaciones de bloqueo explicitas (<a href="#Seccion-9.2" >§9.2</a>). El mapa <code>clients</code> se limita a solo una gorutina, el emisor, por lo que no se puede acceder al mismo tiempo. Las unicas variables que son compartidos por gorutinas multiples son canales e instancias de <code>net.Conn</code>, ambos concurrentemente seguros. Hablaremos mas sobre el confinamiento, la seguridad de la concurrencia y las implicaciones de compartir las variables a traves de gorutinas en el proximo capitulo.</p>
+<p>Al hospedar una sesion de chat para <span class="math" >n</span> clientes, este programa ejecuta <span class="math" >2n+2</span> gorutinas al mismo tiempo que se comunican, sin embargo, no necesita operaciones de bloqueo explicitas (<a href="#Seccion-9.2" >§9.2</a>). El mapa <code>clients</code> se limita a solo una gorutina, el emisor, por lo que no se puede acceder al mismo tiempo. Las unicas variables que son compartidas por gorutinas multiples son canales e instancias de <code>net.Conn</code>, ambos concurrentemente seguros. Hablaremos mas sobre el confinamiento, la seguridad de la concurrencia y las implicaciones de compartir las variables a traves de gorutinas en el proximo capitulo.</p>
 <p><b>Ejercicio 8.12</b>: Hacer que el emisor anuncia el conjunto actual de clientes para cada nueva llegada. Esto requiere que los clientes establecidos (<code>clients</code>) y los canales de entrada (<code>entering</code> y salida registren tambien el nombre del cliente.</p>
 <p><b>Ejercicio 8.13</b>: Hacer que el servidor de chat desconecte clientes inactivos, como los que no han enviado ningun mensaje en los ultimos cinco minutos. Sugerencia: llamar a <code>conn.Close()</code> en otra gorutina desbloquea las llamadas activas <code>Read</code> como la realizada por <code>input.Scan()</code>.</p>
 <p><b>Ejercicio 8.14</b>: Cambiar el protocolo de red del servidor de chat para que cada cliente proporcione su nombre al entrar. Utilice ese nombre en lugar de la direccion de red cuando prefija cada mensaje con la identidad de su remitente.</p>

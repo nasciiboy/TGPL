@@ -24294,7 +24294,7 @@
 #   points out some important hazards and pitfalls of concurrent programming that
 #   we won’t delve into in this chapter.
   Go permite dos estilos de programación concurrente. Este capítulo presenta las
-  goroutines y canales que soportan @e(procesos secuenciales comunicantes) o
+  gorutinas y canales que soportan @e(procesos secuenciales comunicantes) o
   @A(CSP), un modelo de concurrencia en el cual los valores se pasan entre
   actividades independientes (goroutines) pero las variables están en su mayor
   parte confinadas a una sola actividad. El @l(#Capítulo 9) cubre algunos
@@ -24312,7 +24312,7 @@
   A pesar de que el soporte de Go para la concurrencia es una de sus grandes
   fortalezas, el razonamiento sobre los programas concurrentes es
   intrínsecamente más difícil que los secuenciales, y las intuiciones adquiridas
-  a partir de la programación secuencial pueden a veces desviarnos. Si este es
+  a partir de la programación secuencial a veces pueden desviarnos. Si este es
   tu primer encuentro con la concurrencia, recomendamos dedicar un poco más de
   tiempo para pensar en los ejemplos de estos dos capítulos.
 
@@ -24332,7 +24332,7 @@
    dos funciones llama a la otra. Un programa secuencial puede llamar a una
    función y luego llamar a la otra, pero en un programa @e(concurrente) con dos
    o más gorutinas, las llamadas a @e(ambas) funciones pueden estar activas al
-   mismo tiempo. Veremos tal programa en un momento.
+   mismo tiempo. Veremos un programa asi en un momento.
 
 #    If you have used operating system threads or threads in other languages, then
 #    you can assume for now that a goroutine is similar to a thread, and you’ll be
@@ -24351,10 +24351,10 @@
 #    or method call prefixed by the keyword @c(go). A @c(go) statement causes the
 #    function to be called in a newly created goroutine. The @c(go) statement
 #    itself completes immediately:
-   Cuando un programa inicia, su única goroutine es el que a llama la función
+   Cuando un programa inicia, su única gorutina es la que llama a la función
    @c(main), así que la llamamos la @e(gorutina principal). Las nuevos gorutinas
-   son creados por la declaración @c(go). Sintácticamente, una sentencia @c(go)
-   es una función ordinaria o un llamado a un método prefijado por la palabra
+   son creadas por la declaración @c(go). Sintácticamente, una sentencia @c(go)
+   es una función ordinaria o una llamada a un método prefijado por la palabra
    clave @c(go). Una sentencia @c(go) hace que la función sea llamada en una
    gorutina recién creada. La sentencia @c(go) en si misma se completa
    inmediatamente:
@@ -24377,7 +24377,7 @@
    Fibonacci. Dado que utiliza un algoritmo recursivo terriblemente ineficiente,
    se ejecuta durante un tiempo apreciable, durante el cual nos gustaría
    proporcionar al usuario una indicación visual de que el programa sigue en
-   ejecución, mediante la visualización de un texto animado @"(spinner).
+   ejecución, mediante la visualización de un texto @"(spinner) animado.
 
 #    ..figure > @l(gopl.io/ch8/spinner/main.go<>gopl.io/ch8/spinner)
    ..figure > @l(gopl.io/ch8/spinner/main.go<>gopl.io/ch8/spinner)
@@ -24457,9 +24457,9 @@
 #    Notice how the program is expressed as the composition of two autonomous
 #    activities, spinning and Fibonacci computation. Each is written as a separate
 #    function but both make progress concurrently.
-   Observe cómo el promaga se expresa como la composición de dos actividades
-   autónomas, @c(spinning) y el cálculo de Fibonacci. Cada uno se escribe como
-   una función separada pero ambos hacen progreso simultáneamente.
+   Observe cómo el programa se expresa como la composición de dos actividades
+   autónomas, la animacion y el cálculo de Fibonacci. Cada uno se escribe como
+   una función separada pero ambos avanzan simultáneamente.
 
 # ** Section 8.2 <> Example: Concurrent Clock Server
 ** Seccion 8.2 <> Ejemplo: Servidor de Reloj Concurrente
@@ -24646,8 +24646,8 @@
 #    you can use @$(telnet) or this simple Go version of @$(netcat) that uses
 #    @c(net.Dial) to connect to a TCP server:
    El cliente muestra el tiempo enviado por el servidor cada segundo hasta que
-   interrumpimos el cliente con Control-C, que en los sistemas Unix se hace eco
-   como @c(^C) por el shell. Si @$(nc) o netcat no está instalado en su sistema,
+   interrumpimos el cliente con Control-C, que en los sistemas Unix produce el
+   eco @c(^C) por el shell. Si @$(nc) o netcat no está instalado en su sistema,
    puede usar @$(telnet) o esta versión simple de @$(netcat) que utiliza
    @c(net.Dial) para conectarse a un servidor TCP:
 
@@ -24715,7 +24715,7 @@
 #    one to the right:
    Este programa lee datos de la conexión y los escribe en la salida estándar
    hasta que se produce una condición de fin de archivo o un error. La función
-   @c(mustCopy) es una utilidad utilizada en varios ejemplos en esta sección. Vamos
+   @c(mustCopy) es una utilidad usada en varios ejemplos en esta sección. Vamos
    a correr dos clientes al mismo tiempo en diferentes terminales, una mostrada
    a la izquierda y otra a la derecha:
 
@@ -24781,7 +24781,7 @@
    el servidor es secuencial; Sólo se maneja un cliente a la vez. Sólo se
    necesita un pequeño cambio para hacer que el servidor sea concurrente:
    agregar la palabra clave @c(go) a la llamada a @c(handleConn) hace que cada llamada
-   se ejecute en su propia goroutine.
+   se ejecute en su propia gorutina.
 
 #    ..figure > @l(gopl.io/ch8/clock2/clock.go<>gopl.io/ch8/clock2)
    ..figure > @l(gopl.io/ch8/clock2/clock.go<>gopl.io/ch8/clock2)
@@ -24800,10 +24800,10 @@
        for {
          conn, err := listener.Accept()
          if err != nil {
-           log.Print(err) // e.g., connection aborted
+           log.Print(err)    // por ejemplo, coneccion anulada
            continue
          }
-         go handleConn(conn) // handle connections concurrently
+         go handleConn(conn) // maneja conecciones concurrentemente
        }
      < src..
 
@@ -24955,7 +24955,7 @@
 #    nothing, as in this version of @c(handleConn):
    Un servidor de eco más interesante podría simular las reverberaciones de un
    eco real, con la respuesta fuerte al principio (@c("HELLO!")), Luego moderado
-   (@c("¡Hello!")) después de un retraso, luego callado (@c("¡hola!") como en
+   (@c("¡Hello!")) después de un retraso, luego callado (@c("¡hello!") como en
    esta versión de @c(handleConn):
 
 #    ..figure > @l(gopl.io/ch8/reverb1/reverb.go<>gopl.io/ch8/reverb1)
@@ -24993,7 +24993,7 @@
          for input.Scan() {
            echo(c, input.Text(), 1*time.Second)
          }
-         // NOTE: ignoring potential errors from input.Err()
+         // NOTA: ignorando posibles errores de input.Err()
          c.Close()
        }
      < src..
@@ -25045,13 +25045,13 @@
    Cuando la gorutina principal encuentra el final de la entrada, por ejemplo,
    después de que el usuario teclee Control-D (@c(^D)) en el terminal (o el
    equivalente Control-Z en Microsoft Windows), el programa se detiene, incluso
-   si el otra gorutina aun tiene trabajo que hacer. (Veremos cómo hacer que el
+   si la otra gorutina aun tiene trabajo que hacer. (Veremos cómo hacer que el
    programa espere a que ambos lados terminen una vez que hayamos introducido
    los canales en @l(#Sección 8.4.1).)
 
 #    In the session below, the client’s input is left-aligned and the server’s
 #    responses are indented.  The client shouts at the echo server three times:
-   En la siguiente sesión, la entrada del cliente está alineada a la izquierda y
+   En la siguiente sesion, la entrada del cliente está alineada a la izquierda y
    las respuestas del servidor tienen indentacion. El cliente grita en el
    servidor de eco tres veces:
 
@@ -25175,9 +25175,9 @@
 #    All that was required to make the server use concurrency, not just to handle
 #    connections from multiple clients but even within a single connection, was
 #    the insertion of two @c(go) keywords.
-   Todo lo que se requería para hacer que el servidor utilizara la
-   concurrencia, no sólo para manejar las conexiones de varios clientes, sino
-   incluso dentro de una sola conexión, era la inserción de dos palabras clave.
+   Todo lo que se requería para hacer que el servidor utilizara la concurrencia,
+   no sólo para manejar las conexiones de varios clientes, sino incluso dentro
+   de una sola conexión, era la inserción de dos palabras clave @c(go).
 
 #    However in adding these keywords, we had to consider carefully that it is
 #    safe to call methods of @c(net.Conn) concurrently, which is not true for most
@@ -25199,10 +25199,10 @@
 #    @c(chan int).
    Si las gorutinas son las actividades concurrentes de un programa Go, los
    @e(canales) son las conexiones entre ellas. Un canal es un mecanismo de
-   comunicacion que permite a un gorutina enviar valores a otra gorutina. Cada
-   canal es un conducto para los valores de un tipo particular, llamado canal de
-   @e(tipo canal). El tipo de un canal cuyos elementos tienen tipo @c(int) se
-   escribe @c(chan int).
+   comunicacion que permite a una gorutina enviar valores a otra gorutina. Cada
+   canal es un conducto para los valores de un tipo particular, llamado el
+   @e(tipo de elemento) del canal. El tipo de un canal cuyos elementos tienen
+   tipo @c(int) se escribe @c(chan int).
 
 #    To create a channel, we use the built-in @c(make) function:
    Para crear un canal, se utiliza la funcion nativa @c(make):
@@ -25269,13 +25269,13 @@
 #    element type.
    Los canales soportan una tercera operacion, @e(cierre), que establece una
    bandera que indica que no se eviaran mas valores en este canal; los intentos
-   subsiguientes de envio seran panico. Las operaciones de recepcion en un
-   canal cerrado generan los valores que se han enviado hasta que no quedan mas
-   valores; Cualquier operacion de recepcion se completa inmediatamente y
+   subsiguientes de envio probocaran un panico. Las operaciones de recepcion en
+   un canal cerrado generan los valores que se han enviado hasta que no quedan
+   mas valores; Cualquier operacion de recepcion se completa inmediatamente y
    produce el valor cero del tipo de elemento del canal.
 
 #    To close a channel, we call the built-in @c(close) function:
-   Para cerrar un canal, que llamamos la funcion nativa @c(close):
+   Para cerrar un canal, llamamos a la funcion nativa @c(close):
 
 #    ..src > go
 #      close(ch)
@@ -25289,7 +25289,7 @@
 #    the channel’s @e(capacity). If the capacity is nonzero, @c(make) creates a
 #    @e(buffered) channel.
    Un canal creado con una simple llamada a @c(make) se denomina un canal @e(sin
-   bufer), pero @c(make) acepta un segundo argumento opcional, un entero llamado
+   bufer), pero @c(make) acepta un segundo argumento opcional, un entero denominado
    la @e(capacidad) del canal. Si la capacidad es distinta de cero, @c(make)
    crea un canal @e(con bufer).
 
@@ -25306,8 +25306,8 @@
 
 #    We’ll look at unbuffered channels first and buffered channels in @l(#Section
 #    8.4.4).
-   Veremos primero los canales sin bufer y canales con buffer en la @l(#Seccion
-   8.4.4).
+   Veremos primero los canales sin bufer y en la @l(#Seccion 8.4.4) los canales
+   con buffer.
 
 # *** Section 8.4.1 <> Unbuffered Channels
 *** Seccion 8.4.1 <> Canales sin Buffer
@@ -25318,12 +25318,12 @@
 #     continue. Conversely, if the receive operation was attempted first, the
 #     receiving goroutine is blocked until another goroutine performs a send on
 #     the same channel.
-    Una operacion de envio en un canal sin bufer, bloquea la gorutina enviada
-    hasta que otra gorutina ejecute una recepcion correspondiente en el mismo
+    Una operacion de envio en un canal sin bufer, bloquea la gorutina de envio
+    hasta que otra gorutina ejecute la recepcion correspondiente en el mismo
     canal, momento en el que se transmite el valor y ambas gorutinas pueden
-    continuar. Por el contrario, si la operacion de recepcion se intento en
-    primer lugar, la gorutina de recepcion se bloquea hasta que otra gorutina
-    realice un envio en el mismo canal.
+    continuar. Por el contrario, si la operacion de recepcion se intenta
+    primero, la gorutina de recepcion se bloquea hasta que otra gorutina realice
+    un envio en el mismo canal.
 
 #     Communication over an unbuffered channel causes the sending and receiving
 #     goroutines to @e(synchronize). Because of this, unbuffered channels are
@@ -25332,8 +25332,8 @@
 #     reawakening of the sending goroutine.
     La comunicacion a traves de un canal sin bufer hace que las gorutinas de
     envio y recepcion se sincronicen. Debido a esto, los canales sin bufer a
-    veces se llaman canales sincronos. Cuando se envia un valor en un canal sin
-    bufer, la recepcion del valor @e(ocurre antes) del re-despertar de la
+    veces se llaman canales @e(sincronos). Cuando se envia un valor en un canal
+    sin bufer, la recepcion del valor @e(ocurre antes) del re-despertar de la
     gorutina enviada.
 
 #     In discussions of concurrency, when we say @e(x happens before y), we don’t
@@ -25342,7 +25342,7 @@
 #     variables, are complete and that you may rely on them.
     En discusiones de concurrencia, cuando decimos @e(x sucede antes de y), no
     queremos decir simplemente que @e(x) ocurre antes en el tiempo que @e(y);
-    queremos decir que esta garantizado para hacerlo y que todos sus efectos
+    queremos decir que se garantiza que lo haga y que todos sus efectos
     anteriores, como actualizaciones a las variables, estan completos y que
     usted puede confiar en ellos.
 
@@ -25424,8 +25424,8 @@
     el servidor vea una condicion de fin de archivo. Cerrar la mitad de leectura
     hace que la gorutina de fondo llame a @c(io.Copy) para devolver @"(error de
     lectura por conexion cerrada), por lo que hemos eliminado el registro de
-    errores; El ejercicio 8.3 sugiere una mejor solucion. (Observe que la
-    sentencia go llama a una funcion literal, una construccion comun.)
+    errores; El Ejercicio 8.3 sugiere una mejor solucion. (Observe que la
+    sentencia @c(go) llama a una funcion literal, una construccion comun.)
 
 #     Before it returns, the background goroutine logs a message, then sends a
 #     value on the @c(done) channel. The main goroutine waits until it has
@@ -25451,7 +25451,7 @@
     evento no contiene informacion adicional, es decir, su unico proposito es la
     sincronizacion, vamos a enfatizar esto mediante el uso de un canal cuyo tipo
     de elemento es @c(struct{}), aunque es comun el uso de un canal de @c(bool)
-    o @c(int) para el mismo proposito, ya @c(done <- 1) es mas corto que @c(done
+    o @c(int) para el mismo proposito, ya que @c(done <- 1) es mas corto que @c(done
     <- struct{}{}).
 
 #     @b(Exercise 8.3): In @$(netcat3), the interface value @c(conn) has the
@@ -25469,8 +25469,8 @@
     @c(CloseWrite). Modifica la gorutina principal de @$(netcat3) para cerrar
     solo la mitad de escritura de la conexion para que el programa continue
     imprimiendo los ultimos ecos del servidor @$(reverb1) incluso despues de que
-    la entrada estandar ha sido cerrada. (Hacer esto para el servidor
-    @$(reverb2) es mas dificil; Consulte el Ejercicio 8.4.)
+    la entrada estandar ha sido cerrada. (Hacer esto en el servidor @$(reverb2)
+    es mas dificil; Consulte el Ejercicio 8.4.)
 
 # *** Section 8.4.2 <> Pipelines
 *** Seccion 8.4.2 <> Tuberias
@@ -25481,7 +25481,7 @@
 #     schematically in Figure 8.1.
     Los canales se pueden utilizar para conectar gorutinas a la vez, de modo que
     la salida de una sea la entrada a otra. Esto se llama una tuberia. El
-    programa siguiente consta de tres gorutas conectadas por dos canales, como
+    siguiente programa consta de tres gorutinas conectadas por dos canales, como
     se muestra esquematicamente en la Figura 8.1.
 
 #     ..figure > Figure 8.1. A three-stage pipeline.
@@ -25569,7 +25569,7 @@
 #     goroutines containing infinite loops. But what if we want to send only a
 #     finite number of values through the pipeline?
     Como es de esperar, el programa imprime la serie infinita de cuadrados 0, 1,
-    4, 9 y asi sucesivamente. Pipelines como este se pueden encontrar en los
+    4, 9 y asi sucesivamente. Tuberias como esta se pueden encontrar en los
     programas de servidor de larga duracion donde los canales se utilizan para
     la comunicacion a lo largo de la vida entre gorutinas que contienen bucles
     infinitos. Pero ¿y si queremos enviar solo un numero finito de valores a
@@ -25581,7 +25581,7 @@
 #     the built-in @c(close) function:
     Si el remitente sabe que nunca se enviaran valores adicionales en un canal,
     es util comunicar este hecho a las gorutinas receptor para que puedan dejar
-    de esperar. Esto se logra cerrando el cierre utilizando la funcion nativa
+    de esperar. Esto se logra @e(cerrando) el canal utilizando la funcion nativa
     @c(close):
 
 #     ..src > go
@@ -25599,13 +25599,12 @@
 #     receives a never-ending stream of zero values, and to send these zeros to
 #     the printer.
     Despues de que se haya cerrado un canal, cualquier otra operacion de envio
-    se pondra en panico. Despues de que el canal cerrado ha sido drenado, es
+    producira un panico. Despues de que el canal cerrado ha sido @e(drenado), es
     decir, despues de que el ultimo elemento enviado ha sido recibido, todas las
-    operaciones subsigientes de recepcion se llevaran a cabo si bloqueo, pero
+    operaciones subsiguientes de recepcion se llevaran a cabo sin bloqueo, pero
     daran un valor cero. Cerrar el canal @c(naturals) haria que el bucle de
-    cuadrados girara mientras recive un flujo interminable de valores cero que
-    recibe un flujo interminable de valores cero, y enviar estos ceros a la
-    impresora.
+    cuadrados girara mientras recive un flujo interminable de valores cero, y
+    enviaria estos ceros a la impresora.
 
 #     There is no way to test directly whether a channel has been closed, but
 #     there is a variant of the receive operation that produces two results: the
@@ -25620,7 +25619,7 @@
     llamado @c(ok), que es @c(true) para una recepcion exitosa y @c(false) para
     una recepcion en un canal cerrado y drenado. Usando esta caracteristica,
     podemos modificar el bucle de @c(squares) para parar cuando el canal
-    @c(naturals) se drene y cerrar el canal @c(squares) a su vez.
+    @c(naturals) se drene y a su vez cerrar el canal @c(squares).
 
 #     ..src > go
 #       // Squarer
@@ -25655,8 +25654,8 @@
 #     terminating the loop after the last one.
     Debido a que la sintaxis anterior es torpe y este patron es comun, el
     lenguaje nos permite utilizar un bucle @c(range) para iterar a traves de
-    canales tambien. Esta es una sintaxis mas conveniente para recibir todos los
-    valores enviados en un canal y finalizar el bucle despues del ultimo.
+    canales. Esta es una sintaxis mas conveniente para recibir todos los valores
+    enviados en un canal y finalizar el bucle despues del ultimo.
 
 #     In the pipeline below, when the counter goroutine finishes its loop after
 #     100 elements, it closes the @c(naturals) channel, causing the squarer to
@@ -25667,8 +25666,8 @@
     En la tuberia de abajo, cuando la gorutina @c(counter) termina su bucle
     despues de 100 elementos, se cierra el canal @c(naturals), haciendo que
     @c(squarer) termine su bucle y cerrar el canal @c(squares). (En un programa
-    mas complejo, podria tener sentido para el contador y las funciones de
-    @c(squarer) con llamadas diferidas a @c(close) desde el principio.) Por
+    mas complejo, podria tener sentido para el contador y las funciones
+    @c(squarer) diferir las llamadas a @c(close) desde el principio.) Por
     ultimo, la gorutina principal termina su bucle y el programa se cierra.
 
 #     ..figure > @l(gopl.io/ch8/pipeline2/main.go<>gopl.io/ch8/pipeline2)
@@ -25783,10 +25782,10 @@
 #     @c(in) or receiving from @c(out).
     La funcion @c(squarer), situada en el centro de la tuberia, toma dos
     parametros, el canal de entrada y el canal de salida. Ambos tienen el mismo
-    tipo, pero sus usos previstos son opuestas: @c(in) es solo para ser recibida
-    desde, y @c(out) es solo para enviar a. Los nombres @c(in) y @c(out)
-    transmiten esta intencion, pero aun asi, nada impide que @c(squarer) enviar
-    enviar a @c(in) o recibir desde @c(out).
+    tipo, pero sus usos previstos son opuestas: @c(in) es solo para recivir de,
+    y @c(out) es solo para enviar a. Los nombres @c(in) y @c(out) transmiten
+    esta intencion, pero aun asi, nada impide a @c(squarer) enviar a @c(in) o
+    recibir desde @c(out).
 
 #     This arrangement is typical. When a channel is supplied as a function
 #     parameter, it is nearly always with the intent that it be used exclusively
@@ -25804,22 +25803,22 @@
 #     keyword is a mnemonic.) Violations of this discipline are detected at
 #     compile time.
     Para documentar esta intencion y evitar el mal uso, el sistema de tipos Go
-    proporciano tipos de canale @e(unidireccionales) que exponen solo una u otra
+    proporciona tipos de canal @e(unidireccionales) que exponen solo una u otra
     de las operaciones de envio y recepcion. El tipo @c(chan<- int), un canal
     @e(solo de envio) de @c(int), permite envio pero no recepcion. Por el
     contrario, el tipo @c(<-chan int), @c(<-chan int) un canal solo de recepcion
-    de @c(int), permite recivir pero enviar. (La posicion de la flecha @c(<-) en
-    relacion con la palabra clave @c(chan) es un mnemonico. Las infracciones de
-    esta disciplina se detectan en tiempo de compilacion.
+    de @c(int), permite recivir pero no enviar. (La posicion de la flecha @c(<-)
+    en relacion con la palabra clave @c(chan) es un mnemonico. Las infracciones
+    de esta disciplina se detectan en tiempo de compilacion.
 
 #     Since the @c(close) operation asserts that no more sends will occur on a
 #     channel, only the sending goroutine is in a position to call it, and for
 #     this reason it is a compile-time error to attempt to close a receive-only
 #     channel.
     Dado que la operacion @c(close) asegura que no se produciran mas envios en
-    un canal, solo el envio de gorutina esta en una posicion llamarlo, y por
+    un canal, solo la gorutina de envio esta en una posicion llamarla, y por
     esta razon es un error en tiempo de compilacion intentar cerrar un canal
-    solo de recepcion.
+    de solo recepcion.
 
 #     Here’s the squaring pipeline once more, this time with unidirectional
 #     channel types:
@@ -25909,16 +25908,16 @@
     misma estructura de datos del canal..
 
 # *** Section 8.4.4 <> Buffered Channels
-*** Seccion 8.4.4 <> Buffered Channels
+*** Seccion 8.4.4 <> Canales con Buffer
 
 #     A buffered channel has a queue of elements. The queue’s maximum size is
 #     determined when it is created, by the capacity argument to @c(make). The
 #     statement below creates a buffered channel capable of holding three
 #     @c(string) values. Figure 8.2 is a graphical representation of @c(ch) and
 #     the channel to which it refers.
-    un canal almacenado en bufer tiene una cola de elementos. El tamaño maximo
+    un canal almacenado en buffer tiene una cola de elementos. El tamaño maximo
     de la cola se determina cuando se crea, por el argumento de capacidad de
-    @c(make). La declaracion siguiente crea un canal de buffer capaz de mantener
+    @c(make). La declaracion siguiente crea un canal con buffer capaz de mantener
     tres valores @c(string). La Figura 8.2 es una representacion grafica de
     @c(ch) y el canal al que se refiere.
 
@@ -25930,7 +25929,7 @@
     < src..
 
 #     ..figure > Figure 8.2. An empty buffered channel.
-    ..figure > Figura 8.2. Un canal de buffer vacio.
+    ..figure > Figura 8.2. Un canal con buffer vacio.
 
 #       ..img  > img/Figure-8.2.jpg
       ..img  > img/Figure-8.2.jpg
@@ -25942,12 +25941,12 @@
 #     available by another goroutine’s receive. Conversely, if the channel is
 #     empty, a receive operation blocks until a value is sent by another
 #     goroutine.
-    Una operacion de envio en un canal de buffer inserta un elemento
-    en la parte posterior de la cola, y una operacion de recepcion elimina un
-    elemento del frente. Si el canal esta lleno, la operacion de envio bloquea
-    su canal hasta que el espacio sea puesto a disposicion por otro receptor de
+    Una operacion de envio en un canal con buffer inserta un elemento en la parte
+    posterior de la cola, y una operacion de recepcion elimina un elemento del
+    frente. Si el canal esta lleno, la operacion de envio bloquea su gorutina
+    hasta que el espacio sea puesto a disposicion por la recepcion de otra
     gorutina. Por el contrario, si el canal esta vacio, una operacion de
-    recepcion se bloquea hasta que un valor es enviado por otro canal.
+    recepcion se bloquea hasta que un valor es enviado por otra gorutina.
 
 #     We can send up to three values on this channel without the goroutine
 #     blocking:
@@ -25970,7 +25969,7 @@
     envio lo bloquearia.
 
 #     ..figure > Figure 8.3. A full buffered channel.
-    ..figure > Figura 8.3. Un canal completo con bufer.
+    ..figure > Figura 8.3. Un canal con bufer lleno.
 
 #       ..img  > img/Figure-8.3.jpg
       ..img  > img/Figure-8.3.jpg
@@ -25989,19 +25988,19 @@
 #     operation or a receive operation could proceed without blocking. In this
 #     way, the channel’s buffer decouples the sending and receiving goroutines.
     El canal no esta lleno ni vacio (Figura 8.4), de modo que una operacion de
-    envio o de recepcion podria continuar sin bloquear. De esta manera, el bufer
-    del canal desacopla los canales de envio y recepcion de gorutinas.
+    envio o de recepcion podria continuar sin bloqueo. De esta manera, el bufer
+    del canal desacopla las gorutinas de envio y recepcion.
 
 #     ..figure > Figure 8.4. A partially full buffered channel.
-    ..figure > Figura 8.4. Un canal parcialmente almacenado en buffer.
+    ..figure > Figura 8.4. Un canal con buffer parcialmente lleno.
 
 #       ..img  > img/Figure-8.3.jpg
       ..img  > img/Figure-8.3.jpg
 
 #     In the unlikely event that a program needs to know the channel’s buffer
 #     capacity, it can be obtained by calling the built-in @c(cap) function:
-    En el caso improbable de que un programa necesita saber la capacidad de
-    buffer del canal, se puede obtener llamando a la funcion nawiva @c(cap):
+    En el caso improbable de que un programa necesite conocer la capacidad de
+    conal con buffer, se puede obtener llamando a la funcion nativa @c(cap):
 
 #     ..src > go
 #       fmt.Println(cap(ch)) // "3"
@@ -26053,10 +26052,10 @@
     En este ejemplo, las operaciones de envio y recepcion fueron todas
     realizadas por la misma gorutina, pero en programas reales generalmente son
     ejecutadas por gorutinas diferentes. Los principiantes a veces se sienten
-    tentados a usar canales de buffer dentro de una unica gorutina como una
+    tentados a usar canales con buffer dentro de una unica gorutina como una
     cola, atraidos por su sintaxis agradablemente sencilla, pero esto es un
     error. Los canales estan profundamente conectados con la programacion de las
-    gorutas, y sin que otra gorutina que recibe del canal, un remitente –y tal
+    gorutinas, y sin  otra gorutina que reciba del canal, un remitente –y tal
     vez todo el programa–corre el riesgo de quedar bloqueado para siempre. Si
     todo lo que necesita es una simple cola, haga una utilizando un slice.
 
@@ -26068,15 +26067,14 @@
 #     the two slower servers have responded. (Incidentally, it’s quite normal for
 #     several goroutines to send values to the same channel concurrently, as in
 #     this example, or to receive from the same channel.)
-    El siguiente ejemplo muestra una aplicacion de un canal con bufer. Se
-    realiza solicitudes paralelas a tres @c(mirrors), es decir, servidores
-    equivalente pero geograficamente distribuidos. Envia sus respuestas a traves
-    de un canal con bufer, luego recibe y devuelve solo la primer respuesta,
-    que es la mas rapida en llegar. Por lo tanto @c(mirroredQuery) devuelve un
-    resultado incluso antes de que los dos servidores mas lentos han
-    respondido. (Por cierto, es normal que varias gorutinas envien valores al
-    mismo canal de forma concurrente, como en este ejemplo, o para recibir del
-    mismo canal).
+    El siguiente ejemplo muestra una aplicacion de un canal con bufer. Realiza
+    solicitudes paralelas a tres @c(mirrors), es decir, servidores equivalentes
+    pero geograficamente distribuidos. Envia sus respuestas a traves de un canal
+    con bufer, luego recibe y devuelve solo la primer respuesta, que es la mas
+    rapida en llegar. Por lo tanto @c(mirroredQuery) devuelve un resultado
+    incluso antes de que los dos servidores mas lentos hayan respondido. (Por
+    cierto, es normal que varias gorutinas envien valores al mismo canal de
+    forma concurrente, como en este ejemplo, o para recibir del mismo canal).
 
 #     ..src > go
 #       func mirroredQuery() string {
@@ -26107,8 +26105,8 @@
 #     would be a bug. Unlike garbage variables, leaked goroutines are not
 #     automatically collected, so it is important to make sure that goroutines
 #     terminate themselves when no longer needed.
-    Si hubieramos utilizado un canal sin bufer, las dos gorutinas mas lentos se
-    habrian atascado tratando de enviar sus respuestas en un canal del cual
+    Si hubieramos utilizado un canal sin bufer, las dos gorutinas mas lentas se
+    habrian atascado tratando de enviar sus respuestas a un canal del cual
     ninguna gorutina jamas recibira. Esta situacion, denominada una @e(fuga de
     gorutina), seria un error. A diferencia de las variables basura, las
     gorutinas filtradas no se recogen automaticamente, por lo que es importante
@@ -26131,7 +26129,7 @@
     conocemos un limite superior en el numero de valores que se enviaran en un
     canal, no es inusual crear un canal con buffer de ese tamaño y realizar
     todos los envios antes de que se reciba el primer valor. Si no se asigna
-    suficiente capacidad de buffer, el programa se bloqueara.
+    suficiente capacidad al buffer, el programa se bloqueara.
 
 #     Channel buffering may also affect program performance. Imagine three cooks
 #     in a cake shop, one baking, one icing, and one inscribing each cake before
@@ -26140,8 +26138,8 @@
 #     to become ready to accept it; this rendezvous is analogous to communication
 #     over an unbuffered channel.
     Los canales con buffer tambien puede afectar el rendimiento del programa.
-    Imaginese tres cocineros en una pasteleria, una horno, y un frigorifico y
-    otra decorando cada pastel antes de pasarlo al siguiente cocinero en la
+    Imaginese tres cocineros en una pasteleria, un horno, y un frigorifico y
+    otro decorando cada pastel antes de pasarlo al siguiente cocinero en la
     linea de montaje. En una cocina con poco espacio, cada cocinero que ha
     terminado un pastel debe esperar a que el cocinero siguiente este listo para
     aceptarlo; Esta cita es analoga a la comunicacion a traves de un canal sin
@@ -26271,8 +26269,8 @@
 #    that scales linearly with the amount of parallelism.
    Obviamente, el orden en que procesamos los archivos no importa, ya que cada
    operacion de escalado es independiente de todas los demas. Problemas como
-   este que consisten enteramente de subproblemas que son completamente
-   independientes entre si se describen como @e(vergonzosamente paralelos).  Los
+   este que consisten enteramente en subproblemas que son completamente
+   independientes entre si, se describen como @e(vergonzosamente paralelos).  Los
    problemas vergonzosamente paralelos son el tipo mas facil para implementar
    concurrencia y disfrutar de un rendimiento que linealmente escala con la
    cantidad de paralelismo.
@@ -26323,11 +26321,11 @@
 #    sending an event on a shared channel. Since we know that there are exactly
 #    @c[len(filenames)] inner goroutines, the outer goroutine need only count that
 #    many events before it returns:
-   No hay manera directa de esperar hasta que una gorutina haya terminado, pero
-   podemos cambiar la gorutina interior para reportar su terminacion a la gorutina
-   exterior enviando un acontecimiento en un canal compartido. Dado que sabemos
-   que hay exactamente @c[len(filenames)] gorutinas interiores, la gorutina exterior
-   solo necesita contar estos eventos antes de que regresar:
+   No hay una forma directa de esperar hasta que una gorutina haya terminado,
+   pero podemos cambiar la gorutina interior para reportar su terminacion a la
+   gorutina exterior enviando un evento en un canal compartido. Dado que sabemos
+   que hay exactamente @c[len(filenames)] gorutinas interiores, la gorutina
+   exterior solo necesita contar estos eventos antes de regresar:
 
 #    ..src > go
 #      // makeThumbnails3 makes thumbnails of the specified files in parallel.
@@ -26397,25 +26395,25 @@
 #    the value of @c(f), they all observe it to have the value of the final
 #    element of the slice. By adding an explicit parameter, we ensure that we use
 #    the value of @c(f) that is current when the @c(go) statement is executed.
-   Recordemos que el problema de la capturar la variable del bucle dentro de una
+   Recordemos que el problema de capturar la variable del bucle dentro de una
    funcion anonima, se describe en la @l(#Seccion 5.6.1). Arriba, la unica
    variable @c(f) es compartida por todos los valores de la funcion anonima y
    actualizado por sucesivas iteraciones del bucle. Por el momento las nuevas
    gorutinas comenzar a ejecutar la funcion literal, el bucle @c(for) puede
    tener actualizada @c(f) e iniciar otra iteracion o (mas probablemente)
-   terminado en su totalidad, por lo que cuando estas gorutinas leen el valor de
-   @c(f), todas ellas observan tener el valor del elemento final del
-   slice. Mediante la adicion de un parametro explicito, nos aseguramos de que
-   se utiliza el valor de @c(f) actual cuando se ejecuta la sentencia @c(go).
+   terminarlo en su totalidad, por lo que cuando estas gorutinas leen el valor
+   de @c(f), todas ellas observan el valor del elemento final del slice.
+   Mediante la adicion de un parametro explicito, nos aseguramos de que se
+   utiliza el valor de @c(f) actual cuando se ejecuta la sentencia @c(go).
 
 #    What if we want to return values from each worker goroutine to the main one?
 #    If the call to @c(thumbnail.ImageFile) fails to create a file, it returns an
 #    error. The next version of @c(makeThumbnails) returns the first error it
 #    receives from any of the scaling operations:
-   ¿Que pasa si queremos devolver los valores de cada trabajador a la principal?
-   Si la llamada a @c(thumbnail.ImageFile) no puede crear un archivo, se devuelve un
-   error. La proxima version de @c(makeThumbnails) devuelve el primer error que
-   recibe de cualquiera de las operaciones de escalado:
+   ¿Que pasa si queremos devolver los valores de cada gorutina de trabajo a la
+   principal?  Si la llamada a @c(thumbnail.ImageFile) no puede crear un
+   archivo, devuelve un error. La proxima version de @c(makeThumbnails) devuelve
+   el primer error que recibe de cualquiera de las operaciones de escalado:
 
 #    ..src > go
 #      // makeThumbnails4 makes thumbnails for the specified files in parallel.
@@ -26467,7 +26465,7 @@
 #    situation, a goroutine leak (@l(#Section 8.4.4<>§8.4.4)), may cause the whole
 #    program to get stuck or to run out of memory.
    Esta funcion tiene un error sutil. Cuando encuentra el primer error no nil,
-   se devuelve el error al llamador, sin dejar drenado la gorutina de canal
+   se devuelve el error al llamador, sin dejar drenada la gorutina de canal
    @c(errors). Cada gorutina trabajador restante se bloqueara para siempre
    cuando intente enviar un valor en ese canal, y nunca terminara. Esta
    situacion, una fuga de gorutina (@l(#Seccion 8.4.4<>§8.4.4)), puede hacer que
@@ -26477,15 +26475,16 @@
 #    that no worker goroutine will block when it sends a message. (An alternative
 #    solution is to create another goroutine to drain the channel while the main
 #    goroutine returns the first error without delay.)
-   La solucion mas sencilla es utilizar un canal con capacidad suficiente que
-   ningun trabajador bloqueara cuando envie un mensaje. (Una solucion
-   alternativa es crear otro canal para drenar el canal, mientras que la
-   gorutina principal devuelve el primer error sin demora).
+   La solucion mas sencilla es utilizar un canal con capacidad suficiente para
+   que ningun trabajador se bloque cuando envie un mensaje. (Una solucion
+   alternativa es crear otra gorutina para drenar el canal, mientras la gorutina
+   principal devuelve el primer error sin demora).
 
 #    The next version of @c(makeThumbnails) uses a buffered channel to return the
 #    names of the generated image files along with any errors.
-   La siguiente version de @c(makeThumbnails) utiliza un canal tamponada para devolver
-   los nombres de los archivos de imagen generados junto con cualquier error.
+   La siguiente version de @c(makeThumbnails) utiliza un canal con buffer para
+   devolver los nombres de los archivos de imagen generados junto con cualquier
+   error.
 
 #    ..src > go
 #      // makeThumbnails5 makes thumbnails for the specified files in parallel.
@@ -26554,9 +26553,9 @@
 #    cannot predict the number of loop iterations.
    Nuestra version final de @c(makeThumbnails), a continuacion, devuelve el
    numero total de bytes ocupados por los nuevos archivos. A diferencia de las
-   versiones anteriores, sin embargo, recibe los nombres de archivo no como un
-   slice sino a traves de un canal de cadenas, por lo que no podemos predecir el
-   numero de iteraciones del bucle.
+   versiones anteriores, recibe los nombres de archivo no como un slice sino a
+   traves de un canal de cadenas, por lo que no podemos predecir el numero de
+   iteraciones del bucle.
 
 #    To know when the last goroutine has finished (which may not be the last one
 #    to start), we need to increment a counter before each goroutine starts and
@@ -26564,13 +26563,13 @@
 #    counter, one that can be safely manipulated from multiple goroutines and that
 #    provides a way to wait until it becomes zero. This counter type is known as
 #    @c(sync.WaitGroup), and the code below shows how to use it:
-   Para saber cuando ha terminado la ultima gorutina (que puede no ser el ultimo
+   Para saber cuando ha terminado la ultima gorutina (que puede no ser la ultima
    en comenzar), necesitamos incrementar un contador antes de que cada gorutina
    comience y decrementarlo cuando cada gorutina termine. Esto exige un tipo
    especial de contador, que se puede manipular con seguridad desde multiples
    gorutinas y que proporciona una manera de esperar hasta que se convierte en
-   cero. Este tipo de contador se conoce como @c(sync.WaitGroup), y el codigo
-   siguiente muestra como usarlo:
+   cero. Este tipo de contador se conoce como @c(sync.WaitGroup), y el siguiente
+   codigo muestra como usarlo:
 
 #    ..src > go
 #      // makeThumbnails6 makes thumbnails for each file received from the channel.
@@ -26609,7 +26608,7 @@
 #    < src..
    ..src > go
      // makeThumbnails6 crea miniaturas de los archivos especificados en paralelo.
-     // Devuelve el numero de bytes ocupados por los archives que crea.
+     // Devuelve el numero de bytes ocupados por los archivos que crea.
      func makeThumbnails6(filenames <-chan string) int64 {
        sizes := make(chan int64)
        var wg sync.WaitGroup // numero de gorutinas de trabajo
@@ -26654,12 +26653,12 @@
    Observe la asimetria en los metodos @c(Add) y @c(Done). @c(Add), que
    incrementa el contador, debe ser llamado antes de que el trabajador empiece
    la gorutina, no dentro de ella; de lo contrario no estariamos seguros de que
-   el @c(Add) @e(ocurre antes) antes de que la gorutina @"(close) llame a
-   @c(Wait). Ademas, @c(Add) toma un parametro, pero @c(Done) no; que es
-   equivalente a @c[Add(-1)]. Utilizamos @c(defer) para asegurar que el contador
-   se decrementa incluso en el caso de error. La estructura del codigo anterior
-   es un patron comun e idiomatico para realizar bucle en paralelo cuando no
-   conocemos el numero de iteraciones.
+   @c(Add) @e(ocurre antes) de que la gorutina de @"(cierre) llame a @c(Wait).
+   Ademas, @c(Add) toma un parametro, pero @c(Done) no; que es equivalente a
+   @c[Add(-1)]. Utilizamos @c(defer) para asegurar que el contador se decrementa
+   incluso en el caso de error. La estructura del codigo anterior es un patron
+   comun e idiomatico para realizar un bucle en paralelo cuando no conocemos el
+   numero de iteraciones.
 
 #    The @c(sizes) channel carries each file size back to the main goroutine,
 #    which receives them using a @c(range) loop and computes the sum. Observe how
@@ -26669,15 +26668,14 @@
 #    wait operation were placed in the main goroutine before the loop, it would
 #    never end, and if placed after the loop, it would be unreachable since with
 #    nothing closing the channel, the loop would never terminate.
-   El canal @c(sizes) lleva cada tamaño de archivo de nuevo a la gorutina
-   principal, que recibe de ellos usando un range de bucle y calcula la suma.
-   Observamos como creamos un gorutina mas cerca que espera a los trabajadores
-   para terminar antes de cerrar el canal @c(sizes). Estas dos operaciones,
-   @"(wait) y @"(close), deben ser concurrentes con el bucle sobre @c(sizes).
-   Consideremos las alternativas: si la operacion de espera se coloca en la
-   goruta principal antes del bucle, nunca terminaria, y si se colocaba despues
-   del bucle, seria inalcanzable ya que sin nada cerrando el canal, el bucle
-   nunca terminaria.
+   El canal @c(sizes) transporta el tamaño de cada archivo de nuevo a la
+   gorutina principal, que los recibe usando un bucle @c(range) y calcula la
+   suma. Observe como creamos un gorutina para esperar que los trabajadores
+   terminen antes de cerrar el canal @c(sizes). Estas dos operaciones, espera y
+   cierre, deben ser concurrentes con el bucle sobre @c(sizes).  Consideremos
+   las alternativas: si la operacion de espera se coloca en la goruta principal
+   antes del bucle, nunca terminaria, y si se colocaba despues del bucle, seria
+   inalcanzable ya que sin nada cerrando el canal, el bucle nunca terminaria.
 
 #    Figure 8.5 illustrates the sequence of events in the @c(makeThumbnails6)
 #    function. The vertical lines represent goroutines. The thin segments indicate
@@ -26687,11 +26685,11 @@
 #    worker to send a value or the closer to close the channel.
    La Figura 8.5 ilustra la secuencia de eventos en la funcion
    @c(makeThumbnails6). Las lineas verticales representan gorutinas. Los
-   segmentos delgados indican el sueño, los segmentos gruesos actividad. Las
+   segmentos delgados indican la espera, los segmentos gruesos actividad. Las
    flechas diagonales indican eventos que sincronizan una gorutina con otra. El
-   tiempo fluye hacia abajo. Notese como la gorutina principal pasa la mayor
-   parte de su tiempo en el range de bucle dormido, esperando a que un
-   trabajador para enviar un valor o el mas cerca para cerrar el canal.
+   tiempo fluye hacia abajo. Note como la gorutina principal pasa la mayor parte
+   de su tiempo en el bucle @c(range), esperando a que un trabajador envie un
+   valor o al cierre del canal.
 
 #    ..figure > Figure 8.5. The sequence of events in @c(makeThumbnails6).
    ..figure > Figura 8.5. La secuencia de eventos en @c(makeThumbnails6).
@@ -26711,14 +26709,14 @@
    activas. Cuando cae a cero, cierre la mitad de escritura de la conexion TCP
    como se describe en el Ejercicio 8.3. Compruebe que su cliente @$(netcat3)
    modificado de ese ejercicio espera los ecos finales de varios gritos
-   simultaneos, incluso despues de la entrada estandar ha sido cerrada.
+   simultaneos, incluso despues de haber cerrado la entrada estandar.
 
 #    @b(Exercise 8.5): Take an existing CPU-bound sequential program, such as the
 #    Mandelbrot program of @l(#Section 3.3) or the 3-D surface computation of
 #    @l(#Section 3.2), and execute its main loop in parallel using channels for
 #    communication. How much faster does it run on a multiprocessor machine? What
 #    is the optimal number of goroutines to use?
-   @b(Ejercicio 8.5): Tome un programa secuencial CPU dependiente existente, tal
+   @b(Ejercicio 8.5): Tome un programa secuencial CPU dependiente existente,
    como el programa de Mandelbrot de la @l(#Seccion 3.3) o el calculo de
    superficie 3-D de la @l(#Seccion 3.2), y ejecutar su bucle principal
    utilizando canales paralelos para la comunicacion. ¿Cuanto mas rapido se
@@ -26733,11 +26731,11 @@
 #    concurrent so that independent calls to @c(crawl) can exploit the I/O
 #    parallelism available in the web. The @c(crawl) function remains exactly as
 #    it was in @c(gopl.io/ch5/findlinks3):
-   En la @l(#Seccion 5.6), hicimos un simple rastreador web que exploro el
-   grafico de enlace de la web con primer onden de amplitud. En esta seccion, lo
-   haremos concurrente para que las llamadas independientes a @c(crawl) puedan
-   explotar el paralelismo de E/S disponible en la web. la funcion @c(crawl)
-   sigue siendo exactamente como lo fue en @c(gopl.io/ch5/findlinks3):
+   En la @l(#Seccion 5.6), hicimos un simple rastreador web que exploro el grafo
+   de un enlace web con primer onden de amplitud. En esta seccion, lo haremos
+   concurrente para que las llamadas independientes a @c(crawl) puedan explotar
+   el paralelismo de E/S disponible en la web. la funcion @c(crawl) sigue siendo
+   exactamente que en @c(gopl.io/ch5/findlinks3):
 
 #    ..figure > @l(gopl.io/ch8/crawl1/findlinks.go<>gopl.io/ch8/crawl1)
    ..figure > @l(gopl.io/ch8/crawl1/findlinks.go<>gopl.io/ch8/crawl1)
@@ -26771,10 +26769,10 @@
 #    own goroutine and sends the links it discovers back to the worklist.
    La funcion principal se asemeja a @c(breadthFirst) (@l(#Seccion 5.6<>§5.6)).
    Como antes, una lista de trabajo registra la cola de elementos que necesitan
-   procesamiento, cada elemento que es una lista de URL para rastrear, pero esta
-   vez, en lugar de representar la cola utilizando un slice, usamos un
-   canal. Cada llamada al @c(crawl) se produce en su propia gorutina y envia los
-   enlaces que descubre de nuevo a la lista de trabajo.
+   procesamiento, cada elemento es una lista de URLs a rastrear, pero esta vez,
+   en lugar de representar la cola utilizando un slice, usamos un canal. Cada
+   llamada al @c(crawl) se produce en su propia gorutina y envia los enlaces que
+   descubre de nuevo a la lista de trabajo.
 
 #    ..src > go
 #      func main() {
@@ -26801,7 +26799,7 @@
      func main() {
        worklist := make(chan []string)
 
-       // Comiencza con los argumentos de la linea de comandos.
+       // Comienza con los argumentos de la linea de comandos.
        go func() { worklist <- os.Args[1:] }()
 
        // Rastrea la red concurrentemente.
@@ -26826,7 +26824,7 @@
 #    situation in which both the main goroutine and a crawler goroutine attempt to
 #    send to each other while neither is receiving. An alternative solution would
 #    be to use a buffered channel.
-   Observe que la gouritina de rastreo toma @c(link) como un parametro explicito
+   Observe que la gorutina de rastreo toma a @c(link) como un parametro explicito
    para evitar el problema de captura de variables de bucle que vimos por
    primera vez en la @l(#Seccion 5.6.1). Observe tambien que el envio inicial de
    los argumentos de linea de comandos a la lista de trabajo debe ejecutarse en
@@ -26895,13 +26893,13 @@
    El programa es demasiado paralelo. El paralelismo ilimitado rara vez es una
    buena idea ya que siempre hay un factor limitante en el sistema, como el
    numero de nucleos de CPU para cargas de trabajo de calculo, el numero de
-   husos y cabeceras para operaciones de E/S de disco local, el ancho de banda
+   usos y cabeceras para operaciones de E/S de disco local, el ancho de banda
    de la red para descargas de streaming, o la capacidad de servicio de un
    servicio web. La solucion es limitar el numero de usos paralelos del recurso
    para que coincida con el nivel de paralelismo que esta disponible. Una manera
    sencilla de hacerlo en nuestro ejemplo es asegurarse de que no hay mas de
-   @e(n) llamadas a @c(links.Extract) activas a la vez, donde @e(n) esta
-   comodamente inferior que el descriptor de ficheros limite–20 por
+   @e(n) llamadas a @c(links.Extract) activas a la vez, donde @e(n) es
+   holgadamente inferior al limite del descriptor de ficheros–20 por
    ejemplo. Esto es analogo a la manera en que un portero en un club nocturno
    atestado admite a un huesped solamente cuando algun otro huesped sale.
 
@@ -26917,26 +26915,25 @@
 #    important, we’ll use @e(struct{}), which has size zero.
    Podemos limitar el paralelismo utilizando un canal con buffer de capacidad
    @e(n) para modelar una concurrencia primitiva denominada @e(semaforo contador).
-
    Conceptualmente, cada una de las @e(n) ranuras vacantes en el buffer del
    canal representa una señal que autoriza al titular a proceder. Enviar un
-   valor al canal adquiere un token, y recibir un valor del canal libera un
+   valor al canal adquiere un token, y recibe un valor del canal libera un
    token, creando una nueva ranura vacante. Esto asegura que a la mayoria de los
    @e(n) envios puedan producirse sin una recepcion intermedia. (Aunque podria
    ser mas intuitivo tratar las ranuras @e(ocupadas) en canal con bufer como
    tokens, utilizando ranuras vacias evita la necesidad de llenar el buffer.)
    Dado que el tipo de elemento de canal no es importante, vamos a utilizar
-   @c(struct{}), Que tiene el tamaño cero.
+   @c(struct{}), Que tiene tamaño cero.
 
 #    Let’s rewrite the @c(crawl) function so that the call to @e(links.Extract) is
 #    bracketed by operations to acquire and release a token, thus ensuring that at
 #    most 20 calls to it are active at one time.  It’s good practice to keep the
 #    semaphore operations as close as possible to the I/O operation they regulate.
    Vamos a reescribir la funcion @c(crawl) para que la llamada a
-   @c(links.Extract) se encuentre entre corchetes por las operaciones de
-   adquirir y liberar un token, asegurando asi que a lo sumo 20 llamadas activas
-   al mismo tiempo. Es una buena practica mantener las operaciones de semaforo
-   lo mas cerca posible de la operacion de E/S que regulan.
+   @c(links.Extract) se encuentre entre corchetes para las operaciones de
+   adquirir y liberar un token, asegurando asi que a lo sumo hay 20 llamadas
+   activas al mismo tiempo. Es una buena practica mantener las operaciones de
+   semaforo lo mas cerca posible de la operacion de E/S que regulan.
 
 #    ..figure > @l(gopl.io/ch8/crawl2/findlinks.go<>gopl.io/ch8/crawl2)
    ..figure > @l(gopl.io/ch8/crawl2/findlinks.go<>gopl.io/ch8/crawl2)
@@ -26985,10 +26982,10 @@
 #    @e(and) no crawl goroutines are active.
    El segundo problema es que el programa nunca termina, incluso cuando ha
    descubierto todos los enlaces accesibles desde las URLs iniciales. (Por
-   supuesto, es poco probable que note este problema a menos que elija las URL
+   supuesto, es poco probable que note este problema a menos que elija las URLs
    inicialmente o implemente la caracteristica de limitacion de profundidad del
    Ejercicio 8.6). Para que el programa termine, necesitamos romper el bucle
-   principal cuando la lista de trabajo este @e(y) no existan gorutinas de
+   principal cuando la lista de trabajo este vacia @e(y) no existan gorutinas de
    rastreo activas.
 
 #    ..src > go
@@ -27021,7 +27018,7 @@
        worklist := make(chan []string)
        var n int // numero de envios pendientes a la lista de trabajo
 
-       // Start with the command-line arguments.
+       // Comienza con los argumentos de la linea de comandos.
        n++
        go func() { worklist <- os.Args[1:] }()
 
@@ -27059,9 +27056,8 @@
 #    crawler from @l(#Section 5.6), without errors, and terminates correctly if it
 #    should complete its task.
    Ahora el rastreador concurrente se ejecuta aproximadamente 20 veces mas
-   rapido que el rastreador primero con primer orden de amplitud de la
-   @l(#Seccion 5.6), sin errores, y termina correctamente si se debe completar
-   su tarea.
+   rapido que el rastreador con primer orden de amplitud de la @l(#Seccion 5.6),
+   sin errores, y termina correctamente si se debe completar su tarea.
 
 #    The program below shows an alternative solution to the problem of excessive
 #    concurrency.  This version uses the original crawl function that has no
@@ -27146,9 +27142,9 @@
 #    worklist, and then sending each unseen one over the @c(unseenLinks) channel
 #    to a crawler goroutine.
    Las gorutinas de rastreo son todas alimentadas por el mismo canal,
-   @c(unseenLinks).  la gorutina principal es responsable de deduplicar los
+   @c(unseenLinks). La gorutina principal es responsable de deduplicar los
    elementos que recibe de la lista de trabajo, y luego enviar cada enlace no
-   visto sobre el canal @c(unseenLinks) a un gorutina rastreador.
+   visto sobre el canal @c(unseenLinks) a una gorutina de rastreo.
 
 #    The @c(seen) map is @e(confined) within the main goroutine; that is, it can
 #    be accessed only by that goroutine. Like other forms of information hiding,
@@ -27160,12 +27156,12 @@
 #    the methods of that object. In all cases, information hiding helps to limit
 #    unintended interactions between parts of the program.
    El mapa @c(seen) esta @e(confinado) dentro de la gorutina principal; Es
-   decir, solo puede ser accedido por ese gorutina. Al igual que otras formas de
+   decir, solo puede ser accedido por esa gorutina. Al igual que otras formas de
    ocultar la informacion, el confinamiento nos ayuda a razonar sobre la
    correccion de un programa. Por ejemplo, las variables locales no pueden
    mencionarse por su nombre fuera de la funcion en la que se declaran;
    variables que no escapan (@l(#Seccion 2.3.4<>§2.3.4)) de una funcion no se
-   puede acceder desde fuera de esa funcion; Y los campos encapsulados de un
+   puede acceder desde fuera de esa funcion; y los campos encapsulados de un
    objeto no se puede acceder excepto por los metodos de ese objeto. En todos
    los casos, la ocultacion de la informacion ayuda a limitar las interacciones
    no deseadas entre partes del programa.
@@ -27198,7 +27194,7 @@
    directorio en el disco local. Solo se deben buscar las paginas dentro del
    dominio original (por ejemplo, @l(https://golang.org<>golang.org)). Las URL
    de las paginas reflejadas deben modificarse segun sea necesario para que se
-   refieran a la pagina reflejada, no al original.
+   refieran a la pagina espejo, no al original.
 
 # ** Section 8.7 <> Multiplexing with @c(select)
 ** Seccion 8.7 <> Multiplexacion con @c(select)
@@ -27277,10 +27273,10 @@
    Ahora cada iteracion del bucle de cuenta atras tiene que esperar a que un
    evento llegue a uno de los dos canales: el canal tinker si todo esta bien
    (@"(nominal) en la jerga de la NASA) o un evento de aborto si hubo una
-   anomalia. No podemos recibir solo de cada canal porque cualquiera de las
+   anomalia. No podemos recibir de cada canal porque cualquiera de las
    operaciones que intentamos primero bloqueara hasta su finalizacion.
    Necesitamos multiplexar estas operaciones, y para ello, necesitamos una
-   (sentencia de selecion).
+   @e(sentencia select).
 
 #    ..src > go
 #      select {
@@ -27316,10 +27312,10 @@
    La forma general de una sentencia @c(select) se muestra arriba. Al igual que
    una sentencia @c(switch), tiene un numero de casos y una opcion
    @c(default). Cada caso especifica una comunicacion (un envio o recepcion en
-   el algun canal) y un bloque asociado de los estados. Una expresion de
-   recepcion puede aparecer por si misma, como en el primer caso, o dentro de
-   una declaracion de variable compacta, como en el segundo caso; La segunda
-   forma le permite referirse al valor recibido.
+   el algun canal) y un bloque de los estados asociados. Puede aparecen una
+   expresion de recepcion en si misma, como en el primer caso, o dentro de una
+   declaracion de variable compacta, como en el segundo caso; La segunda forma
+   le permite referirse al valor recibido.
 
 #    A @c(select) waits until a communication for some case is ready to
 #    proceed. It then performs that communication and executes the case’s
@@ -27336,7 +27332,7 @@
 #    waits until the first of two events arrives, either an abort event or the
 #    event indicating that 10 seconds have elapsed. If 10 seconds go by with no
 #    abort, the launch proceeds.
-   Volvamos a nuestro programa de lanzamiento de cohetes. la funcion
+   Volvamos a nuestro programa de lanzamiento de cohetes. La funcion
    @c(time.After) devuelve inmediatamente un canal, e inicia una nueva gorutina
    que envia un unico valor en ese canal despues del tiempo especificado. La
    instruccion de seleccion a continuacion espera hasta que llegue el primero de
@@ -27475,15 +27471,15 @@
    la funcion @c(time.Tick) se comporta como si se crea un gorutina que llama a
    @c(time.Sleep) en un bucle, enviando un evento cada vez que se despierta.
    Cuando la funcion de cuenta atras regresa, se detiene la recepcion de eventos
-   de @c(tick), pero la gorutina ticker sigue  alli, tratando en vano de
-   enviar en un canal desde el que no esta recibiendo gorutina–una fuga de gorutina
+   de @c(tick), pero la gorutina de conteo sigue alli, tratando en vano de
+   enviar en un canal donde no hay una gorutina recibiendo–una fuga de gorutina
    (@l(#Seccion 8.4.4<>§8.4.4)).
 
 #    The @c(Tick) function is convenient, but it’s appropriate only when the ticks
 #    will be needed throughout the lifetime of the application. Otherwise, we
 #    should use this pattern:
-   la funcion @c(Tick) es conveniente, pero es apropiada solo cuando se
-   necesitan los ticks durante todo el tiempo de vida de la aplicacion. De lo
+   la funcion @c(Tick) es conveniente, pero solo es apropiada cuando se
+   necesitan ticks durante todo el tiempo de vida de la aplicacion. De lo
    contrario, deberiamos usar este patron:
 
 #    ..src > go
@@ -27517,7 +27513,7 @@
 #    receive operation; doing it repeatedly is called @e(polling) a channel.
    La instruccion @c(select) a continuacion recibe un valor del canal @c(abort)
    si hay uno para recibir; De lo contrario no hace nada. Se trata de una
-   operacion de recepcion no bloqueante; haciendolo repetidamente se denomina un
+   operacion de recepcion no bloqueante; hacerlo repetidamente se denomina un
    canal de @e(sondeo).
 
 #    ..src > go
@@ -27547,11 +27543,12 @@
 #    events, or emitting output. We’ll see an example in the next section.
    El valor cero para un canal es @c(nil). Tal vez sorprendentemente, los
    canales nil a veces son utiles. Debido a que las operaciones de envio y
-   recepcion en un bloque de canal nil, nunca se selecciona un caso en una
-   sentencia @c(select) cuyo canal es @c(nil). Esto nos permite utilizar @c(nil)
-   para activar o desactivar los casos que corresponden a caracteristicas como
-   el manejo de tiempos de espera o cancelacion, en respuesta a otros eventos de
-   entrada o de salida que emite. Veremos un ejemplo en la siguiente seccion.
+   recepcion en un canal nil se bloquean para siempre, nunca se selecciona un
+   caso en una sentencia @c(select) cuyo canal es @c(nil). Esto nos permite
+   utilizar @c(nil) para activar o desactivar los casos que corresponden a
+   caracteristicas como el manejo de tiempos de espera o cancelacion, en
+   respuesta a otros eventos de entrada o de salida que emite. Veremos un
+   ejemplo en la siguiente seccion.
 
 #    @b(Exercise 8.8): Using a select statement, add a timeout to the echo server
 #    from @l(#Section 8.3) so that it disconnects any client that shouts nothing
@@ -27569,8 +27566,8 @@
 #    enumerates the entries of the directory @c(dir) using the @c(dirents) helper
 #    function.
    En esta seccion, vamos a construir un programa que informa del uso de disco
-   de uno o mas directorios especificados en la linea de comandos, como el
-   comando Unix @$(du). La mayor parte de su trabajo es realizado por la funcion
+   de uno o mas directorios especificados por linea de comandos, como el comando
+   Unix @$(du). La mayor parte de su trabajo es realizado por la funcion
    @c(walkDir) a continuacion, que enumera las entradas del directorio @c(dir)
    utilizando la funcion auxiliar @c(dirents).
 
@@ -27644,7 +27641,7 @@
 #    of the file sizes it receives from the channel and finally prints the total.
    La funcion principal, que se muestra a continuacion, utiliza dos gorutinas.
    La gorutina de fondo se llama @c(walkDir) por cada directorio especificado en
-   la linea de comandos y finalmente cierra el canal @c(fileSizes). la gorutina
+   la linea de comandos y finalmente cierra el canal @c(fileSizes). La gorutina
    principal calcula la suma de los tamaños del archivo que recibe del canal y
    finalmente imprime el total.
 
@@ -27752,8 +27749,8 @@
 #    simply moving the @c(printDiskUsage) call into the loop would cause it to
 #    print thousands of lines of output.
    El programa seria mas agradable si nos mantiene informados de su
-   progreso. Sin embargo, simplemente moviendo el llamada a @c(printDiskUsage)
-   en el bucle, lo haria que imprimir miles de lineas de salida.
+   progreso. Sin embargo, simplemente moviendo la llamada a @c(printDiskUsage)
+   en el bucle, lo haria imprimir miles de lineas de salida.
 
 #    The variant of @$(du) below prints the totals periodically, but only if the
 #    @c(-v) flag is specified since not all users will want to see progress
@@ -27843,10 +27840,10 @@
 #    iteration.
    Dado que el programa ya no utiliza una bucle @c(range), el primer caso
    @c(select) debe probar explicitamente si el canal @c(fileSizes) se ha
-   cerrado, utilizando la forma de dos resultado de recepcion de operacion. Si
+   cerrado, utilizando la forma de dos resultados para recibir la operacion. Si
    el canal se ha cerrado, el programa rompe fuera del bucle. Las sentencia
    @c(break) rompe la etiqueta tanto en @c(selec) y el bucle @c(for); una
-   marcada @c(break) no etiquetada saldria solo fera de @c(select), haciendo que
+   marcada @c(break) no etiquetada saldria solo fuera de @c(select), haciendo que
    el bucle comience la siguiente iteracion.
 
 #    The program now gives us a leisurely stream of updates:
@@ -27886,8 +27883,8 @@
    sistema. La tercera version de @$(du), a continuacion, crea una nueva
    gorutina para cada llamada a @c(walkDir). Se utiliza un @c(sync.WaitGroup)
    (@l(#Seccion 8.5<>§8.5)) para contar el numero de llamadas a @c(walkDir) que
-   aun estan activas, y una gorutina mas cerca para cerrar el canal
-   @c(fileSizes) cuando el contador llega a cero.
+   aun estan activas, y una gorutina mas para cerrar el canal @c(fileSizes)
+   cuando el contador llega a cero.
 
 #    ..figure > @l(gopl.io/ch8/du3/main.go<>gopl.io/ch8/du3)
    ..figure > @l(gopl.io/ch8/du3/main.go<>gopl.io/ch8/du3)
@@ -27970,8 +27967,7 @@
 #
 #      // dirents returns the entries of directory dir.
 #      func dirents(dir string) []os.FileInfo {
-#        sema <- struct{}{}
-#        // acquire token
+#        sema <- struct{}{}        // acquire token
 #        defer func() { <-sema }() // release token
 #        // ...
 #    < src..
@@ -27981,8 +27977,7 @@
 
      // dirents devuelve las entradas de directorio dir
      func dirents(dir string) []os.FileInfo {
-       sema <- struct{}{}
-       // adquirir token
+       sema <- struct{}{}        // adquirir token
        defer func() { <-sema }() // liberar token
        // ...
    < src..
@@ -27995,7 +27990,7 @@
 #    @b(Exercise 8.9): Write a version of @$(du) that computes and periodically
 #    displays separate totals for each of the @c(root) directories.
    @b(Ejercicio 8.9): Escribir una version de @$(du) que calcule y muestre
-   periodicamente totales separados para cada una de los directorios @c(root).
+   periodicamente totales separados por cada uno de los directorios @c(root).
 
 # ** Section 8.9 <> Cancellation
 ** Seccion 8.9 <> Cancelacion
@@ -28035,14 +28030,14 @@
    Una posibilidad podria ser la de enviar tantos eventos en el canal @c(abort)
    como gorutinas haya que cancelar. Sin embargo, si algunas de las gorutinas ya
    se han terminado, nuestra cuenta sera demasiado grande, y nuestros envios
-   quedaran atascados. Por otra parte, si esas gorutinas han generado otros
+   quedaran atascados. Por otra parte, si esas gorutinas han generado otras
    gorutinas, nuestra cuenta sera demasiado pequeña, y algunas gorutinas
    permaneceran inconscientes de la cancelacion. En general, es dificil saber
    cuantos gorutinas estan trabajando en nuestro nombre en un momento
    dado. Ademas, cuando un gorutina recibe un valor del canal @c(abort), consume
    ese valor para que otros gorutinas no lo vean. Para la cancelacion, lo que
    necesitamos es un mecanismo fiable para @e(transmitir) un evento sobre un
-   canal de modo que muchos gorutinas puedan verlo @e(tal) como ocurre y ver mas
+   canal de modo que muchas gorutinas puedan verlo @e(tal) como ocurre y ver mas
    tarde que @e(ha) ocurrido.
 
 #    Recall that after a channel has been closed and drained of all sent values,
@@ -28102,7 +28097,7 @@
 #    cancellation by closing the @c(done) channel.
    A continuacion, creamos una gorutina que leera desde la entrada estandar, que
    normalmente esta conectada al terminal. Tan pronto como se lee cualquier
-   entrada (por ejemplo, el usuario pulsa la tecla de retorno), este gorutina
+   entrada (por ejemplo, el usuario pulsa la tecla de retorno), esta gorutina
    difunde la cancelacion cerrando el canal @c(done).
 
 #    ..src > go
@@ -28113,7 +28108,7 @@
 #      }()
 #    < src..
    ..src > go
-     // cancelar el recorrido cuando se detecta entrada
+     // cancelar el recorrido cuando se detecta una entrada
      go func() {
        os.Stdin.Read(make([]byte, 1)) // lee un solo byte
        close(done)
@@ -28154,7 +28149,7 @@
      for {
        select {
        case <-done:
-         // Drenar fileSizes para permitir que las gorutinas existentes terminen.
+         // Drena fileSizes para permitir que las gorutinas existentes terminen.
          for range fileSizes {
            // no hacer nada.
          }
@@ -28202,10 +28197,10 @@
 #    after the cancellation event may require updating many places in your code,
 #    but often most of the benefit can be obtained by checking for cancellation in
 #    a few important places.
-   Puede ser que sea rentable sondear el estado de cancelacion de nuevo dentro
-   del bucle @c(walkDir), para evitar la creacion gorutinas despues del evento
-   de cancelacion. La cancelacion implica un trade-off; Una respuesta mas rapida
-   a menudo requiere cambios mas intrusivos a la logica del programa. Asegurarse
+   Puede ser rentable sondear el estado de cancelacion de nuevo dentro del bucle
+   @c(walkDir), para evitar la creacion gorutinas despues del evento de
+   cancelacion. La cancelacion implica una compensacion; Una respuesta mas rapida a
+   menudo requiere cambios mas intrusivos a la logica del programa. Asegurarse
    de que ninguna operacion costosa ocurre despues del evento de cancelacion
    puede requerir la actualizacion de muchos lugares en su codigo, pero a menudo
    la mayoria del beneficio se puede obtener comprobando la cancelacion en
@@ -28259,12 +28254,12 @@
    Ahora, cuando se produce la cancelacion, todas las gorutinas de fondo se
    detienen rapidamente y la funcion @c(main) regresa. Por supuesto, cuando
    @c(main) regresa, un programa sale, por lo que puede ser dificil distinguir
-   una funcion principal que limpia despues de si mismo de una que no lo
+   una funcion principal que limpia despues de si misma de una que no lo
    hace. Hay un truco muy util que podemos utilizar durante las pruebas: si en
    lugar de regresar de @c(main) en caso de cancelacion, llevamos a cabo una
    llamada a @c(panic), entonces en tiempo de ejecucion se volcara la pila de
    cada gorutina en el programa. Si la gorutina principal es la unica que queda,
-   sera limpiada despues a si misma. Pero si otros gorutinas permanecen, pueden
+   sera limpiada despues a si misma. Pero si otras gorutinas permanecen, pueden
    no haber sido canceladas correctamente, o quizas se han cancelado pero la
    cancelacion toma tiempo; Una pequeña investigacion puede valer la pena. El
    volcado de un panico a menudo contiene informacion suficiente para distinguir
@@ -28366,10 +28361,10 @@
 #    Next is the broadcaster. Its local variable @c(clients) records the current
 #    set of connected clients.  The only information recorded about each client is
 #    the identity of its outgoing message channel, about which more later.
-   A continuacion esta el emisor. Sus variable local @c(clients) registra el
+   A continuacion esta el emisor. Su variable local @c(clients) registra el
    conjunto actual de los clientes conectados. La unica informacion registrada
    sobre cada cliente es la identidad de su canal de mensajes salientes, sobre
-   el cual mas tarde.
+   este mas tarde.
 
 #    ..src > go
 #      type client chan<- string // an outgoing message channel
@@ -28404,7 +28399,7 @@
 
      var (
        entering = make(chan client)
-       leaving = make(chan client)
+       leaving  = make(chan client)
        messages = make(chan string)     // todos los mensajes de los clientes entrantes
      )
 
@@ -28435,11 +28430,11 @@
 #    also listens for events on the global @c(messages) channel, to which each
 #    client sends all its incoming messages. When the broadcaster receives one of
 #    these events, it broadcasts the message to every connected client.
-   La emisora escucha los canales globales @c(entering) y @c(leaving) para
-   anuncios la llegada y salida de @c(clients). Cuando recibe uno de estos
+   El emisor escucha los canales globales @c(entering) y @c(leaving) para
+   anunciar la llegada y salida de @c(clients). Cuando recibe uno de estos
    eventos, actualiza el conjunto de clientes, y si el evento fue una salida,
-   cierra el canal de mensajes de salida del cliente. La emisora tambien escucha
-   los eventos globales en el canal @c(messages), a la que cada cliente envia
+   cierra el canal de mensajes de salida del cliente. El emisor tambien escucha
+   los eventos globales en el canal @c(messages), al que cada cliente envia
    todos sus mensajes entrantes. Cuando el emisor recibe uno de estos eventos,
    transmite el mensaje a cada cliente conectado.
 
@@ -28455,7 +28450,7 @@
    @c(handleConn) crea un nuevo canal de mensaje de salida para su cliente y
    anuncia la llegada de este cliente a la emisora atravez del canal
    @c(entering). A continuacion, lee cada linea de texto del cliente, enviando
-   cada linea a la emisora ​​a traves del canal de mensajes entrantes global,
+   cada linea al emisor ​​a traves del canal de mensajes entrantes global,
    prefijando cada mensaje con la identidad de su remitente. Una vez que no hay
    nada mas que leer desde el cliente, @c(handleConn) anuncia la salida del
    cliente a traves del canal @c(leaving) y cierra la conexion.
@@ -28522,8 +28517,8 @@
 #    receiving a @c(leaving) notification.
    Ademas, @c(handleConn) crea una gorutina @c(clientWriter) para cada cliente
    que recibe los mensajes difundidos al canal de mensaje de salida del cliente
-   y los escribe en la conexion de red del cliente. El bucle del criente
-   escritor termina cuando el difusor cierra el canal despues de recibir una
+   y los escribe en la conexion de red del cliente. El bucle de escritura del
+   criente termina cuando el difusor cierra el canal despues de recibir una
    notificacion de salida (@c(leaving)).
 
 #    The display below shows the server in action with two clients in separate
@@ -28628,7 +28623,7 @@
    @m(2n+2) gorutinas al mismo tiempo que se comunican, sin embargo, no necesita
    operaciones de bloqueo explicitas (@l(#Seccion 9.2<>§9.2)). El mapa
    @c(clients) se limita a solo una gorutina, el emisor, por lo que no se puede
-   acceder al mismo tiempo. Las unicas variables que son compartidos por
+   acceder al mismo tiempo. Las unicas variables que son compartidas por
    gorutinas multiples son canales e instancias de @c(net.Conn), ambos
    concurrentemente seguros. Hablaremos mas sobre el confinamiento, la seguridad
    de la concurrencia y las implicaciones de compartir las variables a traves de
