@@ -15897,13 +15897,11 @@
    ..src > go
      var x, y int
      go func() {
-       x = 1
-       // A1
+       x = 1                   // A1
        fmt.Print("y:", y, " ") // A2
      }()
      go func() {
-       y = 1
-       // B1
+       y = 1                   // B1
        fmt.Print("x:", x, " ") // B2
      }()
    < src..
@@ -15935,9 +15933,10 @@
    occur in the order of execution; goroutines are @e(sequentially
    consistent). But in the absence of explicit synchronization using a channel
    or mutex, there is no guarantee that events are seen in the same order by all
-   goroutines. Although goroutine A must observe the effect of the write @c(x
-   = 1) before it reads the value of @c(y), it does not necessarily observe the
-   write to @c(y) done by goroutine B, so A may print a @e(stale) value of @c(y).
+   goroutines. Although goroutine @c(A) must observe the effect of the write
+   @c(x = 1) before it reads the value of @c(y), it does not necessarily observe
+   the write to @c(y) done by goroutine @c(B), so @c(A) may print a @e(stale)
+   value of @c(y).
 
    It is tempting to try to understand concurrency as if it corresponds to
    @e(some) interleaving of the statements of each goroutine, but as the example
@@ -16404,7 +16403,7 @@
    additionally contains a channel called @c(ready). Just after the @c(entry)’s
    @c(result) has been set, this channel will be closed, to @e(broadcast)
    (@l(#Section 8.9<>§8.9)) to any other goroutines that it is now safe for them
-   to read the result from the entry.
+   to read the result from the @c(entry).
 
    ..figure > @l(gopl.io/ch9/memo4/memo.go<>gopl.io/ch9/memo4)
 

@@ -28677,8 +28677,8 @@
 #   must bear in mind when writing concurrent code.
   En el capitulo anterior presentamos varios programas que utilizan gorutinas y
   canales para expresar la concurrencia de forma directa y natural. Sin embargo,
-  al hacerlo, pasamos revista a una serie de cuestiones importantes y sutiles
-  que los programadores deben tener en cuenta al escribir codigo concurrente.
+  al hacerlo, comentamos una serie de cuestiones importantes y sutiles que los
+  programadores deben tener en cuenta al escribir codigo concurrente.
 
 #   In this chapter, we’ll take a closer look at the mechanics of concurrency. In
 #   particular, we’ll point out some of the problems associated with sharing
@@ -28690,7 +28690,7 @@
   particular, señalaremos algunos de los problemas asociados con el intercambio
   de variables entre multiples gorutinas, las tecnicas analiticas para reconocer
   esos problemas y los patrones para resolverlos. Finalmente, explicaremos
-  algunas de las diferencias tecnicas entre gorutinas y los hilos del sistema
+  algunas de las diferencias tecnicas entre gorutinas e hilos del sistema
   operativo.
 
 # ** Section 9.1 <> Race Conditions
@@ -28712,8 +28712,8 @@
    primera sucede antes de la segunda, y asi sucesivamente. En un programa con
    dos o mas gorutinas, los pasos dentro de cada gorutina suceden en el orden
    familiar, pero, en general, no sabemos si un evento @e(x) en una gorutina
-   sucede antes de un evento @e(y) en otra gorutina, o pasa despues de ella, o
-   es simultaneo con ella. Cuando no podemos decir con confianza que un evento
+   sucede antes de un evento @e(y) en otra gorutina, o pasa despues de esta, o
+   simultaneamente. Cuando no podemos decir con confianza que un evento
    @e(ocurre antes) que el otro, entonces los eventos de @e(x) y @e(y) son
    @e(concurrentes).
 
@@ -28725,12 +28725,12 @@
 #    concurrency-safe if all its accessible methods and operations are
 #    concurrency-safe.
    Considere una funcion que funcione correctamente en un programa secuencial.
-   Esa funcion es @e(segura para la concurrencia) seguira trabajando
-   correctamente incluso cuando se llame concurrentemente, es decir, a partir de
+   Esa funcion es @e(concurrentemente segura) si continua trabajando
+   correctamente incluso cuando se llama concurrentemente, es decir, a partir de
    dos o mas gorutinas sin sincronizacion adicional. Podemos generalizar esta
    nocion a un conjunto de funciones en colaboracion, como los metodos y
    operaciones de un tipo particular. Un tipo es seguro para la concurrencia si
-   todos sus metodos y operaciones accesibles son seguros para la simultaneidad.
+   todos sus metodos y operaciones accesibles son concurrentemente seguros.
 
 #    We can make a program concurrency-safe without making every concrete type in
 #    that program concurrency-safe. Indeed, concurrency-safe types are the
@@ -28740,13 +28740,13 @@
 #    goroutine or by maintaining a higher-level invariant of @e(mutual
 #    exclusion). We’ll explain these terms in this chapter.
    Podemos hacer un programa seguro para la concurrencia sin hacer que cada tipo
-   concreto en el programa sea seguro para la concurrencia. De hecho, los tipos
-   concurrentemente seguros simultaneidad son la excepcion en lugar de la regla,
-   por lo que debe acceder a una variable simultaneamente solo si la
-   documentacion de su tipo indica que esto es seguro. Evitamos el acceso
-   concurrente a la mayoria de las variables, ya sea mediante su
-   @e(confinamiento) a una sola gorutina o manteniendo una invariante de mas
-   alto nivel de exclusion mutua. Explicaremos estos terminos en este capitulo.
+   concreto en el programa sea concurrentemente seguro. De hecho, los tipos
+   concurrentemente seguros son la excepcion en lugar de la regla, por lo que
+   debe acceder a una variable simultaneamente solo si la documentacion de su
+   tipo indica que esto es seguro. Evitamos el acceso concurrente a la mayoria
+   de las variables, ya sea mediante su @e(confinamiento) a una sola gorutina o
+   manteniendo una invariante de mas alto nivel de @e(exclusion mutua).
+   Explicaremos estos terminos en este capitulo.
 
 #    In contrast, exported package-level functions @e(are) generally expected to be
 #    concurrency-safe.  Since package-level variables cannot be confined to a
@@ -28761,7 +28761,7 @@
 #    discuss all of them, so we’ll focus on the most important one, the @e(race
 #    condition).
    Existen muchas razones por las que una funcion puede no funcionar cuando se
-   llama concurrentement, incluyendo el punto muerto, el bloqueo vivo y la
+   llama concurrentemente, incluyendo el punto muerto, el bloqueo vivo y la
    inanicion de recursos. No tenemos espacio para discutir todos ellos, por lo
    que nos centraremos en la mas importante, la @e(condicion de carrera).
 
@@ -28780,9 +28780,9 @@
 
 #    It is traditional to explain the seriousness of race conditions through the
 #    metaphor of financial loss, so we’ll consider a simple bank account program.
-   Es tradicional para explicar la gravedad de las condiciones de la carrera a
-   traves de la metafora de la perdida financiera, por lo que vamos a considerar
-   un programa de cuenta bancaria simple.
+   Es tradicion explicar la gravedad de las condiciones de la carrera a traves
+   de la metafora de la perdida financiera, por lo que vamos a considerar un
+   programa de cuenta bancaria simple.
 
 #    ..src > go
 #      // Package bank implements a bank with only one account.
@@ -28855,12 +28855,12 @@
 #    balance variable after each step. The quoted strings represent the printed
 #    balance slips.
    Alice deposita $200, luego comprueba su balance, mientras que Bob deposita
-   $100. Dado que los pasos @c(A1) y @c(A2) se producen simultaneamente con @c(B), no
-   podemos predecir el orden en que se producen. Intuitivamente, podria parecer
-   que solo hay tres posibles ordenaciones, que llamaremos a @"(Alicia primero),
-   a @"(Bob primero), y @"(Alice/Bob/Alice). La siguiente tabla muestra el
-   valor de la variable de balance despues de cada paso. Las cadenas entre
-   comillas representan los resbalones impresos.
+   $100. Dado que los pasos @c(A1) y @c(A2) se producen simultaneamente con
+   @c(B), no podemos predecir el orden en que se producen. Intuitivamente,
+   podria parecer que solo hay tres posibles ordenaciones, que llamaremos a
+   @"(Alicia primero), a @"(Bob primero), y @"(Alice/Bob/Alice). La siguiente
+   tabla muestra el valor de la variable @c(balance) despues de cada paso. Las
+   cadenas entre comillas representan los resbalones impresos.
 
 #    ..pre >
 #      Alice first             Bob first          Alice/Bob/Alice
@@ -28894,8 +28894,8 @@
    que el equilibrio se ha leido (@c(balance + amount)), pero antes de que haya
    sido actualizada (@c(balance = ...)), haciendo que la transaccion de Bob
    desaparezca. Esto se debe a que la operacion de deposito de Alice @c(A1) es
-   realmente una secuencia de dos operaciones, una lectura y una escritura;
-   llamarlos @c(A1r) y @c(A1w). Aqui esta la intercalacion problematica:
+   realmente una secuencia de dos operaciones, una lectura y una escritura; las
+   llamaremos @c(A1r) y @c(A1w). Aqui esta la intercalacion problematica:
 
 #    ..pre >
 #      Data race
@@ -28905,7 +28905,7 @@
 #      A1w    200          balance = ...
 #      A2  "= 200"
    ..pre >
-     Data race
+     Carrera de Datos
               0
      A1r      0          ... = balance + amount
      B      100
@@ -28936,7 +28936,7 @@
    Las cosas se ponen aun mas desordenadas si la carrera de datos implica una
    variable de un tipo que es mas grande que una sola palabra de maquina, como
    una interfaz, una cadena o un slice. Este codigo actualiza @c(x)
-   concurrentemente a dos slices de diferentes longitudes:
+   concurrentemente como dos slices de diferentes longitudes:
 
 #    ..src > go
 #      var x []int
@@ -28965,12 +28965,12 @@
    El valor de @c(x) en la declaracion final no esta definido; Podria ser nil, o
    un slice de longitud 10, o un slice de longitud 1,000,000. Pero recuerda que
    hay tres partes en un slice: el puntero, la longitud y la capacidad. Si el
-   puntero viene de la primera llamada a realizar y la duracion viene de la
+   puntero viene de la primera llamada a realizar y la longitud viene de la
    segunda, @c(x) sera una quimera, un slice cuya longitud nominal es de
    1,000,000, pero cuya matriz subyacente tiene solo 10 elementos. En esta
    eventualidad, el almacenamiento en el elemento 999.999 bloquearia una
    ubicacion de memoria aleatoria arbitraria, con consecuencias imposibles de
-   predecir y dificiles de depurar y localizar. Este campo de minas semantica se
+   predecir y dificiles de depurar y localizar. Este campo de minas semantico se
    llama un @e(comportamiento indefinido) y es bien conocido por los
    programadores de C; Afortunadamente rara vez es tan problematico en Go como
    en C.
@@ -28987,7 +28987,7 @@
    Incluso la nocion de que un programa concurrente es una intercalacion de
    varios programas secuenciales es una falsa intuicion. Como veremos en la
    @l(#Seccion 9.4), las carreras de datos pueden tener resultados aun mas
-   extrañas. Muchos programadores–incluso algunos muy inteligentes–en ocasiones
+   extraños. Muchos programadores–incluso algunos muy inteligentes–en ocasiones
    ofrecen justificaciones para carreras de datos conocidos en sus programas:
    @"(el costo de la exclusion mutua es demasiado alto), @"(esta logica es solo
    para el registro), @"(no me importa si dejo caer algunos mensajes), y asi
@@ -29052,8 +29052,8 @@
 #    map.
    Si en lugar de eso inicializamos el mapa con todas las entradas necesarias
    antes de crear gorutinas adicionales y nunca lo modificamos de nuevo,
-   entonces cualquier numero de gorutinas puede llamar de forma segura a
-   @c(Icon) simultaneamente puesto que cada uno solo lee el mapa.
+   entonces cualquier numero de gorutinas puede llamar concurrentemente a
+   @c(Icon) de forma segura puesto que cada uno solo lee el mapa.
 
 #    ..src > go
 #      var icons = map[string]image.Image{
@@ -29103,7 +29103,7 @@
    variable desde multiples gorutinas. Este es el enfoque adoptado por muchos de
    los programas del capitulo anterior. Por ejemplo, la gorutina principal en el
    rastreador web concurrente (@l(#Seccion 8.6<>§8.6)) es la unica gorutina que
-   tiene acceso a el mapa @c(seen) y la gorutina @c(broadcaster) en el servidor
+   tiene acceso al mapa @c(seen) y la gorutina @c(broadcaster) en el servidor
    de chat (@l(#Seccion 8.10<>§8.10)) es la unica gorutina que accede al mapa
    @c(clients). Estas variables se limitan a una sola gorutina.
 
@@ -29115,10 +29115,10 @@
 #    @e(monitor goroutine) for that variable. For example, the @c(broadcaster)
 #    goroutine monitors access to the @c(clients) map.
    Ya que otras gorutinas no pueden acceder a la variable directamente, deben
-   usar un canal para enviar al gorutina de confinamiento una solicitud para
-   consultar o actualizar la variable. Esto es lo que se quiere decir con el
-   mantra Go @"(No se comunique compartiendo memoria; en su lugar, comparta la
-   memoria mediante la comunicacion). Una gorutina por la que los corredores
+   usar un canal para enviar a la gorutina de confinamiento una solicitud de
+   consulta o actualizacion de la variable. Esto es lo que se quiere decir con
+   el mantra Go @"(No se comunique compartiendo memoria; en su lugar, comparta
+   la memoria mediante la comunicacion). Una gorutina por la que los corredores
    acceden a una variable confinada usando solicitudes de canal se denomina
    @e(gorutina monitor) para esa variable. Por ejemplo, la gorutina
    @c(broadcaster) monitorea el acceso al mapa de clientes.
@@ -29157,10 +29157,10 @@
 #        }
 #      < src..
      ..src > go
-       // El paquete bank seguro para la concurrencia con solo una cuenta.
+       // El paquete bank es concurrentemente seguro con una cuenta.
        package bank
 
-       var deposits = make(chan int) // enviar la cantidad a depositar
+       var deposits = make(chan int) // envia la cantidad a depositar
        var balances = make(chan int) // recive el balance
 
        func Deposit(amount int) { deposits <- amount }
@@ -29178,7 +29178,7 @@
        }
 
        func init() {
-         go teller() // inicia la gorutina momitor
+         go teller() // inicia la gorutina monitor
        }
      < src..
 
@@ -29385,7 +29385,7 @@
 #    declaration of the mutex itself. If you deviate from this, be sure to
 #    document it.
    Cada vez que una gorutina accede a las variables del banco (aqui solo
-   @c(balance)), debe llamar a la metodo @c(Lock) de mutex para adquirir un
+   @c(balance)), debe llamar al metodo @c(Lock) de mutex para adquirir un
    bloqueo exclusivo. Si alguna otra gorutina ha adquirido el bloqueo, esta
    operacion se bloqueara hasta que la otra gorutina llame a @c(Unlock) y el
    bloqueo vuelva a estar disponible. La exclusion mutua @e(custodia) las
@@ -29403,7 +29403,7 @@
    libre de leer y modificar las variables compartidas se denomina @e(seccion
    critica). Llama a @c(Unlock) de parte del poseeodor del bloqueo @e(ocurrira
    antes) de que cualquier otra gorutina pueda adquirir el bloqueo para si. Es
-   esencial que la gorutina libire el bloqueo una vez que haya terminado, en
+   esencial que la gorutina libere el bloqueo una vez que haya terminado, en
    toda las rutas a traves de la funcion, incluyendo rutas de error.
 
 #    The bank program above exemplifies a common concurrency pattern. A set of
@@ -29420,9 +29420,9 @@
    la unica forma de acceder a las variables es a traves de estas funciones (o
    metodos, para las variables de un objeto). Cada funcion adquiere un bloqueo
    mutex al principio y lo libera al final, asegurando asi que las variables
-   compartidas no se acceden simultaneamente. Esta disposicion de las funciones
-   de bloqueo, mutex y variables se denomina @e(monitor). (Este uso anterior de
-   la palabra del monitor inspiro el termino @"(gorutina monitor). Ambos usos
+   compartidas no se acceden simultaneamente. Esta disposicion de funciones,
+   bloqueo mutex y variables se denomina @e(monitor). (Este uso previo de la
+   palabra @"(monitor) inspiro el termino @"(gorutina monitor). Ambos usos
    comparten el significado de un agente que asegura el acceso sequencial a las
    variables.)
 
@@ -29440,7 +29440,7 @@
    final es sencillo. En las secciones criticas mas complejas, especialmente
    aquellas en los que los errores deben resolverse regregando antes, puede ser
    dificil saber que las llamadas a @c(Lock) y @c(Unlock) estan estrictamente
-   emparejado en todas las rutas. La declaracion @c(defer) de Go viene al
+   emparejadas en todas las rutas. La declaracion @c(defer) de Go viene al
    rescate: al diferir una llamada a @c(Unlock), la seccion critica se extiende
    implicitamente al final de la funcion actual, liberandonos de tener que
    insertar una llamada @c(Unlock) en uno o mas lugares lejos de la llamada a
@@ -29480,9 +29480,9 @@
    critica entra en panico, lo que puede ser importante en los programas que
    hacen uso de @c(recover) (@l(#Seccion 5.10<>§5.10)). Un @c(defer) es
    ligeramente mas caro que una llamada explicita a @c(Unlock), pero no lo
-   suficiente para justificar codigo de menos claro. En programas concurrentes,
+   suficiente para justificar codigo menos claro. En programas concurrentes,
    siempre favoresca la claridad y resista la optimizacion prematura. Siempre
-   que sea posible, utilice @c(defer) y dejar que las secciones criticas se
+   que sea posible, utilice @c(defer) y deje que las secciones criticas se
    extienden hasta el final de una funcion.
 
 #    Consider the @c(Withdraw) function below. On success, it reduces the balance
@@ -29525,7 +29525,7 @@
 #    consists of a sequence of three separate operations, each of which acquires
 #    and then releases the mutex lock, but nothing locks the whole sequence.
    Esta funcion finalmente da el resultado correcto, pero tiene un efecto
-   secundario desagradable. Cuando se intenta una retiro excesivo, el balance
+   secundario desagradable. Cuando se intenta un retiro excesivo, el balance
    transitoriamente se sumerge por debajo de cero. Esto puede causar una
    retirada simultanea de una suma modesta que se rechazara espuriosamente. Asi
    que si Bob trata de comprar un coche deportivo, Alice no puede pagar por su
@@ -29588,7 +29588,7 @@
 #    hold once again. Although a re-entrant mutex would ensure that no other
 #    goroutines are accessing the shared variables, it cannot protect the
 #    additional invariants of those variables.
-   Hay una buena razon para que los mutex de Go no vuelvan a entrar. El
+   Hay una buena razon para que los mutex de Go no sean reentrantes. El
    proposito de un mutex es asegurar que ciertos invariantes de las variables
    compartidas se mantengan en puntos criticos durante la ejecucion del
    programa. Una de las invariantes es que la @"(gorutina no esta accediendo a
@@ -29702,7 +29702,7 @@
    telefono. El banco se da cuenta de que el aumento del trafico esta retrasando
    los depositos y retiros, porque todas las peticiones de @c(Balance) se
    ejecutan secuencialmente, manteniendo el bloqueo exclusivo, inpidiendo
-   temporalmente otras gorutinas se ejecute.
+   temporalmente que otras gorutinas se ejecute.
 
 #    Since the @c(Balance) function only needs to @e(read) the state of the
 #    variable, it would in fact be safe for multiple @c(Balance) calls to run
@@ -29712,7 +29712,7 @@
 #    exclusive access. This lock is called a @e(multiple readers, single writer)
 #    lock, and in Go it’s provided by @c(sync.RWMutex):
    Dado que la funcion @c(Balance) solo tiene que leer el estado de la variable,
-   de echo, seria seguro que multiples llamadas @c(Balance) se ejecuten
+   de hecho, seria seguro que multiples llamadas @c(Balance) se ejecuten
    concurrentemente, siempre y cuando no se ejecute ninguna llamada a
    @c(Deposit) o @c(Withdraw). En este escenario necesitamos un tipo especial de
    bloqueo que permita que las operaciones de solo lectura se realicen en
@@ -29746,14 +29746,14 @@
 #    function, which is unchanged, calls the @c(mu.Lock) and @c(mu.Unlock) methods
 #    to acquire and release a @e(writer or exclusive) lock.
    La funcion @c(Balance) ahora llama a los metodos @c(RLock) y @c(RUnlock) para
-   adquirir y liberar a @e(lectores) o bloqueo @e(compartido). la funcion
+   adquirir y liberar @e(lectores) o bloqueo @e(compartido). la funcion
    @c(Deposit), queda sin cambios, llama a los metodos @c(mu.Lock) y
    @c(mu.Unlock) para adquirir y liberar un @e(escritor o bloqueo) exclusivo.
 
 #    After this change, most of Bob’s @c(Balance) requests run in parallel with
 #    each other and finish more quickly. The lock is available for more of the
 #    time, and @c(Deposit) requests can proceed in a timely manner.
-   Despues de este cambio, la mayor parte de peticion @c(Balance) de Bob se
+   Despues de este cambio, la mayor parte de peticiones de @c(Balance) de Bob se
    ejecutan en paralelo entre si y terminar mas rapidamente. El bloqueo esta
    disponible la mayoria del tiempo, y las solicitudes @c(Deposit) puede
    proceder de manera oportuna.
@@ -29769,7 +29769,7 @@
    lectura @e(logicamente) no actualizan algunas variables. Por ejemplo, un
    metodo que parece ser un simple accesorio tambien puede incrementar un
    contador de uso interno o actualizar un cache para que las llamadas repetidas
-   sean mas rapidas. En caso de duda, utilice un @c(Lock) exclusivo .
+   sean mas rapidas. En caso de duda, utilice un @c(Lock) exclusivo.
 
 #    It’s only profitable to use an @c(RWMutex) when most of the goroutines that
 #    acquire the lock are readers, and the lock is under @e(contention), that is,
@@ -29796,7 +29796,7 @@
    Usted puede preguntarse por que el metodo @c(Balance) necesita exclusion
    mutua, ya sea basada en canales o basada en mutex. Despues de todo, a
    diferencia de @c(Deposit), que consiste solo en una sola operacion, por lo
-   que no hay peligro de otra gorutina se ejecute @"(en medio) de la misma. Hay
+   que no hay peligro de ejecutar otra gorutina @"(en medio) de la misma. Hay
    dos razones por las que necesitamos un mutex. La primera es que es igualmente
    importante que @c(Balance) no se ejecute en medio de alguna otra operacion
    como @c(Withdraw). La segunda (y mas sutil) razon es que la sincronizacion es
@@ -29830,26 +29830,22 @@
 #    ..src > go
 #      var x, y int
 #      go func() {
-#        x = 1
-#        // A1
+#        x = 1                   // A1
 #        fmt.Print("y:", y, " ") // A2
 #      }()
 #      go func() {
-#        y = 1
-#        // B1
+#        y = 1                   // B1
 #        fmt.Print("x:", x, " ") // B2
 #      }()
 #    < src..
    ..src > go
      var x, y int
      go func() {
-       x = 1
-       // A1
+       x = 1                   // A1
        fmt.Print("y:", y, " ") // A2
      }()
      go func() {
-       y = 1
-       // B1
+       y = 1                   // B1
        fmt.Print("x:", x, " ") // B2
      }()
    < src..
@@ -29900,17 +29896,18 @@
 #    occur in the order of execution; goroutines are @e(sequentially
 #    consistent). But in the absence of explicit synchronization using a channel
 #    or mutex, there is no guarantee that events are seen in the same order by all
-#    goroutines. Although goroutine A must observe the effect of the write @c(x
-#    = 1) before it reads the value of @c(y), it does not necessarily observe the
-#    write to @c(y) done by goroutine B, so A may print a @e(stale) value of @c(y).
+#    goroutines. Although goroutine @c(A) must observe the effect of the write
+#    @c(x= 1) before it reads the value of @c(y), it does not necessarily observe
+#    the write to @c(y) done by goroutine @c(B), so @c(A) may print a @e(stale)
+#    value of @c(y).
    Dentro de una sola gorutina, los efectos de cada declaracion se garantizan
    para ocurrir en el orden de la ejecucion; las gorutinas son
    @e(secuencialmente consistentes). Pero en ausencia de sincronizacion
    explicita utilizando un canal o mutex, no hay garantia de que los eventos
-   sean vistos en el mismo orden por todas las gorutinas. Aunque la gorutina A
+   sean vistos en el mismo orden por todas las gorutinas. Aunque la gorutina @c(A)
    debe observar el efecto de la escritura @c(x = 1) antes de que se lea el
    valor de @c(y), no necesariamente observar la escritura a @c(y) realizada por
-   la gorutina B, por lo que A puede imprimir un valor obsoleto de @c(y).
+   la gorutina @c(B), por lo que @c(A) puede imprimir un valor obsoleto de @c(y).
 
 #    It is tempting to try to understand concurrency as if it corresponds to
 #    @e(some) interleaving of the statements of each goroutine, but as the example
@@ -29922,8 +29919,8 @@
 #    @c(Print) until the caches are synchronized with main memory.
    Es tentador tratar de entender la concurrencia como si se correspondiera a
    @e(alguna) intercalacion de los estados de cada gorutina, pero como muestra
-   el ejemplo anterior, no es asi como un compilador o una CPU moderna. Debido a
-   que la asignacion y @c(Print) se refieren a diferentes variables, un
+   el ejemplo anterior, no es asi como un compilador o una CPU moderna trabajan.
+   Debido a que la asignacion y @c(Print) se refieren a diferentes variables, un
    compilador puede concluir que el orden de las dos declaraciones no puede
    afectar el resultado, e intercambiarlos. Si las dos gorutinas se ejecutan en
    diferentes CPUs, cada uno con su propia memoria cache, las escrituras de una
@@ -30010,7 +30007,6 @@
 #    equal to @c(nil), and would also call @c(loadIcons).
    Para una variable accedida por solo una gorutina, podemos usar el patron
    anterior, pero este patron no es seguro si @c(Icon) se llama concurrentemente.
-
    Al igual la funcion original @c(Deposit) del banco, @c(Icon) consta de varios
    pasos: Comprueba si @c(icons) es nil, entonces carga los iconos, luego, carga
    @c(icons) a un valor no nil. La intuicion podria sugerir que el peor
@@ -30082,7 +30078,7 @@
 #      }
 #    < src..
    ..src > go
-     var mu sync.Mutex // guards icons
+     var mu sync.Mutex // custodia a icons
      var icons map[string]image.Image
 
      // concurrentemente seguro.
@@ -30130,7 +30126,7 @@
 #      }
 #    < src..
    ..src > go
-     var mu sync.RWMutex // custodia icons
+     var mu sync.RWMutex // custodia a icons
      var icons map[string]image.Image
 
      // concurrentemente seguro.
@@ -30183,7 +30179,7 @@
    variable booleana que registra si la inicializacion ha tenido lugar; El mutex
    protege tanto las estructuras de datos booleanas como las del cliente. El
    unico metodo, @c(Do), acepta la funcion de inicializacion como su argumento.
-   Vamos utilizar @c(Once) para simplificar la funcion @c(Icon):
+   Vamos a utilizar @c(Once) para simplificar la funcion @c(Icon):
 
 #    ..src > go
 #      var loadIconsOnce sync.Once
@@ -30230,7 +30226,7 @@
    @l(#Seccion 2.6.2) de manera que inicialice la tabla de consulta utilizando
    @c(sync.Once) la primera vez que sea necesario. (Siendo realistas, el costo
    de la sincronizacion seria prohibitivo para una pequeña y altamente
-   optimizado funcion como @c(PopCount).)
+   optimizada funcion como @c(PopCount).)
 
 # ** Section 9.6 <> The Race Detector
 ** Seccion 9.6 <> El Detector de Carreras
@@ -30260,8 +30256,8 @@
    durante la ejecucion, junto con la identidad de la gorutina que leyo o
    escribio la variable. Ademas, el programa modificado registra todos los
    eventos de sincronizacion, por ejemplo, declaraciones @c(go), operaciones de
-   canal, y llamadas a @c[(*sync.Mutex).Lock], @c[(*sync.WaitGroup).Wait],
-   etc. (El conjunto completo de eventos de sincronizacion se especifica en el
+   canal, y llamadas a @c[(*sync.Mutex).Lock], @c[(*sync.WaitGroup).Wait], etc.
+   (El conjunto completo de eventos de sincronizacion se especifica en el
    documento @e(The Go Memory Model) que acompaña a la especificacion del
    lenguaje.)
 
@@ -30278,16 +30274,16 @@
    recientemente por una gorutina diferente sin una operacion de sincronizacion
    intermedia. Esto indica un acceso simultaneo a la variable compartida y, por
    tanto, una carrera de datos. La herramienta imprime un informe que incluye la
-   identidad de la variable y las pilas de las llamadas de funcion activas en la
-   seccion de lectura y la nota de escritura. Esto suele ser suficiente para
-   identificar el problema. Seccion 9.7 contiene un ejemplo del detector de
-   carrera en accion.
+   identidad de la variable y las pila de funciones activas llamadas en la
+   gorutina de lectura y la gorutina de escritura. Esto suele ser suficiente
+   para identificar el problema. La @l(#Seccion 9.7) contiene un ejemplo del
+   detector de carrera en accion.
 
 #    The race detector reports all data races that were actually
 #    executed. However, it can only detect race conditions that occur during a
 #    run; it cannot prove that none will ever occur. For best results, make sure
 #    that your tests exercise your packages using concurrency.
-   El detector de carreras informa todas las carreras de datos que se ejecutaron
+   El detector de carrera informa todas las carreras de datos que se ejecutaron
    realmente. Sin embargo, solo puede detectar las condiciones de carrera que se
    producen durante una carrera; No puede demostrar que nunca ocurrira ninguna.
    Para obtener los mejores resultados, asegurese de que sus pruebas utilizan
@@ -30298,7 +30294,7 @@
 #    jobs. For infrequently occurring race conditions, letting the race detector
 #    do its job can save hours or days of debugging.
    Debido a la contabilidad adicional, un programa construido con la deteccion
-   de la raza necesita mas tiempo y memoria para funcionar, pero la sobrecarga
+   de carrera necesita mas tiempo y memoria para funcionar, pero la sobrecarga
    es tolerable incluso para muchos trabajos en produccion. Para condiciones de
    carrera poco frecuentes, dejar que el detector de carrera haga su trabajo
    puede ahorrar horas o dias de depuracion.
@@ -30363,11 +30359,11 @@
    los tipos de resultados declarados de @c(httpGetBody)–@c(interface{}) y
    @c(error), respectivamente–podemos devolver el resultado de la llamada sin
    mas preambulos. Hemos Elegimos este tipo retorno para @c(httpGetBody) para
-   que se ajuste al tipo de funciones que nuestra memoria cache esta diseñado
+   que se ajuste al tipo de funciones que nuestra memoria cache esta diseñada
    para memorizar.
 
 #    Here’s the first draft of the cache:
-   Aqui esta el primer borrador de la cache:
+   Aqui esta el primer bosquejo de la cache:
 
 #    ..figure > @l(gopl.io/ch9/memo1/memo.go<>gopl.io/ch9/memo1)
    ..figure > @l(gopl.io/ch9/memo1/memo.go<>gopl.io/ch9/memo1)
@@ -30407,7 +30403,7 @@
 #      < src..
      ..src > go
        // El paquete memo proporciona concurrencia segura.
-       // momoizacion de una funcion de tipo Func.
+       // momorizacion de una funcion de tipo Func.
        package memo
 
        // Un Memo almacena en cache los resultados de lamar a Func
@@ -30535,9 +30531,9 @@
 #    @c(sync.WaitGroup) to wait until the last request is complete before
 #    returning.
    Dado que las solicitudes HTTP son una gran oportunidad para el paralelismo,
-   cambiemos la prueba para que realice todas las solicitudes
-   simultaneamente. La prueba utiliza un @c(sync.WaitGroup) que esperar hasta la
-   ultima solicitud se ha completada antes de regresar.
+   cambiemos la prueba para que realice todas las solicitudes concurrentemente.
+   La prueba utiliza un @c(sync.WaitGroup) que espera hasta que la ultima solicitud
+   se ha completada antes de regresar.
 
 #    ..src > go
 #      m := memo.New(httpGetBody)
@@ -30582,14 +30578,14 @@
    La prueba se ejecuta mucho mas rapido, pero por desgracia es poco probable
    que funcione correctamente todo el tiempo. Podemos notar fallos inesperados
    de cache, o resultados de cache que devuelven valores incorrectos, o incluso
-   se bloquea.
+   un crasheo.
 
 #    Worse, it is likely to work correctly @e(some) of the time, so we may not
 #    even notice that it has a problem. But if we run it with the @c(-race) flag,
 #    the race detector (@l(#Section 9.6<>§9.6)) often prints a report such as this
 #    one:
    Peor aun, es probable que funcione correctamente @e(algunas) de las veces,
-   por lo que ni siquiera se puede notar que tiene un problema. Pero si
+   por lo que ni siquiera se puede notar que tiene un problema. Pero si lo
    ejecutamos con la bandera @c(-race), el detector de carrera (@l(#Seccion
    9.6<>§9.6)) a menudo imprime un informe como este:
 
@@ -30637,7 +30633,7 @@
 #    concurrency-safe: it has a data race.
    La referencia a @c(memo.go:32) nos dice que dos goroutines han actualizado el
    mapa @c(cache) sin ninguna sincronizacion intermedia. @c(Get) no es
-   concurrentemente segura: tiene una carrera de datos.
+   concurrentemente seguro: tiene una carrera de datos.
 
 #    ..src n=28 > go
 #      func (memo *Memo) Get(key string) (interface{}, error) {
@@ -30720,22 +30716,21 @@
 #    @c(f), @c(Get) serializes all the I/O operations we intended to
 #    parallelize. What we need is a @e(non-blocking) cache, one that does not
 #    serialize calls to the function it memoizes.
-   Ahora el detector de carreras esta en silencio, incluso cuando se ejecutan
-   las pruebas concurrentemente. Desafortunadamente este cambio a @c(Memo)
-   invierte nuestras mejoras de rendimiento anteriores. Al mantener el bloquo
-   durante la duracion de cada llamada a @c(f), @c(Get) serializa todas las
-   operaciones de E/S que pretendiamos poner en paralelo. Lo que necesitamos es
-   una cache @e(sin bloqueo), una que no serialice las llamadas a la funcion que
-   memoizes.
+   Ahora el detector de carrera guarda silencio, incluso cuando se ejecutan las
+   pruebas concurrentemente. Desafortunadamente este cambio a @c(Memo) invierte
+   nuestras mejoras de rendimiento anteriores. Al mantener el bloqueo durante la
+   duracion de cada llamada a @c(f), @c(Get) serializa todas las operaciones de
+   E/S que pretendiamos poner en paralelo. Lo que necesitamos es una cache
+   @e(sin bloqueo), una que no serialice las llamadas a la funcion que memoriza.
 
 #    In the next implementation of @c(Get), below, the calling goroutine acquires
 #    the lock twice: once for the lookup, and then a second time for the update if
 #    the lookup returned nothing. In between, other goroutines are free to use the
 #    cache.
-   En la proxima implementacion de @c(Get), a continuacion, la llamada gorutina adquiere
-   el bloqueo  dos veces: una vez para la busqueda, y luego una segunda vez
-   para la actualizacion si la busqueda devuelve nada. En el medio, otras
-   gorutinas son libres de usar la memoria cache.
+   En la siguiente implementacion de @c(Get), la gorutina llamada adquiere el
+   bloqueo dos veces: una vez para la busqueda, y luego una segunda vez para la
+   actualizacion si la busqueda devuelve nada. En el medio, otras gorutinas son
+   libres de usar la memoria cache.
 
 #    ..figure > @l(gopl.io/ch9/memo3/memo.go<>gopl.io/ch9/memo3)
    ..figure > @l(gopl.io/ch9/memo3/memo.go<>gopl.io/ch9/memo3)
@@ -30784,9 +30779,9 @@
 #    other.
    El rendimiento mejora de nuevo, pero ahora observamos que algunas URL se
    estan recuperando dos veces. Esto ocurre cuando dos o mas gorutinas llaman a
-   @c(Get) para la misma URL o casi al mismo tiempo. Ambos consultar la memoria
-   cache, no encontran ningun valor, y luego llama a la funcion lenta @c(f).
-   Luego ambos actualizan el mapa con el resultado que obtuvieron. Uno de los
+   @c(Get) para la misma URL o casi al mismo tiempo. Ambas consultan la memoria
+   cache, no encuentran ningun valor, y luego llaman a la funcion lenta @c(f).
+   Luego ambas actualizan el mapa con el resultado que obtuvieron. Uno de los
    resultados es sobrescrito por el otro.
 
 #    Ideally we’d like to avoid this redundant work. This feature is sometimes
@@ -30796,15 +30791,15 @@
 #    additionally contains a channel called @c(ready). Just after the @c(entry)’s
 #    @c(result) has been set, this channel will be closed, to @e(broadcast)
 #    (@l(#Section 8.9<>§8.9)) to any other goroutines that it is now safe for them
-#    to read the result from the entry.
+#    to read the result from the @c(entry).
    Idealmente, nos gustaria evitar este trabajo redundante. Esta caracteristica
    a veces se denomina @e(supresion de duplicados). En la version de @c(Memo) a
    continuacion, cada elemento del mapa es un puntero a una estructura
    @c(entry). Cada @c(entry) contiene el resultado memorizado de una llamada a
    la funcion @c(f), como antes, pero, ademas, contiene un canal llamado
    @c(ready). Justo despues de establecer @c(result) con @c(entry), este canal
-   se cerrara, a @e(emitir) (@l(#Seccion 8.9<>§8.9)) a cualquier otra gorutina
-   que ahora es seguro para ellos leer el resultado de la entrada.
+   se cierra, para a @e(emitir) (@l(#Seccion 8.9<>§8.9)) a cualquier otra gorutina
+   que ahora es seguro para ellas leer el resultado desde @c(entry).
 
 #    ..figure > @l(gopl.io/ch9/memo4/memo.go<>gopl.io/ch9/memo4)
    ..figure > @l(gopl.io/ch9/memo4/memo.go<>gopl.io/ch9/memo4)
@@ -30869,7 +30864,7 @@
          e := memo.cache[key]
          if e == nil {
            // Esta es la primer solicitud de esta clave.
-           // Esta gorutina se hare rosponsable de calcular
+           // Esta gorutina se hace rosponsable de calcular
            // el valor  y transmitir la condicion de ready.
            e = &entry{ready: make(chan struct{})}
            memo.cache[key] = e
@@ -30879,7 +30874,7 @@
 
            close(e.ready) // condicion de transmicion lista
          } else {
-           // This is a repeat request for this key.
+           // Esta es una solicitud repetida para esta clave.
            memo.mu.Unlock()
 
            <-e.ready      // esperar condicion de ready
@@ -30914,7 +30909,7 @@
 #    be waiting for it.
    Si no hay una @c(entry) existente, a continuacion, insenta una nueva
    @c(entry) @"(no listo) en el mapa, la gorutina actual se hace responsable de
-   la invocacion de la funcion lenta, actualizacion @c(entry), y trasmitiendo la
+   la invocacion de la funcion lenta, actualizando @c(entry), y trasmitiendo la
    disponibilidad de la nueva @c(entry) a cualquier otra gorutina que podria
    (para entonces) estar esperando.
 
@@ -30928,7 +30923,7 @@
 #    read by subsequent goroutines. There is no data race.
    Observe que las variables @c(e.res.value) y @c(e.res.err) en @c(entry) se
    comparten entre varias gorutinas. la gorutina que crea @c(entry) establece
-   sus valores, y otras gorutinas leer sus valores una vez que la condicion
+   sus valores, y otras gorutinas leen sus valores una vez que la condicion
    @"(ready) ha sido transmitida. A pesar de ser accedido por multiples
    gorutinas, no es necesario el bloqueo mutex. El cierre del canal @c(ready)
    @e(sucede antes) de cualquier otra gorutina reciba el evento de transmision,
@@ -30946,7 +30941,7 @@
 #    message.
    La implementacion de @c(Memo) anterior utiliza un mutex para custodiar una
    variable de un mapa que es compartida por cada gorutina que llame a
-   @c(Get). Es interesante contrastar este diseño con uno alternativo en el que
+   @c(Get). Es interesante contrastar este diseño con uno alternativo en la que
    la variable de mapa se confina a una @e(gorutina monitor) a la que los
    llamantes de @c(Get) deben enviar un mensaje.
 
@@ -30992,7 +30987,7 @@
 #    argument to the memoized function, and another channel, @c(response), over
 #    which the result should be sent back when it becomes available. This channel
 #    will carry only a single value.
-   Sin embargo, el typo @c(Memo) ahora consiste en un canal, @c(requests), a
+   Sin embargo, el tipo @c(Memo) ahora consiste en un canal, @c(requests), a
    traves del cual el llamador de @c(Get) se comunica con la gorutina
    monitor. El tipo de elemento del canal es un @c(request). Con este esquema el
    llamador de @c(Get) envia a la gorutina monitor la clave, es decir, el
@@ -31137,8 +31132,8 @@
 #    by closing the @c(ready) channel. This is done by @c[(*entry).call].
    De manera similar a la version basada en mutex, la primer solicitud de una
    clave dada se convierte en responsable de llamar a la funcion @c(f) de esa
-   clave, almacenar el resultado en @c(entry), y la difundir la disponibilidad
-   de @c(entry) al cerrar el canal @c(ready). Esto se hace mediante
+   clave, almacenar el resultado en @c(entry), y difundir la disponibilidad de
+   @c(entry) al cerrar el canal @c(ready). Esto se hace mediante
    @c[(*entry).call].
 
 #    A subsequent request for the same key finds the existing @c(entry) in the
@@ -31186,11 +31181,10 @@
 #    quantitative difference becomes a qualitative one, and so it is with
 #    goroutines and threads. The time has now come to distinguish them.
    En el capitulo anterior dijimos que la diferencia entre gorutinas e hilos del
-   sistema operativo (OS) ser podrian ignorar hasta mas tarde. Aunque las
+   sistema operativo (OS) podrian ignorarse hasta mas tarde. Aunque las
    diferencias entre ellas son esencialmente cuantitativas, una diferencia
    cuantitativa lo suficientemente grande se convierte en una cualitativa, y lo
-   mismo sucede con las gorutinas y los hilos. Ha llegado el momento de
-   distinguirlos.
+   mismo sucede con las gorutinas e hilos. Ha llegado el momento de distinguirlos.
 
 # *** Section 9.8.1 <> Growable Stacks
 *** Seccion 9.8.1 <> Pilas Expandibles
@@ -31208,11 +31202,11 @@
 #     size can improve space efficiency and allow more threads to be created, or
 #     it can enable more deeply recursive functions, but it cannot do both.
     Cada hilo del Sistema Operativo tiene un bloque de tamaño fijo de memoria (a
-    menudo tan grande como 2 MB) para su pila, el area de trabajo donde se
-    guarda las variables locales de las llamadas a funciones que estan en curso
+    menudo tan grande como 2 MB) para su @e(pila), el area de trabajo donde se
+    guardan las variables locales de las llamadas a funciones que estan en curso
     o suspendidos temporalmente mientras que otra funcion se llama. Esta pila de
     tamaño fijo es simultaneamente demasiado y muy poco. Una pila de 2MB seria
-    una enorme desperdicio de memoria para una pequeña gorutina, como una que
+    un enorme desperdicio de memoria para una pequeña gorutina, como una que
     simplemente espera un @c(WaitGroup) y luego cierra un canal. No es raro que
     un programa Go cree cientos de miles de gorutinas al mismo tiempo, lo que
     seria imposible con pilas tan grandes. Sin embargo, a pesar de su tamaño,
@@ -31230,13 +31224,13 @@
 #     larger than a typical fixed-size thread stack, though of course few
 #     goroutines use that much.
     En contraste, un gorutina comienza su vida con una pequeña pila, tipicamente
-    2KB. La pila de una gorutina, como la pila de un subproceso de sistema
+    2KB. La pila de una gorutina, como la pila de un subproceso del sistema
     operativo, contiene las variables locales de las llamadas de funcion activas
-    y suspendidas, pero a diferencia de un subproceso de sistema operativo, la
-    pila de una gorutina no es fija; Crece y se encoge segun sea necesario. El
+    y suspendidas, pero a diferencia de un subproceso del sistema operativo, la
+    pila de una gorutina no es fija; crece y se encoge segun sea necesario. El
     limite de tamaño para una pila de gorutina puede ser tanto como 1 GB, varios
     ordenes de magnitud mas grande que la pila de un hilo de tamaño fijo, aunque
-    por supuesto algunas gorutinas utilizan mucho.
+    por supuesto pocas gorutinas utilizan tanto.
 
 #     @b(Exercise 9.4): Construct a pipeline that connects an arbitrary number of
 #     goroutines with channels. What is the maximum number of pipeline stages you
@@ -31297,14 +31291,14 @@
 #     runs another goroutine until it is time to wake the first one up. Because it
 #     doesn’t need a switch to kernel context, rescheduling a goroutine is much
 #     cheaper than rescheduling a thread.
-    A diferencia del planificador de hilos del sistema operativo, el programador
-    Go no se invoca periodicamente por un temporizador de hardware, sino
-    implicitamente por ciertas construcciones en lenguaje Go. Por ejemplo,
-    cuando una gorutina llama a @c(time.Sleep) o bloquea en una operacion de
-    canal o mutex, el planificador la pone a dormir y se ejecuta otra gorutina
-    hasta que es hora de despertar el primero. Debido a que no necesita un
-    cambio al contexto del kernel, la reprogramacion de una gorutina es mucho
-    mas barata que la reprogramacion de un hilo.
+    A diferencia del planificador de hilos del sistema operativo, el
+    planificador de Go no se invoca periodicamente por un temporizador de
+    hardware, sino implicitamente por ciertas construcciones en lenguaje Go. Por
+    ejemplo, cuando una gorutina llama a @c(time.Sleep) o bloquea en una
+    operacion de canal o mutex, el planificador la pone a dormir y se ejecuta
+    otra gorutina hasta que es hora de despertar el primero. Debido a que no
+    necesita un cambio al contexto del kernel, la reprogramacion de una gorutina
+    es mucho mas barata que la reprogramacion de un hilo.
 
 #     @b(Exercise 9.5): Write a program with two goroutines that send messages
 #     back and forth over two unbuffered channels in ping-pong fashion. How many
@@ -31332,8 +31326,8 @@
     programara el codigo Go en hasta 8 hilos del SO a la vez. (@c(GOMAXPROCS) es
     la @e(n) en la planificacion @e(m:n)). Las Gorutinas que estan durmiendo o
     bloqueadas en una comunicacion no necesitan un hilo en absoluto. Las
-    Gorutinas que estan bloqueando llamadas E/S u otro tipo llamadas al sistema
-    o llamadas a funciones no Go, no necesita un hilo del SO, por lo que
+    Gorutinas que estan bloqueadas con llamadas al sistema de E/S u otro tipo de
+    llamadas a funciones no Go, no necesita un hilo del SO, por lo que
     @c(GOMAXPROCS) no tienen por que dar cuenta de ellas.
 
 #     You can explicitly control this parameter using the @c(GOMAXPROCS)
@@ -31381,20 +31375,20 @@
 #     results may differ from the ones above.
     En la primera ejecucion, al menos una gorutina fue ejecutada a la
     vez. Inicialmente, era la gorutina principal, que imprime unos. Despues de
-    un periodo de tiempo, el programador de Go lo puso a dormir y desperto la
+    un periodo de tiempo, el planificador de Go lo puso a dormir y desperto la
     gorutina que imprime ceros, dandole un giro para correr en el hilo del
-    SO. En la segunda ejecucion, habia dos subprocesos de sistema operativo
-    disponibles, por lo que ambos gorutinas se ejecutaron simultaneamente,
-    imprimiendo digitos en la misma tasa. Debemos destacar que muchos factores
-    estan involucrados en la programacion de gorutinas, y el tiempo de ejecucion
-    esta en constante evolucion, por lo que sus resultados pueden diferir de los
-    anteriores.
+    sistema operativo. En la segunda ejecucion, habia dos subprocesos de sistema
+    operativo disponibles, por lo que ambas gorutinas se ejecutaron
+    simultaneamente, imprimiendo digitos en la misma tasa. Debemos destacar que
+    muchos factores estan involucrados en la programacion de gorutinas, y el
+    tiempo de ejecucion esta en constante evolucion, por lo que sus resultados
+    pueden diferir de los anteriores.
 
 #     @b(Exercise 9.6): Measure how the performance of a compute-bound parallel
 #     program (see Exercise 8.5) varies with @c(GOMAXPROCS). What is the optimal
 #     value on your computer? How many CPUs does your computer have?
     @b(Ejercicio 9.6): Medir como varia el desempeño de un programa paralelo
-    ligado a calculo (vease el Ejercicio 8.5) con @c(GOMAXPROCS). ¿Cual es el
+    ligado a calculo (vea el Ejercicio 8.5) con @c(GOMAXPROCS). ¿Cual es el
     valor optimo en su computadora? ¿Cuantas CPU tiene su computadora?
 
 # *** Section 9.8.4 <> Goroutines Have No Identity
@@ -31436,14 +31430,14 @@
     comportamiento de una funcion no esta determinado unicamente por sus
     argumentos, sino por la identidad del hilo en el que se ejecuta. Por lo
     tanto, si la identidad del hilo debe cambiar–algunos hilos de trabajo se
-    alistan para ayudar, a–la funcion se comporta de forma misteriosa.
+    alistan para ayudar, y–la funcion se comporta de forma misteriosa.
 
 #     Go encourages a simpler style of programming in which parameters that affect
 #     the behavior of a function are explicit. Not only does this make programs
 #     easier to read, but it lets us freely assign subtasks of a given function to
 #     many different goroutines without worrying about their identity.
-    Go fomenta un estilo de programacion mas simple en el que los parametros que
-    afectan al comportamiento de una funcion son explicitos. Esto no solo hace
+    Go fomenta un estilo de programacion mas simple haciendo explicitos los
+    parametros que afectan el comportamiento de una funcion. Esto no solo hace
     que los programas sean mas faciles de leer, sino que nos permite asignar
     libremente subtareas de una funcion dada a muchas gorutinas diferentes sin
     preocuparnos por su identidad.
@@ -31457,8 +31451,8 @@
     para escribir programas Go. En los proximos dos capitulos, retrocederemos
     para ver algunas de las practicas y herramientas que soportan la
     programacion en general: como estructurar un proyecto como un conjunto de
-    paquetes, y como obtener, construir, probar, evaluar, evaluar, documentar, y
-    compartir esos paquetes.
+    paquetes, y como obtener, construir, probar, evaluar el rendimiento,
+    documentar, y compartir esos paquetes.
 
 # * Chapter 10 <> Packages and the Go Tool
 * Capitulo 10 <> Paquetes y la Herramienta Go

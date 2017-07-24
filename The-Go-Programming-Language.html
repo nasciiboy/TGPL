@@ -8674,13 +8674,11 @@ A2  &quot;= 200&quot;</pre></div>
 <p>Consider the possible outputs of the following snippet of code:</p>
 <div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span>
 <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">x</span> <span class="p">=</span> <span class="mi">1</span>
-  <span class="c1">// A1</span>
+  <span class="nx">x</span> <span class="p">=</span> <span class="mi">1</span>                   <span class="c1">// A1</span>
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="s">&quot;y:&quot;</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">)</span> <span class="c1">// A2</span>
 <span class="p">}()</span>
 <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">y</span> <span class="p">=</span> <span class="mi">1</span>
-  <span class="c1">// B1</span>
+  <span class="nx">y</span> <span class="p">=</span> <span class="mi">1</span>                   <span class="c1">// B1</span>
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="s">&quot;x:&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">)</span> <span class="c1">// B2</span>
 <span class="p">}()</span>
 </pre></div>
@@ -8695,7 +8693,7 @@ y:1 x:1</pre></div>
 <pre class="pre" >x:0 y:0
 y:0 x:0</pre></div>
 <p>but depending on the compiler, CPU, and many other factors, they can happen too. What possible interleaving of the four statements could explain them?</p>
-<p>Within a single goroutine, the effects of each statement are guaranteed to occur in the order of execution; goroutines are <em>sequentially consistent</em>. But in the absence of explicit synchronization using a channel or mutex, there is no guarantee that events are seen in the same order by all goroutines. Although goroutine A must observe the effect of the write <code>x = 1</code> before it reads the value of <code>y</code>, it does not necessarily observe the write to <code>y</code> done by goroutine B, so A may print a <em>stale</em> value of <code>y</code>.</p>
+<p>Within a single goroutine, the effects of each statement are guaranteed to occur in the order of execution; goroutines are <em>sequentially consistent</em>. But in the absence of explicit synchronization using a channel or mutex, there is no guarantee that events are seen in the same order by all goroutines. Although goroutine <code>A</code> must observe the effect of the write <code>x = 1</code> before it reads the value of <code>y</code>, it does not necessarily observe the write to <code>y</code> done by goroutine <code>B</code>, so <code>A</code> may print a <em>stale</em> value of <code>y</code>.</p>
 <p>It is tempting to try to understand concurrency as if it corresponds to <em>some</em> interleaving of the statements of each goroutine, but as the example above shows, this is not how a modern compiler or CPU works. Because the assignment and the <code>Print</code> refer to different variables, a compiler may conclude that the order of the two statements cannot affect the result, and swap them. If the two goroutines execute on different CPUs, each with its own cache, writes by one goroutine are not visible to the other goroutine’s <code>Print</code> until the caches are synchronized with main memory.</p>
 <p>All these concurrency problems can be avoided by the consistent use of simple, established patterns. Where possible, confine variables to a single goroutine; for all other variables, use mutual exclusion.</p>
 </div>
@@ -8964,7 +8962,7 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 </pre></div>
 </div>
 <p>The performance improves again, but now we notice that some URLs are being fetched twice.  This happens when two or more goroutines call <code>Get</code> for the same URL at about the same time.  Both consult the cache, find no value there, and then call the slow function <code>f</code>. Then both of them update the map with the result they obtained. One of the results is overwritten by the other.</p>
-<p>Ideally we’d like to avoid this redundant work. This feature is sometimes called <em>duplicate suppression</em>. In the version of <code>Memo</code> below, each map element is a pointer to an <code>entry</code> struct.  Each <code>entry</code> contains the memoized result of a call to the function <code>f</code>, as before, but it additionally contains a channel called <code>ready</code>. Just after the <code>entry</code>’s <code>result</code> has been set, this channel will be closed, to <em>broadcast</em> (<a href="#Section-8.9" >§8.9</a>) to any other goroutines that it is now safe for them to read the result from the entry.</p>
+<p>Ideally we’d like to avoid this redundant work. This feature is sometimes called <em>duplicate suppression</em>. In the version of <code>Memo</code> below, each map element is a pointer to an <code>entry</code> struct.  Each <code>entry</code> contains the memoized result of a call to the function <code>f</code>, as before, but it additionally contains a channel called <code>ready</code>. Just after the <code>entry</code>’s <code>result</code> has been set, this channel will be closed, to <em>broadcast</em> (<a href="#Section-8.9" >§8.9</a>) to any other goroutines that it is now safe for them to read the result from the <code>entry</code>.</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch9/memo4/memo.go" >gopl.io/ch9/memo4</a></p>
 <div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">entry</span> <span class="kd">struct</span> <span class="p">{</span>
