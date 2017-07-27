@@ -155,7 +155,7 @@
 <span class="toc" ><a class="h3" href="#Seccion-10.1" >Introduccion</a></span>
 <span class="toc" ><a class="h3" href="#Seccion-10.2" >Rutas de Importacion</a></span>
 <span class="toc" ><a class="h3" href="#Seccion-10.3" >La Declaracion <code>package</code></a></span>
-<span class="toc" ><a class="h3" href="#Seccion-10.4" >Declaraciones Import</a></span>
+<span class="toc" ><a class="h3" href="#Seccion-10.4" >Declaraciones <code>import</code></a></span>
 <span class="toc" ><a class="h3" href="#Seccion-10.5" >Importaciones En Blanco</a></span>
 <span class="toc" ><a class="h3" href="#Seccion-10.6" >Paquetes y Nombres</a></span>
 <span class="toc" ><a class="h3" href="#Seccion-10.7" >La Herramienta Go</a></span>
@@ -9140,10 +9140,10 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 </div>
 <h3 id="Seccion-10.1" >Introduccion</h3>
 <div class="hBody-3" >
-<p>El proposito de cualquier sistema de paquetes es hacer que el diseño y mantenimiento de programas grandes sea practico, agrupando las caracteristicas relacionadas en unidades que puedan ser facilmente comprendidas y cambiadas, independientemente de los otros paquetes del programa. Esta <em>modularidad</em> permite que los paquetes sean compartidos y reutilizados por diferentes proyectos, distribuidos dentro de una organizacion, o puestos a disposicion del resto del mundo.</p>
+<p>El proposito de cualquier sistema de paquetes es hacer que el diseño y mantenimiento de programas grandes sea practico, agrupando las caracteristicas relacionadas en unidades que puedan ser facilmente comprendidas y modificadas, independientemente de los otros paquetes del programa. Esta <em>modularidad</em> permite que los paquetes sean compartidos y reutilizados por diferentes proyectos, distribuidos dentro de una organizacion, o puestos a disposicion del resto del mundo.</p>
 <p>Cada paquete define un espacio de nombre distinto que incluye sus identificadores. Cada nombre esta asociado con un paquete en particular, lo que nos permite elegir nombres cortos y claros para los tipos, funciones, etc., que usamos con mas frecuencia, sin crear conflictos con otras partes del programa.</p>
-<p>Los paquetes tambien proporcionan <em>encapsulacion</em> controlando que nombres son visibles o exportados fuera del paquete. La restriccion de la visibilidad de los miembros del paquete oculta las funciones y tipos de ayuda, de la API del paquete, lo que permite al responsable del paquete cambiar la implementacion con la confianza de que ningun codigo fuera del paquete se vera afectado. Restringir la visibilidad tambien oculta las variables para que los clientes puedan acceder y actualizarlas solo mediante funciones exportadas que preserven las invariantes internas o impongan la exclusion mutua en un programa concurrente.</p>
-<p>Cuando cambiamos un archivo, debemos recompilar el paquete del archivo y potencialmente todos los paquetes que dependen de el. La compilacion de Go es notablemente mas rapida que la mayoria de los otros lenguajes compilados, incluso cuando se construye desde cero. Hay tres razones principales para la velocidad del compilador. En primer lugar, todas las importaciones deben estar listadas explicitamente al principio de cada archivo de origen, por lo que el compilador no tiene que leer y procesar un archivo completo para determinar sus dependencias. En segundo lugar, las dependencias de un paquete forman un grafo aciclico dirigido, y debido a que no hay ciclos, los paquetes pueden ser compilados por separado y tal vez en paralelo. Finalmente, el archivo de objeto de un paquete compilado Go registra informacion de exportacion no solo para el propio paquete, sino tambien para sus dependencias. Al compilar un paquete, el compilador debe leer un archivo de objeto para cada importacion pero no necesita mirar mas alla de estos archivos.</p>
+<p>Los paquetes tambien proporcionan <em>encapsulacion</em> controlando que nombres son visibles o exportados fuera del paquete. La restriccion de la visibilidad de los miembros del paquete oculta las funciones y tipos auxiliares de la API del paquete, lo que permite al responsable del paquete cambiar la implementacion con la confianza de que ningun codigo fuera del paquete se vera afectado. Restringir la visibilidad tambien oculta las variables para que los clientes puedan acceder y actualizarlas solo mediante funciones exportadas que preserven las invariantes internas o impongan la exclusion mutua en un programa concurrente.</p>
+<p>Cuando cambiamos un archivo, debemos recompilar el paquete del archivo y potencialmente todos los paquetes que dependen de el. La compilacion de Go es notablemente mas rapida que la mayoria de los otros lenguajes compilados, incluso cuando se construye desde cero. Hay tres razones principales para la velocidad del compilador. En primer lugar, todas las importaciones deben estar listadas explicitamente al principio de cada archivo de origen, por lo que el compilador no tiene que leer y procesar un archivo completo para determinar sus dependencias. En segundo lugar, las dependencias de un paquete forman un grafo aciclico dirigido, y debido a que no hay ciclos, los paquetes pueden ser compilados por separado y tal vez en paralelo. Finalmente, el archivo de objeto de un paquete compilado Go registra informacion de exportacion no solo para el propio paquete, sino tambien para sus dependencias. Al compilar un paquete, el compilador debe leer un archivo objeto para cada importacion pero no necesita mirar mas alla de estos archivos.</p>
 </div>
 <h3 id="Seccion-10.2" >Rutas de Importacion</h3>
 <div class="hBody-3" >
@@ -9158,13 +9158,13 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
   <span class="s">&quot;github.com/go-sql-driver/mysql&quot;</span>
 <span class="p">)</span>
 </pre></div>
-<p>Como mencionamos en la <a href="#Seccion-2.6.1" >Seccion 2.6.1</a>, la especificacion del lenguaje Go no define el significado de estas cadenas o como determinar ruta de importacion de un paquete, sino que deja estas cuestiones a las herramientas. En este capitulo, analizaremos con detalle como interpreta la herramienta <code class="command" >go</code>, ya que eso es lo que la mayoria de los programadores de Go utilizan para construir, probar, etc. Sin embargo, existen otras herramientas. Por ejemplo, los programadores de Go que utilizan el sistema de compilacion multilenguaje interno de Google siguen reglas diferentes para nombrar y localizar paquetes, especificar pruebas y demas, que se ajusten mas a las convenciones de ese sistema.</p>
+<p>Como mencionamos en la <a href="#Seccion-2.6.1" >Seccion 2.6.1</a>, la especificacion del lenguaje Go no define el significado de estas cadenas o como determinar la ruta de importacion de un paquete, sino que deja estas cuestiones a las herramientas. En este capitulo, analizaremos con detalle como las interpreta la herramienta <code class="command" >go</code>, ya que eso es lo que la mayoria de los programadores de Go utilizan para construir, probar, etc. Sin embargo, existen otras herramientas. Por ejemplo, los programadores de Go que utilizan el sistema de compilacion multilenguaje interno de Google siguen reglas diferentes para nombrar y localizar paquetes, especificar pruebas y demas, que se ajusten mas a las convenciones de ese sistema.</p>
 <p>Para los paquetes que desea compartir o publicar, las vias de acceso de importacion deben ser unicas a nivel global. Para evitar conflictos, las rutas de importacion de todos los paquetes distintos de los de la biblioteca estandar deben comenzar con el nombre de dominio de Internet de la organizacion que posee o aloja el paquete; Esto tambien hace posible encontrar paquetes. Por ejemplo, la declaracion anterior importa un analizador HTML mantenido por el equipo Go y un popular controlador de base de datos MySQL de terceros.</p>
 </div>
 <h3 id="Seccion-10.3" >La Declaracion <code>package</code></h3>
 <div class="hBody-3" >
 <p>En Go se requiere una declaracion <code>package</code> al inicio de cada archivo fuente. Su proposito principal es determinar el identificador por defecto para ese paquete (denominado el <em>nombre del paquete</em>) cuando se importa por otro paquete.</p>
-<p>Por ejemplo, todos los archivos del paquete <code>math/rand</code> comienza con <code>package rand</code>, por lo que al importar este paquete, puede acceder a sus miembros como <code>rand.Int</code>, <code>rand.Float64</code>, etc.</p>
+<p>Por ejemplo, todos los archivos del paquete <code>math/rand</code> comienzan con <code>package rand</code>, por lo que al importar este paquete, puede acceder a sus miembros como <code>rand.Int</code>, <code>rand.Float64</code>, etc.</p>
 <div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="p">(</span>
@@ -9178,21 +9178,21 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 </pre></div>
 <p>Convencionalmente, el nombre del paquete es el ultimo segmento de la ruta de importacion y, como resultado, dos paquetes pueden tener el mismo nombre aunque sus rutas de importacion difieran necesariamente. Por ejemplo, los paquetes cuyas rutas de importacion son <code>math/rand</code> y <code>crypto/rand</code> tienen el nombre <code>rand</code>. Veremos como usar ambos en el mismo programa en un momento.</p>
 <p>Hay tres excepciones principales a la convencion del <q>ultimo segmento</q>. La primera es que un paquete que define un comando (un programa ejecutable Go) siempre tiene el nombre <code>main</code>, independientemente de la ruta de importacion del paquete. Esta es una señal para <code class="command" >go build</code> (<a href="#Seccion-10.7.3" >§10.7.3</a>) que debe invocar el enlazador para crear un archivo ejecutable.</p>
-<p>La segunda excepcion es que algunos archivos en el directorio pueden tener el sufijo <code>_test</code> en su nombre de paquete si el nombre del archivo termina con <code>_test.go</code>. Un directorio de este tipo puede definir dos paquetes: el habitual, ademas de otro denominado <em>paquete de prueba externa</em>. El sufijo <code>_test</code> indica a <code class="command" >go test</code> que debe construir ambos paquetes, e indica que archivos pertenecen a cada paquete. Los paquetes de prueba externos se utilizan para evitar ciclos en el grafico de importacion que surgen de las dependencias de la prueba; se cubren con mas detalle en la <a href="#Seccion-11.2.4" >Seccion 11.2.4</a>.</p>
+<p>La segunda excepcion es que algunos archivos en el directorio pueden tener el sufijo <code>_test</code> en su nombre de paquete si el nombre del archivo termina con <code>_test.go</code>. Un directorio de este tipo puede definir <em>dos</em> paquetes: el habitual, ademas de otro denominado <em>paquete externo de prueba</em>. El sufijo <code>_test</code> indica a <code class="command" >go test</code> que debe construir ambos paquetes, e indica que archivos pertenecen a cada paquete. Los paquetes de prueba externos se utilizan para evitar ciclos en el grafico de importacion que surgen de las dependencias de la prueba; se cubren con mas detalle en la <a href="#Seccion-11.2.4" >Seccion 11.2.4</a>.</p>
 <p>La tercera excepcion es que algunas herramientas para la gestion de dependencias añaden sufijos del numero de version a rutas de importacion, como <code>&quot;gopkg.in/yaml.v2&quot;</code>. El nombre del paquete excluye el sufijo, por lo que en este caso seria simplemente <code>yaml</code>.</p>
 </div>
-<h3 id="Seccion-10.4" >Declaraciones Import</h3>
+<h3 id="Seccion-10.4" >Declaraciones <code>import</code></h3>
 <div class="hBody-3" >
 <p>Un archivo de codigo Go puede contener cero o mas declaraciones <code>import</code> inmediatamente despues de la declaracion <code>package</code> y antes de la primera declaracion de no importacion. Cada declaracion de importacion puede especificar la ruta de importacion de un unico paquete o varios paquetes en una lista entre parentesis. Las dos formas a continuacion son equivalentes pero la segunda forma es mas comun.</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="s">&quot;fmt&quot;</span>
 <span class="kn">import</span> <span class="s">&quot;os&quot;</span>
-
-<span class="kn">import</span> <span class="p">(</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="p">(</span>
   <span class="s">&quot;fmt&quot;</span>
   <span class="s">&quot;os&quot;</span>
 <span class="p">)</span>
 </pre></div>
-<p>Los paquetes importados pueden agruparse introduciendo lineas en blanco; Tales grupos suelen indicar diferentes dominios. El orden no es significativo, pero por convencion las lineas de cada grupo se ordenan alfabeticamente. (Tanto <code class="command" >gofmt</code> como <code class="command" >goimports</code> las agruparan y ordenaran por usted.)</p>
+<p>Los paquetes importados pueden agruparse introduciendo lineas en blanco; tales grupos suelen indicar diferentes dominios. El orden no es significativo, pero por convencion las lineas de cada grupo se ordenan alfabeticamente. (Tanto <code class="command" >gofmt</code> como <code class="command" >goimports</code> las agruparan y ordenaran por usted.)</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="p">(</span>
   <span class="s">&quot;fmt&quot;</span>
   <span class="s">&quot;html/template&quot;</span>
@@ -9202,14 +9202,14 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
   <span class="s">&quot;golang.org/x/net/ipv4&quot;</span>
 <span class="p">)</span>
 </pre></div>
-<p>Si tenemos que importar dos paquetes cuyos nombres son los mismos, como <code>math/rand</code> y <code>crypto/rand</code>, en un tercer paquete, la declaracion de importacion debe especificar un nombre alternativo para al menos uno de ellos para evitar un conflicto. Esto se denomina <em>renombrar la importacion</em>.</p>
+<p>Si tenemos que importar dos paquetes cuyos nombres son los mismos, como <code>math/rand</code> y <code>crypto/rand</code>, en un tercer paquete, la declaracion de importacion debe especificar un nombre alternativo para al menos uno de ellos para evitar el conflicto. Esto se denomina <em>renombrar la importacion</em>.</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="p">(</span>
   <span class="s">&quot;crypto/rand&quot;</span>
-  <span class="nx">mrand</span> <span class="s">&quot;math/rand&quot;</span> <span class="c1">// alternative name mrand avoids conflict</span>
+  <span class="nx">mrand</span> <span class="s">&quot;math/rand&quot;</span> <span class="c1">// el nombre alternativo mrand evita conflictos</span>
 <span class="p">)</span>
 </pre></div>
 <p>El nombre alternativo solo afecta al archivo de importacion. Otros archivos, incluso los del mismo paquete, pueden importar el paquete usando su nombre predeterminado o un nombre diferente.</p>
-<p>Renombrar una importacion ser util incluso cuando no hay conflicto. Si el nombre del paquete importado es dificil de manejar, como ocurre a veces con el codigo generado automaticamente, es posible que el nombre abreviado sea mas conveniente. El mismo nombre abreviado debe ser usado consistentemente para evitar confusiones. La eleccion de un nombre alternativo puede ayudar a evitar conflictos con nombres de variables locales comunes. Por ejemplo, en un archivo con muchas variables locales llamado <code>path</code>, podriamos importar el paquete estandar <code>&quot;path&quot;</code> como <code>pathpkg</code>.</p>
+<p>Renombrar una importacion es util incluso cuando no hay conflicto. Si el nombre del paquete importado es dificil de manejar, como ocurre a veces con el codigo generado automaticamente, es posible que el nombre abreviado sea mas conveniente. El mismo nombre abreviado debe ser usado consistentemente para evitar confusiones. La eleccion de un nombre alternativo puede ayudar a evitar conflictos con nombres de variables locales comunes. Por ejemplo, en un archivo con muchas variables locales llamado <code>path</code>, podriamos importar el paquete estandar <code>&quot;path&quot;</code> como <code>pathpkg</code>.</p>
 <p>Cada declaracion de importacion establece una dependencia del paquete actual al paquete importado. La herramienta <code class="command" >go build</code> informara un error si estas dependencias forman un ciclo.</p>
 </div>
 <h3 id="Seccion-10.5" >Importaciones En Blanco</h3>
@@ -9218,7 +9218,7 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nx">_</span> <span class="s">&quot;image/png&quot;</span> <span class="c1">// registra decodificador PNG</span>
 </pre></div>
 <p>Esto se conoce como una <em>importacion en blanco</em>. Se utiliza con mayor frecuencia para implementar un mecanismo de tiempo de compilacion mediante el cual el programa principal puede habilitar caracteristicas opcionales mediante la importacion en blanco de paquetes adicionales. Primero veremos como usarlo, luego veremos como funciona.</p>
-<p>De la biblioteca estandar el paquete <code>image</code> exporta una funcion <code>Decode</code> que lee bytes desde un <code>io.Reader</code>, se da cuenta de que el formato de imagen se utiliza para codificar los datos, invoca el decodificador apropiado, a continuacion, devuelve la resultante <code>image.Image</code>. Usando <code>image.Decode</code>, es facil construir un convertidor de imagenes simple que lee una imagen en un formato y lo escribe en otro:</p>
+<p>El paquete <code>image</code> de la biblioteca estandar exporta una funcion <code>Decode</code> que lee bytes desde un <code>io.Reader</code>, averigua que formato de imagen se utiliza para codificar los datos, invocar el decodificador apropiado, y devolver el <code>image.Image</code> resultante. Usando <code>image.Decode</code>, es facil construir un convertidor de imagenes simple que lee una imagen en un formato y lo escribe en otro:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch10/jpeg/main.go" >gopl.io/ch10/jpeg</a></p>
 <div class="highlight"><pre><span></span><span class="c1">// El comando jpeg lee una imagen PNG de la entrada estandar</span>
@@ -9251,7 +9251,7 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Si alimentamos con la salida de <code>gopl.io/ch3/mandelbrot</code> (<a href="#Seccion-3.3" >§3.3</a>) al programa convertidor, detecta el formato de entrada PNG y escribe una version JPEG de la Figura 3.3.</p>
+<p>Si lo alimentamos con la salida de <code>gopl.io/ch3/mandelbrot</code> (<a href="#Seccion-3.3" >§3.3</a>) al programa convertidor, detecta el formato de entrada PNG y escribe una version JPEG de la Figura 3.3.</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go build gopl.io/ch3/mandelbrot
 <span class="prompt">$ </span>go build gopl.io/ch10/jpeg
 <span class="prompt">$ </span>./mandelbrot <span class="p">|</span> ./jpeg &gt;mandelbrot.jpg
@@ -9262,7 +9262,7 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 <span class="prompt">$ </span>./mandelbrot <span class="p">|</span> ./jpeg &gt;mandelbrot.jpg
 <span class="srci-text">jpeg: image: unknown format</span>
 </code></pre>
-<p>Asi es como funciona. La biblioteca estandar ofrece descodificadores para GIF, PNG y JPEG, y los usuarios pueden proporcionar otros, pero para mantener pequeños ejecutables, los decodificadores no se incluyen en una aplicacion a menos que se solicite explicitamente. la funcion <code>image.Decode</code> consulta una tabla de formatos soportados. Cada entrada en la tabla especifica cuatro cosas: el nombre del formato; Una cadena que es un prefijo de todas las imagenes codificadas de esta manera, utilizadas para detectar la codificacion; una funcion <code>Decode</code> que decodifica una imagen codificada; y otra funcion <code>DecodeConfig</code> que decodifica solo los metadatos de la imagen, como su tamaño y espacio de color. Se añade una entrada a la tabla llamando a <code>image.RegisterFormat</code>, normalmente desde destro del paquete inicializador del paquete de soporte para cada formato, como este en <code>image/png</code> :</p>
+<p>Asi es como funciona. La biblioteca estandar ofrece descodificadores para GIF, PNG y JPEG, y los usuarios pueden proporcionar otros, pero para mantener ejecutables pequeños, los decodificadores no se incluyen en una aplicacion a menos que se solicite explicitamente. la funcion <code>image.Decode</code> consulta una tabla de formatos soportados. Cada entrada en la tabla especifica cuatro cosas: el nombre del formato; Una cadena que es un prefijo de todas las imagenes codificadas de esta manera, utilizadas para detectar la codificacion; una funcion <code>Decode</code> que decodifica una imagen codificada; y otra funcion <code>DecodeConfig</code> que decodifica solo los metadatos de la imagen, como su tamaño y espacio de color. Se añade una entrada a la tabla llamando a <code>image.RegisterFormat</code>, normalmente desde dentro del paquete inicializador del paquete de soporte para cada formato, como este en <code>image/png</code>:</p>
 <div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">png</span> <span class="c1">// image/png</span>
 
 <span class="kd">func</span> <span class="nx">Decode</span><span class="p">(</span><span class="nx">r</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span><span class="p">)</span> <span class="p">(</span><span class="nx">image</span><span class="p">.</span><span class="nx">Image</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
@@ -9273,7 +9273,7 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
   <span class="nx">image</span><span class="p">.</span><span class="nx">RegisterFormat</span><span class="p">(</span><span class="s">&quot;png&quot;</span><span class="p">,</span> <span class="nx">pngHeader</span><span class="p">,</span> <span class="nx">Decode</span><span class="p">,</span> <span class="nx">DecodeConfig</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
-<p>El efecto es que una aplicacion solo necesita importar el paquete en blanco para el formato que necesita para hacer a la funcion <code>image.Decode</code> capaz de decodificarlo.</p>
+<p>El efecto es que una aplicacion solo necesita importar el paquete en blanco para el formato que necesita, para hacer a la funcion <code>image.Decode</code> capaz de decodificarlo.</p>
 <p>El paquete <code>database/sql</code> utiliza un mecanismo similar para permitir a los usuarios instalar solo los controladores de base de datos que necesita. Por ejemplo:</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="p">(</span>
   <span class="s">&quot;database/mysql&quot;</span>
@@ -9285,8 +9285,8 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 <span class="nx">db</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">sql</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="s">&quot;mysql&quot;</span><span class="p">,</span> <span class="nx">dbname</span><span class="p">)</span>    <span class="c1">// OK</span>
 <span class="nx">db</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">sql</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="s">&quot;sqlite3&quot;</span><span class="p">,</span> <span class="nx">dbname</span><span class="p">)</span>  <span class="c1">// devuelve error: controlador desconocido &quot;sqlite3&quot;</span>
 </pre></div>
-<p><b>Ejercicio 10.1</b>: Extender el programa <code class="command" >jpeg</code> para que convierte cualquier formato de entrada compatible con cualquier formato de salida, utilizando <code>image.Decode</code> para detectar el formato de entrada y una bandera para seleccionar el formato de salida.</p>
-<p><b>Ejercicio 10.2</b>: Definir una funcion generica lectura de archivos capaz de leer archivos ZIP (<code>archive/zip</code>) y archivos tar POSIX (<code>archive/tar</code>). Utilice un mecanismo de registro similar al descrito anteriormente para que el soporte para cada formato de archivo se pueda conectar usando importaciones en blanco.</p>
+<p><b>Ejercicio 10.1</b>: Extender el programa <code class="command" >jpeg</code> para que convierta cualquier formato de entrada compatible con cualquier formato de salida, utilizando <code>image.Decode</code> para detectar el formato de entrada y una bandera para seleccionar el formato de salida.</p>
+<p><b>Ejercicio 10.2</b>: Definir una funcion generica de lectura de archivos capaz de leer archivos ZIP (<code>archive/zip</code>) y archivos tar POSIX (<code>archive/tar</code>). Utilice un mecanismo de registro similar al descrito anteriormente para que el soporte de cada formato de archivo se pueda conectar usando importaciones en blanco.</p>
 </div>
 <h3 id="Seccion-10.6" >Paquetes y Nombres</h3>
 <div class="hBody-3" >
@@ -9294,7 +9294,7 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 <p>Al crear un paquete, mantenga su nombre corto, pero no tan corto como para ser criptico. Los paquetes mas utilizados en la biblioteca estandar se nombran <code>bufio</code>, <code>bytes</code>, <code>flag</code>, <code>fmt</code>, <code>http</code>, <code>io</code>, <code>json</code>, <code>os</code>, <code>sort</code>, <code>sync</code> y <code>time</code>.</p>
 <p>Sea descriptivo y sin ambigüedades donde sea posible. Por ejemplo, no nombre un paquete de utilidades <code>util</code> cuando un nombre como <code>imageutil</code> o <code>ioutil</code> es especifico y aun asi conciso. No se debe elegir nombres de los paquetes que se utilizan comunmente para las variables locales relacionados, o puede obligar a los clientes del paquete a renombrar las importaciones, al igual que con el paquete <code>path</code>.</p>
 <p>Los nombres de los paquetes usualmente toman la forma singular. Los paquetes estandar <code>bytes</code>, <code>errors</code> y <code>strings</code> utilizan el plural para evitar ocultar los tipos predeclarados correspondientes y, en el caso de <code>go/types</code>, para evitar conflictos con una palabra clave.</p>
-<p>Evite nombres de paquetes que ya tengan otras connotaciones. Por ejemplo, se utilizamos originalmente el nombre <code>temp</code> para el paquete de conversion de temperatura en la <a href="#Seccion-2.5" >Seccion 2.5</a>, pero eso no duro mucho tiempo. Era una idea terrible, porque <q>temp</q> es un sinonimo casi universal de <q>temporal</q>. Pasamos de un breve periodo con el nombre <code>temperature</code>, pero que era demasiado largo y no decia lo que hace el paquete. Al final, se convirtio en <code>tempconv</code>, que es mas corto y paralelo con <code>strconv</code> .</p>
+<p>Evite nombres de paquetes que ya tengan otras connotaciones. Por ejemplo, se utilizamos originalmente el nombre <code>temp</code> para el paquete de conversion de temperatura en la <a href="#Seccion-2.5" >Seccion 2.5</a>, pero eso no duro mucho tiempo. Era una idea terrible, porque <q>temp</q> es un sinonimo casi universal de <q>temporal</q>. Pasamos un breve periodo con el nombre <code>temperature</code>, pero era demasiado largo y no decia lo que hace el paquete. Al final, se convirtio en <code>tempconv</code>, que es mas corto y similar a <code>strconv</code> .</p>
 <p>Ahora pasemos a la nomenclatura de los miembros del paquete. Puesto que cada referencia a un miembro de otro paquete utiliza un identificador calificado como <code>fmt.Println</code>, la carga de describir el elemento del paquete es soportado igualmente por el nombre del paquete y el nombre del miembro. No tenemos que mencionar el concepto de formateo en <code>Println</code> debido a que el nombre del paquete <code>fmt</code> ya hace eso. Al diseñar un paquete, considere como funcionan las dos partes de un identificador cualificado, no solo el nombre del miembro. Estos son algunos ejemplos caracteristicos:</p>
 <div class="pre-block" >
 <pre class="pre" >bytes.Equal     flag.Int     http.Get     json.Marshal</pre></div>
@@ -9309,7 +9309,7 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 <span class="kd">type</span> <span class="nx">Reader</span> <span class="kd">struct</span><span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span>
 <span class="kd">func</span> <span class="nx">NewReader</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="o">*</span><span class="nx">Reader</span>
 </pre></div>
-<p>La palabra <code>string</code> no aparece en ninguno de sus nombres. Los clientes se refieren a ellos como <code>strings.Index</code>, <code>strings.Replacer</code>, y asi sucesivamente.</p>
+<p>La palabra <code>string</code> no aparece en ninguno de sus nombres. Los clientes se refieren a ellos como <code>strings.Index</code>, <code>strings.Replacer</code>, etc.</p>
 <p>Otros paquetes que podriamos describir como paquetes de un solo tipo, como <code>html/template</code> y <code>math/rand</code>, exponen un tipo de datos principal mas sus metodos, y con frecuencia una nueva funcion para crear instancias.</p>
 <div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">rand</span> <span class="c1">// &quot;math/rand&quot;</span>
 
@@ -9323,7 +9323,7 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 <div class="hBody-3" >
 <p>El resto de este capitulo se refiere a la herramienta <code class="command" >go</code>, que se utiliza para descargar, consultar, formatear, crear, probar e instalar paquetes de codigo Go.</p>
 <p>La herramienta <code class="command" >go</code> combina las caracteristicas de un conjunto diverso de herramientas en un conjunto de comandos. Es un gestor de paquetes (analogo a <code class="command" >apt</code> o <code class="command" >rpm</code>) que responde a consultas sobre su inventario de paquetes, calcula sus dependencias y las descarga desde sistemas de control de versiones remotos. Es un sistema de construccion que calcula las dependencias de archivos e invoca compiladores, ensambladores, enlazadores, aunque es intencionalmente menos completo que el <code class="command" >make</code> estandar de Unix. Y es un operador de pruebas, como veremos en el <a href="#Capitulo-11" >Capitulo 11</a>.</p>
-<p>Su interfaz de linea de comandos utiliza el estilo <q>navaja suiza</q>, con mas de una docena de subcomandos, algunos de los cuales ya hemos visto, como <code>get</code>, <code>run</code>, <code>build</code> y <code>fmt</code>. Puede ejecutar <code class="command" >go help</code> a ver el indice de la documentacion incorporada, pero como referencia, hemos realizado una lista de los comandos mas utilizados a continuacion:</p>
+<p>Su interfaz de linea de comandos utiliza el estilo <q>navaja suiza</q>, con mas de una docena de subcomandos, algunos de los cuales ya hemos visto, como <code>get</code>, <code>run</code>, <code>build</code> y <code>fmt</code>. Puede ejecutar <code class="command" >go help</code> para ver el indice de la documentacion incorporada, pero como referencia, hemos realizado una lista de los comandos mas utilizados a continuacion:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go
 <span class="srci-text">...
     build       compile packages and dependencies
@@ -9345,7 +9345,7 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 Use &quot;go help [command]&quot; for more information about a command.
 ...</span>
 </code></pre>
-<p>Para mantener la necesidad de configuracion al minimo, la herramienta <code class="command" >go</code> se basa en gran medida en las convenciones. Por ejemplo, dado el nombre de un archivo fuente Go, la herramienta puede encontrar su paquete que lo contiene, ya que cada directorio contiene un unico paquete y la ruta de importacion de un paquete corresponde a la jerarquia de directorios en el espacio de trabajo. Dada la ruta de importacion de un paquete, la herramienta puede encontrar el directorio correspondiente en el que almacena los archivos de objeto. Tambien puede encontrar la direccion URL del servidor que aloja el repositorio de codigo fuente.</p>
+<p>Para mantener la necesidad de configuracion al minimo, la herramienta <code class="command" >go</code> se basa en gran medida en las convenciones. Por ejemplo, dado el nombre de un archivo fuente Go, la herramienta puede encontrar su paquete que lo contiene, ya que cada directorio contiene un unico paquete y la ruta de importacion de un paquete corresponde a la jerarquia de directorios en el espacio de trabajo. Dada la ruta de importacion de un paquete, la herramienta puede encontrar el directorio correspondiente en el que almacena los archivos objeto. Tambien puede encontrar la direccion URL del servidor que aloja el repositorio de codigo fuente.</p>
 </div>
 <h4 id="Seccion-10.7.1" >Organizacion del Espacio de Trabajo</h4>
 <div class="hBody-4" >
@@ -9353,6 +9353,7 @@ Use &quot;go help [command]&quot; for more information about a command.
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span><span class="nb">export</span> <span class="nv">GOPATH</span><span class="o">=</span><span class="nv">$HOME</span>/gobook
 <span class="prompt">$ </span>go get gopl.io/...
 </code></pre>
+<p>&lt; src..</p>
 <p>Despues de descargar todos los programas de este libro utilizando el comando anterior, su espacio de trabajo contendra una jerarquia como esta:</p>
 <div class="pre-block" >
 <pre class="pre" >GOPATH/
@@ -9377,8 +9378,8 @@ Use &quot;go help [command]&quot; for more information about a command.
       pkg/
           darwin_amd64/
           ...</pre></div>
-<p><code>GOPATH</code> tiene tres subdirectorios. El subdirectorio <span class="file" >src</span> contiene el codigo fuente. Cada paquete reside en un directorio cuyo nombre en relacion con <code>$GOPATH/src</code> es ruta de importacion del paquete, como <code>gopl.io/ch1/helloworld</code>. Observe que un solo espacio de trabajo <code>GOPATH</code> contiene multiples repositorios de control de version debajo <span class="file" >src</span>, como <code>gopl.io</code> o <code>golang.org</code>. El subdirectorio <span class="file" >pkg</span> es donde las h herramientas de construccion almacenan paquetes compilados, y el subdirectorio <span class="file" >bin</span> contiene los programas ejecutables como <code class="command" >helloworld</code>.</p>
-<p>Una segunda variable de entorno, <code class="command" >GOROOT</code>, especifica el directorio raiz de la distribucion Go, que ofrece todos los paquetes de la biblioteca estandar. La estructura de directorios debajo de <code>GOROOT</code> asemeja a la de <code>GOPATH</code>, por lo que, por ejemplo, los archivos de origen del paquete <code>fmt</code> residen en el directorio <code>$GOROOT/src/fmt</code>. Los usuarios no necesitan configurar <code>GOROOT</code> ya que, por defecto, la herramienta de <code class="command" >go</code> utilizara la ubicacion donde se instalo.</p>
+<p><code>GOPATH</code> tiene tres subdirectorios. El subdirectorio <span class="file" >src</span> contiene el codigo fuente. Cada paquete reside en un directorio cuyo nombre en relacion con <code>$GOPATH/src</code> es la ruta de importacion del paquete, como <code>gopl.io/ch1/helloworld</code>. Observe que un solo espacio de trabajo <code>GOPATH</code> contiene multiples repositorios con control de versiones debajo de <span class="file" >src</span>, como <code>gopl.io</code> o <code>golang.org</code>. El subdirectorio <span class="file" >pkg</span> es donde las herramientas de construccion almacenan paquetes compilados, y el subdirectorio <span class="file" >bin</span> contiene los programas ejecutables como <code class="command" >helloworld</code>.</p>
+<p>Una segunda variable de entorno, <code class="command" >GOROOT</code>, especifica el directorio raiz de la distribucion Go, que ofrece todos los paquetes de la biblioteca estandar. La estructura de directorios debajo de <code>GOROOT</code> es analoga a <code>GOPATH</code>, por lo que, por ejemplo, los archivos de origen del paquete <code>fmt</code> residen en el directorio <code>$GOROOT/src/fmt</code>. Los usuarios no necesitan configurar <code>GOROOT</code> ya que, por defecto, la herramienta <code class="command" >go</code> utilizara la ubicacion donde se instalo.</p>
 <p>El comando <code class="command" >go env</code> imprime los valores efectivos de las variables de entorno correspondientes a la cadena de herramientas, incluidos los valores por defecto para los que faltan. <code>GOOS</code> especifica el sistema operativo de destino (por ejemplo, <code>android</code>, <code>linux</code>, <code>darwin</code>, o <code>windows</code>) y <code>GOARCH</code> especifica la arquitectura de procesador objetivo, como <code>amd64</code>, <code>386</code>, o <code>arm</code>. Aunque <code>GOPATH</code> es la unica variable que debe establecer, los demas de vez en cuando aparecen en nuestras explicaciones.</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go env
 <span class="srci-text">GOPATH=&quot;/home/gopher/gobook&quot;
@@ -9389,7 +9390,7 @@ GOOS=&quot;darwin&quot;</span>
 </div>
 <h4 id="Seccion-10.7.2" >Descargando paquetes</h4>
 <div class="hBody-4" >
-<p>Cuando se utiliza la herramienta <code class="command" >go</code>, ruta de importacion de un paquete indica no solo donde encontrarlo en el espacio de trabajo local, sino donde encontrarlo en Internet para que <code class="command" >go get</code> pueda recuperarlo y actualizarlo.</p>
+<p>Cuando se utiliza la herramienta <code class="command" >go</code>, la ruta de importacion de un paquete indica no solo donde encontrarlo en el espacio de trabajo local, sino donde encontrarlo en Internet para que <code class="command" >go get</code> pueda recuperarlo y actualizarlo.</p>
 <p>El comando <code class="command" >go get</code> puede descargar un solo paquete o todo un subarbol o repositorio usando la notacion <code>...</code>, como en la seccion anterior. La herramienta tambien calcula y descarga todas las dependencias de los paquetes iniciales, como el paquete <code>golang.org/x/net/html</code> que aparecio en el espacio de trabajo en el ejemplo anterior.</p>
 <p>Una vez que <code class="command" >go get</code> ha descargado los paquetes, los construye y luego instala las librerias y comandos. Veremos los detalles en la siguiente seccion, pero un ejemplo mostrara lo sencillo que es el proceso. El primer comando a continuacion optiene la herramienta <code class="command" >golint</code>, que comprueba si hay problemas de estilo comunes en codigo fuente Go. El segundo comando ejecuta <code class="command" >golint</code> en <code>gopl.io/ch2/popcount</code> de la <a href="#Seccion-2.6.2" >Seccion 2.6.2</a>. Es util que nos informe que hemos olvidado escribir un comentario de documentacion para el paquete:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go get github.com/golang/lint/golint
@@ -9398,32 +9399,31 @@ GOOS=&quot;darwin&quot;</span>
   package comment should be of the form &quot;Package popcount ...&quot;</span>
 </code></pre>
 <p>El comando <code class="command" >go get</code> tiene soporte para los sitios de alojamiento de codigo populares como GitHub, Bitbucket y Launchpad y puede hacer las solicitudes apropiadas en sus sistemas de control de versiones. Para sitios menos conocidos, es posible que deba indicar que protocolo de control de versiones debe utilizar en la ruta de importacion, como Git o Mercurial. Ejecuta <code class="command" >go help importpath</code> para los detalles.</p>
-<p>Los directorios que <code class="command" >go get</code> crea son verdaderos clientes del repositorio remoto, no solo copias de los archivos, por lo que puede utilizar los comandos de control de versiones para ver un diff de ediciones locales que ha realizado o para actualizar a una revision diferente. Por ejemplo, el directorio <span class="file" >golang.org/x/net</span> es un cliente de Git:</p>
+<p>Los directorios que <code class="command" >go get</code> crea son verdaderos clientes del repositorio remoto, no solo copias de los archivos, por lo que puede utilizar los comandos de control de versiones para ver una comparacion de las ediciones locales que ha realizado o para actualizar a una revision diferente. Por ejemplo, el directorio <span class="file" >golang.org/x/net</span> es un cliente Git:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span><span class="nb">cd</span> <span class="nv">$GOPATH</span>/src/golang.org/x/net
 <span class="prompt">$ </span>git remote -v
 <span class="srci-text">origin  https://go.googlesource.com/net (fetch)
 origin  https://go.googlesource.com/net (push)</span>
 </code></pre>
-<p>Observe que el nombre de dominio en ruta de importacion del paquete, <code>golang.org</code>, difiere del nombre de dominio real del servidor Git, <code>go.googlesource.com</code>. Esta es una caracteristica de la herramienta Go que permite que lo paquetes usen un nombre de dominio personalizado en su ruta de importacion al ser alojados por un servicio generico como <a href="https://googlesource.com" >https://googlesource.com</a> o <a href="https://github.com" >https://github.com</a>. Paginas HTML debajo de <a href="https://golang.org/x/net/html" >https://golang.org/x/net/html</a> incluyen los metadatos que se muestran a continuacion, que redirecciona la herramienta <code class="command" >go</code> al repositorio Git en el lugar del alojamiento actual:</p>
+<p>Observe que el nombre de dominio en la ruta de importacion del paquete, <code>golang.org</code>, difiere del nombre de dominio real del servidor Git, <code>go.googlesource.com</code>. Esta es una caracteristica de la herramienta Go que permite que los paquetes usen un nombre de dominio personalizado en su ruta de importacion al ser alojados por un servicio generico como <a href="https://googlesource.com" >https://googlesource.com</a> o <a href="https://github.com" >https://github.com</a>. Las paginas HTML debajo de <a href="https://golang.org/x/net/html" >https://golang.org/x/net/html</a> incluyen los metadatos que se muestran a continuacion, que redirecciona la herramienta <code class="command" >go</code> al repositorio Git en el lugar del alojamiento actual:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go build gopl.io/ch1/fetch
 <span class="prompt">$ </span>./fetch https://golang.org/x/net/html <span class="p">|</span> grep go-import
-<span class="srci-text">&lt;meta name=&quot;go-import&quot;
-      content=&quot;golang.org/x/net git https://go.googlesource.com/net&quot;&gt;</span>
+<span class="srci-text">&lt;meta name=&quot;go-import&quot; content=&quot;golang.org/x/net git https://go.googlesource.com/net&quot;&gt;</span>
 </code></pre>
 <p>Si especifica la bandera <code>-u</code>, <code class="command" >go get</code> se asegurara de que todos los paquetes que visita, incluidas las dependencias, se actualizan a su ultima version antes de ser construido e instalado. Sin ese indicador, los paquetes que ya existen localmente no se actualizaran.</p>
-<p>El comando <code class="command" >go get -u</code> recupera generalmente la ultima version de cada paquete, lo cual es conveniente cuando se inicia, pero puede ser inadecuado para proyectos desplegados, donde el control preciso de dependencias es critico para la higiene de la liberacion. La solucion habitual a este problema es el <em>proveedor</em> del codigo, es decir, hacer una copia local persistente de todas las dependencias necesarias, para actualizar esta copia cuidadosa y deliberadamente. Antes de Go 1.5, esto requiere cambiar las rutas de importacion esos paquetes, por lo que nuestra copia de <code>golang.org/x/net/html</code> se convertiria en <code>gopl.io/vendor/golang.org/x/net/html</code>. Las versiones mas recientes de la herramienta soportan directorios de proveedores directamente, aunque no tenemos espacio para mostrar los detalles aqui. Vea <em>Directorios de Proveedores</em> en la salida del comando <code class="command" >go help gopath</code>.</p>
+<p>El comando <code class="command" >go get -u</code> recupera generalmente la ultima version de cada paquete, lo cual es conveniente cuando se inicia, pero puede ser inadecuado para proyectos desplegados, donde el control preciso de dependencias es critico para la higiene de los lanzamientos. La solucion habitual a este problema es el <em>proveedor</em> del codigo, es decir, hacer una copia local persistente de todas las dependencias necesarias, para actualizar esta copia cuidadosa y deliberadamente. Antes de Go 1.5, esto requiere cambiar las rutas de importacion de esos paquetes, por lo que nuestra copia de <code>golang.org/x/net/html</code> se convertiria en <code>gopl.io/vendor/golang.org/x/net/html</code>. Las versiones mas recientes de la herramienta soportan directorios de proveedores directamente, aunque no tenemos espacio para mostrar los detalles aqui. Vea <em>Directorios de Proveedores</em> en la salida del comando <code class="command" >go help gopath</code>.</p>
 <p><b>Ejercicio 10.3</b>: Utilizando <code class="command" >fetch http://gopl.io/ch1/helloworld?go-get=1</code>, averigüe que servicio alberga los ejemplos de codigo para este libro.  (Las peticiones HTTP de <code class="command" >go get</code> incluyen el parametro <code>go-get</code> para que los servidores pueden distinguirlos de las solicitudes del navegador comun.)</p>
 </div>
 <h4 id="Seccion-10.7.3" >Construccion de Paquetes</h4>
 <div class="hBody-4" >
 <p>El comando <code class="command" >go build</code> compila cada argumento de paquete. Si el paquete es una libreria, el resultado se descarta; Esto simplemente comprueba que el paquete esta libre de errores de compilacion. Si el paquete se llama <code>main</code>, <code class="command" >go build</code> invoca el enlazador para crear un archivo ejecutable en el directorio actual; El nombre del ejecutable se toma del ultimo segmento de la ruta de importacion del paquete.</p>
 <p>Dado que cada directorio contiene un solo paquete, cada programa ejecutable, o <em>comando</em> en la terminologia Unix, requiere su propio directorio. Estos directorios son a veces los hijos de un directorio denominado <code>cmd</code>, como el comando <code>golang.org/x/tools/cmd/godoc</code> que sirve la documentacion del paquete Go a traves de una interfaz web (<a href="#Seccion-10.7.4" >§10.7.4</a>).</p>
-<p>Los paquetes pueden especificarse por sus rutas de importacion, como hemos visto anteriormente, o por un nombre de directorio relativo, que debe comenzar con un <code>.</code> o <code>..</code> aun si ordinariamente no se requere. Si no se proporciona ningun argumento, se supone el directorio actual. Por lo tanto los siguientes comandos construyen el mismo paquete, aunque cada uno escribe el ejecutable en el directorio en el que <code class="command" >go build</code> se ejecuta:</p>
+<p>Los paquetes pueden especificarse por sus rutas de importacion, como hemos visto anteriormente, o por un nombre de directorio relativo, que debe comenzar con un <code>.</code> o <code>..</code> incluso si esto no se requere normalmente. Si no se proporciona ningun argumento, se supone el directorio actual. Por lo tanto los siguientes comandos construyen el mismo paquete, aunque cada uno escribe el ejecutable en el directorio en el que <code class="command" >go build</code> se ejecuta:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span><span class="nb">cd</span> <span class="nv">$GOPATH</span>/src/gopl.io/ch1/helloworld
 <span class="prompt">$ </span>go build
 </code></pre>
 <p>y:</p>
-<pre class="srci" ><code class="sh"><span class="prompt">$ </span><span class="nb">cd</span> anywhere
+<pre class="srci" ><code class="sh"><span class="prompt">$ </span><span class="nb">cd</span> cualquier-sitio
 <span class="prompt">$ </span>go build gopl.io/ch1/helloworld
 </code></pre>
 <p>y:</p>
@@ -9457,9 +9457,9 @@ func main() {
 </code></pre>
 <p>El primer argumento que no termina en <span class="file" >.go</span> se asume como el principio de la lista de argumentos para el ejecutable de Go.</p>
 <p>Por defecto, el comando <code class="command" >go build</code> construye el paquete solicitado y todas sus dependencias, y luego tira a la basura todo el codigo compilado, excepto el ejecutable final, si lo hubiera. Tanto el analisis de dependencias como la compilacion son sorprendentemente rapidos, pero a medida que los proyectos crecen hasta decenas de paquetes y cientos de miles de lineas de codigo, el tiempo para recompilar las dependencias puede llegar a ser notable, potencialmente varios segundos, incluso cuando no todas las dependencias han cambiado.</p>
-<p>El comando <code class="command" >go install</code> es muy similar a <code class="command" >go build</code>, excepto que guarda el codigo compilado para cada paquete y comando en lugar de tirarlo a la basura. Los paquetes compilados se guardan bajo el directorio <span class="file" >$GOPATH/pkg</span> correspondiente al directorio <span class="file" >src</span> en el que reside el codigo fuente y los ejecutables de comando se guardan en el directorio <span class="file" >$GOPATH/bin</span>. (Muchos usuarios agregar <span class="file" >$GOPATH/bin</span> en su ruta de busqueda ejecutable.) A partir de entonces, <code class="command" >go build</code> y <code class="command" >go install</code> no ejecutan el compilador para esos paquetes y comandos si no han cambiado, haciendo las compilaciones posteriores mucho mas rapido. Por cenveniencia, <code class="command" >go build -i</code> instala los paquetes que son dependencias del objetivo a compilar.</p>
+<p>El comando <code class="command" >go install</code> es muy similar a <code class="command" >go build</code>, excepto que guarda el codigo compilado para cada paquete y comando en lugar de tirarlo a la basura. Los paquetes compilados se guardan bajo el directorio <span class="file" >$GOPATH/pkg</span> correspondiente al directorio <span class="file" >src</span> en el que reside el codigo fuente y los ejecutables de comando se guardan en el directorio <span class="file" >$GOPATH/bin</span>. (Muchos usuarios agregan <span class="file" >$GOPATH/bin</span> en su ruta de busqueda ejecutable.) A partir de entonces, <code class="command" >go build</code> y <code class="command" >go install</code> no ejecutan el compilador para esos paquetes y comandos si no han cambiado, haciendo las compilaciones posteriores mucho mas rapido. Por conveniencia, <code class="command" >go build -i</code> instala los paquetes que son dependencias del objetivo a compilar.</p>
 <p>Dado que los paquetes compilados varian segun la plataforma y la arquitectura, <code class="command" >go install</code> los guarda debajo de un subdirectorio cuyo nombre incorpora los valores de las variables de entorno <code>GOOS</code> y <code>GOARCH</code>. Por ejemplo, en un Mac el paquete <code>golang.org/x/net/html</code> se compila e instala en el archivo <span class="file" >golang.org/x/net/html.a</span> bajo <span class="file" >$GOPATH/pkg/darwin_amd64</span>.</p>
-<p>Es facil aplicar <em>compilacion cruzada</em> a un programa Go, es decir, construir un ejecutable destinado a un sistema operativo diferente o CPU. Solo hay que establecer las variables <code>GOOS</code> o <code>GOARCH</code> durante la construccion. El programa <code class="command" >cross</code> imprime el sistema operativo y la arquitectura para la que fue construido:</p>
+<p>Es facil aplicar <em>compilacion cruzada</em> a un programa Go, es decir, construir un ejecutable destinado a un sistema operativo o CPU diferente. Solo hay que establecer las variables <code>GOOS</code> o <code>GOARCH</code> durante la construccion. El programa <code class="command" >cross</code> imprime el sistema operativo y la arquitectura para la que fue construido:</p>
 <div class="figure" >
 <p class="title"><a href="gopl.io/ch10/cross/main.go" >gopl.io/ch10/cross</a></p>
 <div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
@@ -9467,7 +9467,7 @@ func main() {
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Los comandos siguientes producen ejecutables de 64 bits y 32 bits, respectivamente:</p>
+<p>Los comandos siguientes producen ejecutables de 64 y 32 bits, respectivamente:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go build gopl.io/ch10/cross
 <span class="prompt">$ </span>./cross
 <span class="srci-text">darwin amd64</span>
@@ -9475,7 +9475,7 @@ func main() {
 <span class="prompt">$ </span>./cross
 <span class="srci-text">darwin 386</span>
 </code></pre>
-<p>Algunos paquetes pueden necesitar compilar versiones diferentes del codigo para ciertas plataformas o procesadores, para tratar problemas de portabilidad de bajo nivel o para proporcionar versiones optimizadas de rutinas importantes, por ejemplo. Si un nombre de archivo incluye un sistema operativo o arquitectura de procesador, como <span class="file" >net_linux.go</span> o <span class="file" >asm_amd64.s</span>, la herramienta <code class="command" >go</code> compilara el archivo solo cuando se construye para ese objetivo. Comentarios especiales llamadas <em>etiquetas de compilacion</em> ofrecen un control mas detallado. Por ejemplo, si un archivo contiene este comentario:</p>
+<p>Algunos paquetes pueden necesitar compilar versiones diferentes del codigo para ciertas plataformas o procesadores, para tratar problemas de portabilidad de bajo nivel o para proporcionar versiones optimizadas de rutinas importantes, por ejemplo. Si un nombre de archivo incluye un sistema operativo o arquitectura de procesador, como <span class="file" >net_linux.go</span> o <span class="file" >asm_amd64.s</span>, la herramienta <code class="command" >go</code> compilara el archivo solo cuando se construye para ese objetivo. Comentarios especiales llamados <em>etiquetas de compilacion</em> ofrecen un control mas detallado. Por ejemplo, si un archivo contiene este comentario:</p>
 <div class="highlight"><pre><span></span><span class="c1">// +build linux darwin</span>
 </pre></div>
 <p>antes de la declaracion del paquete (y su comentario de documentacion), <code class="command" >go build</code> compilara solo cuando se compile para Linux o Mac OS X, y este comentario indica nunca compilar el archivo:</p>
@@ -9489,11 +9489,11 @@ func main() {
 <div class="hBody-4" >
 <p>El estilo Go anima fuertemente la buena documentacion de las API del paquete. Cada declaracion de un miembro del paquete exportado y la propia declaracion del paquete deben ir precedidas inmediatamente de un comentario que explique su proposito y uso.</p>
 <p>Los <em>comentarios de documentacion</em> de Go siempre son oraciones completas, y la primera frase es por lo general un resumen que se inicia con el nombre que se declaro. Los parametros de funcion y otros identificadores se mencionan sin citacion o marcado. Por ejemplo, aqui esta el comentario de documentacion para <code>fmt.Fprintf</code>:</p>
-<div class="highlight"><pre><span></span><span class="c1">// Fprintf formateo de acuerdo con un especificador de formato y escriben w.</span>
+<div class="highlight"><pre><span></span><span class="c1">// Fprintf formateo de acuerdo con un especificador de formato y escrib en w.</span>
 <span class="c1">// Devuelve el numero de bytes escritos y cualquier error de escritura encontrado.</span>
 <span class="kd">func</span> <span class="nx">Fprintf</span><span class="p">(</span><span class="nx">w</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Writer</span><span class="p">,</span> <span class="nx">format</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">a</span> <span class="o">...</span><span class="kd">interface</span><span class="p">{})</span> <span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
 </pre></div>
-<p>Los detalles del formateo de <code>Fprintf</code> se explican en un comentario de documentacion asociado al paquete <code>fmt</code> en si. Un comentario que precede inmediatamente a una declaracion <code>package</code> se considera el comentario de documentacion para el paquete en su conjunto. Solo debe haber uno, aunque pueda aparecer en cualquier archivo. Los comentarios de paquetes mas largos pueden justificar un archivo propio; <code>fmt</code> tiene mas de 300 lineas. Este archivo normalmente se llama <span class="file" >doc.go</span> .</p>
+<p>Los detalles del formateo de <code>Fprintf</code> se explican en un comentario de documentacion asociado al paquete <code>fmt</code> en si. Un comentario que precede inmediatamente a una declaracion <code>package</code> se considera el comentario de documentacion para el paquete en su conjunto. Solo debe haber uno, aunque puede aparecer en cualquier archivo. Los comentarios de paquetes mas largos pueden justificar un archivo propio; <code>fmt</code> tiene mas de 300 lineas. Este archivo normalmente se llama <span class="file" >doc.go</span> .</p>
 <p>Una buena documentacion no necesita ser extensa, y la documentacion no es un sustituto de la sencillez. De hecho, las convenciones de Go favorecen la brevedad y simplicidad en la documentacion como en todas las cosas, ya que la documentacion, como el codigo, tambien requiere mantenimiento. Muchas declaraciones se pueden explicar en una oracion bien redactada, y si el comportamiento es realmente obvio, no necesita comentarse. A lo largo del libro, a medida que el espacio lo permite, hemos precedido a muchas declaraciones por comentarios de documentacion, pero encontraremos mejores ejemplos buscando en la biblioteca estandar. Dos herramientas pueden ayudarte a hacer eso.</p>
 <p>La herramienta <code class="command" >go doc</code> imprime la declaracion y el comentario de documentacion de la entidad especificada en la linea de comandos, que puede ser un paquete:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go doc <span class="nb">time</span>
@@ -9508,7 +9508,7 @@ func Since(t Time) Duration
 func Now() Time
 type Duration int64
 type Time struct { ... }
-...many more...</span>
+...mucho mas...</span>
 </code></pre>
 <p>O un miembro del paquete:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go doc time.Since
@@ -9523,30 +9523,30 @@ type Time struct { ... }
 
     Seconds returns the duration as a floating-point number of seconds.</span>
 </code></pre>
-<p>La herramienta no necesita rutas de importacion completas o casos de identificador exactos. Este comando imprime la documentacion de <code>(*json.Decoder).Decode</code> del paquete <code>encoding/json</code>:</p>
+<p>La herramienta no necesita rutas de importacion completas o letras mayusculas y minusculas del identificador exactas. Este comando imprime la documentacion de <code>(*json.Decoder).Decode</code> del paquete <code>encoding/json</code>:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go doc json.decode
 <span class="srci-text">func (dec *Decoder) Decode(v interface{}) error
 
     Decode reads the next JSON-encoded value from its input and stores
     it in the value pointed to by v.</span>
 </code></pre>
-<p>La segunda herramienta, confusamente nombrada <code class="command" >godoc</code>, sirve paginas HTML a entrecruzadas que proporcionan la misma informacion que <code class="command" >go doc</code> y mucho mas. El servidor <code class="command" >godoc</code> en <a href="https://golang.org/pkg" >https://golang.org/pkg</a> cubre la biblioteca estandar. La Figura 10.1 muestra la documentacion del paquete <code>time</code>, y en la <a href="#Seccion-11.6" >Seccion 11.6</a> veremos la pantalla interactiva de <code class="command" >godoc</code> de programas de ejemplo. El servidor <code class="command" >godoc</code> en <a href="https://godoc.org" >https://godoc.org</a> tiene un indice de busqueda de miles de paquetes de codigo abierto.</p>
+<p>La segunda herramienta, confusamente nombrada <code class="command" >godoc</code>, sirve paginas HTML entre-enlazadas que proporcionan la misma informacion que <code class="command" >go doc</code> y mucho mas. El servidor <code class="command" >godoc</code> en <a href="https://golang.org/pkg" >https://golang.org/pkg</a> cubre la biblioteca estandar. La Figura 10.1 muestra la documentacion del paquete <code>time</code>, y en la <a href="#Seccion-11.6" >Seccion 11.6</a> veremos la pantalla interactiva de <code class="command" >godoc</code> de programas de ejemplo. El servidor <code class="command" >godoc</code> en <a href="https://godoc.org" >https://godoc.org</a> tiene un indice de busqueda de miles de paquetes de codigo abierto.</p>
 <p>Tambien puede ejecutar una instancia de <code class="command" >godoc</code> en su espacio de trabajo si desea navegar por sus propios paquetes. Visite <a href="http://localhost:8000/pkg" >http://localhost:8000/pkg</a> en su navegador mientras se ejecuta este comando:</p>
-<pre class="srci" ><code class="sh"><span class="prompt">$ </span>godoc -http :8000
+<pre class="srci" ><code class="sh"><span class="prompt">$ </span>godoc -http<span class="o">=</span>:8000
 </code></pre>
 <p>Sus banderas <code>-analysis=type</code> y <code>-analysis=pointer</code> aumentan la documentacion y el codigo fuente con resultados del analisis estatico avanzado.</p>
 </div>
 <h4 id="Seccion-10.7.5" >Paquetes Internos</h4>
 <div class="hBody-4" >
 <p>El paquete es el mecanismo mas importante para la encapsulacion en programas Go. Los identificadores sin exportacion son visibles solo dentro del mismo paquete, y los identificadores exportados son visibles para el mundo.</p>
-<p>A veces, sin embargo, camino medio seria util, una forma de definir identificadores que son visibles para un pequeño conjunto de paquetes de confianza, pero no para todos. Por ejemplo, cuando estamos dividiendo un paquete grande en partes mas manejables, es posible que no deseemos revelar las interfaces entre esas partes a otros paquetes. O quizas queramos compartir funciones de utilidad entre varios paquetes de un proyecto sin exponerlos mas ampliamente. O tal vez solo queremos experimentar con un nuevo paquete sin comprometerse prematuramente con su API, poniendolo <q>a prueba</q> con un conjunto limitado de clientes.</p>
+<p>A veces, sin embargo, el camino medio seria util, una forma de definir identificadores que son visibles para un pequeño conjunto de paquetes de confianza, pero no para todos. Por ejemplo, cuando estamos dividiendo un paquete grande en partes mas manejables, es posible que no deseemos revelar las interfaces entre esas partes a otros paquetes. O quizas queramos compartir funciones de utilidad entre varios paquetes de un proyecto sin exponerlos mas ampliamente. O tal vez solo queremos experimentar con un nuevo paquete sin comprometerse prematuramente con su API, poniendolo <q>a prueba</q> con un conjunto limitado de clientes.</p>
 <div class="figure" >
 <p class="title">Figura 10.1. El paquete <code>time</code> en <code class="command" >godoc</code>.</p>
 <figure>
 <img src="img/Figure-10.1.jpg" />
 </figure>
 </div>
-<p>Para hacer frente a estas necesidades, la herramienta <code class="command" >go build</code> maneja de un paquete de forma especial si su ruta de importacion contiene un segmento de ruta denominado <code>interno</code>. Dichos paquetes se denominan <em>paquetes internos</em>. Un paquete interno puede ser importadas por otro paquete que esta dentro del arbol raiz en el paquete del directorio <code>internal</code>. Por ejemplo, los paquetes a continuacion, <code>net/http/internal/chunked</code> pueden ser importados de <code>net/http/httputil</code> o <code>net/http</code>, pero no de <code>net/url</code> . Sin embargo, <code>net/url</code> puede importar <code>net/http/httputil</code>.</p>
+<p>Para hacer frente a estas necesidades, la herramienta <code class="command" >go build</code> maneja un paquete de forma especial si su ruta de importacion contiene un segmento de ruta denominado <code>interno</code>. Dichos paquetes se denominan <em>paquetes internos</em>. Un paquete interno puede ser importado por otro paquete que esta dentro del arbol raiz en el paquete del directorio <code>internal</code>. Por ejemplo, los paquetes a continuacion, <code>net/http/internal/chunked</code> pueden ser importados de <code>net/http/httputil</code> o <code>net/http</code>, pero no de <code>net/url</code>. Sin embargo, <code>net/url</code> puede importar <code>net/http/httputil</code>.</p>
 <div class="pre-block" >
 <pre class="pre" >net/http
 net/http/internal/chunked
@@ -9567,7 +9567,7 @@ bufio
 bytes
 cmd/addr2line
 cmd/api
-...many more...</span>
+...mucho mas...</span>
 </code></pre>
 <p>O dentro de un subarbol especifico:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go list gopl.io/ch3/...
@@ -9611,7 +9611,7 @@ gopl.io/ch7/xmlselect</span>
     ]
 }</span>
 </code></pre>
-<p>La bandera <code>-f</code> permite a los usuarios personalizar el formato de salida utilizando el lenguaje de la plantilla del paquete de <code>text/template</code> (<a href="#Seccion-4.6" >§4.6</a>). Este comando imprime las dependencias transitivas del paquete <code>strconv</code>, separados por espacios:</p>
+<p>La bandera <code>-f</code> permite a los usuarios personalizar el formato de salida utilizando el lenguaje de la plantilla del paquete <code>text/template</code> (<a href="#Seccion-4.6" >§4.6</a>). Este comando imprime las dependencias transitivas del paquete <code>strconv</code>, separados por espacios:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go list -f <span class="s1">&#39;{{join .Deps &quot; &quot;}}&#39;</span> strconv
 <span class="srci-text">errors math runtime unicode/utf8 unsafe</span>
 </code></pre>
@@ -9623,7 +9623,7 @@ compress/gzip -&gt; bufio compress/flate errors fmt hash hash/crc32 io time
 compress/lzw -&gt; bufio errors fmt io
 compress/zlib -&gt; bufio compress/flate errors fmt hash hash/adler32 io</span>
 </code></pre>
-<p>El comando <code class="command" >go list</code> es util tanto para consultas interactivas puntuales y para scripts de construccion y automatizacion de pruebas. Lo volveremos a utilizar en la <a href="#Seccion-11.2.4" >Seccion 11.2.4</a>. Para obtener mas informacion, incluyendo el conjunto de campos disponibles y su significado, ver la salida de la <code class="command" >go help list</code>.</p>
+<p>El comando <code class="command" >go list</code> es util tanto para consultas interactivas puntuales y para scripts de construccion y automatizacion de pruebas. Lo volveremos a utilizar en la <a href="#Seccion-11.2.4" >Seccion 11.2.4</a>. Para obtener mas informacion, incluyendo el conjunto de campos disponibles y su significado, ver la salida de <code class="command" >go help list</code>.</p>
 <p>En este capitulo, hemos explicado todos los subcomandos importantes de la herramientas <code class="command" >go</code> excepto uno. En el siguiente capitulo, veremos como se utiliza el comando <code class="command" >go test</code> para probar programas Go.</p>
 <p><b>Ejercicio 10.4</b>: Construir una herramienta que reporte el conjunto de todos los paquetes en el espacio de trabajo que dependen de forma transitiva de los paquetes especificados por los argumentos. Sugerencia: tendra que ejecutar <code class="command" >go list</code> dos veces, una para los paquetes iniciales y una vez para todos los paquetes. Es posible que desee analizar su salida JSON utilizando el paquete <code>encoding/json</code> (<a href="#Seccion-4.5" >§4.5</a>).</p>
 </div>
@@ -11223,7 +11223,7 @@ strangelove.Sequel = nil</pre></div>
 </thead>
 <tbody>
 <tr><td><code>bool</code></td><td>1 byte</td></tr>
-<tr><td><code>int</code><span class="math" >N</span>, <code>uint</code><span class="math" >N</span>, <code>float</code><span class="math" >N</span>, <code>complex</code><span class="math" >N</span></td><td><span class="math" >N</span> / 8 bytes (por ejemplo, f<code>loat64</code> es 8 bytes)</td></tr>
+<tr><td><code>int</code><span class="math" >N</span>, <code>uint</code><span class="math" >N</span>, <code>float</code><span class="math" >N</span>, <code>complex</code><span class="math" >N</span></td><td><span class="math" >N</span> / 8 bytes (por ejemplo, <code>float64</code> es 8 bytes)</td></tr>
 <tr><td><code>int</code>, <code>uint</code>, <code>uintptr</code></td><td>1 palabra</td></tr>
 <tr><td><code>*T</code></td><td>1 palabra</td></tr>
 <tr><td><code>string</code></td><td>2 palabras (data, len)</td></tr>
@@ -11461,19 +11461,19 @@ Sizeof(x.c) = 24  Alignof(x.c) = 8  Offsetof(x.c) = 8
 <p class="title"><a href="gopl.io/ch13/bzip/bzip2.c" >gopl.io/ch13/bzip</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/* Este archivo es gopl.io/ch13/bzip/bzip2.c,            */</span>
 <span class="cm">/* un simple envoltorio para libbzip2 adecuado para cgo. */</span>
-<span class="err">#</span><span class="nx">include</span> <span class="p">&lt;</span><span class="nx">bzlib</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="cp">#include</span> <span class="cpf">&lt;bzlib.h&gt;</span><span class="cp"></span>
 
-<span class="kt">int</span> <span class="nx">bz2compress</span><span class="p">(</span><span class="nx">bz_stream</span> <span class="o">*</span><span class="nx">s</span><span class="p">,</span> <span class="kt">int</span> <span class="nx">action</span><span class="p">,</span>
-                <span class="nx">char</span> <span class="o">*</span><span class="nx">in</span><span class="p">,</span> <span class="nx">unsigned</span> <span class="o">*</span><span class="nx">inlen</span><span class="p">,</span> <span class="nx">char</span> <span class="o">*</span><span class="nx">out</span><span class="p">,</span> <span class="nx">unsigned</span> <span class="o">*</span><span class="nx">outlen</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">next_in</span> <span class="p">=</span> <span class="nx">in</span><span class="p">;</span>
-  <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">avail_in</span> <span class="p">=</span> <span class="o">*</span><span class="nx">inlen</span><span class="p">;</span>
-  <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">next_out</span> <span class="p">=</span> <span class="nx">out</span><span class="p">;</span>
-  <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">avail_out</span> <span class="p">=</span> <span class="o">*</span><span class="nx">outlen</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="nx">r</span> <span class="p">=</span> <span class="nx">BZ2_bzCompress</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
-  <span class="o">*</span><span class="nx">inlen</span> <span class="o">-=</span> <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">avail_in</span><span class="p">;</span>
-  <span class="o">*</span><span class="nx">outlen</span> <span class="o">-=</span> <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">avail_out</span><span class="p">;</span>
-  <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">next_in</span> <span class="p">=</span> <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">next_out</span> <span class="p">=</span> <span class="nx">NULL</span><span class="p">;</span>
-  <span class="k">return</span> <span class="nx">r</span><span class="p">;</span>
+<span class="kt">int</span> <span class="nf">bz2compress</span><span class="p">(</span><span class="n">bz_stream</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">int</span> <span class="n">action</span><span class="p">,</span>
+                <span class="kt">char</span> <span class="o">*</span><span class="n">in</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">inlen</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">outlen</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">next_in</span> <span class="o">=</span> <span class="n">in</span><span class="p">;</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">avail_in</span> <span class="o">=</span> <span class="o">*</span><span class="n">inlen</span><span class="p">;</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">next_out</span> <span class="o">=</span> <span class="n">out</span><span class="p">;</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">avail_out</span> <span class="o">=</span> <span class="o">*</span><span class="n">outlen</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="n">BZ2_bzCompress</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">action</span><span class="p">);</span>
+  <span class="o">*</span><span class="n">inlen</span> <span class="o">-=</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">avail_in</span><span class="p">;</span>
+  <span class="o">*</span><span class="n">outlen</span> <span class="o">-=</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">avail_out</span><span class="p">;</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">next_in</span> <span class="o">=</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">next_out</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>

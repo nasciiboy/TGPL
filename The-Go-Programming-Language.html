@@ -9183,8 +9183,8 @@ FAIL    gopl.io/ch9/memo1   2.393s</span>
 <p>A Go source file may contain zero or more <code>import</code> declarations immediately after the <code>package</code> declaration and before the first non-import declaration. Each import declaration may specify the import path of a single package, or multiple packages in a parenthesized list. The two forms below are equivalent but the second form is more common.</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="s">&quot;fmt&quot;</span>
 <span class="kn">import</span> <span class="s">&quot;os&quot;</span>
-
-<span class="kn">import</span> <span class="p">(</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="p">(</span>
   <span class="s">&quot;fmt&quot;</span>
   <span class="s">&quot;os&quot;</span>
 <span class="p">)</span>
@@ -9404,8 +9404,7 @@ origin  https://go.googlesource.com/net (push)</span>
 <p>Notice that the apparent domain name in the package’s import path, <code>golang.org</code>, differs from the actual domain name of the Git server, <code>go.googlesource.com</code>. This is a feature of the go tool that lets packages use a custom domain name in their import path while being hosted by a generic service such as <a href="https://googlesource.com" >https://googlesource.com</a> or <a href="https://github.com" >https://github.com</a>. HTML pages beneath <a href="https://golang.org/x/net/html" >https://golang.org/x/net/html</a> include the metadata shown below, which redirects the <code class="command" >go</code> tool to the Git repository at the actual hosting site:</p>
 <pre class="srci" ><code class="sh"><span class="prompt">$ </span>go build gopl.io/ch1/fetch
 <span class="prompt">$ </span>./fetch https://golang.org/x/net/html <span class="p">|</span> grep go-import
-<span class="srci-text">&lt;meta name=&quot;go-import&quot;
-      content=&quot;golang.org/x/net git https://go.googlesource.com/net&quot;&gt;</span>
+<span class="srci-text">&lt;meta name=&quot;go-import&quot; content=&quot;golang.org/x/net git https://go.googlesource.com/net&quot;&gt;</span>
 </code></pre>
 <p>If you specify the <code>-u</code> flag, <code class="command" >go get</code> will ensure that all packages it visits, including dependencies, are updated to their latest version before being built and installed. Without that flag, packages that already exist locally will not be updated.</p>
 <p>The <code class="command" >go get -u</code> command generally retrieves the latest version of each package, which is convenient when you’re getting started but may be inappropriate for deployed projects, where precise control of dependencies is critical for release hygiene. The usual solution to this problem is to <em>vendor</em> the code, that is, to make a persistent local copy of all the necessary dependencies, and to update this copy carefully and deliberately. Prior to Go 1.5, this required changing those packages’ import paths, so our copy of <code>golang.org/x/net/html</code> would become <code>gopl.io/vendor/golang.org/x/net/html</code>. More recent versions of the go tool support vendoring directly, though we don’t have space to show the details here. See <em>Vendor Directories</em> in the output of the <code class="command" >go help gopath</code> command.</p>
@@ -9529,7 +9528,7 @@ type Time struct { ... }
 </code></pre>
 <p>The second tool, confusingly named <code class="command" >godoc</code>, serves cross-linked HTML pages that provide the same information as <code class="command" >go doc</code> and much more. The <code class="command" >godoc</code> server at <a href="https://golang.org/pkg" >https://golang.org/pkg</a> covers the standard library. Figure 10.1 shows the documentation for the <code>time</code> package, and in <a href="#Section-11.6" >Section 11.6</a> we’ll see <code class="command" >godoc</code>’s interactive display of example programs. The <code class="command" >godoc</code> server at <a href="https://godoc.org" >https://godoc.org</a> has a searchable index of thousands of open-source packages.</p>
 <p>You can also run an instance of <code class="command" >godoc</code> in your workspace if you want to browse your own packages. Visit <a href="http://localhost:8000/pkg" >http://localhost:8000/pkg</a> in your browser while running this command:</p>
-<pre class="srci" ><code class="sh"><span class="prompt">$ </span>godoc -http :8000
+<pre class="srci" ><code class="sh"><span class="prompt">$ </span>godoc -http<span class="o">=</span>:8000
 </code></pre>
 <p>Its <code>-analysis=type</code> and <code>-analysis=pointer</code> flags augment the documentation and the source code with the results of advanced static analysis.</p>
 </div>
@@ -11219,7 +11218,7 @@ strangelove.Sequel = nil</pre></div>
 </thead>
 <tbody>
 <tr><td><code>bool</code></td><td>1 byte</td></tr>
-<tr><td><code>int</code><span class="math" >N</span>, <code>uint</code><span class="math" >N</span>, <code>float</code><span class="math" >N</span>, <code>complex</code><span class="math" >N</span></td><td><span class="math" >N</span> / 8 bytes (for example, f<code>loat64</code> is 8 bytes)</td></tr>
+<tr><td><code>int</code><span class="math" >N</span>, <code>uint</code><span class="math" >N</span>, <code>float</code><span class="math" >N</span>, <code>complex</code><span class="math" >N</span></td><td><span class="math" >N</span> / 8 bytes (for example, <code>float64</code> is 8 bytes)</td></tr>
 <tr><td><code>int</code>, <code>uint</code>, <code>uintptr</code></td><td>1 word</td></tr>
 <tr><td><code>*T</code></td><td>1 word</td></tr>
 <tr><td><code>string</code></td><td>2 words (data, len)</td></tr>
@@ -11457,19 +11456,19 @@ Sizeof(x.c) = 24  Alignof(x.c) = 8  Offsetof(x.c) = 8
 <p class="title"><a href="gopl.io/ch13/bzip/bzip2.c" >gopl.io/ch13/bzip</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/* This file is gopl.io/ch13/bzip/bzip2.c,         */</span>
 <span class="cm">/* a simple wrapper for libbzip2 suitable for cgo. */</span>
-<span class="err">#</span><span class="nx">include</span> <span class="p">&lt;</span><span class="nx">bzlib</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="cp">#include</span> <span class="cpf">&lt;bzlib.h&gt;</span><span class="cp"></span>
 
-<span class="kt">int</span> <span class="nx">bz2compress</span><span class="p">(</span><span class="nx">bz_stream</span> <span class="o">*</span><span class="nx">s</span><span class="p">,</span> <span class="kt">int</span> <span class="nx">action</span><span class="p">,</span>
-                <span class="nx">char</span> <span class="o">*</span><span class="nx">in</span><span class="p">,</span> <span class="nx">unsigned</span> <span class="o">*</span><span class="nx">inlen</span><span class="p">,</span> <span class="nx">char</span> <span class="o">*</span><span class="nx">out</span><span class="p">,</span> <span class="nx">unsigned</span> <span class="o">*</span><span class="nx">outlen</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">next_in</span> <span class="p">=</span> <span class="nx">in</span><span class="p">;</span>
-  <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">avail_in</span> <span class="p">=</span> <span class="o">*</span><span class="nx">inlen</span><span class="p">;</span>
-  <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">next_out</span> <span class="p">=</span> <span class="nx">out</span><span class="p">;</span>
-  <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">avail_out</span> <span class="p">=</span> <span class="o">*</span><span class="nx">outlen</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="nx">r</span> <span class="p">=</span> <span class="nx">BZ2_bzCompress</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
-  <span class="o">*</span><span class="nx">inlen</span> <span class="o">-=</span> <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">avail_in</span><span class="p">;</span>
-  <span class="o">*</span><span class="nx">outlen</span> <span class="o">-=</span> <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">avail_out</span><span class="p">;</span>
-  <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">next_in</span> <span class="p">=</span> <span class="nx">s</span><span class="o">-</span><span class="p">&gt;</span><span class="nx">next_out</span> <span class="p">=</span> <span class="nx">NULL</span><span class="p">;</span>
-  <span class="k">return</span> <span class="nx">r</span><span class="p">;</span>
+<span class="kt">int</span> <span class="nf">bz2compress</span><span class="p">(</span><span class="n">bz_stream</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">int</span> <span class="n">action</span><span class="p">,</span>
+                <span class="kt">char</span> <span class="o">*</span><span class="n">in</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">inlen</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">outlen</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">next_in</span> <span class="o">=</span> <span class="n">in</span><span class="p">;</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">avail_in</span> <span class="o">=</span> <span class="o">*</span><span class="n">inlen</span><span class="p">;</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">next_out</span> <span class="o">=</span> <span class="n">out</span><span class="p">;</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">avail_out</span> <span class="o">=</span> <span class="o">*</span><span class="n">outlen</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="n">BZ2_bzCompress</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">action</span><span class="p">);</span>
+  <span class="o">*</span><span class="n">inlen</span> <span class="o">-=</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">avail_in</span><span class="p">;</span>
+  <span class="o">*</span><span class="n">outlen</span> <span class="o">-=</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">avail_out</span><span class="p">;</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">next_in</span> <span class="o">=</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">next_out</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>

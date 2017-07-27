@@ -16897,7 +16897,9 @@
    ..src > go
      import "fmt"
      import "os"
+   < src..
 
+   ..src > go
      import (
        "fmt"
        "os"
@@ -17340,8 +17342,7 @@
     ..srci > sh
       > go build gopl.io/ch1/fetch
       > ./fetch https://golang.org/x/net/html | grep go-import
-      <meta name="go-import"
-            content="golang.org/x/net git https://go.googlesource.com/net">
+      <meta name="go-import" content="golang.org/x/net git https://go.googlesource.com/net">
     < srci..
 
     If you specify the @c(-u) flag, @$(go get) will ensure that all packages it
@@ -17625,7 +17626,7 @@
     browser while running this command:
 
     ..srci > sh
-      > godoc -http :8000
+      > godoc -http=:8000
     < srci..
 
     Its @c(-analysis=type) and @c(-analysis=pointer) flags augment the
@@ -20725,7 +20726,7 @@
    |===============================================================|=======================================================|
    | @c(bool)                                                      | 1 byte                                                |
    |---------------------------------------------------------------|-------------------------------------------------------|
-   | @c(int)@m(N), @c(uint)@m(N), @c(float)@m(N), @c(complex)@m(N) | @m(N) / 8 bytes (for example, f@c(loat64) is 8 bytes) |
+   | @c(int)@m(N), @c(uint)@m(N), @c(float)@m(N), @c(complex)@m(N) | @m(N) / 8 bytes (for example, @c(float64) is 8 bytes) |
    |---------------------------------------------------------------|-------------------------------------------------------|
    | @c(int), @c(uint), @c(uintptr)                                | 1 word                                                |
    |---------------------------------------------------------------|-------------------------------------------------------|
@@ -21168,7 +21169,7 @@
 
    ..figure > @l(gopl.io/ch13/bzip/bzip2.c<>gopl.io/ch13/bzip)
 
-     ..src > go
+     ..src > c
        /* This file is gopl.io/ch13/bzip/bzip2.c,         */
        /* a simple wrapper for libbzip2 suitable for cgo. */
        #include <bzlib.h>

@@ -17405,7 +17405,7 @@
    El proposito de cualquier sistema de paquetes es hacer que el diseño y
    mantenimiento de programas grandes sea practico, agrupando las
    caracteristicas relacionadas en unidades que puedan ser facilmente
-   comprendidas y cambiadas, independientemente de los otros paquetes del
+   comprendidas y modificadas, independientemente de los otros paquetes del
    programa. Esta @e(modularidad) permite que los paquetes sean compartidos y
    reutilizados por diferentes proyectos, distribuidos dentro de una
    organizacion, o puestos a disposicion del resto del mundo.
@@ -17418,8 +17418,8 @@
 
    Los paquetes tambien proporcionan @e(encapsulacion) controlando que nombres
    son visibles o exportados fuera del paquete. La restriccion de la visibilidad
-   de los miembros del paquete oculta las funciones y tipos de ayuda, de la API
-   del paquete, lo que permite al responsable del paquete cambiar la
+   de los miembros del paquete oculta las funciones y tipos auxiliares de la
+   API del paquete, lo que permite al responsable del paquete cambiar la
    implementacion con la confianza de que ningun codigo fuera del paquete se
    vera afectado. Restringir la visibilidad tambien oculta las variables para
    que los clientes puedan acceder y actualizarlas solo mediante funciones
@@ -17438,7 +17438,7 @@
    pueden ser compilados por separado y tal vez en paralelo. Finalmente, el
    archivo de objeto de un paquete compilado Go registra informacion de
    exportacion no solo para el propio paquete, sino tambien para sus
-   dependencias. Al compilar un paquete, el compilador debe leer un archivo de
+   dependencias. Al compilar un paquete, el compilador debe leer un archivo
    objeto para cada importacion pero no necesita mirar mas alla de estos
    archivos.
 
@@ -17461,9 +17461,9 @@
    < src..
 
    Como mencionamos en la @l(#Seccion 2.6.1), la especificacion del lenguaje Go
-   no define el significado de estas cadenas o como determinar ruta de
+   no define el significado de estas cadenas o como determinar la ruta de
    importacion de un paquete, sino que deja estas cuestiones a las herramientas.
-   En este capitulo, analizaremos con detalle como interpreta la herramienta
+   En este capitulo, analizaremos con detalle como las interpreta la herramienta
    @$(go), ya que eso es lo que la mayoria de los programadores de Go utilizan
    para construir, probar, etc. Sin embargo, existen otras herramientas. Por
    ejemplo, los programadores de Go que utilizan el sistema de compilacion
@@ -17487,7 +17487,7 @@
    para ese paquete (denominado el @e(nombre del paquete)) cuando se importa por
    otro paquete.
 
-   Por ejemplo, todos los archivos del paquete @c(math/rand) comienza con
+   Por ejemplo, todos los archivos del paquete @c(math/rand) comienzan con
    @c(package rand), por lo que al importar este paquete, puede acceder a sus
    miembros como @c(rand.Int), @c(rand.Float64), etc.
 
@@ -17520,8 +17520,8 @@
 
    La segunda excepcion es que algunos archivos en el directorio pueden tener el
    sufijo @c(_test) en su nombre de paquete si el nombre del archivo termina con
-   @c(_test.go). Un directorio de este tipo puede definir dos paquetes: el
-   habitual, ademas de otro denominado @e(paquete de prueba externa). El sufijo
+   @c(_test.go). Un directorio de este tipo puede definir @e(dos) paquetes: el
+   habitual, ademas de otro denominado @e(paquete externo de prueba). El sufijo
    @c(_test) indica a @$(go test) que debe construir ambos paquetes, e indica
    que archivos pertenecen a cada paquete. Los paquetes de prueba externos se
    utilizan para evitar ciclos en el grafico de importacion que surgen de las
@@ -17533,7 +17533,7 @@
    como @c("gopkg.in/yaml.v2"). El nombre del paquete excluye el sufijo, por lo
    que en este caso seria simplemente @c(yaml).
 
-** Seccion 10.4 <> Declaraciones Import
+** Seccion 10.4 <> Declaraciones @c(import)
 
    Un archivo de codigo Go puede contener cero o mas declaraciones @c(import)
    inmediatamente despues de la declaracion @c(package) y antes de la primera
@@ -17545,7 +17545,9 @@
    ..src > go
      import "fmt"
      import "os"
+   < src..
 
+   ..src > go
      import (
        "fmt"
        "os"
@@ -17553,7 +17555,7 @@
    < src..
 
    Los paquetes importados pueden agruparse introduciendo lineas en blanco;
-   Tales grupos suelen indicar diferentes dominios. El orden no es
+   tales grupos suelen indicar diferentes dominios. El orden no es
    significativo, pero por convencion las lineas de cada grupo se ordenan
    alfabeticamente. (Tanto @$(gofmt) como @$(goimports) las agruparan y
    ordenaran por usted.)
@@ -17572,12 +17574,12 @@
    Si tenemos que importar dos paquetes cuyos nombres son los mismos, como
    @c(math/rand) y @c(crypto/rand), en un tercer paquete, la declaracion de
    importacion debe especificar un nombre alternativo para al menos uno de ellos
-   para evitar un conflicto. Esto se denomina @e(renombrar la importacion).
+   para evitar el conflicto. Esto se denomina @e(renombrar la importacion).
 
    ..src > go
      import (
        "crypto/rand"
-       mrand "math/rand" // alternative name mrand avoids conflict
+       mrand "math/rand" // el nombre alternativo mrand evita conflictos
      )
    < src..
 
@@ -17585,7 +17587,7 @@
    incluso los del mismo paquete, pueden importar el paquete usando su nombre
    predeterminado o un nombre diferente.
 
-   Renombrar una importacion ser util incluso cuando no hay conflicto. Si el
+   Renombrar una importacion es util incluso cuando no hay conflicto. Si el
    nombre del paquete importado es dificil de manejar, como ocurre a veces con
    el codigo generado automaticamente, es posible que el nombre abreviado sea
    mas conveniente. El mismo nombre abreviado debe ser usado consistentemente
@@ -17620,12 +17622,12 @@
    mediante la importacion en blanco de paquetes adicionales. Primero veremos
    como usarlo, luego veremos como funciona.
 
-   De la biblioteca estandar el paquete @c(image) exporta una funcion @c(Decode)
-   que lee bytes desde un @c(io.Reader), se da cuenta de que el formato de
-   imagen se utiliza para codificar los datos, invoca el decodificador
-   apropiado, a continuacion, devuelve la resultante @c(image.Image). Usando
-   @c(image.Decode), es facil construir un convertidor de imagenes simple que
-   lee una imagen en un formato y lo escribe en otro:
+   El paquete @c(image) de la biblioteca estandar exporta una funcion @c(Decode)
+   que lee bytes desde un @c(io.Reader), averigua que formato de imagen se
+   utiliza para codificar los datos, invocar el decodificador apropiado, y
+   devolver el @c(image.Image) resultante. Usando @c(image.Decode), es facil
+   construir un convertidor de imagenes simple que lee una imagen en un formato
+   y lo escribe en otro:
 
    ..figure > @l(gopl.io/ch10/jpeg/main.go<>gopl.io/ch10/jpeg)
 
@@ -17661,7 +17663,7 @@
      < src..
 
 
-   Si alimentamos con la salida de @c(gopl.io/ch3/mandelbrot) (@l(#Seccion
+   Si lo alimentamos con la salida de @c(gopl.io/ch3/mandelbrot) (@l(#Seccion
    3.3<>§3.3)) al programa convertidor, detecta el formato de entrada PNG y
    escribe una version JPEG de la Figura 3.3.
 
@@ -17684,7 +17686,7 @@
 
    Asi es como funciona. La biblioteca estandar ofrece descodificadores para
    GIF, PNG y JPEG, y los usuarios pueden proporcionar otros, pero para mantener
-   pequeños ejecutables, los decodificadores no se incluyen en una aplicacion a
+   ejecutables pequeños, los decodificadores no se incluyen en una aplicacion a
    menos que se solicite explicitamente. la funcion @c(image.Decode) consulta
    una tabla de formatos soportados. Cada entrada en la tabla especifica cuatro
    cosas: el nombre del formato; Una cadena que es un prefijo de todas las
@@ -17692,8 +17694,8 @@
    codificacion; una funcion @c(Decode) que decodifica una imagen codificada; y
    otra funcion @c(DecodeConfig) que decodifica solo los metadatos de la imagen,
    como su tamaño y espacio de color. Se añade una entrada a la tabla llamando a
-   @c(image.RegisterFormat), normalmente desde destro del paquete inicializador
-   del paquete de soporte para cada formato, como este en @c(image/png) :
+   @c(image.RegisterFormat), normalmente desde dentro del paquete inicializador
+   del paquete de soporte para cada formato, como este en @c(image/png):
 
    ..src > go
      package png // image/png
@@ -17708,7 +17710,7 @@
    < src..
 
    El efecto es que una aplicacion solo necesita importar el paquete en blanco
-   para el formato que necesita para hacer a la funcion @c(image.Decode) capaz
+   para el formato que necesita, para hacer a la funcion @c(image.Decode) capaz
    de decodificarlo.
 
    El paquete @c(database/sql) utiliza un mecanismo similar para permitir a los
@@ -17727,16 +17729,16 @@
      db, err = sql.Open("sqlite3", dbname)  // devuelve error: controlador desconocido "sqlite3"
    < src..
 
-   @b(Ejercicio 10.1): Extender el programa @$(jpeg) para que convierte
+   @b(Ejercicio 10.1): Extender el programa @$(jpeg) para que convierta
    cualquier formato de entrada compatible con cualquier formato de salida,
    utilizando @c(image.Decode) para detectar el formato de entrada y una bandera
    para seleccionar el formato de salida.
 
-   @b(Ejercicio 10.2): Definir una funcion generica lectura de archivos capaz de
-   leer archivos ZIP (@c(archive/zip)) y archivos tar POSIX (@c(archive/tar)).
+   @b(Ejercicio 10.2): Definir una funcion generica de lectura de archivos capaz
+   de leer archivos ZIP (@c(archive/zip)) y archivos tar POSIX (@c(archive/tar)).
    Utilice un mecanismo de registro similar al descrito anteriormente para que
-   el soporte para cada formato de archivo se pueda conectar usando
-   importaciones en blanco.
+   el soporte de cada formato de archivo se pueda conectar usando importaciones
+   en blanco.
 
 ** Seccion 10.6 <> Paquetes y Nombres
 
@@ -17763,10 +17765,10 @@
    Evite nombres de paquetes que ya tengan otras connotaciones. Por ejemplo, se
    utilizamos originalmente el nombre @c(temp) para el paquete de conversion de
    temperatura en la @l(#Seccion 2.5), pero eso no duro mucho tiempo. Era una
-   idea terrible, porque @"(temp) es un sinonimo casi universal de
-   @"(temporal). Pasamos de un breve periodo con el nombre @c(temperature), pero
-   que era demasiado largo y no decia lo que hace el paquete. Al final, se
-   convirtio en @c(tempconv), que es mas corto y paralelo con @c(strconv) .
+   idea terrible, porque @"(temp) es un sinonimo casi universal de @"(temporal).
+   Pasamos un breve periodo con el nombre @c(temperature), pero era demasiado
+   largo y no decia lo que hace el paquete. Al final, se convirtio en
+   @c(tempconv), que es mas corto y similar a @c(strconv) .
 
    Ahora pasemos a la nomenclatura de los miembros del paquete. Puesto que cada
    referencia a un miembro de otro paquete utiliza un identificador calificado
@@ -17797,8 +17799,7 @@
    < src..
 
    La palabra @c(string) no aparece en ninguno de sus nombres. Los clientes se
-   refieren a ellos como @c(strings.Index), @c(strings.Replacer), y asi
-   sucesivamente.
+   refieren a ellos como @c(strings.Index), @c(strings.Replacer), etc.
 
    Otros paquetes que podriamos describir como paquetes de un solo tipo, como
    @c(html/template) y @c(math/rand), exponen un tipo de datos principal mas sus
@@ -17838,7 +17839,7 @@
 
    Su interfaz de linea de comandos utiliza el estilo @"(navaja suiza), con mas
    de una docena de subcomandos, algunos de los cuales ya hemos visto, como
-   @c(get), @c(run), @c(build) y @c(fmt). Puede ejecutar @$(go help) a ver el
+   @c(get), @c(run), @c(build) y @c(fmt). Puede ejecutar @$(go help) para ver el
    indice de la documentacion incorporada, pero como referencia, hemos realizado
    una lista de los comandos mas utilizados a continuacion:
 
@@ -17871,7 +17872,7 @@
    ya que cada directorio contiene un unico paquete y la ruta de importacion de
    un paquete corresponde a la jerarquia de directorios en el espacio de
    trabajo. Dada la ruta de importacion de un paquete, la herramienta puede
-   encontrar el directorio correspondiente en el que almacena los archivos de
+   encontrar el directorio correspondiente en el que almacena los archivos
    objeto. Tambien puede encontrar la direccion URL del servidor que aloja el
    repositorio de codigo fuente.
 
@@ -17886,7 +17887,7 @@
     ..srci > sh
       > export GOPATH=$HOME/gobook
       > go get gopl.io/...
-    < srci..
+    < src..
 
     Despues de descargar todos los programas de este libro utilizando el comando
     anterior, su espacio de trabajo contendra una jerarquia como esta:
@@ -17918,20 +17919,21 @@
 
     @c(GOPATH) tiene tres subdirectorios. El subdirectorio @f(src) contiene el
     codigo fuente. Cada paquete reside en un directorio cuyo nombre en relacion
-    con @c($GOPATH/src) es ruta de importacion del paquete, como
+    con @c($GOPATH/src) es la ruta de importacion del paquete, como
     @c(gopl.io/ch1/helloworld). Observe que un solo espacio de trabajo
-    @c(GOPATH) contiene multiples repositorios de control de version debajo
-    @f(src), como @c(gopl.io) o @c(golang.org). El subdirectorio @f(pkg) es
-    donde las h herramientas de construccion almacenan paquetes compilados, y el
-    subdirectorio @f(bin) contiene los programas ejecutables como @$(helloworld).
+    @c(GOPATH) contiene multiples repositorios con control de versiones debajo
+    de @f(src), como @c(gopl.io) o @c(golang.org). El subdirectorio @f(pkg) es
+    donde las herramientas de construccion almacenan paquetes compilados, y el
+    subdirectorio @f(bin) contiene los programas ejecutables como
+    @$(helloworld).
 
     Una segunda variable de entorno, @$(GOROOT), especifica el directorio raiz
     de la distribucion Go, que ofrece todos los paquetes de la biblioteca
-    estandar. La estructura de directorios debajo de @c(GOROOT) asemeja a la de
+    estandar. La estructura de directorios debajo de @c(GOROOT) es analoga a
     @c(GOPATH), por lo que, por ejemplo, los archivos de origen del paquete
     @c(fmt) residen en el directorio @c($GOROOT/src/fmt). Los usuarios no
-    necesitan configurar @c(GOROOT) ya que, por defecto, la herramienta de
-    @$(go) utilizara la ubicacion donde se instalo.
+    necesitan configurar @c(GOROOT) ya que, por defecto, la herramienta @$(go)
+    utilizara la ubicacion donde se instalo.
 
     El comando @$(go env) imprime los valores efectivos de las variables de
     entorno correspondientes a la cadena de herramientas, incluidos los valores
@@ -17952,10 +17954,9 @@
 
 *** Seccion 10.7.2 <> Descargando paquetes
 
-    Cuando se utiliza la herramienta @$(go), ruta de importacion de un paquete
+    Cuando se utiliza la herramienta @$(go), la ruta de importacion de un paquete
     indica no solo donde encontrarlo en el espacio de trabajo local, sino donde
-    encontrarlo en Internet para que @$(go get) pueda recuperarlo y
-    actualizarlo.
+    encontrarlo en Internet para que @$(go get) pueda recuperarlo y actualizarlo.
 
     El comando @$(go get) puede descargar un solo paquete o todo un subarbol o
     repositorio usando la notacion @c(...), como en la seccion anterior. La
@@ -17988,9 +17989,9 @@
 
     Los directorios que @$(go get) crea son verdaderos clientes del repositorio
     remoto, no solo copias de los archivos, por lo que puede utilizar los
-    comandos de control de versiones para ver un diff de ediciones locales que
-    ha realizado o para actualizar a una revision diferente. Por ejemplo, el
-    directorio @f(golang.org/x/net) es un cliente de Git:
+    comandos de control de versiones para ver una comparacion de las ediciones
+    locales que ha realizado o para actualizar a una revision diferente. Por
+    ejemplo, el directorio @f(golang.org/x/net) es un cliente Git:
 
     ..srci > sh
       > cd $GOPATH/src/golang.org/x/net
@@ -17999,21 +18000,20 @@
       origin  https://go.googlesource.com/net (push)
     < srci..
 
-    Observe que el nombre de dominio en ruta de importacion del paquete,
+    Observe que el nombre de dominio en la ruta de importacion del paquete,
     @c(golang.org), difiere del nombre de dominio real del servidor Git,
     @c(go.googlesource.com). Esta es una caracteristica de la herramienta Go que
-    permite que lo paquetes usen un nombre de dominio personalizado en su ruta
+    permite que los paquetes usen un nombre de dominio personalizado en su ruta
     de importacion al ser alojados por un servicio generico como
-    @l(https://googlesource.com) o @l(https://github.com). Paginas HTML debajo
-    de @l(https://golang.org/x/net/html) incluyen los metadatos que se muestran
-    a continuacion, que redirecciona la herramienta @$(go) al repositorio Git en
-    el lugar del alojamiento actual:
+    @l(https://googlesource.com) o @l(https://github.com). Las paginas HTML
+    debajo de @l(https://golang.org/x/net/html) incluyen los metadatos que se
+    muestran a continuacion, que redirecciona la herramienta @$(go) al
+    repositorio Git en el lugar del alojamiento actual:
 
     ..srci > sh
       > go build gopl.io/ch1/fetch
       > ./fetch https://golang.org/x/net/html | grep go-import
-      <meta name="go-import"
-            content="golang.org/x/net git https://go.googlesource.com/net">
+      <meta name="go-import" content="golang.org/x/net git https://go.googlesource.com/net">
     < srci..
 
     Si especifica la bandera @c(-u), @$(go get) se asegurara de que todos los
@@ -18024,11 +18024,11 @@
     El comando @$(go get -u) recupera generalmente la ultima version de cada
     paquete, lo cual es conveniente cuando se inicia, pero puede ser inadecuado
     para proyectos desplegados, donde el control preciso de dependencias es
-    critico para la higiene de la liberacion. La solucion habitual a este
+    critico para la higiene de los lanzamientos. La solucion habitual a este
     problema es el @e(proveedor) del codigo, es decir, hacer una copia local
     persistente de todas las dependencias necesarias, para actualizar esta copia
     cuidadosa y deliberadamente. Antes de Go 1.5, esto requiere cambiar las
-    rutas de importacion esos paquetes, por lo que nuestra copia de
+    rutas de importacion de esos paquetes, por lo que nuestra copia de
     @c(golang.org/x/net/html) se convertiria en
     @c(gopl.io/vendor/golang.org/x/net/html). Las versiones mas recientes de la
     herramienta soportan directorios de proveedores directamente, aunque no
@@ -18057,31 +18057,31 @@
 
     Los paquetes pueden especificarse por sus rutas de importacion, como hemos
     visto anteriormente, o por un nombre de directorio relativo, que debe
-    comenzar con un @c(.) o @c(..) aun si ordinariamente no se requere. Si no se
-    proporciona ningun argumento, se supone el directorio actual. Por lo tanto
-    los siguientes comandos construyen el mismo paquete, aunque cada uno escribe
-    el ejecutable en el directorio en el que @$(go build) se ejecuta:
+    comenzar con un @c(.) o @c(..) incluso si esto no se requere normalmente. Si
+    no se proporciona ningun argumento, se supone el directorio actual. Por lo
+    tanto los siguientes comandos construyen el mismo paquete, aunque cada uno
+    escribe el ejecutable en el directorio en el que @$(go build) se ejecuta:
 
     ..srci > sh
       > cd $GOPATH/src/gopl.io/ch1/helloworld
       > go build
     < srci..
 
-y:
+    y:
 
     ..srci > sh
-      > cd anywhere
+      > cd cualquier-sitio
       > go build gopl.io/ch1/helloworld
     < srci..
 
-y:
+    y:
 
     ..srci > sh
       > cd $GOPATH
       > go build ./src/gopl.io/ch1/helloworld
     < srci..
 
-pero no:
+    pero no:
 
     ..srci > sh
       > cd $GOPATH
@@ -18137,10 +18137,10 @@ pero no:
     basura. Los paquetes compilados se guardan bajo el directorio
     @f($GOPATH/pkg) correspondiente al directorio @f(src) en el que reside el
     codigo fuente y los ejecutables de comando se guardan en el directorio
-    @f($GOPATH/bin). (Muchos usuarios agregar @f($GOPATH/bin) en su ruta de
+    @f($GOPATH/bin). (Muchos usuarios agregan @f($GOPATH/bin) en su ruta de
     busqueda ejecutable.) A partir de entonces, @$(go build) y @$(go install) no
     ejecutan el compilador para esos paquetes y comandos si no han cambiado,
-    haciendo las compilaciones posteriores mucho mas rapido. Por cenveniencia,
+    haciendo las compilaciones posteriores mucho mas rapido. Por conveniencia,
     @$(go build -i) instala los paquetes que son dependencias del objetivo a
     compilar.
 
@@ -18152,8 +18152,8 @@ pero no:
     @f($GOPATH/pkg/darwin_amd64).
 
     Es facil aplicar @e(compilacion cruzada) a un programa Go, es decir,
-    construir un ejecutable destinado a un sistema operativo diferente o
-    CPU. Solo hay que establecer las variables @c(GOOS) o @c(GOARCH) durante la
+    construir un ejecutable destinado a un sistema operativo o CPU diferente.
+    Solo hay que establecer las variables @c(GOOS) o @c(GOARCH) durante la
     construccion. El programa @$(cross) imprime el sistema operativo y la
     arquitectura para la que fue construido:
 
@@ -18166,7 +18166,7 @@ pero no:
       < src..
 
 
-    Los comandos siguientes producen ejecutables de 64 bits y 32 bits,
+    Los comandos siguientes producen ejecutables de 64 y 32 bits,
     respectivamente:
 
     ..srci > sh
@@ -18184,7 +18184,7 @@ pero no:
     rutinas importantes, por ejemplo. Si un nombre de archivo incluye un sistema
     operativo o arquitectura de procesador, como @f(net_linux.go) o
     @f(asm_amd64.s), la herramienta @$(go) compilara el archivo solo cuando se
-    construye para ese objetivo. Comentarios especiales llamadas @e(etiquetas de
+    construye para ese objetivo. Comentarios especiales llamados @e(etiquetas de
     compilacion) ofrecen un control mas detallado. Por ejemplo, si un archivo
     contiene este comentario:
 
@@ -18221,7 +18221,7 @@ pero no:
     documentacion para @c(fmt.Fprintf):
 
     ..src > go
-      // Fprintf formateo de acuerdo con un especificador de formato y escriben w.
+      // Fprintf formateo de acuerdo con un especificador de formato y escrib en w.
       // Devuelve el numero de bytes escritos y cualquier error de escritura encontrado.
       func Fprintf(w io.Writer, format string, a ...interface{}) (int, error)
     < src..
@@ -18230,7 +18230,7 @@ pero no:
     documentacion asociado al paquete @c(fmt) en si. Un comentario que precede
     inmediatamente a una declaracion @c(package) se considera el comentario de
     documentacion para el paquete en su conjunto. Solo debe haber uno, aunque
-    pueda aparecer en cualquier archivo. Los comentarios de paquetes mas largos
+    puede aparecer en cualquier archivo. Los comentarios de paquetes mas largos
     pueden justificar un archivo propio; @c(fmt) tiene mas de 300 lineas. Este
     archivo normalmente se llama @f(doc.go) .
 
@@ -18262,7 +18262,7 @@ pero no:
       func Now() Time
       type Duration int64
       type Time struct { ... }
-      ...many more...
+      ...mucho mas...
     < srci..
 
     O un miembro del paquete:
@@ -18284,9 +18284,9 @@ pero no:
           Seconds returns the duration as a floating-point number of seconds.
     < srci..
 
-    La herramienta no necesita rutas de importacion completas o casos de
-    identificador exactos. Este comando imprime la documentacion de
-    @c[(*json.Decoder).Decode] del paquete @c(encoding/json):
+    La herramienta no necesita rutas de importacion completas o letras
+    mayusculas y minusculas del identificador exactas. Este comando imprime la
+    documentacion de @c[(*json.Decoder).Decode] del paquete @c(encoding/json):
 
     ..srci > sh
       > go doc json.decode
@@ -18297,7 +18297,7 @@ pero no:
     < srci..
 
     La segunda herramienta, confusamente nombrada @$(godoc), sirve paginas HTML
-    a entrecruzadas que proporcionan la misma informacion que @$(go doc) y mucho
+    entre-enlazadas que proporcionan la misma informacion que @$(go doc) y mucho
     mas. El servidor @$(godoc) en @l(https://golang.org/pkg) cubre la biblioteca
     estandar. La Figura 10.1 muestra la documentacion del paquete @c(time), y en
     la @l(#Seccion 11.6) veremos la pantalla interactiva de @$(godoc) de
@@ -18305,12 +18305,11 @@ pero no:
     un indice de busqueda de miles de paquetes de codigo abierto.
 
     Tambien puede ejecutar una instancia de @$(godoc) en su espacio de trabajo
-    si desea navegar por sus propios paquetes. Visite
-    @l(http://localhost:8000/pkg) en su navegador mientras se ejecuta este
-    comando:
+    si desea navegar por sus propios paquetes. Visite @l(http://localhost:8000/pkg)
+    en su navegador mientras se ejecuta este comando:
 
     ..srci > sh
-      > godoc -http :8000
+      > godoc -http=:8000
     < srci..
 
     Sus banderas @c(-analysis=type) y @c(-analysis=pointer) aumentan la
@@ -18323,7 +18322,7 @@ pero no:
     Go. Los identificadores sin exportacion son visibles solo dentro del mismo
     paquete, y los identificadores exportados son visibles para el mundo.
 
-    A veces, sin embargo, camino medio seria util, una forma de definir
+    A veces, sin embargo, el camino medio seria util, una forma de definir
     identificadores que son visibles para un pequeño conjunto de paquetes de
     confianza, pero no para todos. Por ejemplo, cuando estamos dividiendo un
     paquete grande en partes mas manejables, es posible que no deseemos revelar
@@ -18337,14 +18336,14 @@ pero no:
 
       ..img  > img/Figure-10.1.jpg
 
-    Para hacer frente a estas necesidades, la herramienta @$(go build) maneja de
+    Para hacer frente a estas necesidades, la herramienta @$(go build) maneja
     un paquete de forma especial si su ruta de importacion contiene un segmento
     de ruta denominado @c(interno). Dichos paquetes se denominan @e(paquetes
-    internos). Un paquete interno puede ser importadas por otro paquete que esta
+    internos). Un paquete interno puede ser importado por otro paquete que esta
     dentro del arbol raiz en el paquete del directorio @c(internal). Por
     ejemplo, los paquetes a continuacion, @c(net/http/internal/chunked) pueden
     ser importados de @c(net/http/httputil) o @c(net/http), pero no de
-    @c(net/url) . Sin embargo, @c(net/url) puede importar @c(net/http/httputil).
+    @c(net/url). Sin embargo, @c(net/url) puede importar @c(net/http/httputil).
 
     ..pre >
       net/http
@@ -18377,7 +18376,7 @@ pero no:
       bytes
       cmd/addr2line
       cmd/api
-      ...many more...
+      ...mucho mas...
     < srci..
 
     O dentro de un subarbol especifico:
@@ -18436,7 +18435,7 @@ pero no:
     < srci..
 
     La bandera @c(-f) permite a los usuarios personalizar el formato de salida
-    utilizando el lenguaje de la plantilla del paquete de @c(text/template)
+    utilizando el lenguaje de la plantilla del paquete @c(text/template)
     (@l(#Seccion 4.6<>§4.6)). Este comando imprime las dependencias transitivas
     del paquete @c(strconv), separados por espacios:
 
@@ -18460,7 +18459,7 @@ pero no:
     El comando @$(go list) es util tanto para consultas interactivas puntuales y
     para scripts de construccion y automatizacion de pruebas. Lo volveremos a
     utilizar en la @l(#Seccion 11.2.4). Para obtener mas informacion, incluyendo
-    el conjunto de campos disponibles y su significado, ver la salida de la
+    el conjunto de campos disponibles y su significado, ver la salida de
     @$(go help list).
 
     En este capitulo, hemos explicado todos los subcomandos importantes de la
@@ -21548,7 +21547,7 @@ pero no:
    |===============================================================|=======================================================|
    | @c(bool)                                                      | 1 byte                                                |
    |---------------------------------------------------------------|-------------------------------------------------------|
-   | @c(int)@m(N), @c(uint)@m(N), @c(float)@m(N), @c(complex)@m(N) | @m(N) / 8 bytes (por ejemplo, f@c(loat64) es 8 bytes) |
+   | @c(int)@m(N), @c(uint)@m(N), @c(float)@m(N), @c(complex)@m(N) | @m(N) / 8 bytes (por ejemplo, @c(float64) es 8 bytes) |
    |---------------------------------------------------------------|-------------------------------------------------------|
    | @c(int), @c(uint), @c(uintptr)                                | 1 palabra                                             |
    |---------------------------------------------------------------|-------------------------------------------------------|
@@ -22005,7 +22004,7 @@ pero no:
 
    ..figure > @l(gopl.io/ch13/bzip/bzip2.c<>gopl.io/ch13/bzip)
 
-     ..src > go
+     ..src > c
        /* Este archivo es gopl.io/ch13/bzip/bzip2.c,            */
        /* un simple envoltorio para libbzip2 adecuado para cgo. */
        #include <bzlib.h>
