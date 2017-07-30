@@ -33457,7 +33457,7 @@
 #   carefully chosen to exercise certain features or randomized to ensure broad
 #   coverage.
   Las pruebas, que implican implicitamente pruebas @e(automatizadas), es la
-  practica de escribir pequeños programas que comprobar que el codigo bajo
+  practica de escribir pequeños programas que comprueban que el codigo bajo
   prueba (el codigo de @e(produccion)) se comporta como se esperaba para ciertas
   entradas, que suelen ser cuidadosamente elegidas para ejercer ciertas
   funciones o al azar para asegurar amplia cobertura.
@@ -33473,12 +33473,12 @@
   El campo de las pruebas de software es enorme. La tarea del testeo ocupa a
   todos los programadores en parte del tiempo y algunos programadores todo el
   tiempo. La literatura sobre las pruebas incluye miles de libros impresos y
-  millones de palabras publicadas en el blogs. En todos los lenguajes de
+  millones de palabras publicadas en blogs. En todos los lenguajes de
   programacion, hay docenas de paquetes de software destinados a la construccion
   de pruebas, algunos con una gran cantidad de teoria, y el campo parece atraer
-  a mas de unos pocos profetas con seguimientos de culto. Es casi suficiente
-  para convencer a los programadores de que para escribir pruebas efectivas
-  deben adquirir un nuevo conjunto de habilidades.
+  a mas de unos pocos profetas con seguidores que lo hacen parecer un culto. Es
+  casi suficiente para convencer a los programadores de que para escribir
+  pruebas efectivas deben adquirir un nuevo conjunto de habilidades.
 
 #   Go’s approach to testing can seem rather low-tech in comparison. It relies on
 #   one command, @$(go test), and a set of conventions for writing test functions
@@ -33500,11 +33500,11 @@
 #   needn’t require new notations, conventions, and tools.
   En la practica, escribir codigo de prueba no es muy diferente de escribir el
   programa original en si. Escribimos funciones cortas que se centran en una
-  parte de la tarea. Debemos tener cuidado con las condiciones de los limites,
-  pensar en las estructuras de datos y razonar sobre los resultados que un
-  calculo debe producir a partir de entradas adecuadas. Pero este es el mismo
-  proceso que escribir codigo Go ordinario; No requiere nuevas anotaciones,
-  convenciones o herramientas.
+  parte de la tarea. Debemos tener cuidado con las condiciones limites, pensar
+  en las estructuras de datos y razonar sobre los resultados que un calculo debe
+  producir a partir de entradas adecuadas. Pero este es el mismo proceso que
+  escribir codigo Go ordinario; No requiere nuevas anotaciones, convenciones o
+  herramientas.
 
 # ** Section 11.1 <> The @$(go test) Tool
 ** Seccion 11.1 <> La Herramienta @$(go test)
@@ -33545,9 +33545,9 @@
 #    functions, generates a temporary @c(main) package that calls them all in the
 #    proper way, builds and runs it, reports the results, and then cleans up.
    La heramienta @$(go test) examina los archivos @f(*_test.go) para estas
-   funciones especiales, genera un paquete @c(main) temporal que llama a todas
-   de la manera correcta, compila y ejecuta, informa de los resultados, y luego
-   se limpia.
+   funciones especiales, genera un paquete @c(main) temporal que hace todas las
+   llamadas de manera apropiada, compila y ejecuta, informa de los resultados, y
+   luego se limpia.
 
 # ** Section 11.2 <> @c(Test) Functions
 ** Seccion 11.2 <> Funciones @c(Test)
@@ -33593,7 +33593,7 @@
    El parametro @c(t) proporciona metodos para informar fallos de las pruebas y
    registrar informacion adicional. Vamos a definir un paquete de ejemplo
    @c(gopl.io/ch11/word1), que contiene una sola funcion @c(IsPalindrome) que
-   informa de si una cadena se lee igual hacia adelante y hacia atras. (Esta
+   informa si una cadena se lee igual hacia adelante y hacia atras. (Esta
    implementacion prueba cada byte dos veces si la cadena es un palindromo,
    volveremos a esto en breve).
 
@@ -33636,7 +33636,7 @@
 #    named @c(TestPalindrome) and @c(TestNonPalindrome). Each checks that
 #    @c(IsPalindrome) gives the right answer for a single input and reports
 #    failures using @c(t.Error):
-   En el mismo directorio, el archive @f(word_test.go) contiene dos funciones de
+   En el mismo directorio, el archivo @f(word_test.go) contiene dos funciones de
    prueba con nombre @c(TestPalindrome) y @c(TestNonPalindrome). Cada uno
    comprueba que @c(IsPalindrome) da la respuesta correcta para una entrada
    unica e informa fallos utilizando @c(t.Error):
@@ -33709,7 +33709,7 @@
    Satisfecho, enviamos el programa, pero no antes de que los invitados de la
    fiesta envien los informes de error iniciales. Un usuario frances llamado
    Noelle Eva Elleon se queja de que IsPalindrome no reconoce @"(été). Otro, de
-   Centroamerica, se siente decepcionado al rechazar @"(A man, a plan, a canal:
+   Centroamerica, se siente decepcionado al denegar @"(A man, a plan, a canal:
    Panama). Estos informes de errores especificos y pequeños naturalmente se
    prestan a nuevos casos de prueba.
 
@@ -33742,8 +33742,8 @@
 
 #    To avoid writing the long input string twice, we use @c(Errorf), which
 #    provides formatting like @c(Printf).
-   Para evitar la langa cadena de entrada dos veces, utilizamos @c(Errorf), que
-   proporciona formato, como @c(Printf).
+   Para evitar la larga cadena de entrada dos veces, utilizamos @c(Errorf), que
+   proporciona formateo, como @c(Printf).
 
 #    When the two new tests have been added, the @$(go test) command fails with
 #    informative error messages.
@@ -33782,7 +33782,7 @@
 #    rapidly. If the test suite contains many slow tests, we may make even faster
 #    progress if we’re selective about which ones we run.
    Como beneficio adicional, ejecutar @$(go test) generalmente es mas rapido que
-   manualmente por los pasos descritos en el informe de errores, lo que nos
+   ejecutar manualmente los pasos descritos en el informe de errores, lo que nos
    permite iterar mas rapidamente. Si la suite de pruebas contiene muchas
    pruebas lentas, podemos hacer un progreso aun mas rapido si somos selectivos
    sobre cuales corremos.
@@ -33872,7 +33872,7 @@
    la causa del primer fallo en @c(IsPalindrome) esta en utilizar secuencias de
    bytes, no secuencias de runas, por lo que los caracteres no ASCII, como la
    @c(é) en @c("été") lo confunden. El segundo error surge de no ignorar entre
-   mayusculas y minusculas, los espacios y signos de puntuacion.
+   mayusculas y minusculas, espacios y signos de puntuacion.
 
 #    Chastened, we rewrite the function more carefully:
    reescribimos la funcion con mas cuidado:
@@ -34004,7 +34004,7 @@
 #    straightforward to add new table entries as needed, and since the assertion
 #    logic is not duplicated, we can invest more effort in producing a good error
 #    message.
-   Este estilo de la prueba @e(basado en tablas) es muy comun en Go. Es facil
+   Este estilo de prueba @e(basado en tablas) es muy comun en Go. Es facil
    agregar nuevas entradas de tabla segun sea necesario, y como la logica de
    asercion no se duplica, podemos invertir mas esfuerzo en producir un buen
    mensaje de error.
@@ -34029,9 +34029,9 @@
 #    cascade of others, we use @c(t.Fatal) or @c(t.Fatalf). These must be called
 #    from the same goroutine as the @c(Test) function, not from another one
 #    created during the test.
-   Cuando realmente debemos detener una funcion de prueba, tal vez porque a
-   algun codigo de inicializacion fallo o para prevenir un fallo ya reportado
-   que proboque una cascada confusa de otros, utilizamos @c(t.Fatal) o
+   Cuando realmente debemos detener una funcion de prueba, tal vez porque algun
+   codigo de inicializacion fallo o para prevenir un fallo ya reportado que
+   proboque una cascada confusa de otros fallos, utilizamos @c(t.Fatal) o
    @c(t.Fatalf). Estos deben ser llamados desde la misma gorutina como la
    funcion @c(Test), no de la otra creada durante la prueba.
 
@@ -34046,8 +34046,8 @@
 #    is lengthy, print a concise summar y of the relevant parts instead. The
 #    author of a test should strive to help the programmer who must diagnose a
 #    test failure.
-   Los mensajes de fallo generalmente de la forma @c["f(x) = y, want z"], donde
-   @c[f(x)] explica el funcionamiento intentado y su entrada, @c(y) es el
+   Los mensajes de fallo generalmente tienen la forma @c["f(x) = y, quiero z"], donde
+   @c[f(x)] explica la operacion a intentar y su entrada, @c(y) es el
    resultado real, y @c(z) el resultado esperado. Cuando es conveniente, como en
    nuestro ejemplo palindromo, se utiliza la sintaxis actual para la parte
    @c[f(x)]. La visualizacion de @c(x) es particularmente importante en una
@@ -34069,8 +34069,8 @@
 #    Exercise 11.7.
    @b(Ejercicio 11.2): Escribir una serie de pruebas para @c(IntSet)
    (@l(#Seccion 6.5<>§6.5)) que comprueba que su comportamiento despues de cada
-   operacion es equivalente a un conjunto basado en mapas incorporados. Guarde
-   su implementacion para el benchmarking del Ejercicio 11.7.
+   operacion es equivalente a un conjunto basado en los mapas nativos. Guarde su
+   implementacion para el benchmar del Ejercicio 11.7.
 
 # *** Section 11.2.1 <> Randomized Testing
 *** Seccion 11.2.1 <> Pruebas Aleatorias
@@ -34081,7 +34081,7 @@
 #     inputs by constructing inputs at random.
     Las pruebas basadas en tablas son convenientes para comprobar que una
     funcion funciona en entradas cuidadosamente seleccionadas para ejercer casos
-    interesantes en la logica. Otro enfoque, @e(pruebas al azar), explora una
+    interesantes en la logica. Otro enfoque, @e(pruebas aleatorias), explora una
     gama mas amplia de entradas mediante la construccion de entradas al azar.
 
 #     How do we know what output to expect from our function, given a random
@@ -34139,10 +34139,10 @@
       // randomPalindrome devuelve un palindromo cuya longitud y contenido
       // se derivan del generador de numeros pseudo aleatorios rng.
       func randomPalindrome(rng *rand.Rand) string {
-        n := rng.Intn(25) // random length up to 24
+        n := rng.Intn(25)             // longitud aleatoria hasta 24
         runes := make([]rune, n)
         for i := 0; i < (n+1)/2; i++ {
-          r := rune(rng.Intn(0x1000)) // random rune up to '\u0999'
+          r := rune(rng.Intn(0x1000)) // runa aleatoria hasta '\u0999'
           runes[i] = r
           runes[n-1-i] = r
         }
@@ -34150,7 +34150,7 @@
       }
 
       func TestRandomPalindromes(t *testing.T) {
-        // Initialize a pseudo-random number generator.
+        // Inicializa un generador de números pseudoaleatorios.
         seed := time.Now().UTC().UnixNano()
         t.Logf("Random seed: %d", seed)
         rng := rand.New(rand.NewSource(seed))
@@ -34177,9 +34177,9 @@
     @c(IsPalindrome) nos dice todo lo que necesitamos saber, pero para las
     funciones que aceptan entradas mas complejas, puede ser mas sencillo
     registrar la semilla del generador de numeros pseudo-aleatorios (como lo
-    hacemos mas arriba) que volcar toda la estructura de datos de
-    entrada. Armado con ese valor de semilla, podemos modificar facilmente la
-    prueba para reproducir el fracaso de forma determinista.
+    hacemos arriba) que volcar toda la estructura de datos de entrada. Armado
+    con ese valor de semilla, podemos modificar facilmente la prueba para
+    reproducir el fracaso de forma determinista.
 
 #     By using the current time as a source of randomness, the test will explore
 #     novel inputs each time it is run, over the entire course of its
@@ -34305,14 +34305,14 @@
 #     tests can substitute a different @c(Writer) implementation that records what
 #     was written for later inspection. Here’s the test, in file @f(echo_test.go):
     A partir de la prueba, llamaremos a @$(echo) con una variedad de argumentos
-    y configuraones de parametros bandera y comprobaremos que imprime la salida
-    correcta en cada caso, por lo que hemos añadido parametros a @$(echo) para
+    y configuraciones de parametros bandera y comprobaremos que imprime la salida
+    correcta en cada caso, por lo que hemos añadido parametros a @c(echo) para
     reducir su dependencia de las variables globales. Dicho esto, tambien hemos
     introducido otra variable global, @c(out), un @c(io.Writer) al que se
     escribira el resultado. Al tener @c(echo) escritura a traves de esta
     variable, no directamente a @c(os.Stdout), las pruebas pueden sustituir una
     implementacion @c(Writer) diferente que registra lo que se escrito para una
-    inspeccion posterior. Aqui esta la prueba, en archivo @c(echo_test.go):
+    inspeccion posterior. Aqui esta la prueba, en el archivo @f(echo_test.go):
 
 #     ..src > go
 #       package main
@@ -34451,16 +34451,16 @@
 #     configuration should be reported by returning a non-nil @c(error)
 #     value. Fortunately (though unfortunate as an illustration), our @$(echo)
 #     example is so simple that it will never return a non-nil error.
-    Es importante que el codigo esta probando no llame a @c(log.Fatal) o
+    Es importante que el codigo que esta probando no llame a @c(log.Fatal) o
     @c(os.Exit), ya que estas detendran el proceso en seco; llamar a estas
     funciones debe ser considerado como derecho exclusivo de @c(main). Si algo
     totalmente inesperado ocurre y una funcion entra en panico, el controlador
-    de prueba se recuperara, aunque la prueba, por supuesto, se considerara un
+    de pruebas se recuperara, aunque la prueba, por supuesto, se considerara un
     fallo. Errores previsibles, como los que resultan de mala entrada del
     usuario, archivos que faltan, o una configuracion inadecuada deben ser
     reportados mediante la devolucion de un valor @c(error) no-nil.
     Afortunadamente (aunque desafortunado como una ilustracion), nuestro ejemplo
-    @$(echo) es tan simple que nunca volvera un error no-nil.
+    @$(echo) es tan simple que nunca regresara un error no-nil.
 
 # *** Section 11.2.3 <> White-Box Testing
 *** Seccion 11.2.3 <> Prueba de Caja Blanca
@@ -34478,14 +34478,13 @@
     Una forma de clasificar las pruebas es por el nivel de conocimiento que
     requieren del funcionamiento interno del paquete bajo prueba. Una prueba de
     @e(caja negla) no asume nada distinto sobre el paquete de lo expuesto por su
-    API y especificado por su documentacion; Los internos del paquete son
-    opacos. En contraste, una prueba de @e(caja blanca) tiene un acceso
-    privilegiado a las funciones internas y estructuras de datos del paquete y
-    puede hacer observaciones y cambios que un cliente comun no puede. Por
-    ejemplo, una prueba de cuadro blanco puede comprobar que las invariantes de
-    los tipos de datos del paquete se mantienen despues de cada operacion. (Er
-    nombre @e(caja blanca) es tradicional, pero seria mas exacto @e(caja
-    transparente)).
+    API y especificado por su documentacion; El interior del paquete es opaco.
+    En contraste, una prueba de @e(caja blanca) tiene un acceso privilegiado a
+    las funciones internas y estructuras de datos del paquete y puede hacer
+    observaciones y cambios que un cliente comun no puede. Por ejemplo, una
+    prueba de caja blanca puede comprobar que las invariantes de los tipos de
+    datos del paquete se mantienen despues de cada operacion. (El nombre @e(caja
+    blanca) es tradicional, pero seria mas exacto @e(caja transparente)).
 
 #     The two approaches are complementary. Black-box tests are usually more
 #     robust, needing fewer updates as the software evolves. They also help the
@@ -34506,7 +34505,7 @@
     Ya hemos visto ejemplos de ambos tipos. @c(TestIsPalindrome) llama solo a la
     funcion exportada @c(IsPalindrome) y es por lo tanto una prueba de caja
     negra. @c(TestEcho) llama a la funcion @c(echo) y actualiza la variable
-    global @c(out), los cuales se dejadan sin exportar, por lo que es una prueba
+    global @c(out), los cuales se deja sin exportar, por lo que es una prueba
     de caja blanca.
 
 #     While developing @c(TestEcho), we modified the @c(echo) function to use the
@@ -34559,8 +34558,7 @@
 #         const password = "correcthorsebatterystaple"
 #         const hostname = "smtp.example.com"
 #
-#         const template = `Warning: you are using %d bytes of storage,
-#         %d%% of your quota.`
+#         const template = `Warning: you are using %d bytes of storage, %d%% of your quota.`
 #
 #         func CheckQuota(username string) {
 #           used := bytesInUse(username)
@@ -34593,12 +34591,11 @@
 
         // configuracion del remitente del email.
         // NOTA: nunca ponga contraseñas en el codigo fuente!
-        const sender = "notifications@example.com"
+        const sender = "notificaciones@ejemplo.com"
         const password = "correcthorsebatterystaple"
-        const hostname = "smtp.example.com"
+        const hostname = "smtp.ejemplo.com"
 
-        const template = `Warning: you are using %d bytes of storage,
-        %d%% of your quota.`
+        const template = `Warning: you are using %d bytes of storage, %d%% of your quota.`
 
         func CheckQuota(username string) {
           used := bytesInUse(username)
@@ -34726,7 +34723,7 @@
 
         // ...simular una condicion que utiliza 980MB...
 
-        const user = "joe@example.org"
+        const user = "joe@ejemplo.org"
         CheckQuota(user)
         if notifiedUser == "" && notifiedMsg == "" {
           t.Fatalf("notifyUser not called")
@@ -34752,10 +34749,10 @@
 #     @c(defer).
     Hay un problema: despues de que esta funcion de prueba ha regresado,
     @c(CheckQuota) ya no funciona como deberia, ya que todavia esta usando la
-    prueba de falsa implementacion de @c(notifyUsers). Debemos modificar la
-    prueba para restaurar el valor anterior para que las pruebas posteriores no
+    prueba falsa que implementa @c(notifyUsers). Debemos modificar la prueba
+    para restaurar el valor anterior para que las pruebas posteriores no
     observen ningun efecto, y debemos hacerlo en todas las rutas de ejecucion,
-    incluyendo fallas de prueba y panicos. Naturalmente, esto sugiere un
+    incluyendo pruebas que fallan y panicos. Naturalmente, esto sugiere un
     @c(defer).
 
 #     ..src > go
@@ -34816,8 +34813,8 @@
 #     demonstrating the interaction between URLs and the HTTP client library. In
 #     other words, a test of the lower-level package imports the higher-level
 #     package.
-    Considere los paquetes de @c(net/url), que proporciona un analizador de URL,
-    y @c(net/http), que proporciona un servidor web y una libreria de cliente
+    Considere el paquete @c(net/url), que proporciona un analizador de URL, y
+    @c(net/http), que proporciona un servidor web y una libreria de cliente
     HTTP. Como es de esperar, el nivel superior de @c(net/http) depende del
     nivel inferior @c(net/url). Sin embargo, una de las pruebas en @c(net/url)
     es un ejemplo que demuestra la interaccion entre las URL y la libreria
@@ -34835,7 +34832,7 @@
 #     11.1, but as we explained in @l(#Section 10.1), the Go specification forbids
 #     import cycles.
     Declarar esta funcion de prueba en el paquete @c(net/url) crearia un ciclo
-    en el grafico de importacion paquetes, tal como se representa por las flecha
+    en el grafico de importacion de paquetes, tal como se representa por las flecha
     hacia arriba en la Figura 11.1, pero como se explico en la @l(#Seccion
     10.1), la especificacion Go prohibe los ciclos de importacion.
 
@@ -34888,9 +34885,9 @@
 #     build) will include in your application:
     Podemos utilizar la herramienta @$(go list) para resumir que archivos fuente
     en un directorio Go son el codigo de produccion, pruebas en el paquete, y
-    pruebas externas. Usaremos el paquete @c(fmt) como ejemplo. GoFiles es la
-    lista de los archivos que contienen el codigo de produccion; estos son los
-    archivos que @$(go build) incluira en su aplicacion:
+    pruebas externas. Usaremos el paquete @c(fmt) como ejemplo. @c(GoFiles) es
+    la lista de los archivos que contienen el codigo de produccion; estos son
+    los archivos que @$(go build) incluira en su aplicacion:
 
 #     ..srci > sh
 #       > go list -f={{.GoFiles}} fmt
@@ -35018,19 +35015,19 @@
 #     correctly, their manner may be unfriendly to the unfortunate maintainer,
 #     with cryptic failure messages like @c("assert: 0 == 1") or page after page
 #     of stack traces.
-    Muchos recien llegados a Go se sorprenden por el minimalismo del marco de
-    pruebas de Go. los frameworks otros lenguajes proporcionan mecanismos para
-    la identificacion de las funciones de prueba (a menudo utilizan la reflexion
-    o metadatos), ganchos para realizar operaciones de @"(configuracion) y
-    @"(desmontaje) antes y despues de ejecucion de pruebas, y l librerias de
-    funciones de utilidad para afirmar predicados comunes, comparar valores,
-    formatear mensajes de error, y abortar una prueba fallida (a menudo
-    utilizando excepciones). Aunque estos mecanismos pueden hacer las pruebas
-    muy concisas, las pruebas resultantes a menudo parecen estar escritas en un
-    lenguaje extranjero. Ademas, aunque pueden reportar @c(PASS) o @c(FAIL)
-    correctamente, su forma puede ser hostil al infortunado mantenedor, con
-    mensajes de error cripticos como @c("assert: 0 == 1") o pagina tras pagina
-    de trazas de la pila.
+    Muchos recien llegados a Go se sorprenden por el minimalismo del framework
+    de pruebas de Go. Los frameworks de otros lenguajes proporcionan mecanismos
+    para la identificacion de las funciones de prueba (a menudo utilizan la
+    reflexion o metadatos), ganchos para realizar operaciones de
+    @"(configuracion) y @"(desmontaje) antes y despues de la ejecucion de
+    pruebas, y librerias de funciones de utilidad para afirmar predicados
+    comunes, comparar valores, formatear mensajes de error, y abortar una prueba
+    fallida (a menudo utilizando excepciones). Aunque estos mecanismos pueden
+    hacer las pruebas muy concisas, las pruebas resultantes a menudo parecen
+    estar escritas en un lenguaje extranjero. Ademas, aunque pueden reportar
+    @c(PASS) o @c(FAIL) correctamente, su forma puede ser hostil al infortunado
+    mantenedor, con mensajes de error cripticos como @c("assert: 0 == 1") o
+    pagina tras pagina de trazas de la pila.
 
 #     Go’s attitude to testing stands in stark contrast. It expects test authors
 #     to do most of this work themselves, defining functions to avoid repetition,
@@ -35043,18 +35040,18 @@
 #     test should not give up after one failure but should try to report several
 #     errors in a single run, since the pattern of failures may itself be
 #     revealing.
-    La actitud de Go a la pruebas esta en contraste. Se espera que los autores
-    de las pruebas hagan la mayor parte de este trabajo ellos mismos, definiendo
-    funciones para evitar la repeticion, tal como lo harian para los programas
-    ordinarios. El proceso de prueba no es uno relleno de formatos; una prueba
-    tiene una interfaz de usuario tambien, aunque uno cuyos unicos usuarios son
-    tambien sus mantenedores. Una buena prueba no explota al fracasar, en su
-    lugar imprime una descripcion clara y sucinta del sintoma del problema, y
-    ​​tal vez otros hechos relevantes sobre el contexto. Idealmente, el mantenedor
-    no deberia necesitar leer el codigo fuente para descifrar un fallo de
-    prueba. Una buena prueba no debe abandonar despues de un fallo, debe
-    intentar reportar varios errores en una sola ejecucion, ya que el patron de
-    fallas puede ser revelador.
+    La actitud de Go a la pruebas esta en marcado contraste. Se espera que los
+    autores de las pruebas hagan la mayor parte de este trabajo ellos mismos,
+    definiendo funciones para evitar la repeticion, tal como lo harian para los
+    programas ordinarios. El proceso de prueba no es un relleno de formatos; una
+    prueba tiene una interfaz de usuario tambien, aunque una cuyos unicos
+    usuarios son tambien sus mantenedores. Una buena prueba no explota al
+    fracasar, en su lugar imprime una descripcion clara y sucinta del sintoma
+    del problema, y ​​tal vez otros hechos relevantes sobre el contexto.
+    Idealmente, el mantenedor no deberia necesitar leer el codigo fuente para
+    descifrar un fallo de prueba. Una buena prueba no debe terminar despues de
+    un fallo, debe intentar reportar varios errores en una sola ejecucion, ya
+    que el patron de fallas puede ser revelador.
 
 #     The assertion function below compares two values, constructs a generic error
 #     message, and stops the program. It’s easy to use and it’s correct, but when
@@ -35152,7 +35149,7 @@
 #     the table-driven test of @c(IsPalindrome).
     Ahora la prueba reporta la funcion que se llamo, sus entradas y el
     significado del resultado; Identifica explicitamente el valor actual y la
-    expectativa; Y continua ejecutandose incluso si esta afirmacion falla. Una
+    expectativa; y continua ejecutandose incluso si esta afirmacion falla. Una
     vez que hemos escrito una prueba de este tipo, el siguiente paso natural a
     menudo no es definir una funcion para reemplazar toda le sentencia @c(if),
     sino ejecutar la prueba en un bucle en el que varien @c(s), @c(sep), y
@@ -35166,7 +35163,7 @@
 #     code and eliminate repetition. Best results are rarely obtained by starting
 #     with a library of abstract, generic testing functions.
     El ejemplo anterior no necesitaba funciones de utilidad, pero por supuesto
-    eso no deberia impedirnos introducir funciones cuando ayudan a simplificar
+    eso no deberia impedirnos introducir funciones cuando ayuden a simplificar
     el codigo. (Veremos una funcion de utilidad, @c(reflect.DeepEqual), en la
     @l(#Seccion 13.3).) La clave para una buena prueba es empezar por la
     aplicacion de la conducta concreta que desea y solo entonces utilizar las
@@ -35195,9 +35192,9 @@
     se hace un cambio de sonido al programa se denomina @e(fragil). Asi como un
     programa buggy frustra a sus usuarios, una prueba fragil exaspera a sus
     mantenedores. Las pruebas mas fragiles, que fallan por casi cualquier cambio
-    en el codigo de produccion, buena o mala, a veces se denominan pruebas de
+    en el codigo de produccion, bueno o malo, a veces se denominan pruebas de
     @e(detector de cambio) o de @e(status quo), y el tiempo dedicado a tratar
-    con ellos puede consumir rapidamente cualquier beneficio que una vez
+    con ellas puede consumir rapidamente cualquier beneficio que una vez
     parecian ofrecer.
 
 #     When a function under test produces a complex output such as a long string,
@@ -35256,7 +35253,7 @@
 #    of all but the most trivial programs are beyond precise measurement—but there
 #    are heuristics that can help us direct our testing efforts to where they are
 #    more likely to be useful.
-   El grado en que una suite de pruebas prueba un paquete que se denomina
+   El grado en que una suite de pruebas prueba un paquete se denomina
    @e(cobertura) de la prueba. La cobertura no se puede cuantificar
    directamente–la dinamica de todos los programas, excepto los mas triviales,
    esta mas alla de la medicion exacta–pero hay heuristicas que pueden ayudarnos
@@ -35399,7 +35396,7 @@
 #    toolchain. These programs live in the directory
 #    @c($GOROOT/pkg/tool/${GOOS}_${GOARCH}). Thanks to @$(go build), we rarely
 #    need to invoke them directly.
-   El comando go tool ejecuta uno de los ejecutables de la cadena de
+   El comando @$(go tool) ejecuta uno de los ejecutables de la cadena de
    herramientas Go. Estos programas viven en el directorio
    @c($GOROOT/pkg/tool/${GOOS}_${GOARCH}). Gracias a @$(go build), rara vez es
    necesario invocarlo directamente.
@@ -35502,7 +35499,7 @@
 #    general.
    Alcanzar una cobertura del 100% de la declaracion suena como un objetivo
    noble, pero generalmente no es factible en la practica, ni es probable que
-   sea un buen uso del esfuerzo. El hecho de que se ejecute una sentencia no
+   sea un buen uso de esfuerzo. El hecho de que se ejecute una sentencia no
    significa que este libre de errores; Las declaraciones que contienen
    expresiones complejas se deben ejecutar muchas veces con entradas diferentes
    para cubrir los casos interesantes. Algunos estados, como las declaraciones
@@ -35564,7 +35561,7 @@
    deben ejecutarso los benchmark. Es una expresion regular que coincide con los
    nombres de las funciones @c(Benchmark), con un valor predeterminado que no
    coincide con ninguno de ellos. El patron @"(@c(.)) hace que coincida con
-   todos los benchmark en el paquete @c(word), pero ya que solo hay una,
+   todos los benchmark en el paquete @c(word), pero ya que solo hay uno,
    @c(-bench=IsPalindrome) habria sido equivalente.
 
 #    ..srci > sh
@@ -35618,8 +35615,8 @@
 #    @c(IsPalindrome)’s second loop stop checking at the midpoint, to avoid doing
 #    each comparison twice:
    Ahora que tenemos un punto de referencia y pruebas, es facil probar ideas
-   para hacer el programa mas rapido. Quizas la optimizacion mas abvia es hacer
-   el el bucle de @c(IsPalindrome) detenga la verificacion en el punto medio,
+   para hacer el programa mas rapido. Quizas la optimizacion mas obvia es hacer
+   que el bucle de @c(IsPalindrome) detenga la verificacion en el punto medio,
    para evitar hacer cada comparacion dos veces:
 
 #    ..src > go
@@ -35739,8 +35736,8 @@
 
 #    Consolidating the allocations in a single call to @c(make) eliminated 75% of
 #    the allocations and halved the quantity of allocated memory.
-   La consolidacion de las asignaciones en una sola llamada a make eliminado el
-   75% de las asignaciones y reduce a la mitad la cantidad de memoria asignada.
+   Consolidando las asignaciones en una sola llamada a make elimina el 75% de
+   las asignaciones y reduce a la mitad la cantidad de memoria asignada.
 
 #    Benchmarks like this tell us the absolute time required for a given
 #    operation, but in many settings the interesting performance questions are
@@ -35764,7 +35761,7 @@
    Los benchmarks del rendimiento de la aplicacion en un rango de tamaños pueden
    ayudarnos a elegir el buffer mas pequeño que ofrece un rendimiento
    satisfactorio. Un tercer ejemplo: ¿cual algoritmo funciona mejor para un
-   trabajo determinado? Los benchmark que evaluan dos algoritmos diferentes en
+   trabajo determinado? Los benchmark que evaluan dos algoritmos diferentes con
    los mismos datos de entrada a menudo pueden mostrar las fortalezas y
    debilidades de cada uno en cargas de trabajo importantes o representativas.
 
@@ -35815,7 +35812,7 @@
 #    @b(Exercise 11.6): Write benchmarks to compare the @c(PopCount)
 #    implementation in @l(#Section 2.6.2) with your solutions to Exercise 2.4 and
 #    Exercise 2.5. At what point does the table-based approach break even?
-   @b(Ejercicio 11.6): Escribir benchmark para comparar la implementacion
+   @b(Ejercicio 11.6): Escribir benchmarks para comparar la implementacion
    @c(PopCount) en la @l(#Seccion 2.6.2) con sus soluciones al Ejercicio 2.4 y
    Ejercicio 2.5. ¿En que punto el enfoque basado en tablas se equilibra?
 
@@ -35973,7 +35970,7 @@
 #    everyday tool, it’s accessed indirectly using @$(go tool pprof). It has
 #    dozens of features and options, but basic use requires only two arguments,
 #    the executable that produced the profile and the profile log.
-   Una vez que hemos reunido un perfil, es necesario analizar usando la
+   Una vez que hemos reunido un perfil, es necesario analizarlo usando la
    herramienta @$(pprof). Esta es una parte estandar de la distribucion Go, pero
    ya que no es una herramienta de uso diario, se accede indirectamente usando
    @$(go tool pprof). Tiene docenas de caracteristicas y opciones, pero el uso
@@ -36091,9 +36088,9 @@
    de colores para indicar las funciones mas calientes.
 
 #    We’ve only scratched the surface of Go’s profiling tools here. To find out
-#    more, read the @"(Profiling Go Programs) article on the Go Blog.
+#    more, read the @"(@l(https://blog.golang.org/profiling-go-programs<>Profiling Go Programs)) article on the Go Blog.
    Solo hemos arañado la superficie de las herramientas de perfilado de Go. Para
-   obtener mas informacion, lea el articulo @"(Profiling Go Programs) en el Blog
+   obtener mas informacion, lea el articulo @"(@l(https://blog.golang.org/profiling-go-programs<>Profiling Go Programs)) en el Blog
    de Go.
 
 # ** Section 11.6 <> @c(Example) Functions
@@ -36103,8 +36100,8 @@
 #    function, one whose name starts with @c(Example). It has neither parameters nor
 #    results. Here’s an example function for @$(IsPalindrome):
    El tercer tipo de funcion tratada especialmente por @$(go test) es una
-   funcion de ejemplo, uno cuyo nombre empieza con @c(Example). No tiene
-   parametros ni resultados. Aqui un ejemplo para la funcion @c(IsPalindrome):
+   funcion de ejemplo, cuyo nombre empieza con @c(Example). No tiene parametros
+   ni resultados. Aqui un ejemplo para la funcion @c(IsPalindrome):
 
 #    ..src > go
 #      func ExampleIsPalindrome() {
@@ -36160,14 +36157,14 @@
    paquete @c(word) en su conjunto.
 
 #    The second purpose is that examples are executable tests run by @$(go test).
-#    If the example function contains a final @c(// Output): comment like the one
+#    If the example function contains a final @c(// Output:) comment like the one
 #    above, the test driver will execute the function and check that what it
 #    printed to its standard output matches the text within the comment.
    El segundo proposito es que los ejemplos son pruebas ejecutables dirigidas
    por @$(go test). Si la funcion de ejemplo contiene un comentario final @c(//
-   Output): comentar el de arriba, el controlador de pruebas ejecutara la
-   funcion y comprobar que lo que se imprime en la salida estandar coincide con
-   el texto dentro de los comentarios.
+   Output:) como el de arriba, el manejador de pruebas ejecutara la funcion y
+   comprobar que lo que se imprime en la salida estandar coincide con el texto
+   dentro de los comentarios.
 
 #    The third purpose of an example is hands-on experimentation. The @$(godoc)
 #    server at @c(golang.org) uses the Go Playground to let the user edit and run
@@ -36193,7 +36190,7 @@
 #    use. If you haven’t written any substantial Go programs yet, now would be a
 #    good time to do that.
    Los dos capitulos finales del libro examinan los paquetes @c(reflect) y
-   @c(unsafe), que pocon programadores Go utilizan regularmente–e incluso menos
+   @c(unsafe), que pocos programadores Go utilizan regularmente–e incluso menos
    @e(necesitan) usarlos. Si aun no ha escrito ningun programa de Go sustancial,
    ahora seria un buen momento para hacerlo.
 
@@ -36224,7 +36221,7 @@
   ver la forma en que aumentan la expresividad del lenguaje, y en particular la
   forma en que son cruciales para la implementacion de dos APIs importantes: el
   formateo de cadenas proporcionado por @c(fmt), y el protocolo de codificacion
-  proporcionados por los paquetes @c(encoding/json) y @c(encoding/xml). La
+  proporcionado por los paquetes @c(encoding/json) y @c(encoding/xml). La
   reflexion es tambien esencial para el mecanismo de plantilla proporcionada por
   los paquetes @c(text/template) y @c(html/template) que vimos en la @l(#Seccion
   4.6). Sin embargo, es complejo razonar la reflexion y no es para uso casual,

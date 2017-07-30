@@ -18392,8 +18392,7 @@
         const password = "correcthorsebatterystaple"
         const hostname = "smtp.example.com"
 
-        const template = `Warning: you are using %d bytes of storage,
-        %d%% of your quota.`
+        const template = `Warning: you are using %d bytes of storage, %d%% of your quota.`
 
         func CheckQuota(username string) {
           used := bytesInUse(username)
@@ -19185,7 +19184,7 @@
    to indicate the hottest functions.
 
    We’ve only scratched the surface of Go’s profiling tools here. To find out
-   more, read the @"(Profiling Go Programs) article on the Go Blog.
+   more, read the @"(@l(https://blog.golang.org/profiling-go-programs<>Profiling Go Programs)) article on the Go Blog.
 
 ** Section 11.6 <> @c(Example) Functions
 
@@ -19221,7 +19220,7 @@
    whole.
 
    The second purpose is that examples are executable tests run by @$(go test).
-   If the example function contains a final @c(// Output): comment like the one
+   If the example function contains a final @c(// Output:) comment like the one
    above, the test driver will execute the function and check that what it
    printed to its standard output matches the text within the comment.
 

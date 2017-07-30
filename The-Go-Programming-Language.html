@@ -9971,8 +9971,7 @@ FAIL    gopl.io/ch11/echo   0.006s</span>
 <span class="kd">const</span> <span class="nx">password</span> <span class="p">=</span> <span class="s">&quot;correcthorsebatterystaple&quot;</span>
 <span class="kd">const</span> <span class="nx">hostname</span> <span class="p">=</span> <span class="s">&quot;smtp.example.com&quot;</span>
 
-<span class="kd">const</span> <span class="nx">template</span> <span class="p">=</span> <span class="s">`Warning: you are using %d bytes of storage,</span>
-<span class="s">%d%% of your quota.`</span>
+<span class="kd">const</span> <span class="nx">template</span> <span class="p">=</span> <span class="s">`Warning: you are using %d bytes of storage, %d%% of your quota.`</span>
 
 <span class="kd">func</span> <span class="nx">CheckQuota</span><span class="p">(</span><span class="nx">username</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">used</span> <span class="o">:=</span> <span class="nx">bytesInUse</span><span class="p">(</span><span class="nx">username</span><span class="p">)</span>
@@ -10350,7 +10349,7 @@ flat    flat%   sum%     cum   cum%
 <p>The <code>-text</code> flag specifies the output format, in this case, a textual table with one row per function, sorted so the <q>hottest</q> functions—those that consume the most CPU cycles—appear first. The <code>-nodecount=10</code> flag limits the result to 10 rows. For gross performance problems, this textual format may be enough to pinpoint the cause.</p>
 <p>This profile tells us that elliptic-curve cryptography is important to the performance of this particular HTTPS benchmark. By contrast, if a profile is dominated by memory allocation functions from the <code>runtime</code> package, reducing memory consumption may be a worthwhile optimization.</p>
 <p>For more subtle problems, you may be better off using one of <code class="command" >pprof</code>’s graphical displays. These require GraphViz, which can be downloaded from <a href="www.graphviz.org" >www.graphviz.org</a>. The <code>-web</code> flag then renders a directed graph of the functions of the program, annotated by their CPU profile numbers and colored to indicate the hottest functions.</p>
-<p>We’ve only scratched the surface of Go’s profiling tools here. To find out more, read the <q>Profiling Go Programs</q> article on the Go Blog.</p>
+<p>We’ve only scratched the surface of Go’s profiling tools here. To find out more, read the <q><a href="https://blog.golang.org/profiling-go-programs" >Profiling Go Programs</a></q> article on the Go Blog.</p>
 </div>
 <h3 id="Section-11.6" ><code>Example</code> Functions</h3>
 <div class="hBody-3" >
@@ -10365,7 +10364,7 @@ flat    flat%   sum%     cum   cum%
 </pre></div>
 <p>Example functions serve three purposes. The primary one is documentation: a good example can be a more succinct or intuitive way to convey the behavior of a library function than its prose description, especially when used as a reminder or quick reference. An example can also demonstrate the interaction between several types and functions belonging to one API, whereas prose documentation must always be attached to one place, like a type or function declaration or the package as a whole. And unlike examples within comments, example functions are real Go code, subject to compile-time checking, so they don’t become stale as the code evolves.</p>
 <p>Based on the suffix of the <code>Example</code> function, the web-based documentation server <code class="command" >godoc</code> associates example functions with the function or package they exemplify, so <code>ExampleIsPalindrome</code> would be shown with the documentation for the <code>IsPalindrome</code> function, and an example function called just <code>Example</code> would be associated with the <code>word</code> package as a whole.</p>
-<p>The second purpose is that examples are executable tests run by <code class="command" >go test</code>. If the example function contains a final <code>// Output</code>: comment like the one above, the test driver will execute the function and check that what it printed to its standard output matches the text within the comment.</p>
+<p>The second purpose is that examples are executable tests run by <code class="command" >go test</code>. If the example function contains a final <code>// Output:</code> comment like the one above, the test driver will execute the function and check that what it printed to its standard output matches the text within the comment.</p>
 <p>The third purpose of an example is hands-on experimentation. The <code class="command" >godoc</code> server at <code>golang.org</code> uses the Go Playground to let the user edit and run each example function from within a web browser, as shown in Figure 11.4. This is often the fastest way to get a feel for a particular function or language feature.</p>
 <div class="figure" >
 <p class="title">Figure 11.4. An interactive example of <code>strings.Join</code> in <code class="command" >godoc</code>.</p>
