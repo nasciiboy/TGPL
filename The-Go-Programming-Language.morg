@@ -19544,8 +19544,7 @@
          }
        case reflect.Map:
          for _, key := range v.MapKeys() {
-           display(fmt.Sprintf("%s[%s]", path,
-             formatAtom(key)), v.MapIndex(key))
+           display(fmt.Sprintf("%s[%s]", path, formatAtom(key)), v.MapIndex(key))
          }
        case reflect.Ptr:
          if v.IsNil() {
@@ -19571,7 +19570,7 @@
 
    - Slices and arrays :: The logic is the same for both. The Len method returns
      the number of elements of a slice or array value, and @c[Index(i)] retrieves
-     the element at index @c(i), also as a reflect.Value; it panics if @c(i) is
+     the element at index @c(i), also as a @c(reflect.Value); it panics if @c(i) is
      out of bounds. These are analogous to the built-in @c[len(a)] and @c(a[i])
      operations on sequences. The @c(display) function recursively invokes itself
      on each element of the sequence, appending the subscript notation @"(@c([i]))
@@ -20910,7 +20909,7 @@
    is no longer.
 
    No current Go implementation uses a moving garbage collector (though future
-   implementations might), but this is no reason for complacency : current
+   implementations might), but this is no reason for complacency: current
    versions of Go do move @e(some) variables around in memory. Recall from
    @l(#Section 5.2) that goroutine stacks grow as needed.  When this happens,
    all variables on the old stack may be relocated to a new, larger stack, so we
@@ -21241,10 +21240,11 @@
    arguments to the compiler and linker commands so that they can locate the
    @c(bzlib.h) header file and the @f(libbz2.a) archive library. The example
    assumes that these are installed beneath @f(/usr) on your system. You may
-   need to alter or delete these flags for your installation.  NewWriter makes a
-   call to the C function BZ2_bzCompressInit to initialize the buffers for the
-   stream. The writer type includes another buffer that will be used to drain
-   the decompressor’s output buffer.
+   need to alter or delete these flags for your installation.
+
+   @c(NewWriter) makes a call to the C function BZ2_bzCompressInit to initialize
+   the buffers for the stream. The @c(writer) type includes another buffer that
+   will be used to drain the decompressor’s output buffer.
 
    The @c(Write) method, shown below, feeds the uncompressed @c(data) to the
    compressor, calling the function @c(bz2compress) in a loop until all the data
@@ -21365,7 +21365,8 @@
      > wc -c < /usr/share/dict/words
      938848
      > sha256sum < /usr/share/dict/words
-     126a4ef38493313edc50b86f90dfdaf7c59ec6c948451eac228f2f3a8ab1a6ed $ ./bzipper < /usr/share/dict/words | wc -c
+     126a4ef38493313edc50b86f90dfdaf7c59ec6c948451eac228f2f3a8ab1a6ed -
+     > ./bzipper < /usr/share/dict/words | wc -c
      335405
      > ./bzipper < /usr/share/dict/words | bunzip2 | sha256sum
      126a4ef38493313edc50b86f90dfdaf7c59ec6c948451eac228f2f3a8ab1a6ed -
