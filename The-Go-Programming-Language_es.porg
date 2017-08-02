@@ -143,8 +143,8 @@
    con Pascal. Modula-2 inspiro el concepto de paquete. Oberon elimino la
    distincion entre los archivos de interfaz del modulo y los archivos de
    implementacion del modulo. Oberon-2 influyo en la sintaxis de importacion y
-   declaracion de paquetes, y Object Oberon proporciono la sintaxis para la
-   declararcion de metodos.
+   declaracion de paquetes, y proporciono la sintaxis para la declararcion de
+   metodos.
 
 #    Another lineage among Go’s ancestors, and one that makes Go distinctive among
 #    recent programming languages, is a sequence of little-known research
@@ -1580,7 +1580,7 @@
 
 #    A @e(map) holds a set of key/value pairs and provides constant-time
 #    operations to store, retrieve, or test for an item in the set. The key may be
-#    of any type whose values can compared with @c(==), strings being the most
+#    of any type whose values can be compared with @c(==), strings being the most
 #    common example; the value may be of any type at all. In this example, the
 #    keys are @c(string)s and the values are @c(int)s. The built-in function
 #    @c(make) creates a new empty map; it has other uses too. Maps are discussed
@@ -2068,16 +2068,21 @@
 #          "math"
 #          "math/rand"
 #          "os"
+#          "time"
 #        )
 #
 #        var palette = []color.Color{color.White, color.Black}
 #
 #        const (
-#          whiteIndex = 0 // first color in palette
-#          blackIndex = 1 // next color in palette
+#          whiteIndex = 0 // primer color en la paleta
+#          blackIndex = 1 // siguiente color en la paleta
 #        )
 #
 #        func main() {
+#          // The sequence of images is deterministic unless we seed
+#          // the pseudo-random number generator using the current time.
+#          rand.Seed(time.Now().UTC().UnixNano())
+#
 #          lissajous(os.Stdout)
 #        }
 #
@@ -2120,6 +2125,7 @@
          "math"
          "math/rand"
          "os"
+         "time"
        )
 
        var palette = []color.Color{color.White, color.Black}
@@ -2130,6 +2136,10 @@
        )
 
        func main() {
+         // The sequence of images is deterministic unless we seed
+         // the pseudo-random number generator using the current time.
+         rand.Seed(time.Now().UTC().UnixNano())
+
          lissajous(os.Stdout)
        }
 
@@ -2220,7 +2230,7 @@
 #    iterations, each producing a single frame of the animation. It creates a new
 #    201x201 image with a palette of two colors, white and black. All pixels are
 #    initially set to the palette’s zero value (the zeroth color in the palette),
-#    which we set to white. Each pass through the inner loop generates a new image
+#    which we set to white. Each pass through the outer loop generates a new image
 #    by setting some pixels to black. The result is appended, using the built-in
 #    @c(append) function (@l(#Section 4.2.1<>§4.2.1)), to a list of frames in
 #    @c(anim), along with a specified delay of 80ms. Finally the sequence of
@@ -2232,7 +2242,7 @@
    animacion. Crea una nueva imagen de 201x201 con una paleta de dos colores,
    blanco y negro. Todos los pixeles se ajustan inicialmente al valor cero de la
    paleta (el color cero de la paleta), que se establece en blanco. Cada paso a
-   traves del bucle interno genera una nueva imagen estableciendo algunos
+   traves del bucle externo genera una nueva imagen estableciendo algunos
    pixeles en negro. El resultado se añade a una lista de cuadros en @c(anim)
    utilizando la funcion nativa @c(append) (@l(#Seccion 4.2.1<>§4.2.1)), junto
    con un retardo especificado de 80ms. Por ultimo, la secuencia de cuadros y
@@ -2654,13 +2664,13 @@
 # ** Section 1.7 <> A Web Server
 ** Seccion 1.7 <> Un servidor Web
 
-#    Go’s libraries makes it easy to write a web server that responds to client
+#    Go’s library makes it easy to write a web server that responds to client
 #    requests like those made by @$(fetch). In this section, we’ll show a minimal
 #    server that returns the path component of the URL used to access the
 #    server. That is, if the request is for @c(http://localhost:8000/hello), the
 #    response will be @c(URL.Path = "/hello").
-   Las Librerias de Go hacen que sea facil escribir un servidor web que responde
-   a las solicitudes de los clientes, como las realizadas por @$(fetch). En esta
+   La libreria de Go hace que sea facil escribir un servidor web que responde a
+   las solicitudes de los clientes, como las realizadas por @$(fetch). En esta
    seccion, mostraremos un servidor minimo que devuelve el componente de ruta de
    la URL utilizada para acceder al servidor. Es decir, si la solicitud es
    @c(http://localhost:8000/hello), la respuesta sera @c(URL.Path = "/hello").
@@ -3850,12 +3860,12 @@
 #     One subtle but important point: a short variable declaration does not
 #     necessarily @e(declare) all the variables on its left-hand side. If some of
 #     them were already declared in the @e(same) lexical block (@l(#Section
-#     2.7<>§2.7)), then the short variable declaration acts like an @e(assignment)
-#     to those variables.
+#     2.7<>§2.7)), then, for those variables, the short variable declaration acts
+#     like an @e(assignment) to those variables.
     Un punto sutil pero importante: una declaracion de variables compacta no
     declara necesariamente todas las variables en su lado izquierdo. Si algunos
     de ellos ya fueron declarados en el @e(mismo) bloque lexico (@l(#Seccion
-    2.7<>§2.7)), entonces la declaracion de variables compacta se comporta como
+    2.7<>§2.7)), entonces, la declaracion de variables compacta se comporta como
     una asignacion a esas variables.
 
 #     In the code below, the first statement declares both @c(in) and @c(err). The second
@@ -4872,14 +4882,14 @@
 #    unnamed pointer types that point to variables of the same underlying type;
 #    these conversions change the type but not the representation of the value. If
 #    @c(x) is assignable to @c(T), a conversion is permitted but is usually
-#    redundant,
+#    redundant.
    Para cada tipo @c(T), hay una operacion de conversion correspondiente
    @c[T(x)] que convierte el valor @c(x) al tipo @c(T). Se permite una
    conversion de un tipo a otro si ambos tienen el mismo tipo subyacente, o si
    ambos son tipos apuntador sin nombre que apuntan a variables del mismo tipo
    subyacente; Estas conversiones cambian el tipo pero no la representacion del
    valor. Si @c(x) es asignable a @c(T), se permite una conversion, pero suele
-   ser redundante,
+   ser redundante.
 
 #    Conversions are also allowed between numeric types, and between string and
 #    some slice types, as we will see in the next chapter. These conversions may
@@ -4920,13 +4930,13 @@
    < src..
 
 #    Comparison operators like @c(==) and @c(<) can also be used to compare a
-#    value of a named type to another of the same type, or to a value of the
-#    underlying type. But two values of different named types cannot be compared
-#    directly :
+#    value of a named type to another of the same type, or to a value of an
+#    unnamed type with the same underlying type. But two values of different named
+#    types cannot be compared directly :
    Los operadores de comparacion como @c(==) y @c(<) tambien se puede utilizar
    para comparar un valor de un tipo con nombre a otro del mismo tipo, o a un
-   valor del tipo subyacente. Pero dos valores de diferentes tipos con nombre no
-   pueden compararse directamente:
+   Valor de un tipo sin nombre con el mismo tipo subyacente. Pero dos valores de
+   diferentes tipos con nombre no pueden compararse directamente:
 
 #    ..src > go
 #      var c Celsius
@@ -5294,7 +5304,7 @@
 #     lets us refer to names within @c(gopl.io/ch2/tempconv) by using a
 #     @e(qualified identifier) like @c(tempconv.CToF). By default, the short name
 #     is the package name—@c(tempconv) in this case—but an import declaration may
-#     specify an alternative name to avoid a conflict (@l(#Section 10.3<>§10.3)).
+#     specify an alternative name to avoid a conflict (@l(#Section 10.4<>§10.4)).
     La declaracion de importacion vincula un nombre corto al paquete importado
     que se puede utilizar para referirse a su contenido en todo el archivo. El
     @c(import) anterior nos permite referimos a nombres dentro de
@@ -5302,7 +5312,7 @@
     @c(tempconv.CToF). Por defecto, el nombre corto es el nombre del paquete–en
     este caso @c(tempconv), pero una declaracion de importacion puede
     especificar un nombre alternativo para evitar un conflicto (@l(#Seccion
-    10.3<>§10.3)).
+    10.4<>§10.4)).
 
 #     The @$(cf) program converts a single numeric command-line argument to its value
 #     in both Celsius and Fahrenheit:
@@ -6097,9 +6107,9 @@
    hacer suposiciones sobre cual es; Diferentes compiladores pueden tomar
    diferentes opciones incluso en hardware identico.
 
-#    The type @c(rune) is an synonym for @c(int32) and conventionally indicates
+#    The type @c(rune) is a synonym for @c(int32) and conventionally indicates
 #    that a value is a Unicode code point. The two names may be used
-#    interchangeably. Similarly, the type @c(byte) is an synonym for @c(uint8),
+#    interchangeably. Similarly, the type @c(byte) is a synonym for @c(uint8),
 #    and emphasizes that the value is a piece of raw data rather than a small
 #    numeric quantity.
    El tipo @c(rune) es un sinonimo de @c(int32) y convencionalmente indica que
@@ -6180,21 +6190,21 @@
    @c(+), tiene un operador de asignacion correspondiente, como @c(+=) que pueden
    utilizarse para abreviar una instruccion de asignacion.
 
-#    The integer arithmetic operators @c(+), @c(-), @c(*), and @c(/) may be
-#    applied to integer, floating-point, and complex numbers, but the remainder
-#    operator @c(%) applies only to integers. The behavior of @c(%) for negative
-#    numbers varies across programming languages. In Go, the sign of the remainder
-#    is always the same as the sign of the dividend, so @c(-5%3) and @c(-5%-3) are
+#    The arithmetic operators @c(+), @c(-), @c(*), and @c(/) may be applied to
+#    integer, floating-point, and complex numbers, but the remainder operator
+#    @c(%) applies only to integers. The behavior of @c(%) for negative numbers
+#    varies across programming languages. In Go, the sign of the remainder is
+#    always the same as the sign of the dividend, so @c(-5%3) and @c(-5%-3) are
 #    both @c(-2). The behavior of @c(/) depends on whether its operands are
 #    integers, so @c(5.0/4.0) is @c(1.25), but @c(5/4) is @c(1) because integer
 #    division truncates the result toward zero.
-   Los operadores aritmetica enteros @c(+), @c(-), @c(*), y @c(/) pueden
-   aplicarse a numeros enteros, de coma flotante, y numeros complejos, pero el
-   operador @c(%) solo se aplica a numeros enteros. El comportamiento de @c(%)
-   para los numeros negativos varia a traves de los lenguajes de programacion.
-   En Go, el signo del resto es siempre el mismo que el signo del dividendo, por
-   lo que @c(-5%3) y @c(-5%-3) son ambos @c(-2). El comportamiento de @c(/) depende
-   de si sus operandos son numeros enteros, por lo que @c(5.0/4.0) es @c(1.25),
+   Los operadores aritmeticos @c(+), @c(-), @c(*), y @c(/) pueden aplicarse a
+   numeros enteros, de coma flotante, y numeros complejos, pero el operador
+   @c(%) solo se aplica a numeros enteros. El comportamiento de @c(%) para los
+   numeros negativos varia a traves de los lenguajes de programacion.  En Go, el
+   signo del resto es siempre el mismo que el signo del dividendo, por lo que
+   @c(-5%3) y @c(-5%-3) son ambos @c(-2). El comportamiento de @c(/) depende de
+   si sus operandos son numeros enteros, por lo que @c(5.0/4.0) es @c(1.25),
    pero @c(5/4) es @c(1) porque la division entera trunca el resultado hacia
    cero.
 
@@ -6785,12 +6795,14 @@
 #    value, and @c(math.NaN) returns such a value. It’s tempting to use NaN as a
 #    sentinel value in a numeric computation, but testing whether a specific
 #    computational result is equal to NaN is fraught with peril because any
-#    comparison with NaN @e(always) yields @c(false):
+#    comparison with NaN @e(always) yields @c(false) (except @c(!=), which is always
+#    the negation of @c(==)):
    La funcion @c(math.IsNaN) prueba si su argumento es un valor no-numerico, y
    @c(math.NaN) devuelve ese valor. Es tentador utilizar NaN como un valor
    centinela en un calculo numerico, pero probar si el resultado de un calculo
    especifico es igual NaN esta lleno de peligros, ya que cualquier comparacion
-   con NaN @e(siempre) produce @c(false):
+   con NaN @e(siempre) produce @c(false) (exepto @c(!=), que es siempre la
+   negacion de @c(==):
 
 #    ..src > go
 #      nan := math.NaN()
@@ -7838,18 +7850,18 @@
 
 #     | @c(0xxxxxx)                            | runes 0−127    | (ASCII)               |
 #     |----------------------------------------|----------------|-----------------------|
-#     | @c(11xxxxx 10xxxxxx)                   | 128−2047       | (values <128 unused)  |
+#     | @c(110xxxx 10xxxxxx)                   | 128−2047       | (values <128 unused)  |
 #     |----------------------------------------|----------------|-----------------------|
-#     | @c(110xxxx 10xxxxxx 10xxxxxx)          | 2048−65535     | (values <2048 unused) |
+#     | @c(1110xxx 10xxxxxx 10xxxxxx)          | 2048−65535     | (values <2048 unused) |
 #     |----------------------------------------|----------------|-----------------------|
-#     | @c(1110xxx 10xxxxxx 10xxxxxx 10xxxxxx) | 65536−0x10ffff | (other values unused) |
+#     | @c(11110xx 10xxxxxx 10xxxxxx 10xxxxxx) | 65536−0x10ffff | (other values unused) |
     | @c(0xxxxxx)                            | runas 0−127    | (ASCII)                       |
     |----------------------------------------|----------------|-------------------------------|
-    | @c(11xxxxx 10xxxxxx)                   | 128−2047       | (valores <128 no utilizados)  |
+    | @c(110xxxx 10xxxxxx)                   | 128−2047       | (valores <128 no utilizados)  |
     |----------------------------------------|----------------|-------------------------------|
-    | @c(110xxxx 10xxxxxx 10xxxxxx)          | 2048−65535     | (valores <2048 no utilizados) |
+    | @c(1110xxx 10xxxxxx 10xxxxxx)          | 2048−65535     | (valores <2048 no utilizados) |
     |----------------------------------------|----------------|-------------------------------|
-    | @c(1110xxx 10xxxxxx 10xxxxxx 10xxxxxx) | 65536−0x10ffff | (otros valores no utiliados)  |
+    | @c(11110xx 10xxxxxx 10xxxxxx 10xxxxxx) | 65536−0x10ffff | (otros valores no utiliados)  |
 
 #     A variable-length encoding precludes direct indexing to access the @m(n)-th
 #     character of a string, but UTF-8 has many desirable properties to compensate.
@@ -8399,11 +8411,11 @@
 #     Let’s continue with another substring example. The task is to take a string
 #     representation of an integer, such as @c("12345"), and insert commas every
 #     three places, as in @c("12,345"). This version only works for integers;
-#     handling floating-point numbers is left as a exercise.
+#     handling floating-point numbers is left as an exercise.
     Vamos a continuar con otro ejemplo de subcadena. La tarea es tomar una
     representacion de cadena de un entero, como @c("12345"), e insertar comas
     cada tres posiciones, como en @c("12,345"). Esta version solo funciona para
-    enteros; El manejo de numeros de coma flotante se deja como un ejercicio.
+    enteros; El manejo de numeros de coma flotante se deja como ejercicio.
 
 #     ..figure > @l(gopl.io/ch3/comma/main.go<>gopl.io/ch3/comma)
     ..figure > @l(gopl.io/ch3/comma/main.go<>gopl.io/ch3/comma)
@@ -8657,10 +8669,10 @@
       fmt.Println(strconv.FormatInt(int64(x), 2)) // "1111011"
     < src..
 
-#     The @c(fmt.Printf) verbs @c(%b), @c(%d), @c(%u), and @c(%x) are often more
+#     The @c(fmt.Printf) verbs @c(%b), @c(%d), @c(%o), and @c(%x) are often more
 #     convenient than @c(Format) functions, especially if we want to include
 #     additional information besides the number:
-    Los verbos @c(%b), @c(%d), @c(%u) y @c(%x) de @c(fmt.Printf) a menudo son
+    Los verbos @c(%b), @c(%d), @c(%o) y @c(%x) de @c(fmt.Printf) a menudo son
     mas conveniente que las funciones @c(Format), sobre todo si queremos incluir
     informacion adicional ademas del numero:
 
@@ -8818,7 +8830,7 @@
 #      const timeout = 5 * time.Minute
 #
 #      fmt.Printf("%T %[1]v\n", noDelay)     // "time.Duration 0"
-#      fmt.Printf("%T %[1]v\n", timeout)     // "time.Duration 5m0s
+#      fmt.Printf("%T %[1]v\n", timeout)     // "time.Duration 5m0s"
 #      fmt.Printf("%T %[1]v\n", time.Minute) // "time.Duration 1m0s"
 #    < src..
    ..src > go
@@ -8826,7 +8838,7 @@
      const timeout = 5 * time.Minute
 
      fmt.Printf("%T %[1]v\n", noDelay)     // "time.Duration 0"
-     fmt.Printf("%T %[1]v\n", timeout)     // "time.Duration 5m0s
+     fmt.Printf("%T %[1]v\n", timeout)     // "time.Duration 5m0s"
      fmt.Printf("%T %[1]v\n", time.Minute) // "time.Duration 1m0s"
    < src..
 
@@ -9637,15 +9649,15 @@
 #    because of their fixed size. The @c(zero) function will not accept a pointer
 #    to a @c([16]byte) variable, for example, nor is there any way to add or
 #    remove array elements. For these reasons, other than special cases like
-#    SHA256’s fixed-size hash, arrays are seldom used as function parameters;
-#    instead, we use slices.
+#    SHA256’s fixed-size hash, arrays are seldom used as function parameters or
+#    results; instead, we use slices.
    El uso de un puntero a un arreglo es eficiente y permite que la funcion
    llamada mute la variable de quien la llama, pero los arreglos son
    intrinsecamente inflexibles debido a su tamaño fijo. La funcion @c(zero) no
    aceptara un puntero a una variable @c([16]byte), por ejemplo, ni hay ninguna
    manera de añadir o eliminar elementos del arreglo. Por estas razones, aparte
    de casos especiales como el hash SHA256 de tamaño fijo, rara vez se usan
-   arreglos como parametros de funcion; En su lugar, utilizamos slices.
+   arreglos como parametros de funcion o resultados; En su lugar, utilizamos slices.
 
 #    @b(Exercise 4.1): Write a function that counts the number of bits that are
 #    different in two SHA256 hashes. (See @c(PopCount) from @l(#Section 2.6.2).)
@@ -12283,12 +12295,12 @@
 #    The basic JSON types are numbers (in decimal or scientific notation),
 #    booleans (@c(true) or @c(false)), and strings, which are sequences of Unicode
 #    code points enclosed in double quotes, with backslash escapes using a similar
-#    notation to Go, though JSON’s @c(\U)@e(hhhh) numeric escapes denote UTF-16
+#    notation to Go, though JSON’s @c(\u)@e(hhhh) numeric escapes denote UTF-16
 #    codes, not runes.
    Los tipos JSON basicos son numeros (en notacion decimal o cientifica),
    booleanos (@c(true) o @c(false)), y cadenas, que son secuencias de puntos de
    codigo Unicode entre comillas dobles, con escapes mediante la barra invertida
-   utilizando una notacion similar a Go, aunque los escapes JSON @c(\U)@e(hhhh)
+   utilizando una notacion similar a Go, aunque los escapes JSON @c(\u)@e(hhhh)
    denotan codigos UTF-16, no runas.
 
 #    These basic types may be combined recursively using JSON arrays and
@@ -14896,7 +14908,7 @@
 #      fmt.Println(f(3))     // "-3"
 #      fmt.Printf("%T\n", f) // "func(int) int"
 #
-#      f = product // compile error: can't assign f(int, int) int to f(int) int
+#      f = product // compile error: can't assign func(int, int) int to func(int) int
 #    < src..
    ..src > go
      func square(n int) int     { return n * n }
@@ -14910,7 +14922,7 @@
      fmt.Println(f(3))     // "-3"
      fmt.Printf("%T\n", f) // "func(int) int"
 
-     f = product // error de compilacion: no se puede asignar f(int, int) int a f(int) int
+     f = product // error de compilacion: no se puede asignar func(int, int) int a func(int) int
    < src..
 
 #    The zero value of a function type is @c(nil). Calling a nil function value
@@ -15689,10 +15701,10 @@
      < src..
 
 
-#    As we explained in passing in @l(#Chapter 3), the argument @"{@c[f(item)...]}
+#    As we explained in passing in @l(#Chapter 4), the argument @"{@c[f(item)...]}
 #    causes all the items in the list returned by @c(f) to be appended to the
 #    worklist.
-   Como explicamos al pasar por el @l(#Capitulo 3), el argumento de @"{@c[f(item)...]}
+   Como explicamos al pasar por el @l(#Capitulo 4), el argumento de @"{@c[f(item)...]}
    hace que todos los elementos de la lista devuelta por @c(f)se añadan a la
    lista de trabajo.
 
@@ -18010,7 +18022,7 @@
 
 
 #     In the final call to @c(Get), the @c(nil) receiver behaves like an empty map. We
-#     could equivalently have written it as @c[Values(nil).Get("item"))], but
+#     could equivalently have written it as @c[Values(nil).Get("item")], but
 #     @c[nil.Get("item")] will not compile because the type of @c(nil) has not
 #     been determined. By contrast, the final call to @c(Add) panics as it tries
 #     to update a nil map.
@@ -18641,7 +18653,7 @@
    6.5.)
 
 #    This implementation lacks many desirable features, some of which are posed as
-#    exercises below, but one is hard to live without: way to print an @c(IntSet)
+#    exercises below, but one is hard to live without: a way to print an @c(IntSet)
 #    as a string. Let’s give it a @c(String) method as we did with @c(Celsius) in
 #    @l(#Section 2.5):
    Esta aplicacion carece de muchas caracteristicas deseables, algunas de las
@@ -19900,7 +19912,7 @@
 #    (@c(geometry.Path), @l(#Section 6.1<>§6.1)) and map types with methods
 #    (@c(url.Values), @l(#Section 6.2.1<>§6.2.1)), and later we’ll see a function
 #    type with methods (@c(http.HandlerFunc), @l(#Section 7.7<>§7.7)). Even basic
-#    types may satisfy interfaces; as we saw in @l(#Section 7.4),
+#    types may satisfy interfaces; as we well see in @l(#Section 7.4),
 #    @c(time.Duration) satisfies @c(fmt.Stringer).
    Pero los tipos de puntero no son de ninguna manera los unicos tipos que
    satisfacen las interfaces, e incluso las interfaces con los metodos mutator
@@ -22526,7 +22538,7 @@
 #          got := fmt.Sprintf("%.6g", expr.Eval(test.env))
 #          fmt.Printf("\t%v => %s\n", test.env, got)
 #          if got != test.want {
-#            t.Errorf("%s.Eval() in %s = %q, want %q\n",
+#            t.Errorf("%s.Eval() in %v = %q, want %q\n",
 #              test.expr, test.env, got, test.want)
 #          }
 #        }
@@ -22561,7 +22573,7 @@
          got := fmt.Sprintf("%.6g", expr.Eval(test.env))
          fmt.Printf("\t%v => %s\n", test.env, got)
          if got != test.want {
-           t.Errorf("%s.Eval() in %s = %q, want %q\n",
+           t.Errorf("%s.Eval() in %v = %q, want %q\n",
              test.expr, test.env, got, test.want)
          }
        }
@@ -24900,14 +24912,14 @@
 
 #    ..srci > sh
 #      > TZ=US/Eastern    ./clock2 -port 8010 &
-#      > TZ=Asia/Tokyo    ./clock2 -port 8020 &
-#      > TZ=Europe/London ./clock2 -port 8030 &
+#      > TZ=Europe/London ./clock2 -port 8020 &
+#      > TZ=Asia/Tokyo    ./clock2 -port 8030 &
 #      > clockwall NewYork=localhost:8010 London=localhost:8020 Tokyo=localhost:8030
 #    < srci..
    ..srci > sh
      > TZ=US/Eastern    ./clock2 -port 8010 &
-     > TZ=Asia/Tokyo    ./clock2 -port 8020 &
-     > TZ=Europe/London ./clock2 -port 8030 &
+     > TZ=Europe/London ./clock2 -port 8020 &
+     > TZ=Asia/Tokyo    ./clock2 -port 8030 &
      > clockwall NewYork=localhost:8010 London=localhost:8020 Tokyo=localhost:8030
    < srci..
 
@@ -30320,11 +30332,11 @@
 
 #    We’ll use the @c(httpGetBody) function below as an example of the type of
 #    function we might want to memoize. It makes an HTTP GET request and reads the
-#    request body. Calls to this function are relatively expensive, so we’d like
+#    response body. Calls to this function are relatively expensive, so we’d like
 #    to avoid repeating them unnecessarily.
    Usaremos la funcion @c(httpGetBody) a continuacion como ejemplo del tipo de
    funcion que podriamos desear memorizar. Hace una peticion HTTP GET y lee el
-   cuerpo de la solicitud. Las llamadas a esta funcion son relativamente caras,
+   cuerpo de la respuesta. Las llamadas a esta funcion son relativamente caras,
    por lo que nos gustaria evitar repetirlas innecesariamente.
 
 #    ..src > go
@@ -32062,7 +32074,7 @@
 
 #    ..src > go
 #      import (
-#        "database/mysql"
+#        "database/sql"
 #        _ "github.com/lib/pq"                // enable support for Postgres
 #        _ "github.com/go-sql-driver/mysql"   // enable support for MySQL
 #      )
@@ -32073,7 +32085,7 @@
 #    < src..
    ..src > go
      import (
-       "database/mysql"
+       "database/sql"
        _ "github.com/lib/pq"                // habilitira el soporte para Postgres
        _ "github.com/go-sql-driver/mysql"   // habilitira el soporte para MySQL
      )
@@ -35473,10 +35485,10 @@
    convierte en verde:
 
 #    ..src > go
-#      {"-x * -x", eval.Env{"x": 2}, "4"}
+#      {"-x * -x", Env{"x": 2}, "4"}
 #    < src..
    ..src > go
-     {"-x * -x", eval.Env{"x": 2}, "4"}
+     {"-x * -x", Env{"x": 2}, "4"}
    < src..
 
 #    The two @c(panic) statements remain red, however. This should not be
@@ -37560,10 +37572,10 @@
    @b(Ejercicio 12.6): Adapte @c(encode) para que a manera de optimizacion, no
    codifique un campo cuyo valor es el valor cero de su tipo.
 
-#    @b(Exercise 12.7): Create a streaming API for the S-expression decoder,
-#    following the style of @c(json.Decoder) (@l(#Section 4.5<>§4.5)).
-   @b(Ejercicio 12.7): Crear un API de streaming para el decodificador de
-   expresiones-S, siguiendo el estilo de @c(json.Decoder) (@l(#Seccion
+#    @b(Exercise 12.7): Create a streaming API for the S-expression encoder,
+#    following the style of @c(json.Encoder) (@l(#Section 4.5<>§4.5)).
+   @b(Ejercicio 12.7): Crear un API de streaming para la codificacion de
+   expresiones-S, siguiendo el estilo de @c(json.Encoder) (@l(#Seccion
    4.5<>§4.5)).
 
 # ** Section 12.5 <> Setting Variables with @c(reflect.Value)
@@ -38255,12 +38267,12 @@
    paquetes como @c(encoding/json), y como se puede utilizar la reflexion para
    poblar las estructuras de datos.
 
-#    @b(Exercise 12.8): The @c(sexpr.Unmarshal) function, like @c(json.Marshal),
+#    @b(Exercise 12.8): The @c(sexpr.Unmarshal) function, like @c(json.Unmarshal),
 #    requires the complete input in a byte slice before it can begin
 #    decoding. Define a @c(sexpr.Decoder) type that, like @c(json.Decoder), allows
 #    a sequence of values to be decoded from an @c(io.Reader). Change
 #    @c(sexpr.Unmarshal) to use this new type.
-   @b(Ejercicio 12.8): La funcion @c(sexpr.Unmarshal), como @c(json.Marshal),
+   @b(Ejercicio 12.8): La funcion @c(sexpr.Unmarshal), como @c(json.Unmarshal),
    requiere la entrada completa en un slice de bytes antes de que pueda comenzar
    la decodificacion. Defina un tipo @c(sexpr.Decoder) que como @c(json.Decoder),
    permita que una secuencia de valores sea decodificada desde un @c(io.Reader).
@@ -40260,9 +40272,9 @@
    autoritariamente especificadas. Para mas informacion, comience con
    @l(https://golang.org/cmd/cgo).
 
-#    @b(Exercise 13.3): Use @c(sync.Mutex) to make @c(bzip2.writer) safe for
+#    @b(Exercise 13.3): Use @c(sync.Mutex) to make @c(bzip.writer) safe for
 #    concurrent use by multiple goroutines.
-   @b(Ejercicio 13.3): Utilice @c(sync.Mutex) para hacer @c(bzip2.writer) seguro
+   @b(Ejercicio 13.3): Utilice @c(sync.Mutex) para hacer @c(bzip.writer) seguro
    para el uso concurrente por multiples gorutinas.
 
 #    @b(Exercise 13.4): Depending on C libraries has its drawbacks. Provide an

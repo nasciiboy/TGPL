@@ -86,8 +86,8 @@
    con Pascal. Modula-2 inspiro el concepto de paquete. Oberon elimino la
    distincion entre los archivos de interfaz del modulo y los archivos de
    implementacion del modulo. Oberon-2 influyo en la sintaxis de importacion y
-   declaracion de paquetes, y Object Oberon proporciono la sintaxis para la
-   declararcion de metodos.
+   declaracion de paquetes, y proporciono la sintaxis para la declararcion de
+   metodos.
 
    Otro linaje entre los antepasados de Go, y uno que hace a Go distinto entre
    los lenguajes de programacion mas recientes, es una secuencia de lenguajes de
@@ -1171,6 +1171,7 @@
          "math"
          "math/rand"
          "os"
+         "time"
        )
 
        var palette = []color.Color{color.White, color.Black}
@@ -1181,6 +1182,10 @@
        )
 
        func main() {
+         // The sequence of images is deterministic unless we seed
+         // the pseudo-random number generator using the current time.
+         rand.Seed(time.Now().UTC().UnixNano())
+
          lissajous(os.Stdout)
        }
 
@@ -1248,7 +1253,7 @@
    animacion. Crea una nueva imagen de 201x201 con una paleta de dos colores,
    blanco y negro. Todos los pixeles se ajustan inicialmente al valor cero de la
    paleta (el color cero de la paleta), que se establece en blanco. Cada paso a
-   traves del bucle interno genera una nueva imagen estableciendo algunos
+   traves del bucle externo genera una nueva imagen estableciendo algunos
    pixeles en negro. El resultado se añade a una lista de cuadros en @c(anim)
    utilizando la funcion nativa @c(append) (@l(#Seccion 4.2.1<>§4.2.1)), junto
    con un retardo especificado de 80ms. Por ultimo, la secuencia de cuadros y
@@ -1484,8 +1489,8 @@
 
 ** Seccion 1.7 <> Un servidor Web
 
-   Las Librerias de Go hacen que sea facil escribir un servidor web que responde
-   a las solicitudes de los clientes, como las realizadas por @$(fetch). En esta
+   La libreria de Go hace que sea facil escribir un servidor web que responde a
+   las solicitudes de los clientes, como las realizadas por @$(fetch). En esta
    seccion, mostraremos un servidor minimo que devuelve el componente de ruta de
    la URL utilizada para acceder al servidor. Es decir, si la solicitud es
    @c(http://localhost:8000/hello), la respuesta sera @c(URL.Path = "/hello").
@@ -2151,7 +2156,7 @@
     Un punto sutil pero importante: una declaracion de variables compacta no
     declara necesariamente todas las variables en su lado izquierdo. Si algunos
     de ellos ya fueron declarados en el @e(mismo) bloque lexico (@l(#Seccion
-    2.7<>§2.7)), entonces la declaracion de variables compacta se comporta como
+    2.7<>§2.7)), entonces, la declaracion de variables compacta se comporta como
     una asignacion a esas variables.
 
     En el codigo siguiente, la primera sentencia declara tanto @c(in) como
@@ -2727,7 +2732,7 @@
    ambos son tipos apuntador sin nombre que apuntan a variables del mismo tipo
    subyacente; Estas conversiones cambian el tipo pero no la representacion del
    valor. Si @c(x) es asignable a @c(T), se permite una conversion, pero suele
-   ser redundante,
+   ser redundante.
 
    Las conversiones tambien se permiten entre tipos numericos, y entre la cadena
    y algunos tipos de slices, como veremos en el siguiente capitulo. Estas
@@ -2752,8 +2757,8 @@
 
    Los operadores de comparacion como @c(==) y @c(<) tambien se puede utilizar
    para comparar un valor de un tipo con nombre a otro del mismo tipo, o a un
-   valor del tipo subyacente. Pero dos valores de diferentes tipos con nombre no
-   pueden compararse directamente:
+   Valor de un tipo sin nombre con el mismo tipo subyacente. Pero dos valores de
+   diferentes tipos con nombre no pueden compararse directamente:
 
    ..src > go
      var c Celsius
@@ -2963,7 +2968,7 @@
     @c(tempconv.CToF). Por defecto, el nombre corto es el nombre del paquete–en
     este caso @c(tempconv), pero una declaracion de importacion puede
     especificar un nombre alternativo para evitar un conflicto (@l(#Seccion
-    10.3<>§10.3)).
+    10.4<>§10.4)).
 
     El programa @$(cf) convierte un unico argumento numerico de la linea de
     comando a su valor en grados Celsius y Fahrenheit:
@@ -3452,13 +3457,13 @@
    @c(+), tiene un operador de asignacion correspondiente, como @c(+=) que pueden
    utilizarse para abreviar una instruccion de asignacion.
 
-   Los operadores aritmetica enteros @c(+), @c(-), @c(*), y @c(/) pueden
-   aplicarse a numeros enteros, de coma flotante, y numeros complejos, pero el
-   operador @c(%) solo se aplica a numeros enteros. El comportamiento de @c(%)
-   para los numeros negativos varia a traves de los lenguajes de programacion.
-   En Go, el signo del resto es siempre el mismo que el signo del dividendo, por
-   lo que @c(-5%3) y @c(-5%-3) son ambos @c(-2). El comportamiento de @c(/) depende
-   de si sus operandos son numeros enteros, por lo que @c(5.0/4.0) es @c(1.25),
+   Los operadores aritmeticos @c(+), @c(-), @c(*), y @c(/) pueden aplicarse a
+   numeros enteros, de coma flotante, y numeros complejos, pero el operador
+   @c(%) solo se aplica a numeros enteros. El comportamiento de @c(%) para los
+   numeros negativos varia a traves de los lenguajes de programacion.  En Go, el
+   signo del resto es siempre el mismo que el signo del dividendo, por lo que
+   @c(-5%3) y @c(-5%-3) son ambos @c(-2). El comportamiento de @c(/) depende de
+   si sus operandos son numeros enteros, por lo que @c(5.0/4.0) es @c(1.25),
    pero @c(5/4) es @c(1) porque la division entera trunca el resultado hacia
    cero.
 
@@ -3791,7 +3796,8 @@
    @c(math.NaN) devuelve ese valor. Es tentador utilizar NaN como un valor
    centinela en un calculo numerico, pero probar si el resultado de un calculo
    especifico es igual NaN esta lleno de peligros, ya que cualquier comparacion
-   con NaN @e(siempre) produce @c(false):
+   con NaN @e(siempre) produce @c(false) (exepto @c(!=), que es siempre la
+   negacion de @c(==):
 
    ..src > go
      nan := math.NaN()
@@ -4378,11 +4384,11 @@
 
     | @c(0xxxxxx)                            | runas 0−127    | (ASCII)                       |
     |----------------------------------------|----------------|-------------------------------|
-    | @c(11xxxxx 10xxxxxx)                   | 128−2047       | (valores <128 no utilizados)  |
+    | @c(110xxxx 10xxxxxx)                   | 128−2047       | (valores <128 no utilizados)  |
     |----------------------------------------|----------------|-------------------------------|
-    | @c(110xxxx 10xxxxxx 10xxxxxx)          | 2048−65535     | (valores <2048 no utilizados) |
+    | @c(1110xxx 10xxxxxx 10xxxxxx)          | 2048−65535     | (valores <2048 no utilizados) |
     |----------------------------------------|----------------|-------------------------------|
-    | @c(1110xxx 10xxxxxx 10xxxxxx 10xxxxxx) | 65536−0x10ffff | (otros valores no utiliados)  |
+    | @c(11110xx 10xxxxxx 10xxxxxx 10xxxxxx) | 65536−0x10ffff | (otros valores no utiliados)  |
 
     Una codificacion de longitud variable impide la indexacion directa para
     acceder al @m(n)-esimo caracter de una cadena, pero UTF-8 tiene muchas
@@ -4692,7 +4698,7 @@
     Vamos a continuar con otro ejemplo de subcadena. La tarea es tomar una
     representacion de cadena de un entero, como @c("12345"), e insertar comas
     cada tres posiciones, como en @c("12,345"). Esta version solo funciona para
-    enteros; El manejo de numeros de coma flotante se deja como un ejercicio.
+    enteros; El manejo de numeros de coma flotante se deja como ejercicio.
 
     ..figure > @l(gopl.io/ch3/comma/main.go<>gopl.io/ch3/comma)
 
@@ -4836,7 +4842,7 @@
       fmt.Println(strconv.FormatInt(int64(x), 2)) // "1111011"
     < src..
 
-    Los verbos @c(%b), @c(%d), @c(%u) y @c(%x) de @c(fmt.Printf) a menudo son
+    Los verbos @c(%b), @c(%d), @c(%o) y @c(%x) de @c(fmt.Printf) a menudo son
     mas conveniente que las funciones @c(Format), sobre todo si queremos incluir
     informacion adicional ademas del numero:
 
@@ -4930,7 +4936,7 @@
      const timeout = 5 * time.Minute
 
      fmt.Printf("%T %[1]v\n", noDelay)     // "time.Duration 0"
-     fmt.Printf("%T %[1]v\n", timeout)     // "time.Duration 5m0s
+     fmt.Printf("%T %[1]v\n", timeout)     // "time.Duration 5m0s"
      fmt.Printf("%T %[1]v\n", time.Minute) // "time.Duration 1m0s"
    < src..
 
@@ -5385,7 +5391,7 @@
    aceptara un puntero a una variable @c([16]byte), por ejemplo, ni hay ninguna
    manera de añadir o eliminar elementos del arreglo. Por estas razones, aparte
    de casos especiales como el hash SHA256 de tamaño fijo, rara vez se usan
-   arreglos como parametros de funcion; En su lugar, utilizamos slices.
+   arreglos como parametros de funcion o resultados; En su lugar, utilizamos slices.
 
    @b(Ejercicio 4.1): Escribir una funcion que cuente el numero de bits que son
    diferentes en dos hash SHA256. (Ver @c(PopCount) en la @l(#Seccion 2.6.2).)
@@ -6867,7 +6873,7 @@
    Los tipos JSON basicos son numeros (en notacion decimal o cientifica),
    booleanos (@c(true) o @c(false)), y cadenas, que son secuencias de puntos de
    codigo Unicode entre comillas dobles, con escapes mediante la barra invertida
-   utilizando una notacion similar a Go, aunque los escapes JSON @c(\U)@e(hhhh)
+   utilizando una notacion similar a Go, aunque los escapes JSON @c(\u)@e(hhhh)
    denotan codigos UTF-16, no runas.
 
    Estos tipos basicos se pueden combinar recursivamente utilizando arreglos
@@ -8315,7 +8321,7 @@
      fmt.Println(f(3))     // "-3"
      fmt.Printf("%T\n", f) // "func(int) int"
 
-     f = product // error de compilacion: no se puede asignar f(int, int) int a f(int) int
+     f = product // error de compilacion: no se puede asignar func(int, int) int a func(int) int
    < src..
 
    El valor cero para el tipo funcion es @c(nil). Llamar a un valor de funcion
@@ -8737,7 +8743,7 @@
      < src..
 
 
-   Como explicamos al pasar por el @l(#Capitulo 3), el argumento de @"{@c[f(item)...]}
+   Como explicamos al pasar por el @l(#Capitulo 4), el argumento de @"{@c[f(item)...]}
    hace que todos los elementos de la lista devuelta por @c(f)se añadan a la
    lista de trabajo.
 
@@ -12526,7 +12532,7 @@
          got := fmt.Sprintf("%.6g", expr.Eval(test.env))
          fmt.Printf("\t%v => %s\n", test.env, got)
          if got != test.want {
-           t.Errorf("%s.Eval() in %s = %q, want %q\n",
+           t.Errorf("%s.Eval() in %v = %q, want %q\n",
              test.expr, test.env, got, test.want)
          }
        }
@@ -13801,8 +13807,8 @@
 
    ..srci > sh
      > TZ=US/Eastern    ./clock2 -port 8010 &
-     > TZ=Asia/Tokyo    ./clock2 -port 8020 &
-     > TZ=Europe/London ./clock2 -port 8030 &
+     > TZ=Europe/London ./clock2 -port 8020 &
+     > TZ=Asia/Tokyo    ./clock2 -port 8030 &
      > clockwall NewYork=localhost:8010 London=localhost:8020 Tokyo=localhost:8030
    < srci..
 
@@ -16762,7 +16768,7 @@
 
    Usaremos la funcion @c(httpGetBody) a continuacion como ejemplo del tipo de
    funcion que podriamos desear memorizar. Hace una peticion HTTP GET y lee el
-   cuerpo de la solicitud. Las llamadas a esta funcion son relativamente caras,
+   cuerpo de la respuesta. Las llamadas a esta funcion son relativamente caras,
    por lo que nos gustaria evitar repetirlas innecesariamente.
 
    ..src > go
@@ -17719,7 +17725,7 @@
 
    ..src > go
      import (
-       "database/mysql"
+       "database/sql"
        _ "github.com/lib/pq"                // habilitira el soporte para Postgres
        _ "github.com/go-sql-driver/mysql"   // habilitira el soporte para MySQL
      )
@@ -19600,7 +19606,7 @@
    convierte en verde:
 
    ..src > go
-     {"-x * -x", eval.Env{"x": 2}, "4"}
+     {"-x * -x", Env{"x": 2}, "4"}
    < src..
 
    Sin embargo, las dos declaraciones @c(panic) permanecen de color rojo. Esto
@@ -20019,7 +20025,7 @@
   ver la forma en que aumentan la expresividad del lenguaje, y en particular la
   forma en que son cruciales para la implementacion de dos APIs importantes: el
   formateo de cadenas proporcionado por @c(fmt), y el protocolo de codificacion
-  proporcionados por los paquetes @c(encoding/json) y @c(encoding/xml). La
+  proporcionado por los paquetes @c(encoding/json) y @c(encoding/xml). La
   reflexion es tambien esencial para el mecanismo de plantilla proporcionada por
   los paquetes @c(text/template) y @c(html/template) que vimos en la @l(#Seccion
   4.6). Sin embargo, es complejo razonar la reflexion y no es para uso casual,
@@ -20043,7 +20049,7 @@
    Empezamos con un @c(switch) de tipo que pone a prueba si el argumento define
    una metodo @c(String), y lo llaman si es asi. A continuacion, agregamos casos
    que ponen a prueba el tipo dinamico del valor en cada uno de los tipos
-   basicos–@c(string), @c(int), @c(bool), etc–y realice la operacion de formato
+   basicos–@c(string), @c(int), @c(bool), etc–y realiza la operacion de formato
    adecuado en cada caso.
 
    ..src > go
@@ -20058,7 +20064,7 @@
          return x
        case int:
          return strconv.Itoa(x)
-         // ...similar cases for int16, uint32, and so on...
+         // ...casos similares para int16, uint32, y demas...
        case bool:
          if x {
            return "true"
@@ -20104,7 +20110,7 @@
    < src..
 
    La llamada @c[TypeOf(3)] anterior asigna el valor 3 al parametro
-   @c(interface{}). Recuerdese de la @l(#Seccion 7.5) que una asignacion de un
+   @c(interface{}). Recuerde de la @l(#Seccion 7.5) que una asignacion de un
    valor concreto a un tipo de interfaz lleva a cabo una conversion de la
    interfaz implicita, que crea un valor interfaz que consta de dos componentes:
    su @e(tipo dinamico) es el tipo del operando (@c(int)) y su @e(valor
@@ -20158,7 +20164,7 @@
      fmt.Println(t.String()) // "int"
    < src..
 
-   La operacion inversa de @c(reflect.ValueOf) es el motodo
+   La operacion inversa de @c(reflect.ValueOf) es el metodo
    @c(reflect.Value.Interface). Devuelve una @c(interface{}) que contiene el
    mismo valor concreto que @c(reflect.Value):
 
@@ -20294,7 +20300,7 @@
    para imprimir valores elementales–tipos basicos, funciones y canales–pero
    vamos a utilizar los metodos de @c(reflect.Value) para mostrar repetidamente cada
    componente de un tipo mas complejo. A medida que la recursion desciende, la cadena de
-   ruta, que describe inicialmente el valor de partida (por ejemplo, @"(@c(e))),
+   ruta que describe inicialmente el valor de partida (por ejemplo, @"(@c(e))),
    se incrementara para indicar como alcanzamos el valor actual (por
    ejemplo, @"(@c(e.args[0].value))).
 
@@ -20317,8 +20323,7 @@
          }
        case reflect.Map:
          for _, key := range v.MapKeys() {
-           display(fmt.Sprintf("%s[%s]", path,
-             formatAtom(key)), v.MapIndex(key))
+           display(fmt.Sprintf("%s[%s]", path, formatAtom(key)), v.MapIndex(key))
          }
        case reflect.Ptr:
          if v.IsNil() {
@@ -20343,9 +20348,9 @@
    Vamos a discutir los casos en orden.
 
    - Slices y arreglos :: La logica es la misma para ambos. El metodo @c(Len)
-     devuelve el numero de elementos de un valor slice o arreglo, y @c[Index(i)]
+     devuelve el numero de elementos de un valor slice o arreglo, e @c[Index(i)]
      recupera el elemento en el indice @c(i), tambien como un @c(reflect.Value);
-     entra en panico si @c(i) esta fuera de limites. Esto es analoga al
+     entra en panico si @c(i) esta fuera de limites. Esto es analogo al
      @c[len(a)] nativo y a la operacion en secuencias @c(a[i]). La funcion
      @c(display) se invoca a si misma recursivamente en cada elemento de la
      secuencia, añadiendo la notacion subindice @"(@c([i])) a la trayectoria.
@@ -20358,7 +20363,7 @@
    - Estructuras :: El metodo @c(NumField) informa el numero de campos en la
      estructura, y @c[Field(i)] devuelve el valor del campo @c(i) como un
      @c(reflect.Value). La lista de campos incluye los promocionados desde
-     campos anonimos. Para añadir la notacion de seleccion de campo @"(@c(.f)) a
+     campos anonimos. Para añadir la notacion de selector de campo @"(@c(.f)) a
      la ruta, debemos obtener el @c(reflect.Type) de la estructura y tener
      acceso al nombre de su campo @c(i).
 
@@ -20380,14 +20385,14 @@
      apropiado. Prefijamos el camino con un @"(@c(*)) y un parentesis para
      evitar la ambigüedad.
 
-   - Interfaces : Una vez mas, utilizamos @c(IsNil) para probar si la interfaz
+   - Interfaces :: Una vez mas, utilizamos @c(IsNil) para probar si la interfaz
      es nil, y si no, recuperamos su valor dinamico utilizando @c[v.Elem()) e
      imprimimos su tipo y valor.
 
 
-   Ahora que nuestro funcion @c(Display) esta completa, vamos a ponerla a
+   Ahora que nuestra funcion @c(Display) esta completa, vamos a ponerla a
    trabajar. El tipo @c(Movie) a continuacion es una ligera variacion del
-   presente en la @l(#Seccion 4.5):
+   mostrado en la @l(#Seccion 4.5):
 
    ..src > go
      type Movie struct {
@@ -20534,10 +20539,10 @@
      ...ad infinitum...
    < src..
 
-   Muchos programas Go contienen al menos algunos datos ciclicos. Hacer
+   Muchos programas Go contienen al menos algunos datos ciclicos. Hacer a
    @c(Display) robusto frente a estos ciclos es complicado, requiriendo
    contabilidad adicional para registrar el conjunto de referencias que se han
-   seguido hasta ahora; Es costoso tambien. Una solucion general requiere la
+   seguido hasta ahora; tambien es costoso. Una solucion general requiere la
    caracteristicas @c(unsafe) del lenguaje, como veremos en la @l(#Seccion
    13.3).
 
@@ -20551,7 +20556,7 @@
    @b(Ejercicio 12.1): Ampliar @c(Display) para que pueda mostrar mapas cuyas claves
    son estructuras o matrices.
 
-   @b(Ejercicio 12.2): Hacer @c(display) seguro de usar en estructuras de datos
+   @b(Ejercicio 12.2): Hacer a @c(display) seguro de usar en estructuras de datos
    ciclicas limitando el numero de pasos necesarios antes de abandonar la
    recursividad. (En la @l(#Seccion 13.3), veremos otra forma de detectar
    ciclos).
@@ -20564,12 +20569,12 @@
    la comunicacion entre procesos.
 
    Como vimos en la @l(#Seccion 4.5), la libreria estandar de Go es compatible
-   con una variedad de formatos, incluyendo JSON, XML y ASN.1. Otra indicacion
-   de que todavia es ampliamente utilizado @e(expresiones-S), la sintaxis de
-   Lisp. A diferencia de las otras notaciones, las expresiones-S no son
-   compatibles con la libreria estandar de Go, no menos porque no tienen una
-   definicion universalmente aceptada, a pesar de varios intentos de
-   estandarizacion y la existencia de muchas implementaciones.
+   con una variedad de formatos, incluyendo JSON, XML y ASN.1. Otra notacion que
+   todavia se utiliza ampliamente son @e(expresiones-S), la sintaxis de Lisp. A
+   diferencia de las otras notaciones, las expresiones-S no son compatibles con
+   la libreria estandar de Go, no menos porque no tienen una definicion
+   universalmente aceptada, a pesar de varios intentos de estandarizacion y la
+   existencia de muchas implementaciones.
 
    En esta seccion, definiremos un paquete que codifica objetos Go arbitrarios
    usando una notacion de expresiones-S que admita las siguientes construcciones:
@@ -20583,7 +20588,7 @@
    | @c[(1 2 3)] | lista   (zero o mas elementos entre parentesis)     |
 
    Los booleanos tradicionalmente se codifican utilizando el simbolo @c(t) para
-   la verdadero, y la lista vacia @c[()] o el simbolo @c(nil) para falso, pero
+   verdadero, y la lista vacia @c[()] o el simbolo @c(nil) para falso, pero
    por simplicidad, nuestra implementacion los ignora. Tambien ignora canales y
    funciones, ya que su estado es opaco a la reflexion. Y no hace caso de
    numeros reales y complejos de punto flotante e interfaces. Agregar soporte
@@ -20600,11 +20605,11 @@
    mapas tambien se codifican como una lista de pares, siendo cada par la clave
    y el valor de una entrada de mapa. Tradicionalmente, las expresiones-S
    representan listas de pares clave/valor utilizando una sola celula @e(cons)
-   @c[(key . value)] para cada par, en lugar de una lista de dos elementos, pero
+   @c[(clave . valor)] para cada par, en lugar de una lista de dos elementos, pero
    para simplificar la decodificacion ignoraremos la notacion de lista punteada.
 
    La codificacion se realiza por una sola funcion recursiva, @c(encode), que se
-   muestra a continuacion. Su estructura es esencialmente la misma que la de
+   muestra continuacion. Su estructura es esencialmente la misma que la de
    @c(Display) en la seccion anterior:
 
    ..figure > @l(gopl.io/ch12/sexpr/encode.go<>gopl.io/ch12/sexpr)
@@ -20726,8 +20731,7 @@
    < src..
 
    Al igual las funciones @c(fmt.Print), @c(json.Marshal) y @c(Display),
-   @c(sexpr.Marshal) entrara en un bucle infinito si es llamado con los datos
-   ciclicos.
+   @c(sexpr.Marshal) entrara en un bucle infinito se llama con datos ciclicos.
 
    En la @l(#Seccion 12.6), esbozaremos la implementacion de la funcion de
    decodificacion de expreciones-S correspondiente, pero antes de llegar alli,
@@ -20752,8 +20756,8 @@
    @b(Ejercicio 12.6): Adapte @c(encode) para que a manera de optimizacion, no
    codifique un campo cuyo valor es el valor cero de su tipo.
 
-   @b(Ejercicio 12.7): Crear un API de streaming para el decodificador de
-   expresiones-S, siguiendo el estilo de @c(json.Decoder) (@l(#Seccion
+   @b(Ejercicio 12.7): Crear un API de streaming para la codificacion de
+   expresiones-S, siguiendo el estilo de @c(json.Encoder) (@l(#Seccion
    4.5<>§4.5)).
 
 ** Seccion 12.5 <> Configurar Variables con @c(reflect.Value)
@@ -20762,9 +20766,9 @@
    nuestro programa de diversas maneras. El punto de esta seccion, es
    @c(cambiarlos).
 
-   Recordemos que algunas expresiones van como @c(x), @c(x.f[1]), y @c(*p)
-   denotan variables, pero otras como @c(x + 1) y @c[f(2)] no. Una variable es
-   una ubicacion de almacenamiento @e(direccionable) que contiene un valor, y su
+   Recordemos que algunas expresiones como @c(x), @c(x.f[1]), y @c(*p) denotan
+   variables, pero otras como @c(x + 1) y @c[f(2)] no. Una variable es una
+   ubicacion de almacenamiento @e(direccionable) que contiene un valor, y su
    valor puede ser actualizado a traves de esa direccion.
 
    Una distincion similar se aplica a @c(reflect.Values). Algunos son
@@ -20800,7 +20804,7 @@
    < src..
 
    Obtenemos un @c(reflect.Value) direccionable siempre indirectamente atravez
-   de un puntero, incluso si partimos de un @c(Value) no-direccionable . Todas
+   de un puntero, incluso si partimos de un @c(Value) no-direccionable. Todas
    las reglas habituales de direccionabilidad tienen analogos para la
    reflexion. Por ejemplo, ya que la expresion de indexacion de un slice
    @c(e[i]) sigue implicitamente un puntero, es direccionable incluso si la
@@ -20909,13 +20913,13 @@
      fmt.Println(fd.CanAddr(), fd.CanSet()) // "true false"
    < src..
 
-** Seccion 12.6 <> Ejemplo: Descodificar Expressions-S
+** Seccion 12.6 <> Ejemplo: Descodificar Expresiones-S
 
    Por cada funcion @c(Marshal) proporcionada por los paquetes @c(encoding/...)
    de la libreria estandar, hay una funcion correspondiente @c(Unmarshal) que
    realiza la decodificacion. Por ejemplo, como vimos en la @l(#Seccion 4.5),
-   dada un slice de bytes que contiene datos codificados JSON para nuestro tipo
-   @c(Movie) (@l(#Seccion 12.3<>§12.3)), podemos decodificarla asi:
+   dado un slice de bytes que contiene datos codificados JSON para nuestro tipo
+   @c(Movie) (@l(#Seccion 12.3<>§12.3)), podemos decodificarlo asi:
 
    ..src > go
      data := []byte{/* ... */}
@@ -20924,9 +20928,8 @@
    < src..
 
    la funcion @c(Unmarshal) utiliza la reflexion para modificar los campos de la
-   variable @c(movie) actual, creando nuevos mapas, estructuras, y las slices
-   segun lo determinado por el tipo @c(Movie) y el contenido de los datos
-   entrantes.
+   variable @c(movie) actual, creando nuevos mapas, estructuras, y slices segun
+   lo determinado por el tipo @c(Movie) y el contenido de los datos entrantes.
 
    Ahora vamos a poner en practica una simple funcion @c(Unmarshal) para
    expresiones-S, analoga a la funcion estandar @c(json.Unmarshal) utilizada
@@ -20939,7 +20942,7 @@
 
    El lexer utiliza el tipo @c(Scanner) del paquete @c(text/scanner) para romper
    una corriente de entrada en una secuencia de tokens como comentarios,
-   identificadores, literales de cadena, y literales numericos. El metodo del
+   identificadores, literales de cadena, y literales numericos. El metodo
    @c(Scan) del escaner avanza el escaner y devuelve el tipo del siguiente
    token, que tiene el tipo @c(rune). La mayoria de los tokens, como @c['('],
    consisten en una sola runa, pero el paquete @c(text/scanner) representa el
@@ -20958,7 +20961,7 @@
      ..src > go
        type lexer struct {
          scan  scanner.Scanner
-         token rune // the current token
+         token rune // el token actual
        }
 
        func (lex *lexer) next()        { lex.token = lex.scan.Scan() }
@@ -21113,7 +21116,7 @@
        lex.scan.Init(bytes.NewReader(data))
        lex.next() // obtiene el primer token
        defer func() {
-         // NOTE: this is not an example of ideal error handling.
+         // NOTA: esto no es un ejemplo ideal del manejo de errores.
          if x := recover(); x != nil {
            err = fmt.Errorf("error at %s: %v", lex.scan.Position, x)
          }
@@ -21123,18 +21126,18 @@
      }
    < src..
 
-   Una implementacion de calidad de produccion nunca debe entrar en panico para
-   cualquier entrada y debe informar un error informativo para cada
-   contratiempo, tal vez con un numero de linea o desplazamiento. No obstante,
-   esperamos que este ejemplo transmita una idea de lo que esta sucediendo bajo
-   el capo de paquetes como @c(encoding/json), y como se puede utilizar la
-   reflexion para poblar las estructuras de datos.
+   Una implementacion de calidad de produccion nunca debe entrar en panico por
+   ninguna entrada y debe informar un error informativo para cada contratiempo,
+   tal vez con un numero de linea o desplazamiento. No obstante, esperamos que
+   este ejemplo transmita una idea de lo que esta sucediendo bajo el capo de
+   paquetes como @c(encoding/json), y como se puede utilizar la reflexion para
+   poblar las estructuras de datos.
 
-   @b(Ejercicio 12.8): La funcion @c(sexpr.Unmarshal), como @c(json.Marshal),
+   @b(Ejercicio 12.8): La funcion @c(sexpr.Unmarshal), como @c(json.Unmarshal),
    requiere la entrada completa en un slice de bytes antes de que pueda comenzar
-   la decodificacion. Defina un tipo @c(sexpr.Decoder) que como
-   @c(json.Decoder), permite que una secuencia de valores sea decodificada desde
-   un @c(io.Reader). Cambiar @c(sexpr.Unmarshal) para utilizar este nuevo tipo.
+   la decodificacion. Defina un tipo @c(sexpr.Decoder) que como @c(json.Decoder),
+   permita que una secuencia de valores sea decodificada desde un @c(io.Reader).
+   Cambie @c(sexpr.Unmarshal) para utilizar este nuevo tipo.
 
    @b(Ejercicio 12.9): Escriba una API basada en tokens para decodificar
    expresiones-S, siguiendo el estilo de @c(xml.Decoder) (@l(#Seccion
@@ -21152,7 +21155,7 @@
    modificar la codificacion de valores JSON de estructuras Go. La etiqueta de
    campo @c(json) nos permite escoger nombres de campos alternativos y suprimir
    la salida de los campos vacios. En esta seccion, veremos como acceder a las
-   etiquetas de campo mediante la reflexion.
+   etiquetas de campo utilizando reflexion.
 
    En un servidor web, lo primero que hace la mayoria de las funciones del
    controlador HTTP es extraer los parametros de la peticion en variables
@@ -21181,7 +21184,7 @@
            MaxResults int      `http:"max"`
            Exact      bool     `http:"x"`
          }
-         data.MaxResults = 10 // establece por defecto
+         data.MaxResults = 10 // establecer por defecto
          if err := params.Unpack(req, &data); err != nil {
            http.Error(resp, err.Error(), http.StatusBadRequest) // 400
            return
@@ -21193,7 +21196,7 @@
      < src..
 
 
-   La funcion @c(Unpack) de abajo hace tres cosas. En primer lugar, llama
+   La funcion @c(Unpack) de abajo hace tres cosas. En primer lugar, llama a
    @c[req.ParseForm()] para analizar la solicitud. Posteriormente, @c(req.Form)
    contiene todos los parametros, independientemente de si el cliente HTTP
    utiliza el metodo de solicitud GET o POST.
@@ -21219,7 +21222,7 @@
 
          // Construye un mapa de los campos marcados con un nombre efectivo.
          fields := make(map[string]reflect.Value)
-         v := reflect.ValueOf(ptr).Elem() // the struct variable
+         v := reflect.ValueOf(ptr).Elem() // la estructura variable
          for i := 0; i < v.NumField(); i++ {
            fieldInfo := v.Type().Field(i) // un reflect.StructField
            tag := fieldInfo.Tag           // un reflect.StructTag
@@ -21294,8 +21297,8 @@
      }
    < src..
 
-   Si añadimos el controlador @c(server) a un servidor web, esto podria ser una
-   tipica sesion:
+   Si añadimos el manejador @c(server) a un servidor web, esto podria ser una
+   sesion tipica:
 
    ..srci > sh
      > go build gopl.io/ch12/search
@@ -21314,8 +21317,8 @@
      max: strconv.ParseInt: parsing "lots": invalid syntax
    < srci..
 
-   @b(Ejercicio 12.11): Escribir la funcion correspondiente @c(Pack). Dado un
-   valor de estructura, @c(Pack) debe devolver una direccion URL que incorpora
+   @b(Ejercicio 12.11): Escribir la funcion correspondiente @c(Pack). Dando un
+   valor de estructura, @c(Pack) debe devolver una direccion URL que incorpore
    los valores de los parametros de la estructura.
 
    @b(Ejercicio 12.12): Extender la notacion de etiqueta de campo para expresar
@@ -21330,7 +21333,7 @@
    etiqueta de campo @c(sexpr:"...") de una manera similar a @c(encoding/json)
    (@l(#Seccion 4.5<>§4.5)).
 
-** Seccion 12.8 <> Visualizando los Motodos de Type
+** Seccion 12.8 <> Visualizando los Metodos de Type
 
    Nuestro ultimo ejemplo de reflexion utiliza @c(reflect.Type) para imprimir el
    tipo de un valor arbitrario y enumerar sus metodos:
@@ -21355,7 +21358,7 @@
 
    Ambos @c(reflect.Type) y @c(reflect.Value) tienen un metodo llamado
    @c(Method). Cada llamada @c[t.Method(i)] devuelve una instancia de
-   @c(reflect.Method), un tipo struct que describe el nombre y tipo de un unico
+   @c(reflect.Method), una estructura que describe el nombre y tipo de un unico
    metodo. Cada llamada @c[v.Method(i)] devuelve un @c(reflect.Value) que
    representa un valor metodo (@l(#Seccion 6.4<>§6.4)), es decir, un metodo
    vinculado a su receptor. Utilizando el metodo @c(reflect.Value.Call) (que no
@@ -21385,17 +21388,17 @@
 ** Seccion 12.9 <> Una Palabra de Precaucion
 
    Hay mucho mas sobre la API de reflexion que el espacio que tenemos para
-   mostror, pero los ejemplos anteriores dan una idea de lo que es posible. La
+   mostrar, pero los ejemplos anteriores dan una idea de lo que es posible. La
    reflexion es una herramienta poderosa y expresiva, pero debe ser usada con
    cuidado, por tres razones.
 
    La primera razon es que el codigo basado en reflexion puede ser fragil. Para
-   cada error que podria hacer que un compilador informe un error de tipo, hay
+   cada error que podria hacer que un compilador informe un error de tipado, hay
    una forma correspondiente de usar incorrectamente la reflexion, pero mientras
-   que el compilador informa del error en el tiempo de construccion, un error de
+   que el compilador informa del error en tiempo de la construccion, un error de
    reflexion se informa durante la ejecucion como un panico, posiblemente mucho
-   despues heber escrito el programa o incluso mucho despues de que ha comenzado
-   su ejecucion.
+   despues de haber escrito el programa o incluso mucho despues de que ha
+   comenzado su ejecucion.
 
    Si la funcion @c(readList) (@l(#Seccion 12.6<>§12.6)), por ejemplo, debe leer
    una cadena de la entrada al rellenar una variable de tipo @c(int), la llamada
@@ -21420,12 +21423,12 @@
 
    La reflexion tambien reduce la seguridad y la precision de las herramientas
    automatizadas de refactorizacion y analisis, ya que no pueden determinar o
-   confiar en la informacion de tipo.
+   confiar en la informacion de tipado.
 
    La segunda razon para evitar la reflexion es que como los tipos sirven como
    una forma de documentacion y las operaciones de reflexion no pueden estar
-   sujetas a la verificacion de tipo estatico, el codigo altamente reflexivo es
-   a menudo dificil de entender. Siempre documente cuidadosamente los tipos
+   sujetas a la verificacion de tipado estatico, el codigo altamente reflexivo
+   es a menudo dificil de entender. Siempre documente cuidadosamente los tipos
    esperados y otros invariantes de las funciones que aceptan una
    @c(interface{}) o @c(reflect.Value).
 
@@ -21442,7 +21445,7 @@
 
   El diseño de Go garantiza una serie de propiedades de seguridad que limitan
   las formas en que un programa Go puede @"(ir mal). Durante la compilacion, la
-  comprobacion de tipo detecta la mayoria de los intentos de aplicar una
+  comprobacion de tipado detecta la mayoria de los intentos de aplicar una
   operacion a un valor inadecuado para su tipo, por ejemplo, restando una cadena
   de otra. Las estrictas reglas para las conversiones de tipos impiden el acceso
   directo a los tipos nativos como cadenas, mapas, slices y canales.
@@ -21451,21 +21454,21 @@
   arreglo fuera de limites o desreferencias de puntero nulo, las comprobaciones
   dinamicas aseguran que el programa termina inmediatamente con un error
   informativo siempre que se produce una operacion prohibida. La gestion
-  automatica de memoria (recoleccion de basura) elimina errores de @"(uso
-  posterior), asi como la mayoria de las perdidas de memoria.
+  automatica de memoria (recoleccion de basura) elimina errores de @"(uso luego
+  de la liberacion), asi como la mayoria de las perdidas de memoria.
 
   Muchos detalles de la implementacion son inaccesibles para los programas de
   Go. No hay manera de descubrir el diseño de memoria de un tipo agregado como
   una estructura, o el codigo maquina para una funcion, o la identidad del hilo
   del sistema operativo en el que se esta ejecutando la actual gorutina. De
-  hecho, el planificador de Go mueve libremente las gorutas de un hilo a
+  hecho, el planificador de Go mueve libremente las gorutinas de un hilo a
   otro. Un puntero identifica una variable sin revelar la direccion numerica de
   la variable. Las direcciones pueden cambiar a medida que el recolector de
   basura mueve las variables; Los punteros se actualizan de forma transparente.
 
   Juntas, estas caracteristicas hacen que los programas de Go, especialmente los
   que fallan, sean mas predecibles y menos misteriosos que los programas en C,
-  la quienta escencia de los lenguajes de bajo nivel. Al ocultar los detalles
+  la quintaesencia de los lenguajes de bajo nivel. Al ocultar los detalles
   subyacentes, tambien hace que los programas Go sean altamente portatiles, ya
   que la semantica del lenguaje es en gran medida independiente de cualquier
   compilador, sistema operativo o arquitectura de la CPU en particular. (No es
@@ -21506,7 +21509,7 @@
 ** Seccion 13.1 <> @c(unsafe.Sizeof), @c(Alignof), y @c(Offsetof)
 
    la funcion @c(unsafe.Sizeof) informa el tamaño en bytes de la representacion
-   de su operando, que puede ser una expresion de cualquier tipo; La expresion
+   de su operando, que puede ser una expresion de cualquier tipo; la expresion
    no se evalua. Una llamada a @c(Sizeof) es una expresion constante de tipo
    @c(uintptr), por lo que el resultado puede ser utilizado como la dimension de
    un tipo de matriz, o para calcular otras constantes.
@@ -21522,7 +21525,7 @@
    no agregados se muestran a continuacion, aunque los tamaños exactos pueden
    variar segun la cadena de herramientas. Para la portabilidad, hemos dado los
    tamaños de los tipos de referencia (o tipos que contienen referencias) en
-   terminos de palabras, donde una palabra es 4 bytes en una plataforma de 32
+   terminos de palabras, donde una palabra son 4 bytes en una plataforma de 32
    bits y 8 bytes en una plataforma de 64 bits.
 
    Las computadoras cargan y almacenan los valores de memoria mas efecientemente
@@ -21541,7 +21544,7 @@
    siguiente campo o elemento este correctamente alineado con respecto al inicio
    de la estructura o arreglo.
 
-   | Type                                                          | Size                                                  |
+   | Tipo                                                          | Tamaño                                                |
    |===============================================================|=======================================================|
    | @c(bool)                                                      | 1 byte                                                |
    |---------------------------------------------------------------|-------------------------------------------------------|
@@ -21568,9 +21571,9 @@
    los campos es el orden en el que se exponen en la memoria, por lo que en
    teoria un compilador es libre de reordenarlos, aunque al escribir esto,
    ninguno lo hace. Si los tipos de campos de una estructura son de diferentes
-   tamaños, puede ser mas eficiente en el espacio declarar los campos en un
-   orden que los empaqueta tan firmemente como sea posible. Las tres estructuras
-   abajo tienen los mismos campos, pero la primera requiere hasta un 50% mas de
+   tamaños, puede ser mas eficiente en espacio declarar los campos en un orden
+   que los empaquete tan firmemente como sea posible. Las tres estructuras abajo
+   tienen los mismos campos, pero la primera requiere hasta un 50% mas de
    memoria que las otras dos:
 
    ..src > go
@@ -21596,8 +21599,8 @@
    comienzo de su estructura contenedora @c(x), representando los agujeros, si
    los hay.
 
-   La Figura 13.1 muestra una variable de estructura @c(x) y su disposicion de
-   memoria tipica en de 32 y 64 bits en implementaciones Go. Las regiones grises
+   La Figura 13.1 muestra una variable de la estructura @c(x) y su disposicion
+   de memoria tipica en 32 y 64 bits en implementaciones Go. Las regiones grises
    son agujeros.
 
    ..src > go
@@ -21613,7 +21616,7 @@
      ..img  > img/Figure-13.1.jpg
 
 
-   La siguiente tabla muestra los resultados de aplicar las tres funcion
+   La siguiente tabla muestra los resultados de aplicar las tres funciones
    @c(unsafe) al mismo @c(x) y a cada uno de sus tres campos:
 
    - Plataforma tipica de 32 bits ::
@@ -21642,7 +21645,7 @@
    puntero a una variable de tipo @c(T)). El tipo @c(unsafe.Pointer) es un tipo
    especial de puntero que puede contener la direccion de cualquier variable.
    Por supuesto, no podemos aplicar indireccion a traves de un
-   @c(unsafe.Pointer) usando @c(*p), porque no sabemos que tipo de expresion que
+   @c(unsafe.Pointer) usando @c(*p), porque no sabemos que tipo de expresion
    debe tener. Como los punteros ordinarios, @c(unsafe.Pointers) es comparable y
    pueden compararse con @c(nil), que es el valor cero del tipo.
 
@@ -21678,7 +21681,7 @@
    convertir punteros ordinarios en direcciones numericas brutas y viceversa. El
    ejemplo a continuacion toma la direccion de la variable @c(x), añade el
    desplazamiento de su campo @c(b), convierte la direccion resultante en
-   @c(*int16), y por medio este puntero actualiza @c(x.b):
+   @c(*int16), y por medio de este puntero se actualiza @c(x.b):
 
    ..figure > @l(gopl.io/ch13/unsafeptr/main.go<>gopl.io/ch13/unsafeptr)
 
@@ -21718,36 +21721,36 @@
    del colector de basura, un @c(unsafe.Pointer) es un puntero y por lo tanto su
    valor debe cambiar a medida que se mueve la variable, pero un @c(uintptr) es
    solo un numero por lo que su valor no debe cambiar. El codigo anterior es
-   incorrecta por que @e(oculta un puentero) del recolector de basura en la
+   incorrecta por que @e(oculta un puntero) del recolector de basura en la
    variable no puntero @c(tmp). En el momento que la segunda instruccion se
    ejecuta, la variable @c(x) podria haberse movido y el numero de @c(tmp) ya no
    seria la direccion @c(&x.b). La tercera declaracion ataca una ubicacion de
    memoria arbitraria con el valor 42.
 
-   Hay un sin sinnumero de variaciones patologicas sobre este tema. Despues de
-   que esta declaracion se ha ejecutado:
+   Existen innumerables variaciones patológicas sobre este tema. Despues de que
+   esta declaracion se ha ejecutado:
 
    ..src > go
      pT := uintptr(unsafe.Pointer(new(T))) // NOTA: incorrecto!
    < src..
 
-   no hay punteros que referencien la variable creado por @c(new), por lo que el
+   no hay punteros que referencien la variable creada por @c(new), por lo que el
    recolector de basura tiene derecho a reciclar su almacenamiento cuando esta
    declaracion se complete, despues de lo cual @c(pT) contiene la direccion
    donde estaba la variable, pero ya no.
 
    Ninguna implementacion actual de Go utiliza un recolector de basura en
    movimiento (aunque futuras implementaciones podrian), pero esto no es motivo
-   de complacencia: las versiones actuales de Go hacer mover @e(algunas)
-   variables en la memoria. Recuerde de la @l(#Seccion 5.2) que las pilas de
-   gorutina crecen segun sea necesario. Cuando esto sucede, todas las variables
-   de la pila antigua pueden ser reubicadas en una nueva pila mas grande, por lo
-   que no podemos confiar en que el valor numerico de la direccion de una
-   variable permanezca invariable durante toda su vida util.
+   de complacencia: las versiones actuales de Go mueven @e(algunas) variables en
+   la memoria. Recuerde de la @l(#Seccion 5.2) que las pilas de gorutina crecen
+   segun sea necesario. Cuando esto sucede, todas las variables de la pila
+   antigua pueden ser reubicadas en una nueva pila mas grande, por lo que no
+   podemos confiar en que el valor numerico de la direccion de una variable
+   permanezca invariable durante toda su vida util.
 
    En el momento de escribir esto, hay poco clara orientacion sobre lo que los
    programadores Go pueden esperar despues de una convercion @c(unsafe.Pointer)
-   a @c(uintptr) (en el repositorio vea el asunto 7192), por lo que recomendamos
+   a @c(uintptr) (en el repositorio vea la issue 7192), por lo que recomendamos
    encarecidamente que asuma el minimo necesario. Trate todos los valores
    @c(uintptr) como si almacenaran la @e(antigua) direccion de una variable, y
    minimice el numero de operaciones entre la conversion de un @c(unsafe.Pointer)
@@ -21878,16 +21881,16 @@
 
    Para asegurar que el algoritmo termina incluso para estructuras de datos
    ciclicas, debe registrar que pares de variables ya ha comparado y evitar
-   compararlas una segunda vez. @c(Equal) asigna un conjunto de comparison
-   estructuras, cada uno con la direccion de dos variables (representado como
+   compararlas una segunda vez. @c(Equal) asigna un conjunto de estructuras
+   @c(comparison), cada una con la direccion de dos variables (representado como
    valores @c(unsafe.Pointer)) y el tipo de comparacion. Necesitamos registrar
    el tipo ademas de las direcciones porque las diferentes variables pueden
    tener la misma direccion. Por ejemplo, si @c(x) y @c(y) son ambos arreglos,
-   @c(x) y @c(x[0]) tienen la misma direccion, como lo hacen @c(y) e @c(y[0]), y
+   @c(x) y @c(x[0]) tienen la misma direccion, como lo hacen @c(y) y @c(y[0]), y
    es importante distinguir si hemos comparado @c(x) y @c(y) o @c(x[0]) y
    @c(y[0]).
 
-   Una vez equal ha establecido que sus argumentos tienen el mismo tipo, y antes
+   Una vez @c(equal) ha establecido que sus argumentos tienen el mismo tipo, y antes
    de que ejecute el switch, se comprueba si se esta comparando dos variables
    que ya ha visto y, si es asi, termina la recursion.
 
@@ -21935,10 +21938,10 @@
    < src..
 
    @b(Ejercicio 13.1): Definir una funcion de comparacion de profundidad que
-   tome en cuenta los numeros (de cualquier tipo) igual si difieren en menos de
+   considere los numeros (de cualquier tipo) iguales si difieren en menos de
    una parte en mil millones.
 
-   @b(Ejercicio 13.2): Escribir una funcion que informa si su argumento es una
+   @b(Ejercicio 13.2): Escribir una funcion que informe si su argumento es una
    estructura de datos ciclica.
 
 ** Seccion 13.4 <> Llamar Codigo C con @$(cgo)
@@ -21961,9 +21964,9 @@
    y descompresores de los algoritmos de compresion mas populares, incluyendo
    LZW (usado por el comando Unix @$(compress)) y DEFLATE (usado por el comando
    GNU @$(gzip)). Las APIs de estos paquetes varian ligeramente en detalles,
-   pero todos ellos proporcionan un envoltorio para un io.Writer que comprime
-   los datos escritos en ellos, y un envoltorio para un io.Reader que
-   descomprime los datos leidos de estos. Por ejemplo:
+   pero todos ellos proporcionan un envoltorio para un @c(io.Writer) que
+   comprime los datos escritos en ellos, y un envoltorio para un @c(io.Reader)
+   que descomprime los datos leidos de estos. Por ejemplo:
 
    ..src > go
      package gzip // compress/gzip
@@ -21990,7 +21993,7 @@
    Desde el paquete C @c(libbzip2), necesitamos el tipo de estructura
    @c(bz_stream), que contiene los buferes de entrada y salida, y tres funciones
    de C: @c(BZ2_bzCompressInit), que asigna buffers del flujo;
-   @c(BZ2_bzCompress), que comprime los datos de bufer d entrada al bufer de
+   @c(BZ2_bzCompress), que comprime los datos de bufer de entrada al bufer de
    salida; y @c(BZ2_bzCompressEnd), que libera los bufferes. (No se preocupe por
    la mecanica del paquete @c(libbzip2), el proposito de este ejemplo es mostrar
    como las piezas encajan entre si.)
@@ -22028,7 +22031,7 @@
    @$(cgo) antes de que el compilador Go lo vea.
 
    ..src > go
-     // El paquete bzip proporciona un escritor que utiliza compresion bzip2 (bzip.org).
+     // El paquete bzip proporciona un writer que utiliza compresion bzip2 (bzip.org).
      package bzip
 
      /*
@@ -22046,12 +22049,12 @@
      )
 
      type writer struct {
-       w      io.Writer // underlying output stream
+       w      io.Writer // flujo de salida subyacente
        stream *C.bz_stream
        outbuf [64 * 1024]byte
      }
 
-     // NewWriter devuelve un escritor para flujos bzip2 comprimidos.
+     // NewWriter devuelve un writer para flujos bzip2 comprimidos.
      func NewWriter(out io.Writer) io.WriteCloser {
        const (
          blockSize = 9
@@ -22077,14 +22080,15 @@
    enlace para que puedan localizar el archivo de cabecera @c(bzlib.h) y la
    libreria de archivo @c(libbz2.a). El ejemplo supone que estos se instalan
    debajo de @c(/usr) en su sistema. Es posible que necesite modificar o
-   eliminar estos indicadores para su instalacion. @c(NewWriter) realiza una
-   llamada a la funcion C @c(BZ2_bzCompressInit) para inicializar los buferes de
-   la secuencia. El tipo de escritor incluye otro bufer que se utilizara para
-   drenar el bufer de salida del descompresor.
+   eliminar estos indicadores para su instalacion.
+
+   @c(NewWriter) realiza una llamada a la funcion C @c(BZ2_bzCompressInit) para
+   inicializar los buferes de la secuencia. El tipo @c(writer) incluye otro
+   bufer que se utilizara para drenar el bufer de salida del descompresor.
 
    El metodo @c(Write), se muestra a continuacion, alimenta el compresor con
    @c(data), llamando a la funcion @c(bz2compress) en un bucle hasta que todos
-   los datos se ha consumido. Observe que el programa Go puede acceder tipos C
+   los datos se han consumido. Observe que el programa Go puede acceder tipos C
    como @c(bz_stream), @c(char), y @c(uint), funciones de C como
    @c(bz2compress), e incluso macros del preprocesador C como a objetos como
    @c(BZ_RUN), todo a traves de la notacion @c(C.x). El tipo @c(C.uint) es
@@ -22152,9 +22156,9 @@
    Al finalizar, @c(Close) llama a @c(C.BZ2_bzCompressEnd) para liberar los
    buferes de flujo, utilizando @c(defer) para asegurar que esto sucede en todas
    las rutas de retorno. En este punto el puntero @c(w.stream) ya no es seguro
-   de deferenciar. Para estar a la defensiva, lo ponemos a @c(nil), y agregamos
-   chequeos explicitos de nil en cada metodo, por lo que el programa entra en
-   panico si el usuario llama por error un metodo despues de @c(Close).
+   de desreferenciar. Para estar a la defensiva, lo ponemos a @c(nil), y
+   agregamos chequeos explicitos de nil en cada metodo, por lo que el programa
+   entra en panico si el usuario llama por error un metodo despues de @c(Close).
 
    No solo @c(writer) no es concurrentemente seguro, sino que las concurrentes a
    @c(Close) y @c(Write) podria hacer que el programa se bloquee en el codigo
@@ -22192,7 +22196,7 @@
 
    En la sesion a continuacion, utilizamos @$(bzipper) para comprimir
    @c(/usr/share/dict/words) el diccionario del sistema, de 938,848 bytes a
-   335,405 bytes–aproximadamente de un tercio de su tamaño original–luego lo
+   335,405 bytes–aproximadamente un tercio de su tamaño original–luego lo
    descomprimimos con el comando del sistema @$(bunzip2). El hash SHA256 es el
    mismo antes y despues, dandonos confianza de que el compresor esta
    funcionando correctamente. (Si usted no tiene @$(sha256sum) en su sistema,
@@ -22203,7 +22207,8 @@
      > wc -c < /usr/share/dict/words
      938848
      > sha256sum < /usr/share/dict/words
-     126a4ef38493313edc50b86f90dfdaf7c59ec6c948451eac228f2f3a8ab1a6ed $ ./bzipper < /usr/share/dict/words | wc -c
+     126a4ef38493313edc50b86f90dfdaf7c59ec6c948451eac228f2f3a8ab1a6ed -
+     > ./bzipper < /usr/share/dict/words | wc -c
      335405
      > ./bzipper < /usr/share/dict/words | bunzip2 | sha256sum
      126a4ef38493313edc50b86f90dfdaf7c59ec6c948451eac228f2f3a8ab1a6ed -
@@ -22222,7 +22227,7 @@
    autoritariamente especificadas. Para mas informacion, comience con
    @l(https://golang.org/cmd/cgo).
 
-   @b(Ejercicio 13.3): Utilice @c(sync.Mutex) para hacer @c(bzip2.writer) seguro
+   @b(Ejercicio 13.3): Utilice @c(sync.Mutex) para hacer @c(bzip.writer) seguro
    para el uso concurrente por multiples gorutinas.
 
    @b(Ejercicio 13.4): Depender de librerias C tiene sus inconvenientes.
@@ -22238,20 +22243,20 @@
 
    Los lenguajes de alto nivel aislan a los programas y programadores no solo de
    los detalles arcanos de los conjuntos de instrucciones individuales de
-   computadora, sino de la dependencia de las irrelevancias, como en la memoria
-   en la que vive una variable, el tamaño del tipo de datos, y otros detalles de
+   computadora, sino de la dependencia de las irrelevancias, como la memoria en
+   la que vive una variable, el tamaño del tipo de datos, y otros detalles de
    implementacion del anfitrion. Debido a esa capa aislante, es posible escribir
    programas que son seguros y robustos y que se ejecutaran en cualquier sistema
    operativo sin cambios.
 
    El paquete @c(unsafe) permite a los programadores cruzar a traves del
    aislamiento para utilizar alguna caracteristica crucial, pero de otro modo
-   inaccesibles, o tal vez para lograr un mayor rendimiento. El costo suele ser
+   inaccesible, o tal vez para lograr un mayor rendimiento. El costo suele ser
    la portabilidad y la seguridad. Nuestro consejo sobre como y cuando usar
    @c(unsafe) son paralelos a los comentarios de Knuth para la optimizacion
    prematura, que hemos citado en la @l(#Seccion 11.5). La mayoria de los
    programadores nunca necesitaran utilizar @c(unsafe) en absoluto. Sin embargo,
-   ocasionalmente habra situaciones en las que algun fragmento critica de codigo
+   ocasionalmente habra situaciones en las que algun fragmento de codigo critio
    puede ser escrito mejor usando @c(unsafe). Si el estudio y la medicion
    cuidadosa indican que @c(unsafe) realmente es el mejor enfoque, restrinja el
    fragmento lo mayor posible, para que la mayor parte del programa ignore su
@@ -22259,7 +22264,7 @@
 
    Por ahora, ponga los dos ultimos capitulos en la parte de atras de su mente.
    Escriba algunos programas importantes en Go. Evite @c(reflect) y @c(unsafe);
-   Vuelva a estos capitulos solamente si usted debe.
+   Vuelva a estos capitulos solamente si debe hacerlo.
 
    Mientras tanto, Feliz programacion con Go. Esperamos que disfrutes
    escribiendo en Go tanto como nosotros.
