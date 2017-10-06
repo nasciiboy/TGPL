@@ -1,4 +1,3 @@
-@ -*- mode: org; -*-
 ..title   > El lenguaje de programacion Go
 ..author  > Alan A. A. Donovan
 ..author  > Brian W. Kernighan
@@ -6,7 +5,7 @@
 ..id      > isbn-13 978-0-13-419044-0
 ..id      > isbn-10 0-13-419044-0
 ..style   > worg-data/worg.css
-..options > pygments toc
+..options > fancyCode toc
 
 @ revision 3b600c, date 29 Sep 2015
 
@@ -1369,7 +1368,7 @@
    @b(Ejercicio 1.7): La funcion @c[io.Copy(dst, src)] lee desde @c(src) y
    escribe en @c(dst). Utilicelo en lugar de @c(ioutil.ReadAll) para copiar el
    cuerpo de la respuesta a @c(os.Stdout) sin requerir un buffer lo
-   suficientemente grande como para contener todo el fluje de datos. Asegurese
+   suficientemente grande como para contener todo el flujo de datos. Asegurese
    de comprobar el resultado del error de @c(io.Copy).
 
    @b(Ejercicio 1.8): Modificar @$(fetch) para agregar el prefijo @c(http://) a
@@ -2384,7 +2383,7 @@
         }
       < src..
 
-      ::
+    <>
 
       ..src > go
         func newInt() *int {
@@ -2476,7 +2475,7 @@
         }
       < src..
 
-      ::
+    <>
 
       ..src > go
         func g() {
@@ -9791,7 +9790,7 @@
        fmt.Println(perim.Distancia()) // "12"
      < src..
 
-     ::
+   <>
 
      ..img > img/perim.Distance.jpg
 
@@ -13381,8 +13380,8 @@
 
    ..srci > sh
      > go build gopl.io/ch1/fetch
-     > ./fetch http://www.w3.org/TR/2006/REC-xml11-20060816 | \ \
-       ./xmlselect div div h2
+     > ./fetch http://www.w3.org/TR/2006/REC-xml11-20060816 |
+     ^ ./xmlselect div div h2
      html body div div h2: 1 Introduction
      html body div div h2: 2 Documents
      html body div div h2: 3 Logical Structures
@@ -13720,7 +13719,7 @@
        > killall clock1
      < srci..
 
-     ::
+   <>
 
      ..srci > sh
        > ./netcat1
@@ -13779,7 +13778,7 @@
        > killall clock1
      < srci..
 
-     ::
+   <>
 
      ..srci > sh
        > ./netcat1
@@ -15809,7 +15808,7 @@
        127.0.0.1:64211 has left
      < srci..
 
-     ::
+   <>
 
      ..srci > sh
        > ./netcat3
@@ -19908,8 +19907,8 @@
    @c(-run=NONE).
 
    ..srci > sh
-     > go test -run=NONE -bench=ClientServerParallelTLS64 \
-         -cpuprofile=cpu.log net/http
+     > go test -run=NONE -bench=ClientServerParallelTLS64
+     ^   -cpuprofile=cpu.log net/http
      PASS
      BenchmarkClientServerParallelTLS64-8 1000
         3141325 ns/op  143010 B/op  1747 allocs/op
@@ -20386,7 +20385,7 @@
      evitar la ambigüedad.
 
    - Interfaces :: Una vez mas, utilizamos @c(IsNil) para probar si la interfaz
-     es nil, y si no, recuperamos su valor dinamico utilizando @c[v.Elem()) e
+     es nil, y si no, recuperamos su valor dinamico utilizando @c[v.Elem()] e
      imprimimos su tipo y valor.
 
 
