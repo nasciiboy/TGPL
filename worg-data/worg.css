@@ -150,6 +150,9 @@ ul li p { color: #fff; font-size: 1em; }
 ul.dialog { list-style-type: none; }
 ul.dialog p { color: #f67478; }
 
+ol.num   { list-style: decimal;     }
+ol.alpha { list-style: lower-latin; }
+
 dl { margin-left:  1em; }
 dt { color: var( --FGCdt );
      font-size: 1.2em; font-family: description_dt;
