@@ -167,13 +167,22 @@ img    { max-width: 100%; min-width: 75%; filter: invert( 100% ); }
 img:hover { filter: invert( 0% ); }
 figcaption {}
 
-table { display: flex; justify-content: center;
-        text-align: left; width: 100%; margin-top: 1em; }
-table thead { border: none; color: var( --FGCthead ); background: var( --BGCthead ); }
-table thead tr th { }
-table tbody { border-bottom: 2px solid #fff; color: var( --FGCtbody );; }
-table tbody tr td { }
+table { text-align: left;
+        border-collapse: collapse;
+        border: 0;
+        overflow-x: auto;
+        margin: .5em auto;
+}
 
+tr { border-bottom: 1px solid white; }
+th, td { padding-left: 0.5em; border: 0; }
+
+table thead { border-bottom: 2px solid red; }
+table thead tr th p { color: var( --FGCthead ); }
+table tbody {  }
+table tbody tr td p { color: var( --FGCtbody ); }
+table tfoot {  }
+table tfoot tr td p { color: var( --FGCtfoot ); }
 
 /* BLOCK STYLE #### */
 /* EMPHS */
