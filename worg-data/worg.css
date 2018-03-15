@@ -249,9 +249,12 @@ pre.example { display: flex;
 
 /* CODE */
 pre.code { }
+pre.code code { padding: 0em; }
 
 /* CODE */
 pre.srci { }
+pre.srci code { padding: 0em; }
+
 
 .prompt { color: green; font-weight: 900; }
 .index { user-select: none; }
