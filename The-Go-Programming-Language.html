@@ -734,10 +734,10 @@
 </code></pre>
 </div>
 <p>After importing a package whose path has multiple components, like <code>image/color</code>, we refer to the package with a name that comes from the last component. Thus the variable <code>color.White</code> belongs to the <code>image/color</code> package and <code>gif.GIF</code> belongs to <code>image/gif</code>.</p>
-<p>A <code>const</code> declaration (<a href="#Section-3.6" >§3.6</a>) gives names to constants, that is, values that are fixed at compile time, such as the numerical parameters for cycles, frames, and delay. Like <code>var</code> declarations, <code>const</code> declarations may appear at package level (so the names are visible throughout the package) or within a function (so the names are visible only within that function). The value of a constant must be a number, string, or boolean.</p>
-<p>The expressions <code>[]color.Color{...}</code> and <code>gif.GIF{...}</code> are <em>composite literals</em> (<a href="#Section-4.2" >§4.2</a>, <a href="#Section-4.4.1" >§4.4.1</a>), a compact notation for instantiating any of Go’s composite types from a sequence of element values. Here, the first one is a slice and the second one is a <em>struct</em>.</p>
-<p>The type <code>gif.GIF</code> is a struct type (<a href="#Section-4.4" >§4.4</a>). A struct is a group of values called <em>fields</em>, often of different types, that are collected together in a single object that can be treated as a unit. The variable <code>anim</code> is a struct of type <code>gif.GIF</code>. The struct literal creates a struct value whose <code>LoopCount</code> field is set to <code>nframes</code>; all other fields have the zero value for their type. The individual fields of a struct can be accessed using dot notation, as in the final two assignments which explicitly update the <code>Delay</code> and <code>Image</code> fields of <code>anim</code>.</p>
-<p>The <code>lissajous</code> function has two nested loops. The outer loop runs for 64 iterations, each producing a single frame of the animation. It creates a new 201x201 image with a palette of two colors, white and black. All pixels are initially set to the palette’s zero value (the zeroth color in the palette), which we set to white. Each pass through the outer loop generates a new image by setting some pixels to black. The result is appended, using the built-in <code>append</code> function (<a href="#Section-4.2.1" >§4.2.1</a>), to a list of frames in <code>anim</code>, along with a specified delay of 80ms. Finally the sequence of frames and delays is encoded into GIF format and written to the output stream <code>out</code>. The type of <code>out</code> is <code>io.Writer</code>, which lets us write to a wide range of possible destinations, as we’ll show soon.</p>
+<p>A <code>const</code> declaration (<a href="#section-3.6" >§3.6</a>) gives names to constants, that is, values that are fixed at compile time, such as the numerical parameters for cycles, frames, and delay. Like <code>var</code> declarations, <code>const</code> declarations may appear at package level (so the names are visible throughout the package) or within a function (so the names are visible only within that function). The value of a constant must be a number, string, or boolean.</p>
+<p>The expressions <code>[]color.Color{...}</code> and <code>gif.GIF{...}</code> are <em>composite literals</em> (<a href="#section-4.2" >§4.2</a>, <a href="#section-4.4.1" >§4.4.1</a>), a compact notation for instantiating any of Go’s composite types from a sequence of element values. Here, the first one is a slice and the second one is a <em>struct</em>.</p>
+<p>The type <code>gif.GIF</code> is a struct type (<a href="#section-4.4" >§4.4</a>). A struct is a group of values called <em>fields</em>, often of different types, that are collected together in a single object that can be treated as a unit. The variable <code>anim</code> is a struct of type <code>gif.GIF</code>. The struct literal creates a struct value whose <code>LoopCount</code> field is set to <code>nframes</code>; all other fields have the zero value for their type. The individual fields of a struct can be accessed using dot notation, as in the final two assignments which explicitly update the <code>Delay</code> and <code>Image</code> fields of <code>anim</code>.</p>
+<p>The <code>lissajous</code> function has two nested loops. The outer loop runs for 64 iterations, each producing a single frame of the animation. It creates a new 201x201 image with a palette of two colors, white and black. All pixels are initially set to the palette’s zero value (the zeroth color in the palette), which we set to white. Each pass through the outer loop generates a new image by setting some pixels to black. The result is appended, using the built-in <code>append</code> function (<a href="#section-4.2.1" >§4.2.1</a>), to a list of frames in <code>anim</code>, along with a specified delay of 80ms. Finally the sequence of frames and delays is encoded into GIF format and written to the output stream <code>out</code>. The type of <code>out</code> is <code>io.Writer</code>, which lets us write to a wide range of possible destinations, as we’ll show soon.</p>
 <p>The inner loop runs the two oscillators. The <code>x</code> oscillator is just the sine function. The <code>y</code> oscillator is also a sinusoid, but its frequency relative to the <code>x</code> oscillator is a random number between 0 and 3, and its phase relative to the <code>x</code> oscillator is initially zero but increases with each frame of the animation. The loop runs until the <code>x</code> oscillator has completed five full cycles. At each step, it calls <code>SetColorIndex</code> to color the pixel corresponding to (<code>x</code>, <code>y</code>) black, which is at position 1 in the palette.</p>
 <p>The <code>main</code> function calls the <code>lissajous</code> function, directing it to write to the standard output, so this command produces an animated GIF with frames like those in Figure 1.1:</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>go build gopl.io/ch1/lissajous
@@ -941,7 +941,7 @@
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>The server has two handlers, and the request URL determines which one is called: a request for <code>/count</code> invokes <code>counter</code> and all others invoke <code>handler</code>. A handler pattern that ends with a slash matches any URL that has the pattern as a prefix. Behind the scenes, the server runs the handler for each incoming request in a separate goroutine so that it can serve multiple requests simultaneously. However, if two concurrent requests try to update <code>count</code> at the same time, it might not be incremented consistently; the program would have a serious bug called a <em>race condition</em> (<a href="#Section-9.1" >§9.1</a>). To avoid this problem, we must ensure that at most one goroutine accesses the variable at a time, which is the purpose of the <code>mu.Lock()</code> and <code>mu.Unlock()</code> calls that bracket each access of <code>count</code>. We’ll look more closely at concurrency with shared variables in <a href="#chapter-9" >Chapter 9</a>.</p>
+<p>The server has two handlers, and the request URL determines which one is called: a request for <code>/count</code> invokes <code>counter</code> and all others invoke <code>handler</code>. A handler pattern that ends with a slash matches any URL that has the pattern as a prefix. Behind the scenes, the server runs the handler for each incoming request in a separate goroutine so that it can serve multiple requests simultaneously. However, if two concurrent requests try to update <code>count</code> at the same time, it might not be incremented consistently; the program would have a serious bug called a <em>race condition</em> (<a href="#section-9.1" >§9.1</a>). To avoid this problem, we must ensure that at most one goroutine accesses the variable at a time, which is the purpose of the <code>mu.Lock()</code> and <code>mu.Unlock()</code> calls that bracket each access of <code>count</code>. We’ll look more closely at concurrency with shared variables in <a href="#chapter-9" >Chapter 9</a>.</p>
 <p>As a richer example, the handler function can report on the headers and form data that it receives, making the server useful for inspecting and debugging requests:</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch1/server3/main.go" >gopl.io/ch1/server3</a></h1>
@@ -1071,7 +1071,7 @@ func ListenAndServe(addr string, handler Handler) error
 </dd>
 <dt>Comments</dt>
 <dd>
-<p>We have already mentioned documentation comments at the beginning of a program or package. It’s also good style to write a comment before the declaration of each function to specify its behavior. These conventions are important, because they are used by tools like <code class="command" >go doc</code> and <code class="command" >godoc</code> to locate and display documentation (<a href="#Section-10.7.4" >§10.7.4</a>).</p>
+<p>We have already mentioned documentation comments at the beginning of a program or package. It’s also good style to write a comment before the declaration of each function to specify its behavior. These conventions are important, because they are used by tools like <code class="command" >go doc</code> and <code class="command" >godoc</code> to locate and display documentation (<a href="#section-10.7.4" >§10.7.4</a>).</p>
 <p>For comments that span multiple lines or appear within an expression or statement, there is also the <code>/* ... */</code> notation familiar from other languages. Such comments are sometimes used at the beginning of a file for a large block of explanatory text to avoid a <code>//</code> on every line. Within a comment, <code>//</code> and <code>/*</code> have no special meaning, so comments do not nest.</p>
 </dd>
 </dl>
@@ -1186,14 +1186,14 @@ panic  recover
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">,</span> <span class="nx">k</span> <span class="kt">int</span>                 <span class="c1">// int, int, int
 </span><span class="c1"></span><span class="kd">var</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">f</span><span class="p">,</span> <span class="nx">s</span> <span class="p">=</span> <span class="kc">true</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="s">&#34;four&#34;</span> <span class="c1">// bool, float64, string
 </span><span class="c1"></span></code></pre>
-<p>Initializers may be literal values or arbitrary expressions. Package-level variables are initialized before <code>main</code> begins (<a href="#Section-2.6.2" >§2.6.2</a>), and local variables are initialized as their declarations are encountered during function execution.</p>
+<p>Initializers may be literal values or arbitrary expressions. Package-level variables are initialized before <code>main</code> begins (<a href="#section-2.6.2" >§2.6.2</a>), and local variables are initialized as their declarations are encountered during function execution.</p>
 <p>A set of variables can also be initialized by calling a function that returns multiple values:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="c1">// os.Open returns a file and an error
 </span><span class="c1"></span></code></pre>
 </div>
 <h4 id="section-2.3.1" >Short Variable Declarations</h4>
 <div class="hBody-4" >
-<p>Within a function, an alternate form called a <em>short variable declaration</em> may be used to declare and initialize local variables. It takes the form <code>name := expression</code>, and the type of <code>name</code> is determined by the type of <code>expression</code>. Here are three of the many short variable declarations in the <code>lissajous</code> function (<a href="#Section-1.4" >§1.4</a>):</p>
+<p>Within a function, an alternate form called a <em>short variable declaration</em> may be used to declare and initialize local variables. It takes the form <code>name := expression</code>, and the type of <code>name</code> is determined by the type of <code>expression</code>. Here are three of the many short variable declarations in the <code>lissajous</code> function (<a href="#section-1.4" >§1.4</a>):</p>
 <pre class="code" ><code class="chroma" ><span class="nx">anim</span> <span class="o">:=</span> <span class="nx">gif</span><span class="p">.</span><span class="nx">GIF</span><span class="p">{</span><span class="nx">LoopCount</span><span class="p">:</span> <span class="nx">nframes</span><span class="p">}</span>
 <span class="nx">freq</span> <span class="o">:=</span> <span class="nx">rand</span><span class="p">.</span><span class="nx">Float64</span><span class="p">()</span> <span class="o">*</span> <span class="mf">3.0</span>
 <span class="nx">t</span> <span class="o">:=</span> <span class="mf">0.0</span>
@@ -1210,7 +1210,7 @@ panic  recover
 <pre class="code" ><code class="chroma" ><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
 </code></pre>
 <p>but declarations with multiple initializer expressions should be used only when they help readability, such as for short and natural groupings like the initialization part of a <code>for</code> loop.</p>
-<p>Keep in mind that <code>:=</code> is a declaration, whereas <code>=</code> is an assignment. A multi-variable declaration should not be confused with a <em>tuple assignment</em> (<a href="#Section-2.4.1" >§2.4.1</a>), in which each variable on the left-hand side is assigned the corresponding value from the right-hand side:</p>
+<p>Keep in mind that <code>:=</code> is a declaration, whereas <code>=</code> is an assignment. A multi-variable declaration should not be confused with a <em>tuple assignment</em> (<a href="#section-2.4.1" >§2.4.1</a>), in which each variable on the left-hand side is assigned the corresponding value from the right-hand side:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="p">=</span> <span class="nx">j</span><span class="p">,</span> <span class="nx">i</span> <span class="c1">// swap values of i and j
 </span><span class="c1"></span></code></pre>
 <p>Like ordinary <code>var</code> declarations, short variable declarations may be used for calls to functions like <code>os.Open</code> that return two or more values:</p>
@@ -1221,7 +1221,7 @@ panic  recover
 <span class="c1">// ...use f...
 </span><span class="c1"></span><span class="nx">f</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
 </code></pre>
-<p>One subtle but important point: a short variable declaration does not necessarily <em>declare</em> all the variables on its left-hand side. If some of them were already declared in the <em>same</em> lexical block (<a href="#Section-2.7" >§2.7</a>), then, for those variables, the short variable declaration acts like an <em>assignment</em> to those variables.</p>
+<p>One subtle but important point: a short variable declaration does not necessarily <em>declare</em> all the variables on its left-hand side. If some of them were already declared in the <em>same</em> lexical block (<a href="#section-2.7" >§2.7</a>), then, for those variables, the short variable declaration acts like an <em>assignment</em> to those variables.</p>
 <p>In the code below, the first statement declares both <code>in</code> and <code>err</code>. The second declares <code>out</code> but only assigns a value to the existing <code>err</code> variable.</p>
 <pre class="code" ><code class="chroma" ><span class="nx">in</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="nx">infile</span><span class="p">)</span>
 <span class="c1">// ...
@@ -1346,7 +1346,7 @@ panic  recover
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">p</span> <span class="o">==</span> <span class="nx">q</span><span class="p">)</span> <span class="c1">// &#34;false&#34;
 </span><span class="c1"></span></code></pre>
 <p>There is one exception to this rule: two variables whose type carries no information and is therefore of size zero, such as <code>struct{}</code> or <code>[0]int</code>, may, depending on the implementation, have the same address.</p>
-<p>The <code>new</code> function is relatively rarely used because the most common unnamed variables are of struct types, for which the struct literal syntax (<a href="#Section-4.4.1" >§4.4.1</a>) is more flexible.</p>
+<p>The <code>new</code> function is relatively rarely used because the most common unnamed variables are of struct types, for which the struct literal syntax (<a href="#section-4.4.1" >§4.4.1</a>) is more flexible.</p>
 <p>Since <code>new</code> is a predeclared function, not a keyword, it’s possible to redefine the name for something else within a function, for example:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span> <span class="nx">delta</span><span class="p">(</span><span class="nx">old</span><span class="p">,</span> <span class="nx">new</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">new</span> <span class="o">-</span> <span class="nx">old</span> <span class="p">}</span>
 </code></pre>
@@ -1437,7 +1437,7 @@ panic  recover
 <p>Certain expressions, such as a call to a function with multiple results, produce several values. When such a call is used in an assignment statement, the left-hand side must have as many variables as the function has results.</p>
 <pre class="code" ><code class="chroma" ><span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="s">&#34;foo.txt&#34;</span><span class="p">)</span> <span class="c1">// function call returns two values
 </span><span class="c1"></span></code></pre>
-<p>Often, functions use these additional results to indicate some kind of error, either by returning an <code>error</code> as in the call to <code>os.Open</code>, or a <code>bool</code>, usually called <code>ok</code>. As we’ll see in later chapters, there are three operators that sometimes behave this way too. If a map lookup (<a href="#Section-4.3" >§4.3</a>), type assertion (<a href="#Section-7.10" >§7.10</a>), or channel receive (<a href="#Section-8.4.2" >§8.4.2</a>) appears in an assignment in which two results are expected, each produces an additional boolean result:</p>
+<p>Often, functions use these additional results to indicate some kind of error, either by returning an <code>error</code> as in the call to <code>os.Open</code>, or a <code>bool</code>, usually called <code>ok</code>. As we’ll see in later chapters, there are three operators that sometimes behave this way too. If a map lookup (<a href="#section-4.3" >§4.3</a>), type assertion (<a href="#section-7.10" >§7.10</a>), or channel receive (<a href="#section-8.4.2" >§8.4.2</a>) appears in an assignment in which two results are expected, each produces an additional boolean result:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">v</span><span class="p">,</span> <span class="nx">ok</span> <span class="p">=</span> <span class="nx">m</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>         <span class="c1">// map lookup
 </span><span class="c1"></span><span class="nx">v</span><span class="p">,</span> <span class="nx">ok</span> <span class="p">=</span> <span class="nx">x</span><span class="p">.(</span><span class="nx">T</span><span class="p">)</span>          <span class="c1">// type assertion
 </span><span class="c1"></span><span class="nx">v</span><span class="p">,</span> <span class="nx">ok</span> <span class="p">=</span> <span class="o">&lt;-</span><span class="nx">ch</span>           <span class="c1">// channel receive
@@ -1449,7 +1449,7 @@ panic  recover
 </div>
 <h4 id="section-2.4.2" >Assignability</h4>
 <div class="hBody-4" >
-<p>Assignment statements are an explicit form of assignment, but there are many places in a program where an assignment occurs <em>implicitly</em>: a function call implicitly assigns the argument values to the corresponding parameter variables; a <code>return</code> statement implicitly assigns the <code>return</code> operands to the corresponding result variables; and a literal expression for a composite type (<a href="#Section-4.2" >§4.2</a>) such as this slice:</p>
+<p>Assignment statements are an explicit form of assignment, but there are many places in a program where an assignment occurs <em>implicitly</em>: a function call implicitly assigns the argument values to the corresponding parameter variables; a <code>return</code> statement implicitly assigns the <code>return</code> operands to the corresponding result variables; and a literal expression for a composite type (<a href="#section-4.2" >§4.2</a>) such as this slice:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">medals</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;gold&#34;</span><span class="p">,</span> <span class="s">&#34;silver&#34;</span><span class="p">,</span> <span class="s">&#34;bronze&#34;</span><span class="p">}</span>
 </code></pre>
 <p>implicitly assigns each element, as if it had been written like this:</p>
@@ -1459,7 +1459,7 @@ panic  recover
 </code></pre>
 <p>The elements of maps and channels, though not ordinary variables, are also subject to similar implicit assignments.</p>
 <p>An assignment, explicit or implicit, is always legal if the left-hand side (the variable) and the right-hand side (the value) have the same type. More generally, the assignment is legal only if the value is <em>assignable</em> to the type of the variable.</p>
-<p>The rule for <em>assignability</em> has cases for various types, so we’ll explain the relevant case as we introduce each new type. For the types we’ve discussed so far, the rules are simple: the types must exactly match, and <code>nil</code> may be assigned to any variable of interface or reference type. Constants (<a href="#Section-3.6" >§3.6</a>) have more flexible rules for assignability that avoid the need for most explicit conversions.</p>
+<p>The rule for <em>assignability</em> has cases for various types, so we’ll explain the relevant case as we introduce each new type. For the types we’ve discussed so far, the rules are simple: the types must exactly match, and <code>nil</code> may be assigned to any variable of interface or reference type. Constants (<a href="#section-3.6" >§3.6</a>) have more flexible rules for assignability that avoid the need for most explicit conversions.</p>
 <p>Whether two values may be compared with <code>==</code> and <code>!=</code> is related to assignability: in any comparison, the first operand must be assignable to the type of the second operand, or vice versa.  As with assignability, we’ll explain the relevant cases for <em>comparability</em> when we present each new type.</p>
 </div>
 <h3 id="section-2.5" >Type Declarations</h3>
@@ -1568,7 +1568,7 @@ panic  recover
 <p>To convert a Celsius temperature to Fahrenheit in a package that imports <code>gopl.io/ch2/tempconv</code>, we can write the following code:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">tempconv</span><span class="p">.</span><span class="nx">CToF</span><span class="p">(</span><span class="nx">tempconv</span><span class="p">.</span><span class="nx">BoilingC</span><span class="p">))</span> <span class="c1">// &#34;212°F&#34;
 </span><span class="c1"></span></code></pre>
-<p>The <em>doc comment</em> (<a href="#Section-10.7.4" >§10.7.4</a>) immediately preceding the package declaration documents the package as a whole. Conventionally, it should start with a summary sentence in the style illustrated. Only one file in each package should have a package doc comment. Extensive doc comments are often placed in a file of their own, conventionally called <span class="file" >doc.go</span>.</p>
+<p>The <em>doc comment</em> (<a href="#section-10.7.4" >§10.7.4</a>) immediately preceding the package declaration documents the package as a whole. Conventionally, it should start with a summary sentence in the style illustrated. Only one file in each package should have a package doc comment. Extensive doc comments are often placed in a file of their own, conventionally called <span class="file" >doc.go</span>.</p>
 <p><b>Exercise 2.1</b>: Add types, constants, and functions to <code>tempconv</code> for processing temperatures in the Kelvin scale, where zero Kelvin is -273.15°C and a difference of 1K has the same magnitude as 1°C.</p>
 </div>
 <h4 id="section-2.6.1" >Imports</h4>
@@ -1604,7 +1604,7 @@ panic  recover
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>The import declaration binds a short name to the imported package that may be used to refer to its contents throughout the file. The <code>import</code> above lets us refer to names within <code>gopl.io/ch2/tempconv</code> by using a <em>qualified identifier</em> like <code>tempconv.CToF</code>. By default, the short name is the package name—<code>tempconv</code> in this case—but an import declaration may specify an alternative name to avoid a conflict (<a href="#Section-10.4" >§10.4</a>).</p>
+<p>The import declaration binds a short name to the imported package that may be used to refer to its contents throughout the file. The <code>import</code> above lets us refer to names within <code>gopl.io/ch2/tempconv</code> by using a <em>qualified identifier</em> like <code>tempconv.CToF</code>. By default, the short name is the package name—<code>tempconv</code> in this case—but an import declaration may specify an alternative name to avoid a conflict (<a href="#section-10.4" >§10.4</a>).</p>
 <p>The <code class="command" >cf</code> program converts a single numeric command-line argument to its value in both Celsius and Fahrenheit:</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>go build gopl.io/ch2/cf
 </span><span class="in" ><span class="prompt" >&gt; </span>./cf <span class="m">32</span>
@@ -1786,7 +1786,7 @@ panic  recover
 <h2 id="chapter-3" >Basic Data Types</h2>
 <div class="hBody-2" >
 <p>It’s all bits at the bottom, of course, but computers operate fundamentally on fixed-size numbers called <em>words</em>, which are interpreted as integers, floating-point numbers, bit sets, or memory addresses, then combined into larger aggregates that represent packets, pixels, portfolios, poetry, and everything else. Go offers a variety of ways to organize data, with a spectrum of data types that at one end match the features of the hardware and at the other end provide what programmers need to conveniently represent complicated data structures.</p>
-<p>Go’s types fall into four categories: <em>basic types</em>, <em>aggregate types</em>, <em>reference types</em>, and <em>interface types</em>. Basic types, the topic of this chapter, include numbers, strings, and booleans. Aggregate types—arrays (<a href="#Section-4.1" >§4.1</a>) and structs (<a href="#Section-4.4" >§4.4</a>)—form more complicated data types by combining values of several simpler ones. Reference types are a diverse group that includes pointers (<a href="#Section-2.3.2" >§2.3.2</a>), slices (<a href="#Section-4.2" >§4.2</a>), maps (<a href="#Section-4.3" >§4.3</a>), functions (<a href="#chapter-5" >Chapter 5</a>), and channels (<a href="#chapter-8" >Chapter 8</a>), but what they have in common is that they all refer to program variables or state <em>indirectly</em>, so that the effect of an operation applied to one reference is observed by all copies of that reference. Finally, we’ll talk about interface types in <a href="#chapter-7" >Chapter 7</a>.</p>
+<p>Go’s types fall into four categories: <em>basic types</em>, <em>aggregate types</em>, <em>reference types</em>, and <em>interface types</em>. Basic types, the topic of this chapter, include numbers, strings, and booleans. Aggregate types—arrays (<a href="#section-4.1" >§4.1</a>) and structs (<a href="#section-4.4" >§4.4</a>)—form more complicated data types by combining values of several simpler ones. Reference types are a diverse group that includes pointers (<a href="#section-2.3.2" >§2.3.2</a>), slices (<a href="#section-4.2" >§4.2</a>), maps (<a href="#section-4.3" >§4.3</a>), functions (<a href="#chapter-5" >Chapter 5</a>), and channels (<a href="#chapter-8" >Chapter 8</a>), but what they have in common is that they all refer to program variables or state <em>indirectly</em>, so that the effect of an operation applied to one reference is observed by all copies of that reference. Finally, we’ll talk about interface types in <a href="#chapter-7" >Chapter 7</a>.</p>
 </div>
 <h3 id="section-3.1" >Integers</h3>
 <div class="hBody-3" >
@@ -1911,7 +1911,7 @@ panic  recover
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">medals</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="c1">// &#34;bronze&#34;, &#34;silver&#34;, &#34;gold&#34;
 </span><span class="c1"></span><span class="p">}</span>
 </code></pre>
-<p>The alternative would be calamitous. If <code>len</code> returned an unsigned number, then <code>i</code> too would be a <code>uint</code>, and the condition <code>i &gt;= 0</code> would always be true by definition. After the third iteration, in which <code>i == 0</code>, the <code>i--</code> statement would cause <code>i</code> to become not -1, but the maximum <code>uint</code> value (for example, 2⁶⁴-1), and the evaluation of <code>medals[i]</code> would fail at run time, or <em>panic</em> (<a href="#Section-5.9" >§5.9</a>), by attempting to access an element outside the bounds of the slice.</p>
+<p>The alternative would be calamitous. If <code>len</code> returned an unsigned number, then <code>i</code> too would be a <code>uint</code>, and the condition <code>i &gt;= 0</code> would always be true by definition. After the third iteration, in which <code>i == 0</code>, the <code>i--</code> statement would cause <code>i</code> to become not -1, but the maximum <code>uint</code> value (for example, 2⁶⁴-1), and the evaluation of <code>medals[i]</code> would fail at run time, or <em>panic</em> (<a href="#section-5.9" >§5.9</a>), by attempting to access an element outside the bounds of the slice.</p>
 <p>For this reason, unsigned numbers tend to be used only when their bitwise operators or peculiar arithmetic operators are required, as when implementing bit sets, parsing binary file formats, or for hashing and cryptography. They are typically not used for merely non-negative quantities.</p>
 <p>In general, an explicit conversion is required to convert a value from one type to another, and binary operators for arithmetic and logic (except shifts) must have operands of the same type. Although this occasionally results in longer expressions, it also eliminates a whole class of problems and makes programs easier to understand.</p>
 <p>As an example familiar from other contexts, consider this sequence:</p>
@@ -2577,7 +2577,7 @@ x = 7 eˣ = 1096.633
 <span class="p">)</span>
 </code></pre>
 <p>Many computations on constants can be completely evaluated at compile time, reducing the work necessary at run time and enabling other compiler optimizations. Errors ordinarily detected at run time can be reported at compile time when their operands are constants, such as integer division by zero, string indexing out of bounds, and any floating-point operation that would result in a non-finite value.</p>
-<p>The results of all arithmetic, logical, and comparison operations applied to constant operands are themselves constants, as are the results of conversions and calls to certain built-in functions such as <code>len</code>, <code>cap</code>, <code>real</code>, <code>imag</code>, <code>complex</code>, and <code>unsafe.Sizeof</code> (<a href="#Section-13.1" >§13.1</a>).</p>
+<p>The results of all arithmetic, logical, and comparison operations applied to constant operands are themselves constants, as are the results of conversions and calls to certain built-in functions such as <code>len</code>, <code>cap</code>, <code>real</code>, <code>imag</code>, <code>complex</code>, and <code>unsafe.Sizeof</code> (<a href="#section-13.1" >§13.1</a>).</p>
 <p>Since their values are known to the compiler, constant expressions may appear in types, specifically as the length of an array type:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">const</span> <span class="nx">IPv4Len</span> <span class="p">=</span> <span class="mi">4</span>
 
@@ -2869,7 +2869,7 @@ x = 7 eˣ = 1096.633
 </span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">endlessSummer</span><span class="p">)</span>  <span class="c1">// &#34;[June July August September October]&#34;
 </span><span class="c1"></span></code></pre>
 <p>As an aside, note the similarity of the substring operation on strings to the slice operator on <code>[]byte</code> slices. Both are written <code>x[m:n]</code>, and both return a subsequence of the original bytes, sharing the underlying representation so that both operations take constant time. The expression <code>x[m:n]</code> yields a string if <code>x</code> is a string, or a <code>[]byte</code> if <code>x</code> is a <code>[]byte</code>.</p>
-<p>Since a slice contains a pointer to an element of an array, passing a slice to a function permits the function to modify the underlying array elements. In other words, copying a slice creates an <em>alias</em> (<a href="#Section-2.3.2" >§2.3.2</a>) for the underlying array. The function <code>reverse</code> reverses the elements of an <code>[]int</code> slice in place, and it may be applied to slices of any length.</p>
+<p>Since a slice contains a pointer to an element of an array, passing a slice to a function permits the function to modify the underlying array elements. In other words, copying a slice creates an <em>alias</em> (<a href="#section-2.3.2" >§2.3.2</a>) for the underlying array. The function <code>reverse</code> reverses the elements of an <code>[]int</code> slice in place, and it may be applied to slices of any length.</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch4/rev/main.go" >gopl.io/ch4/rev</a></h1>
 <pre class="code" ><code class="chroma" ><span class="c1">// reverse reverses a slice of ints in place.
@@ -3594,7 +3594,7 @@ x = 7 eˣ = 1096.633
 </div>
 <h3 id="section-4.5" >JSON</h3>
 <div class="hBody-3" >
-<p>JavaScript Object Notation (JSON) is a standard notation for sending and receiving structured information. JSON is not the only such notation. XML (<a href="#Section-7.14" >§7.14</a>), ASN.1, and Google’s Protocol Buffers serve similar purposes and each has its niche, but because of its simplicity, readability, and universal support, JSON is the most widely used.</p>
+<p>JavaScript Object Notation (JSON) is a standard notation for sending and receiving structured information. JSON is not the only such notation. XML (<a href="#section-7.14" >§7.14</a>), ASN.1, and Google’s Protocol Buffers serve similar purposes and each has its niche, but because of its simplicity, readability, and universal support, JSON is the most widely used.</p>
 <p>Go has excellent support for encoding and decoding these formats, provided by the standard library packages <code>encoding/json</code>, <code>encoding/xml</code>, <code>encoding/asn1</code>, and so on, and these packages all have similar APIs. This section gives a brief overview of the most important parts of the <code>encoding/json</code> package.</p>
 <p>JSON is an encoding of JavaScript values—strings, numbers, booleans, arrays, and objects—as Unicode text. It’s an efficient yet readable representation for the basic data types of <a href="#chapter-3" >Chapter 3</a> and the composite types of this chapter—arrays, slices, structs, and maps.</p>
 <p>The basic JSON types are numbers (in decimal or scientific notation), booleans (<code>true</code> or <code>false</code>), and strings, which are sequences of Unicode code points enclosed in double quotes, with backslash escapes using a similar notation to Go, though JSON’s <code>\u</code><em>hhhh</em> numeric escapes denote UTF-16 codes, not runes.</p>
@@ -3842,7 +3842,7 @@ x = 7 eˣ = 1096.633
   <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Since</span><span class="p">(</span><span class="nx">t</span><span class="p">).</span><span class="nx">Hours</span><span class="p">()</span> <span class="o">/</span> <span class="mi">24</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
-<p>Notice that the type of <code>CreatedAt</code> is <code>time.Time</code>, not <code>string</code>. In the same way that a type may control its string formatting (<a href="#Section-2.5" >§2.5</a>) by defining certain methods, a type may also define methods to control its JSON marshaling and unmarshaling behavior. The JSON-marshaled value of a <code>time.Time</code> is a string in a standard format.</p>
+<p>Notice that the type of <code>CreatedAt</code> is <code>time.Time</code>, not <code>string</code>. In the same way that a type may control its string formatting (<a href="#section-2.5" >§2.5</a>) by defining certain methods, a type may also define methods to control its JSON marshaling and unmarshaling behavior. The JSON-marshaled value of a <code>time.Time</code> is a string in a standard format.</p>
 <p>Producing output with a template is a two-step process. First we must parse the template into a suitable internal representation, and then execute it on specific inputs. Parsing need be done only once. The code below creates and parses the template <code>templ</code> defined above. Note the chaining of method calls: <code>template.New</code> creates and returns a template; <code>Funcs</code> adds <code>daysAgo</code> to the set of functions accessible within this template, then returns that template; finally, <code>Parse</code> is called on the result.</p>
 <pre class="code" ><code class="chroma" ><span class="nx">report</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">template</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&#34;report&#34;</span><span class="p">).</span>
   <span class="nx">Funcs</span><span class="p">(</span><span class="nx">template</span><span class="p">.</span><span class="nx">FuncMap</span><span class="p">{</span><span class="s">&#34;daysAgo&#34;</span><span class="p">:</span> <span class="nx">daysAgo</span><span class="p">}).</span>
@@ -4085,7 +4085,7 @@ Age:    695 days
 <span class="p">}</span>
 </code></pre>
 <p>To descend the tree for a node <code>n</code>, <code>visit</code> recursively calls itself for each of <code>n</code>’s children, which are held in the <code>FirstChild</code> linked list.</p>
-<p>Let’s run <code class="command" >findlinks</code> on the Go home page, piping the output of <code class="command" >fetch</code> (<a href="#Section-1.5" >§1.5</a>) to the input of <code class="command" >findlinks</code>. We’ve edited the output slightly for brevity.</p>
+<p>Let’s run <code class="command" >findlinks</code> on the Go home page, piping the output of <code class="command" >fetch</code> (<a href="#section-1.5" >§1.5</a>) to the input of <code class="command" >findlinks</code>. We’ve edited the output slightly for brevity.</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>go build gopl.io/ch1/fetch
 </span><span class="in" ><span class="prompt" >&gt; </span>go build gopl.io/ch5/findlinks1
 </span><span class="in" ><span class="prompt" >&gt; </span>./fetch https://golang.org <span class="p">|</span> ./findlinks1
@@ -4189,7 +4189,7 @@ http://www.google.com/intl/en/policies/privacy/
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>There are four return statements in <code>findLinks</code>, each of which returns a pair of values. The first three <code>return</code>s cause the function to pass the underlying errors from the <code>http</code> and <code>html</code> packages on to the caller. In the first case, the error is returned unchanged; in the second and third, it is augmented with additional context information by <code>fmt.Errorf</code> (<a href="#Section-7.8" >§7.8</a>). If <code>findLinks</code> is successful, the final return statement returns the slice of links, with no error.</p>
+<p>There are four return statements in <code>findLinks</code>, each of which returns a pair of values. The first three <code>return</code>s cause the function to pass the underlying errors from the <code>http</code> and <code>html</code> packages on to the caller. In the first case, the error is returned unchanged; in the second and third, it is augmented with additional context information by <code>fmt.Errorf</code> (<a href="#section-7.8" >§7.8</a>). If <code>findLinks</code> is successful, the final return statement returns the slice of links, with no error.</p>
 <p>We must ensure that <code>resp.Body</code> is closed so that network resources are properly released even in case of error. Go’s garbage collector recycles unused memory, but do not assume it will release unused operating system resources like open files and network connections. They should be closed explicitly.</p>
 <p>The result of calling a multi-valued function is a tuple of values. The caller of such a function must explicitly assign the values to variables if any of them are to be used:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">links</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">findLinks</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
@@ -4241,7 +4241,7 @@ http://www.google.com/intl/en/policies/privacy/
 </code></pre>
 <p>In functions like this one, with many return statements and several results, bare returns can reduce code duplication, but they rarely make code easier to understand. For instance, it’s not obvious at first glance that the two early returns are equivalent to <code>return 0, 0, err</code> (because the result variables <code>words</code> and <code>images</code> are initialized to their zero values) and that the final <code>return</code> is equivalent to <code>return words, images, nil</code>. For this reason, bare returns are best used sparingly.</p>
 <p><b>Exercise 5.5</b>: Implement <code>countWordsAndImages</code>. (See Exercise 4.9 for word-splitting.)</p>
-<p><b>Exercise 5.6</b>: Modify the <code>corner</code> function in <code>gopl.io/ch3/surface</code> (<a href="#Section-3.2" >§3.2</a>) to use named results and a bare return statement.</p>
+<p><b>Exercise 5.6</b>: Modify the <code>corner</code> function in <code>gopl.io/ch3/surface</code> (<a href="#section-3.2" >§3.2</a>) to use named results and a bare return statement.</p>
 </div>
 <h3 id="section-5.4" >Errors</h3>
 <div class="hBody-3" >
@@ -4703,7 +4703,7 @@ https://vimeo.com/53221560
 <p>The process ends when all reachable web pages have been crawled or the memory of the computer is exhausted.</p>
 <p><b>Exercise 5.10</b>: Rewrite <code>topoSort</code> to use maps instead of slices and eliminate the initial sort.  Verify that the results, though nondeterministic, are valid topological orderings.</p>
 <p><b>Exercise 5.11</b>: The instructor of the linear algebra course decides that calculus is now a prerequisite. Extend the <code>topoSort</code> function to report cycles.</p>
-<p><b>Exercise 5.12</b>: The <code>startElement</code> and <code>endElement</code> functions in <code>gopl.io/ch5/outline2</code> (<a href="#Section-5.5" >§5.5</a>) share a global variable, <code>depth</code>. Turn them into anonymous functions that share a variable local to the <code>outline</code> function.</p>
+<p><b>Exercise 5.12</b>: The <code>startElement</code> and <code>endElement</code> functions in <code>gopl.io/ch5/outline2</code> (<a href="#section-5.5" >§5.5</a>) share a global variable, <code>depth</code>. Turn them into anonymous functions that share a variable local to the <code>outline</code> function.</p>
 <p><b>Exercise 5.13</b>: Modify <code>crawl</code> to make local copies of the pages it finds, creating directories as necessary. Don’t make copies of pages that come from a different domain. For example, if the original page comes from <a href="https://golang.org" >golang.org</a>, save all files from there, but exclude ones from <a href="https://vimeo.com" >vimeo.com</a>.</p>
 <p><b>Exercise 5.14</b>: Use the <code>breadthFirst</code> function to explore a different structure. For example, you could use the course dependencies from the <code>topoSort</code> example (a directed graph), the file system hierarchy on your computer (a tree), or a list of bus or subway routes downloaded from your city government’s web site (an undirected graph).</p>
 </div>
@@ -4894,7 +4894,7 @@ https://vimeo.com/53221560
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>or to unlock a mutex (<a href="#Section-9.2" >§9.2</a>):</p>
+<p>or to unlock a mutex (<a href="#section-9.2" >§9.2</a>):</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">mu</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
 <span class="kd">var</span> <span class="nx">m</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
 
@@ -4977,7 +4977,7 @@ https://vimeo.com/53221560
   <span class="c1">// ...process f...
 </span><span class="c1"></span><span class="p">}</span>
 </code></pre>
-<p>The example below is an improved <code class="command" >fetch</code> program (<a href="#Section-1.5" >§1.5</a>) that writes the HTTP response to a local file instead of to the standard output. It derives the file name from the last component of the URL path, which it obtains using the <code>path.Base</code> function.</p>
+<p>The example below is an improved <code class="command" >fetch</code> program (<a href="#section-1.5" >§1.5</a>) that writes the HTTP response to a local file instead of to the standard output. It derives the file name from the last component of the URL path, which it obtains using the <code>path.Base</code> function.</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch5/fetch/main.go" >gopl.io/ch5/fetch</a></h1>
 <pre class="code" ><code class="chroma" ><span class="c1">// Fetch downloads the URL and returns the
@@ -5326,7 +5326,7 @@ defer 3
 <p>Or the receiver argument has type <code>*T</code> and the receiver parameter has type <code>T</code>. The compiler implicitly dereferences the receiver, in other words, loads the value:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">pptr</span><span class="p">.</span><span class="nx">Distance</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span> <span class="c1">// implicit (*pptr)
 </span><span class="c1"></span></code></pre>
-<p>If all the methods of a named type <code>T</code> have a receiver type of <code>T</code> itself (not <code>*T</code>), it is safe to copy instances of that type; calling any of its methods necessarily makes a copy. For example, <code>time.Duration</code> values are liberally copied, including as arguments to functions. But if any method has a pointer receiver, you should avoid copying instances of <code>T</code> because doing so may violate internal invariants. For example, copying an instance of <code>bytes.Buffer</code> would cause the original and the copy to alias (<a href="#Section-2.3.2" >§2.3.2</a>) the same underlying array of bytes. Subsequent method calls would have unpredictable effects.</p>
+<p>If all the methods of a named type <code>T</code> have a receiver type of <code>T</code> itself (not <code>*T</code>), it is safe to copy instances of that type; calling any of its methods necessarily makes a copy. For example, <code>time.Duration</code> values are liberally copied, including as arguments to functions. But if any method has a pointer receiver, you should avoid copying instances of <code>T</code> because doing so may violate internal invariants. For example, copying an instance of <code>bytes.Buffer</code> would cause the original and the copy to alias (<a href="#section-2.3.2" >§2.3.2</a>) the same underlying array of bytes. Subsequent method calls would have unpredictable effects.</p>
 </div>
 <h4 id="section-6.2.1" >Nil Is a Valid Receiver Value</h4>
 <div class="hBody-4" >
@@ -5458,7 +5458,7 @@ defer 3
 </code></pre>
 <p>then a value of this type would have all the methods of <code>Point</code>, all the methods of <code>RGBA</code>, and any additional methods declared on <code>ColoredPoint</code> directly. When the compiler resolves a selector such as <code>p.ScaleBy</code> to a method, it first looks for a directly declared method named <code>ScaleBy</code>, then for methods promoted once from <code>ColoredPoint</code>’s embedded fields, then for methods promoted twice from embedded fields within <code>Point</code> and <code>RGBA</code>, and so on. The compiler reports an error if the selector was ambiguous because two methods were promoted from the same rank.</p>
 <p>Methods can be declared only on named types (like <code>Point</code>) and pointers to them (<code>*Point</code>), but thanks to embedding, it’s possible and sometimes useful for <em>unnamed</em> struct types to have methods too.</p>
-<p>Here’s a nice trick to illustrate. This example shows part of a simple cache implemented using two package-level variables, a mutex (<a href="#Section-9.2" >§9.2</a>) and the map that it guards:</p>
+<p>Here’s a nice trick to illustrate. This example shows part of a simple cache implemented using two package-level variables, a mutex (<a href="#section-9.2" >§9.2</a>) and the map that it guards:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="p">(</span>
   <span class="nx">mu</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span> <span class="c1">// guards mapping
 </span><span class="c1"></span>  <span class="nx">mapping</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">)</span>
@@ -5715,7 +5715,7 @@ defer 3
 <div class="hBody-2" >
 <p>Interface types express generalizations or abstractions about the behaviors of other types. By generalizing, interfaces let us write functions that are more flexible and adaptable because they are not tied to the details of one particular implementation.</p>
 <p>Many object-oriented languages have some notion of interfaces, but what makes Go’s interfaces so distinctive is that they are <em>satisfied implicitly</em>. In other words, there’s no need to declare all the interfaces that a given concrete type satisfies; simply possessing the necessary methods is enough. This design lets you create new interfaces that are satisfied by existing concrete types without changing the existing types, which is particularly useful for types defined in packages that you don’t control.</p>
-<p>In this chapter, we’ll start by looking at the basic mechanics of interface types and their values.  Along the way, we’ll study several important interfaces from the standard library. Many Go programs make as much use of standard interfaces as they do of their own ones. Finally, we’ll look at <em>type assertions</em> (<a href="#Section-7.10" >§7.10</a>) and <em>type switches</em> (<a href="#Section-7.13" >§7.13</a>) and see how they enable a different kind of generality.</p>
+<p>In this chapter, we’ll start by looking at the basic mechanics of interface types and their values.  Along the way, we’ll study several important interfaces from the standard library. Many Go programs make as much use of standard interfaces as they do of their own ones. Finally, we’ll look at <em>type assertions</em> (<a href="#section-7.10" >§7.10</a>) and <em>type switches</em> (<a href="#section-7.13" >§7.13</a>) and see how they enable a different kind of generality.</p>
 </div>
 <h3 id="section-7.1" >Interfaces as Contracts</h3>
 <div class="hBody-3" >
@@ -5790,7 +5790,7 @@ defer 3
 <p><b>Exercise 7.2</b>: Write a function <code>CountingWriter</code> with the signature below that, given an <code>io.Writer</code>, returns a new <code>Writer</code> that wraps the original, and a pointer to an <code>int64</code> variable that at any moment contains the number of bytes written to the new <code>Writer</code>.</p>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span> <span class="nx">CountingWriter</span><span class="p">(</span><span class="nx">w</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Writer</span><span class="p">)</span> <span class="p">(</span><span class="nx">io</span><span class="p">.</span><span class="nx">Writer</span><span class="p">,</span> <span class="o">*</span><span class="kt">int64</span><span class="p">)</span>
 </code></pre>
-<p><b>Exercise 7.3</b>: Write a <code>String</code> method for the <code>*tree</code> type in <code>gopl.io/ch4/treesort</code> (<a href="#Section-4.4" >§4.4</a>) that reveals the sequence of values in the tree.</p>
+<p><b>Exercise 7.3</b>: Write a <code>String</code> method for the <code>*tree</code> type in <code>gopl.io/ch4/treesort</code> (<a href="#section-4.4" >§4.4</a>) that reveals the sequence of values in the tree.</p>
 </div>
 <h3 id="section-7.2" >Interface Types</h3>
 <div class="hBody-3" >
@@ -5831,7 +5831,7 @@ defer 3
 <span class="p">}</span>
 </code></pre>
 <p>All three declarations have the same effect. The order in which the methods appear is immaterial. All that matters is the set of methods.</p>
-<p><b>Exercise 7.4</b>: The <code>strings.NewReader</code> function returns a value that satisfies the <code>io.Reader</code> interface (and others) by reading from its argument, a string. Implement a simple version of <code>NewReader</code> yourself, and use it to make the HTML parser (<a href="#Section-5.2" >§5.2</a>) take input from a string.</p>
+<p><b>Exercise 7.4</b>: The <code>strings.NewReader</code> function returns a value that satisfies the <code>io.Reader</code> interface (and others) by reading from its argument, a string. Implement a simple version of <code>NewReader</code> yourself, and use it to make the HTML parser (<a href="#section-5.2" >§5.2</a>) take input from a string.</p>
 <p><b>Exercise 7.5</b>: The <code>LimitReader</code> function in the <code>io</code> package accepts an <code>io.Reader</code> <code>r</code> and a number of bytes <code>n</code>, and returns another <code>Reader</code> that reads from <code>r</code> but reports an end-of-file condition after <code>n</code> bytes. Implement it.</p>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span> <span class="nx">LimitReader</span><span class="p">(</span><span class="nx">r</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span><span class="p">,</span> <span class="nx">n</span> <span class="kt">int64</span><span class="p">)</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span>
 </code></pre>
@@ -5839,7 +5839,7 @@ defer 3
 <h3 id="section-7.3" >Interface Satisfaction</h3>
 <div class="hBody-3" >
 <p>A type <em>satisfies</em> an interface if it possesses all the methods the interface requires. For example, an <code>*os.File</code> satisfies <code>io.Reader</code>, <code>Writer</code>, <code>Closer</code>, and <code>ReadWriter</code>. A <code> *bytes.Buffer</code> satisfies <code>Reader</code>, <code>Writer</code>, and <code>ReadWriter</code>, but does not satisfy <code>Closer</code> because it does not have a <code>Close</code> method. As a shorthand, Go programmers often say that a concrete type <q>is a</q> particular interface type, meaning that it satisfies the interface. For example, a <code>*bytes.Buffer</code> is an <code>io.Writer</code>; an <code>*os.File</code> is an <code>io.ReadWriter</code>.</p>
-<p>The assignability rule (<a href="#Section-2.4.2" >§2.4.2</a>) for interfaces is very simple: an expression may be assigned to an interface only if its type satisfies the interface. So:</p>
+<p>The assignability rule (<a href="#section-2.4.2" >§2.4.2</a>) for interfaces is very simple: an expression may be assigned to an interface only if its type satisfies the interface. So:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">w</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Writer</span>
 <span class="nx">w</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span>           <span class="c1">// OK: *os.File has Write method
 </span><span class="c1"></span><span class="nx">w</span> <span class="p">=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span><span class="p">)</span>   <span class="c1">// OK: *bytes.Buffer has Write method
@@ -5869,7 +5869,7 @@ defer 3
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">_</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Stringer</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">s</span> <span class="c1">// OK
 </span><span class="c1"></span><span class="kd">var</span> <span class="nx">_</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Stringer</span> <span class="p">=</span> <span class="nx">s</span>  <span class="c1">// compile error: IntSet lacks String method
 </span><span class="c1"></span></code></pre>
-<p><a href="#section-12.8" >Section 12.8</a> includes a program that prints the methods of an arbitrary value, and the <code class="command" >godoc -analysis=type</code> tool (<a href="#Section-10.7.4" >§10.7.4</a>) displays the methods of each type and the relationship between interfaces and concrete types.</p>
+<p><a href="#section-12.8" >Section 12.8</a> includes a program that prints the methods of an arbitrary value, and the <code class="command" >godoc -analysis=type</code> tool (<a href="#section-10.7.4" >§10.7.4</a>) displays the methods of each type and the relationship between interfaces and concrete types.</p>
 <p>Like an envelope that wraps and conceals the letter it holds, an interface wraps and conceals the concrete type and value that it holds. Only the methods revealed by the interface type may be called, even if the concrete type has others:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello&#34;</span><span class="p">))</span> <span class="c1">// OK: *os.File has Write method
 </span><span class="c1"></span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>                <span class="c1">// OK: *os.File has Close method
@@ -5899,7 +5899,7 @@ defer 3
 </span><span class="c1"></span><span class="kd">var</span> <span class="nx">_</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Writer</span> <span class="p">=</span> <span class="p">(</span><span class="o">*</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span><span class="p">)(</span><span class="kc">nil</span><span class="p">)</span>
 </code></pre>
 <p>Non-empty interface types such as <code>io.Writer</code> are most often satisfied by a pointer type, particularly when one or more of the interface methods implies some kind of mutation to the receiver, as the <code>Write</code> method does. A pointer to a struct is an especially common methodbearing type.</p>
-<p>But pointer types are by no means the only types that satisfy interfaces, and even interfaces with mutator methods may be satisfied by one of Go’s other reference types. We’ve seen examples of slice types with methods (<code>geometry.Path</code>, <a href="#Section-6.1" >§6.1</a>) and map types with methods (<code>url.Values</code>, <a href="#Section-6.2.1" >§6.2.1</a>), and later we’ll see a function type with methods (<code>http.HandlerFunc</code>, <a href="#Section-7.7" >§7.7</a>). Even basic types may satisfy interfaces; as we well see in <a href="#section-7.4" >Section 7.4</a>, <code>time.Duration</code> satisfies <code>fmt.Stringer</code>.</p>
+<p>But pointer types are by no means the only types that satisfy interfaces, and even interfaces with mutator methods may be satisfied by one of Go’s other reference types. We’ve seen examples of slice types with methods (<code>geometry.Path</code>, <a href="#section-6.1" >§6.1</a>) and map types with methods (<code>url.Values</code>, <a href="#section-6.2.1" >§6.2.1</a>), and later we’ll see a function type with methods (<code>http.HandlerFunc</code>, <a href="#section-7.7" >§7.7</a>). Even basic types may satisfy interfaces; as we well see in <a href="#section-7.4" >Section 7.4</a>, <code>time.Duration</code> satisfies <code>fmt.Stringer</code>.</p>
 <p>A concrete type may satisfy many unrelated interfaces. Consider a program that organizes or sells digitized cultural artifacts like music, films, and books. It might define the following set of concrete types:</p>
 <div class="pre-block" >
 <pre class="pre" >Album
@@ -5987,7 +5987,7 @@ Track
 <span class="p">}</span>
 </code></pre>
 <p>The <code>String</code> method formats the flag’s value for use in command-line help messages; thus every <code>flag.Value</code> is also a <code>fmt.Stringer</code>. The <code>Set</code> method parses its string argument and updates the flag value. In effect, the <code>Set</code> method is the inverse of the <code>String</code> method, and it is good practice for them to use the same notation.</p>
-<p>Let’s define a <code>celsiusFlag</code> type that allows a temperature to be specified in Celsius, or in Fahrenheit with an appropriate conversion. Notice that <code>celsiusFlag</code> embeds a <code>Celsius</code> (<a href="#Section-2.5" >§2.5</a>), thereby getting a <code>String</code> method for free. To satisfy <code>flag.Value</code>, we need only declare the <code>Set</code> method:</p>
+<p>Let’s define a <code>celsiusFlag</code> type that allows a temperature to be specified in Celsius, or in Fahrenheit with an appropriate conversion. Notice that <code>celsiusFlag</code> embeds a <code>Celsius</code> (<a href="#section-2.5" >§2.5</a>), thereby getting a <code>String</code> method for free. To satisfy <code>flag.Value</code>, we need only declare the <code>Set</code> method:</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch7/tempconv/tempconv.go" >gopl.io/ch7/tempconv</a></h1>
 <pre class="code" ><code class="chroma" ><span class="c1">// *celsiusFlag satisfies the flag.Value interface.
@@ -6186,7 +6186,7 @@ value ┃       nil       ┃
 </pre>
 </div>
 </div>
-<p>As before, the dynamic dispatch mechanism determines that <code>(*bytes.Buffer).Write</code> must be called but this time with a receiver value that is nil. For some types, such as <code>*os.File</code>, <code>nil</code> is a valid receiver (<a href="#Section-6.2.1" >§6.2.1</a>), but <code>*bytes.Buffer</code> is not among them. The method is called, but it panics as it tries to access the buffer.</p>
+<p>As before, the dynamic dispatch mechanism determines that <code>(*bytes.Buffer).Write</code> must be called but this time with a receiver value that is nil. For some types, such as <code>*os.File</code>, <code>nil</code> is a valid receiver (<a href="#section-6.2.1" >§6.2.1</a>), but <code>*bytes.Buffer</code> is not among them. The method is called, but it panics as it tries to access the buffer.</p>
 <p>The problem is that although a nil <code>*bytes.Buffer</code> pointer has the methods needed to satisfy the interface, it doesn’t satisfy the <em>behavioral</em> requirements of the interface. In particular, the call violates the implicit precondition of <code>(*bytes.Buffer).Write</code> that its receiver is not nil, so assigning the nil pointer to the interface was a mistake. The solution is to change the type of <code>buf</code> in <code>main</code> to <code>io.Writer</code>, thereby avoiding the assignment of the dysfunctional value to the interface in the first place:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">buf</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Writer</span>
 <span class="k">if</span> <span class="nx">debug</span> <span class="p">{</span>
@@ -6294,7 +6294,7 @@ Go          Delilah         From the Roots Up  2012  3m38s
 Go Ahead    Alicia Keys     As I Am            2007  4m36s
 </pre>
 </div>
-<p>The <code>sort.Reverse</code> function deserves a closer look since it uses composition (<a href="#Section-6.3" >§6.3</a>), which is an important idea. The <code>sort</code> package defines an unexported type <code>reverse</code>, which is a struct that embeds a <code>sort.Interface</code>. The <code>Less</code> method for <code>reverse</code> calls the <code>Less</code> method of the embedded <code>sort.Interface</code> value, but with the indices flipped, reversing the order of the sort results.</p>
+<p>The <code>sort.Reverse</code> function deserves a closer look since it uses composition (<a href="#section-6.3" >§6.3</a>), which is an important idea. The <code>sort</code> package defines an unexported type <code>reverse</code>, which is a struct that embeds a <code>sort.Interface</code>. The <code>Less</code> method for <code>reverse</code> calls the <code>Less</code> method of the embedded <code>sort.Interface</code> value, but with the indices flipped, reversing the order of the sort results.</p>
 <pre class="code" ><code class="chroma" ><span class="kn">package</span> <span class="nx">sort</span>
 
 <span class="kd">type</span> <span class="nx">reverse</span> <span class="kd">struct</span><span class="p">{</span> <span class="nx">Interface</span> <span class="p">}</span> <span class="c1">// that is, sort.Interface
@@ -6367,12 +6367,12 @@ Ready 2 Go  Martin Solveig  Smash              2011  4m24s
 </span><span class="c1"></span></code></pre>
 <p>For convenience, the <code>sort</code> package provides versions of its functions and types specialized for <code>[]int</code>, <code>[]string</code>, and <code>[]float64</code> using their natural orderings. For other types, such as <code>[]int64</code> or <code>[]uint</code>, we’re on our own, though the path is short.</p>
 <p><b>Exercise 7.8</b>: Many GUIs provide a table widget with a stateful multi-tier sort: the primary sort key is the most recently clicked column head, the secondary sort key is the second-most recently clicked column head, and so on. Define an implementation of <code>sort.Interface</code> for use by such a table. Compare that approach with repeated sorting using <code>sort.Stable</code>.</p>
-<p><b>Exercise 7.9</b>: Use the <code>html/template</code> package (<a href="#Section-4.6" >§4.6</a>) to replace <code>printTracks</code> with a function that displays the tracks as an HTML table. Use the solution to the previous exercise to arrange that each click on a column head makes an HTTP request to sort the table.</p>
+<p><b>Exercise 7.9</b>: Use the <code>html/template</code> package (<a href="#section-4.6" >§4.6</a>) to replace <code>printTracks</code> with a function that displays the tracks as an HTML table. Use the solution to the previous exercise to arrange that each click on a column head makes an HTTP request to sort the table.</p>
 <p><b>Exercise 7.10</b>: The <code>sort.Interface</code> type can be adapted to other uses. Write a function <code>IsPalindrome(s sort.Interface) bool</code> that reports whether the sequence <code>s</code> is a palindrome, in other words, reversing the sequence would not change it. Assume that the elements at indices <code>i</code> and <code>j</code> are equal if <code>!s.Less(i, j) &amp;&amp; !s.Less(j, i)</code>.</p>
 </div>
 <h3 id="section-7.7" >The <code>http.Handler</code> Interface</h3>
 <div class="hBody-3" >
-<p>In <a href="#chapter-1" >Chapter 1</a>, we saw a glimpse of how to use the <code>net/http</code> package to implement web clients (<a href="#Section-1.5" >§1.5</a>) and servers (<a href="#Section-1.7" >§1.7</a>). In this section, we’ll look more closely at the server API, whose foundation is the <code>http.Handler</code> interface:</p>
+<p>In <a href="#chapter-1" >Chapter 1</a>, we saw a glimpse of how to use the <code>net/http</code> package to implement web clients (<a href="#section-1.5" >§1.5</a>) and servers (<a href="#section-1.7" >§1.7</a>). In this section, we’ll look more closely at the server API, whose foundation is the <code>http.Handler</code> interface:</p>
 <div class="figure" >
 <h1 class="figure"><code>net/http</code></h1>
 <pre class="code" ><code class="chroma" ><span class="kn">package</span> <span class="nx">http</span>
@@ -6445,7 +6445,7 @@ socks: $5.00
 <pre class="code" ><code class="chroma" ><span class="nx">msg</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&#34;no such page: %s\n&#34;</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">URL</span><span class="p">)</span>
 <span class="nx">http</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nx">StatusNotFound</span><span class="p">)</span> <span class="c1">// 404
 </span><span class="c1"></span></code></pre>
-<p>The case for <code>/price</code> calls the URL’s <code>Query</code> method to parse the HTTP request parameters as a map, or more precisely, a multimap of type <code>url.Values</code> (<a href="#Section-6.2.1" >§6.2.1</a>) from the <code>net/url</code> package. It then finds the first <code>item</code> parameter and looks up its price. If the item wasn’t found, it reports an error.</p>
+<p>The case for <code>/price</code> calls the URL’s <code>Query</code> method to parse the HTTP request parameters as a map, or more precisely, a multimap of type <code>url.Values</code> (<a href="#section-6.2.1" >§6.2.1</a>) from the <code>net/url</code> package. It then finds the first <code>item</code> parameter and looks up its price. If the item wasn’t found, it reports an error.</p>
 <p>Here’s an example session with the new server:</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>go build gopl.io/ch7/http2
 </span><span class="in" ><span class="prompt" >&gt; </span>go build gopl.io/ch1/fetch
@@ -6495,7 +6495,7 @@ socks: $5.00
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>Let’s focus on the two calls to <code>mux.Handle</code> that register the handlers. In the first one, <code>db.list</code> is a method value (<a href="#Section-6.4" >§6.4</a>), that is, a value of type</p>
+<p>Let’s focus on the two calls to <code>mux.Handle</code> that register the handlers. In the first one, <code>db.list</code> is a method value (<a href="#section-6.4" >§6.4</a>), that is, a value of type</p>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span>
 </code></pre>
 <p>that, when called, invokes the <code>database.list</code> method with the receiver value <code>db</code>. So <code>db.list</code> is a function that implements handler-like behavior, but since it has no methods, it doesn’t satisfy the <code>http.Handler</code> interface and can’t be passed directly to <code>mux.Handle</code>.</p>
@@ -6534,7 +6534,7 @@ socks: $5.00
 </div>
 <p>Finally, an important reminder: as we mentioned in <a href="#section-1.7" >Section 1.7</a>, the web server invokes each handler in a new goroutine, so handlers must take precautions such as <em>locking</em> when accessing variables that other goroutines, including other requests to the same handler, may be accessing. We’ll talk about concurrency in the next two chapters.</p>
 <p><b>Exercise 7.11</b>: Add additional handlers so that clients can create, read, update, and delete database entries. For example, a request of the form <code>/update?item=socks&amp;price=6</code> will update the price of an item in the inventory and report an error if the item does not exist or if the price is invalid. (Warning: this change introduces concurrent variable updates.)</p>
-<p><b>Exercise 7.12</b>: Change the handler for <code>/list</code> to print its output as an HTML table, not text.  You may find the <code>html/template</code> package (<a href="#Section-4.6" >§4.6</a>) useful.</p>
+<p><b>Exercise 7.12</b>: Change the handler for <code>/list</code> to print its output as an HTML table, not text.  You may find the <code>html/template</code> package (<a href="#section-4.6" >§4.6</a>) useful.</p>
 </div>
 <h3 id="section-7.8" >The <code>error</code> Interface</h3>
 <div class="hBody-3" >
@@ -6734,7 +6734,7 @@ value ┃        2        ┃
 <span class="p">}</span>
 </code></pre>
 <p>For each entry in the table, the test parses the expression, evaluates it in the environment, and prints the result. We don’t have space to show the <code>Parse</code> function here, but you’ll find it if you download the package using <code class="command" >go get</code>.</p>
-<p>The <code class="command" >go test</code> command (<a href="#Section-11.1" >§11.1</a>) runs a package’s tests:</p>
+<p>The <code class="command" >go test</code> command (<a href="#section-11.1" >§11.1</a>) runs a package’s tests:</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>go <span class="nb">test</span> -v gopl.io/ch7/eval
 </span></code></pre>
 <p>The <code>-v</code> flag lets us see the printed output of the test, which is normally suppressed for a successful test like this one. Here is the output of the test’s <code>fmt.Printf</code> statements:</p>
@@ -6952,7 +6952,7 @@ sqrt(1, 2)        call to sqrt has 2 args, want 1
 <span class="c1">// Output:
 </span><span class="c1">// &amp;os.PathError{Op:&#34;open&#34;, Path:&#34;/no/such/file&#34;, Err:0x2}
 </span><span class="c1"></span></code></pre>
-<p>That’s how the three helper functions work. For example, <code>IsNotExist</code>, shown below, reports whether an error is equal to <code>syscall.ENOENT</code> (<a href="#Section-7.8" >§7.8</a>) or to the distinguished error <code>os.ErrNotExist</code> (see <code>io.EOF</code> in <a href="#Section-5.4.2" >§5.4.2</a>), or is a <code>*PathError</code> whose underlying error is one of those two.</p>
+<p>That’s how the three helper functions work. For example, <code>IsNotExist</code>, shown below, reports whether an error is equal to <code>syscall.ENOENT</code> (<a href="#section-7.8" >§7.8</a>) or to the distinguished error <code>os.ErrNotExist</code> (see <code>io.EOF</code> in <a href="#section-5.4.2" >§5.4.2</a>), or is a <code>*PathError</code> whose underlying error is one of those two.</p>
 <pre class="code" ><code class="chroma" ><span class="kn">import</span> <span class="p">(</span>
   <span class="s">&#34;errors&#34;</span>
   <span class="s">&#34;syscall&#34;</span>
@@ -7084,7 +7084,7 @@ sqrt(1, 2)        call to sqrt has 2 args, want 1
 </span><span class="c1"></span><span class="k">default</span><span class="p">:</span>        <span class="c1">// ...
 </span><span class="c1"></span><span class="p">}</span>
 </code></pre>
-<p>As with an ordinary switch statement (<a href="#Section-1.8" >§1.8</a>), cases are considered in order and, when a match is found, the case’s body is executed. Case order becomes significant when one or more case types are interfaces, since then there is a possibility of two cases matching. The position of the <code>default</code> case relative to the others is immaterial. No <code>fallthrough</code> is allowed.</p>
+<p>As with an ordinary switch statement (<a href="#section-1.8" >§1.8</a>), cases are considered in order and, when a match is found, the case’s body is executed. Case order becomes significant when one or more case types are interfaces, since then there is a possibility of two cases matching. The position of the <code>default</code> case relative to the others is immaterial. No <code>fallthrough</code> is allowed.</p>
 <p>Notice that in the original function, the logic for the <code>bool</code> and <code>string</code> cases needs access to the value extracted by the type assertion. Since this is typical, the type switch statement has an extended form that binds the extracted value to a new variable within each case:</p>
 <pre class="code" ><code class="chroma" ><span class="k">switch</span> <span class="nx">x</span> <span class="o">:=</span> <span class="nx">x</span><span class="p">.(</span><span class="kd">type</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span>
 </code></pre>
@@ -7232,7 +7232,7 @@ html body div div h2: B Definitions for Character Normalization
 </div>
 <h3 id="section-7.15" >A Few Words of Advice</h3>
 <div class="hBody-3" >
-<p>When designing a new package, novice Go programmers often start by creating a set of interfaces and only later define the concrete types that satisfy them. This approach results in many interfaces, each of which has only a single implementation. Don’t do that. Such interfaces are unnecessary abstractions; they also have a run-time cost. You can restrict which methods of a type or fields of a struct are visible outside a package using the export mechanism (<a href="#Section-6.6" >§6.6</a>).  Interfaces are only needed when there are two or more concrete types that must be dealt with in a uniform way.</p>
+<p>When designing a new package, novice Go programmers often start by creating a set of interfaces and only later define the concrete types that satisfy them. This approach results in many interfaces, each of which has only a single implementation. Don’t do that. Such interfaces are unnecessary abstractions; they also have a run-time cost. You can restrict which methods of a type or fields of a struct are visible outside a package using the export mechanism (<a href="#section-6.6" >§6.6</a>).  Interfaces are only needed when there are two or more concrete types that must be dealt with in a uniform way.</p>
 <p>We make an exception to this rule when an interface is satisfied by a single concrete type but that type cannot live in the same package as the interface because of its dependencies. In that case, an interface is a good way to decouple two packages.</p>
 <p>Because interfaces are used in Go only when they are satisfied by two or more types, they necessarily abstract away from the details of any particular implementation. The result is smaller interfaces with fewer, simpler methods, often just one as with <code>io.Writer</code> or <code>fmt.Stringer</code>. Small interfaces are easier to satisfy when new types come along. A good rule of thumb for interface design is <em>ask only for what you need</em>.</p>
 <p>This concludes our tour of methods and interfaces. Go has great support for the objectoriented style of programming, but this does not mean you need to use it exclusively. Not everything need be an object; standalone functions have their place, as do unencapsulated data types. Observe that together, the examples in the first five chapters of this book call no more than two dozen methods, like <code>input.Scan</code>, as opposed to ordinary function calls like <code>fmt.Printf</code>.</p>
@@ -7800,7 +7800,7 @@ Yooo-hooo!
 <p>If there is space for one cake between each cook, a cook may place a finished cake there and immediately start work on the next; this is analogous to a buffered channel with capacity 1. So long as the cooks work at about the same rate on average, most of these handovers proceed quickly, smoothing out transient differences in their respective rates. More space between cooks—larger buffers—can smooth out bigger transient variations in their rates without stalling the assembly line, such as happens when one cook takes a short break, then later rushes to catch up.</p>
 <p>On the other hand, if an earlier stage of the assembly line is consistently faster than the following stage, the buffer between them will spend most of its time full. Conversely, if the later stage is faster, the buffer will usually be empty. A buffer provides no benefit in this case.</p>
 <p>The assembly line metaphor is a useful one for channels and goroutines. For example, if the second stage is more elaborate, a single cook may not be able to keep up with the supply from the first cook or meet the demand from the third. To solve the problem, we could hire another cook to help the second, performing the same task but working independently. This is analogous to creating another goroutine communicating over the same channels.</p>
-<p>We don’t have space to show it here, but the <code>gopl.io/ch8/cake</code> package simulates this cake shop, with several parameters you can vary. It includes benchmarks (<a href="#Section-11.4" >§11.4</a>) for a few of the scenarios described above.</p>
+<p>We don’t have space to show it here, but the <code>gopl.io/ch8/cake</code> package simulates this cake shop, with several parameters you can vary. It includes benchmarks (<a href="#section-11.4" >§11.4</a>) for a few of the scenarios described above.</p>
 </div>
 <h3 id="section-8.5" >Looping in Parallel</h3>
 <div class="hBody-3" >
@@ -7883,7 +7883,7 @@ Yooo-hooo!
   <span class="k">return</span> <span class="kc">nil</span>
 <span class="p">}</span>
 </code></pre>
-<p>This function has a subtle bug. When it encounters the first non-nil error, it returns the error to the caller, leaving no goroutine draining the <code>errors</code> channel. Each remaining worker goroutine will block forever when it tries to send a value on that channel, and will never terminate. This situation, a goroutine leak (<a href="#Section-8.4.4" >§8.4.4</a>), may cause the whole program to get stuck or to run out of memory.</p>
+<p>This function has a subtle bug. When it encounters the first non-nil error, it returns the error to the caller, leaving no goroutine draining the <code>errors</code> channel. Each remaining worker goroutine will block forever when it tries to send a value on that channel, and will never terminate. This situation, a goroutine leak (<a href="#section-8.4.4" >§8.4.4</a>), may cause the whole program to get stuck or to run out of memory.</p>
 <p>The simplest solution is to use a buffered channel with sufficient capacity that no worker goroutine will block when it sends a message. (An alternative solution is to create another goroutine to drain the channel while the main goroutine returns the first error without delay.)</p>
 <p>The next version of <code>makeThumbnails</code> uses a buffered channel to return the names of the generated image files along with any errors.</p>
 <pre class="code" ><code class="chroma" ><span class="c1">// makeThumbnails5 makes thumbnails for the specified files in parallel.
@@ -7978,7 +7978,7 @@ Yooo-hooo!
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>The main function resembles <code>breadthFirst</code> (<a href="#Section-5.6" >§5.6</a>). As before, a worklist records the queue of items that need processing, each item being a list of URLs to crawl, but this time, instead of representing the queue using a slice, we use a channel. Each call to <code>crawl</code> occurs in its own goroutine and sends the links it discovers back to the worklist.</p>
+<p>The main function resembles <code>breadthFirst</code> (<a href="#section-5.6" >§5.6</a>). As before, a worklist records the queue of items that need processing, each item being a list of URLs to crawl, but this time, instead of representing the queue using a slice, we use a channel. Each call to <code>crawl</code> occurs in its own goroutine and sends the links it discovers back to the worklist.</p>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">worklist</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span>
 
@@ -8098,7 +8098,7 @@ https://golang.org/blog/
 </code></pre>
 </div>
 <p>The crawler goroutines are all fed by the same channel, <code>unseenLinks</code>. The main goroutine is responsible for de-duplicating items it receives from the worklist, and then sending each unseen one over the <code>unseenLinks</code> channel to a crawler goroutine.</p>
-<p>The <code>seen</code> map is <em>confined</em> within the main goroutine; that is, it can be accessed only by that goroutine. Like other forms of information hiding, confinement helps us reason about the correctness of a program. For example, local variables cannot be mentioned by name from outside the function in which they are declared; variables that do not escape (<a href="#Section-2.3.4" >§2.3.4</a>) from a function cannot be accessed from outside that function; and encapsulated fields of an object cannot be accessed except by the methods of that object. In all cases, information hiding helps to limit unintended interactions between parts of the program.</p>
+<p>The <code>seen</code> map is <em>confined</em> within the main goroutine; that is, it can be accessed only by that goroutine. Like other forms of information hiding, confinement helps us reason about the correctness of a program. For example, local variables cannot be mentioned by name from outside the function in which they are declared; variables that do not escape (<a href="#section-2.3.4" >§2.3.4</a>) from a function cannot be accessed from outside that function; and encapsulated fields of an object cannot be accessed except by the methods of that object. In all cases, information hiding helps to limit unintended interactions between parts of the program.</p>
 <p>Links found by <code>crawl</code> are sent to the worklist from a dedicated goroutine to avoid deadlock.</p>
 <p>To save space, we have not addressed the problem of termination in this example.</p>
 <p><b>Exercise 8.6</b>: Add depth-limiting to the concurrent crawler. That is, if the user sets <code>-depth=3</code>, then only URLs reachable by at most three links will be fetched.</p>
@@ -8192,7 +8192,7 @@ https://golang.org/blog/
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>The <code>time.Tick</code> function behaves as if it creates a goroutine that calls <code>time.Sleep</code> in a loop, sending an event each time it wakes up. When the countdown function above returns, it stops receiving events from <code>tick</code>, but the ticker goroutine is still there, trying in vain to send on a channel from which no goroutine is receiving—a <em>goroutine leak</em> (<a href="#Section-8.4.4" >§8.4.4</a>).</p>
+<p>The <code>time.Tick</code> function behaves as if it creates a goroutine that calls <code>time.Sleep</code> in a loop, sending an event each time it wakes up. When the countdown function above returns, it stops receiving events from <code>tick</code>, but the ticker goroutine is still there, trying in vain to send on a channel from which no goroutine is receiving—a <em>goroutine leak</em> (<a href="#section-8.4.4" >§8.4.4</a>).</p>
 <p>The <code>Tick</code> function is convenient, but it’s appropriate only when the ticks will be needed throughout the lifetime of the application. Otherwise, we should use this pattern:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">ticker</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">NewTicker</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
 
@@ -8333,7 +8333,7 @@ https://golang.org/blog/
 175931 files 62.2 GB
 213201 files 62.7 GB
 </span></code></pre>
-<p>However, it still takes too long to finish. There’s no reason why all the calls to <code>walkDir</code> can’t be done concurrently, thereby exploiting parallelism in the disk system. The third version of <code class="command" >du</code>, below, creates a new goroutine for each call to <code>walkDir</code>. It uses a <code>sync.WaitGroup</code> (<a href="#Section-8.5" >§8.5</a>) to count the number of calls to <code>walkDir</code> that are still active, and a closer goroutine to close the <code>fileSizes</code> channel when the counter drops to zero.</p>
+<p>However, it still takes too long to finish. There’s no reason why all the calls to <code>walkDir</code> can’t be done concurrently, thereby exploiting parallelism in the disk system. The third version of <code class="command" >du</code>, below, creates a new goroutine for each call to <code>walkDir</code>. It uses a <code>sync.WaitGroup</code> (<a href="#section-8.5" >§8.5</a>) to count the number of calls to <code>walkDir</code> that are still active, and a closer goroutine to close the <code>fileSizes</code> channel when the counter drops to zero.</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch8/du3/main.go" >gopl.io/ch8/du3</a></h1>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
@@ -8383,7 +8383,7 @@ https://golang.org/blog/
 <h3 id="section-8.9" >Cancellation</h3>
 <div class="hBody-3" >
 <p>Sometimes we need to instruct a goroutine to stop what it is doing, for example, in a web server performing a computation on behalf of a client that has disconnected.</p>
-<p>There is no way for one goroutine to terminate another directly, since that would leave all its shared variables in undefined states. In the rocket launch program (<a href="#Section-8.7" >§8.7</a>) we sent a single value on a channel named <code>abort</code>, which the countdown goroutine interpreted as a request to stop itself. But what if we need to cancel two goroutines, or an arbitrary number?</p>
+<p>There is no way for one goroutine to terminate another directly, since that would leave all its shared variables in undefined states. In the rocket launch program (<a href="#section-8.7" >§8.7</a>) we sent a single value on a channel named <code>abort</code>, which the countdown goroutine interpreted as a request to stop itself. But what if we need to cancel two goroutines, or an arbitrary number?</p>
 <p>One possibility might be to send as many events on the <code>abort</code> channel as there are goroutines to cancel. If some of the goroutines have already terminated themselves, however, our count will be too large, and our sends will get stuck. On the other hand, if those goroutines have spawned other goroutines, our count will be too small, and some goroutines will remain unaware of the cancellation. In general, it’s hard to know how many goroutines are working on our behalf at any given moment. Moreover, when a goroutine receives a value from the <code>abort</code> channel, it consumes that value so that other goroutines won’t see it. For cancellation, what we need is a reliable mechanism to <em>broadcast</em> an event over a channel so that many goroutines can see it <em>as</em> it occurs and can later see that it <em>has</em> occurred.</p>
 <p>Recall that after a channel has been closed and drained of all sent values, subsequent receive operations proceed immediately, yielding zero values. We can exploit this to create a broadcast mechanism: don’t send a value on the channel, close it.</p>
 <p>We can add cancellation to the <code class="command" >du</code> program from the previous section with a few simple changes. First, we create a cancellation channel on which no values are ever sent, but whose closure indicates that it is time for the program to stop what it is doing. We also define a utility function, <code>cancelled</code>, that checks or <em>polls</em> the cancellation state at the instant it is called.</p>
@@ -8572,7 +8572,7 @@ Welcome.
 </span></code></pre>
 </div>
 </div>
-<p>While hosting a chat session for <span class="math" >n</span> clients, this program runs <span class="math" >2n+2</span> concurrently communicating goroutines, yet it needs no explicit locking operations (<a href="#Section-9.2" >§9.2</a>). The <code>clients</code> map is confined to a single goroutine, the broadcaster, so it cannot be accessed concurrently. The only variables that are shared by multiple goroutines are channels and instances of <code>net.Conn</code>, both of which are <em>concurrency safe</em>. We’ll talk more about confinement, concurrency safety, and the implications of sharing variables across goroutines in the next chapter.</p>
+<p>While hosting a chat session for <span class="math" >n</span> clients, this program runs <span class="math" >2n+2</span> concurrently communicating goroutines, yet it needs no explicit locking operations (<a href="#section-9.2" >§9.2</a>). The <code>clients</code> map is confined to a single goroutine, the broadcaster, so it cannot be accessed concurrently. The only variables that are shared by multiple goroutines are channels and instances of <code>net.Conn</code>, both of which are <em>concurrency safe</em>. We’ll talk more about confinement, concurrency safety, and the implications of sharing variables across goroutines in the next chapter.</p>
 <p><b>Exercise 8.12</b>: Make the broadcaster announce the current set of clients to each new arrival.  This requires that the <code>clients</code> set and the <code>entering</code> and leaving channels record the client name too.</p>
 <p><b>Exercise 8.13</b>: Make the chat server disconnect idle clients, such as those that have sent no messages in the last five minutes. Hint: calling <code>conn.Close()</code> in another goroutine unblocks active <code>Read</code> calls such as the one done by <code>input.Scan()</code>.</p>
 <p><b>Exercise 8.14</b>: Change the chat server’s network protocol so that each client provides its name on entering. Use that name instead of the network address when prefixing each message with its sender’s identity.</p>
@@ -8670,7 +8670,7 @@ A2  &#34;= 200&#34;
 </span><span class="c1"></span><span class="kd">func</span> <span class="nx">Icon</span><span class="p">(</span><span class="nx">name</span> <span class="kt">string</span><span class="p">)</span> <span class="nx">image</span><span class="p">.</span><span class="nx">Image</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">icons</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="p">}</span>
 </code></pre>
 <p>In the example above, the <code>icons</code> variable is assigned during package initialization, which <em>happens before</em> the program’s main function starts running. Once initialized, <code>icons</code> is never modified. Data structures that are never modified or are immutable are inherently concurrency-safe and need no synchronization. But obviously we can’t use this approach if updates are essential, as with a bank account.</p>
-<p>The second way to avoid a data race is to avoid accessing the variable from multiple goroutines. This is the approach taken by many of the programs in the previous chapter. For example, the main goroutine in the concurrent web crawler (<a href="#Section-8.6" >§8.6</a>) is the sole goroutine that accesses the <code>seen</code> map, and the <code>broadcaster</code> goroutine in the chat server (<a href="#Section-8.10" >§8.10</a>) is the only goroutine that accesses the <code>clients</code> map. These variables are <em>confined</em> to a single goroutine.</p>
+<p>The second way to avoid a data race is to avoid accessing the variable from multiple goroutines. This is the approach taken by many of the programs in the previous chapter. For example, the main goroutine in the concurrent web crawler (<a href="#section-8.6" >§8.6</a>) is the sole goroutine that accesses the <code>seen</code> map, and the <code>broadcaster</code> goroutine in the chat server (<a href="#section-8.10" >§8.10</a>) is the only goroutine that accesses the <code>clients</code> map. These variables are <em>confined</em> to a single goroutine.</p>
 <p>Since other goroutines cannot access the variable directly, they must use a channel to send the confining goroutine a request to query or update the variable. This is what is meant by the Go mantra <q>Do not communicate by sharing memory; instead, share memory by communicating.</q> A goroutine that brokers access to a confined variable using channel requests is called a <em>monitor goroutine</em> for that variable. For example, the <code>broadcaster</code> goroutine monitors access to the <code>clients</code> map.</p>
 <p>Here’s the bank example rewritten with the <code>balance</code> variable confined to a monitor goroutine called <code>teller</code>:</p>
 <div class="figure" >
@@ -8781,7 +8781,7 @@ A2  &#34;= 200&#34;
 <span class="p">}</span>
 </code></pre>
 <p>In the example above, the <code>Unlock</code> executes <em>after</em> the return statement has read the value of <code>balance</code>, so the <code>Balance</code> function is concurrency-safe. As a bonus, we no longer need the local variable <code>b</code>.</p>
-<p>Furthermore, a deferred <code>Unlock</code> will run even if the critical section panics, which may be important in programs that make use of <code>recover</code> (<a href="#Section-5.10" >§5.10</a>). A <code>defer</code> is marginally more expensive than an explicit call to <code>Unlock</code>, but not enough to justify less clear code. As always with concurrent programs, favor clarity and resist premature optimization. Where possible, use <code>defer</code> and let critical sections extend to the end of a function.</p>
+<p>Furthermore, a deferred <code>Unlock</code> will run even if the critical section panics, which may be important in programs that make use of <code>recover</code> (<a href="#section-5.10" >§5.10</a>). A <code>defer</code> is marginally more expensive than an explicit call to <code>Unlock</code>, but not enough to justify less clear code. As always with concurrent programs, favor clarity and resist premature optimization. Where possible, use <code>defer</code> and let critical sections extend to the end of a function.</p>
 <p>Consider the <code>Withdraw</code> function below. On success, it reduces the balance by the specified amount and returns <code>true</code>. But if the account holds insufficient funds for the transaction, <code>Withdraw</code> restores the balance and returns <code>false</code>.</p>
 <pre class="code" ><code class="chroma" ><span class="c1">// NOTE: not atomic!
 </span><span class="c1"></span><span class="kd">func</span> <span class="nx">Withdraw</span><span class="p">(</span><span class="nx">amount</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
@@ -8837,7 +8837,7 @@ A2  &#34;= 200&#34;
 </span><span class="c1"></span><span class="kd">func</span> <span class="nx">deposit</span><span class="p">(</span><span class="nx">amount</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span> <span class="nx">balance</span> <span class="o">+=</span> <span class="nx">amount</span> <span class="p">}</span>
 </code></pre>
 <p>Of course, the <code>deposit</code> function shown here is so trivial that a realistic <code>Withdraw</code> function wouldn’t bother calling it, but nonetheless it illustrates the principle.</p>
-<p>Encapsulation (<a href="#Section-6.6" >§6.6</a>), by reducing unexpected interactions in a program, helps us maintain data structure invariants. For the same reason, encapsulation also helps us maintain concurrency invariants. When you use a mutex, make sure that both it and the variables it guards are not exported, whether they are package-level variables or the fields of a struct.</p>
+<p>Encapsulation (<a href="#section-6.6" >§6.6</a>), by reducing unexpected interactions in a program, helps us maintain data structure invariants. For the same reason, encapsulation also helps us maintain concurrency invariants. When you use a mutex, make sure that both it and the variables it guards are not exported, whether they are package-level variables or the fields of a struct.</p>
 </div>
 <h3 id="section-9.3" >Read/Write Mutexes: <code>sync.RWMutex</code></h3>
 <div class="hBody-3" >
@@ -9083,7 +9083,7 @@ ok gopl.io/ch9/memo1   1.257s
 <span class="nx">n</span><span class="p">.</span><span class="nx">Wait</span><span class="p">()</span>
 </code></pre>
 <p>The test runs much faster, but unfortunately it is unlikely to work correctly all the time. We may notice unexpected cache misses, or cache hits that return incorrect values, or even crashes.</p>
-<p>Worse, it is likely to work correctly <em>some</em> of the time, so we may not even notice that it has a problem. But if we run it with the <code>-race</code> flag, the race detector (<a href="#Section-9.6" >§9.6</a>) often prints a report such as this one:</p>
+<p>Worse, it is likely to work correctly <em>some</em> of the time, so we may not even notice that it has a problem. But if we run it with the <code>-race</code> flag, the race detector (<a href="#section-9.6" >§9.6</a>) often prints a report such as this one:</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>go <span class="nb">test</span> -run<span class="o">=</span>TestConcurrent -race -v gopl.io/ch9/memo1
 </span><span class="out" >=== RUN   TestConcurrent
 ...
@@ -9156,7 +9156,7 @@ FAIL    gopl.io/ch9/memo1   2.393s
 </code></pre>
 </div>
 <p>The performance improves again, but now we notice that some URLs are being fetched twice.  This happens when two or more goroutines call <code>Get</code> for the same URL at about the same time.  Both consult the cache, find no value there, and then call the slow function <code>f</code>. Then both of them update the map with the result they obtained. One of the results is overwritten by the other.</p>
-<p>Ideally we’d like to avoid this redundant work. This feature is sometimes called <em>duplicate suppression</em>. In the version of <code>Memo</code> below, each map element is a pointer to an <code>entry</code> struct.  Each <code>entry</code> contains the memoized result of a call to the function <code>f</code>, as before, but it additionally contains a channel called <code>ready</code>. Just after the <code>entry</code>’s <code>result</code> has been set, this channel will be closed, to <em>broadcast</em> (<a href="#Section-8.9" >§8.9</a>) to any other goroutines that it is now safe for them to read the result from the <code>entry</code>.</p>
+<p>Ideally we’d like to avoid this redundant work. This feature is sometimes called <em>duplicate suppression</em>. In the version of <code>Memo</code> below, each map element is a pointer to an <code>entry</code> struct.  Each <code>entry</code> contains the memoized result of a call to the function <code>f</code>, as before, but it additionally contains a channel called <code>ready</code>. Just after the <code>entry</code>’s <code>result</code> has been set, this channel will be closed, to <em>broadcast</em> (<a href="#section-8.9" >§8.9</a>) to any other goroutines that it is now safe for them to read the result from the <code>entry</code>.</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch9/memo4/memo.go" >gopl.io/ch9/memo4</a></h1>
 <pre class="code" ><code class="chroma" ><span class="kd">type</span> <span class="nx">entry</span> <span class="kd">struct</span> <span class="p">{</span>
@@ -9280,7 +9280,7 @@ FAIL    gopl.io/ch9/memo1   2.393s
 <p>A subsequent request for the same key finds the existing <code>entry</code> in the map, waits for the result to become ready, and sends the result through the response channel to the client goroutine that called <code>Get</code>. This is done by <code>(*entry).deliver</code>. The <code>call</code> and <code>deliver</code> methods must be called in their own goroutines to ensure that the monitor goroutine does not stop processing new requests.</p>
 <p>This example shows that it’s possible to build many concurrent structures using either of the two approaches—shared variables and locks, or communicating sequential processes— without excessive complexity.</p>
 <p>It’s not always obvious which approach is preferable in a given situation, but it’s worth knowing how they correspond. Sometimes switching from one approach to the other can make your code simpler.</p>
-<p><b>Exercise 9.3</b>: Extend the Func type and the <code>(*Memo).Get</code> method so that callers may provide an optional <code>done</code> channel through which they can cancel the operation (<a href="#Section-8.9" >§8.9</a>). The results of a cancelled <code>Func</code> call should not be cached.</p>
+<p><b>Exercise 9.3</b>: Extend the Func type and the <code>(*Memo).Get</code> method so that callers may provide an optional <code>done</code> channel through which they can cancel the operation (<a href="#section-8.9" >§8.9</a>). The results of a cancelled <code>Func</code> call should not be cached.</p>
 </div>
 <h3 id="section-9.8" >Goroutines and Threads</h3>
 <div class="hBody-3" >
@@ -9368,7 +9368,7 @@ FAIL    gopl.io/ch9/memo1   2.393s
 <span class="p">}</span>
 </code></pre>
 <p>Conventionally, the package name is the last segment of the import path, and as a result, two packages may have the same name even though their import paths necessarily differ. For example, the packages whose import paths are <code>math/rand</code> and <code>crypto/rand</code> both have the name <code>rand</code>. We’ll see how to use both in the same program in a moment.</p>
-<p>There are three major exceptions to the <q>last segment</q> convention. The first is that a package defining a command (an executable Go program) always has the name <code>main</code>, regardless of the package’s import path. This is a signal to <code class="command" >go build</code> (<a href="#Section-10.7.3" >§10.7.3</a>) that it must invoke the linker to make an executable file.</p>
+<p>There are three major exceptions to the <q>last segment</q> convention. The first is that a package defining a command (an executable Go program) always has the name <code>main</code>, regardless of the package’s import path. This is a signal to <code class="command" >go build</code> (<a href="#section-10.7.3" >§10.7.3</a>) that it must invoke the linker to make an executable file.</p>
 <p>The second exception is that some files in the directory may have the suffix <code>_test</code> on their package name if the file name ends with <code>_test.go</code>. Such a directory may define <em>two</em> packages: the usual one, plus another one called an <em>external test package</em>. The <code>_test</code> suffix signals to <code class="command" >go test</code> that it must build both packages, and it indicates which files belong to each package.  External test packages are used to avoid cycles in the import graph arising from dependencies of the test; they are covered in more detail in <a href="#section-11.2.4" >Section 11.2.4</a>.</p>
 <p>The third exception is that some tools for dependency management append version number suffixes to package import paths, such as <code>&#34;gopkg.in/yaml.v2&#34;</code>. The package name excludes the suffix, so in this case it would be just <code>yaml</code>.</p>
 </div>
@@ -9405,7 +9405,7 @@ FAIL    gopl.io/ch9/memo1   2.393s
 </div>
 <h3 id="section-10.5" >Blank Imports</h3>
 <div class="hBody-3" >
-<p>It is an error to import a package into a file but not refer to the name it defines within that file.  However, on occasion we must import a package merely for the side effects of doing so: evaluation of the initializer expressions of its package-level variables and execution of its <code>init</code> functions (<a href="#Section-2.6.2" >§2.6.2</a>). To suppress the <q>unused import</q> error we would otherwise encounter, we must use a renaming import in which the alternative name is <code>_</code>, the blank identifier. As usual, the blank identifier can never be referenced.</p>
+<p>It is an error to import a package into a file but not refer to the name it defines within that file.  However, on occasion we must import a package merely for the side effects of doing so: evaluation of the initializer expressions of its package-level variables and execution of its <code>init</code> functions (<a href="#section-2.6.2" >§2.6.2</a>). To suppress the <q>unused import</q> error we would otherwise encounter, we must use a renaming import in which the alternative name is <code>_</code>, the blank identifier. As usual, the blank identifier can never be referenced.</p>
 <pre class="code" ><code class="chroma" ><span class="kn">import</span> <span class="nx">_</span> <span class="s">&#34;image/png&#34;</span> <span class="c1">// register PNG decoder
 </span><span class="c1"></span></code></pre>
 <p>This is known as a <em>blank import</em>. It is most often used to implement a compile-time mechanism whereby the main program can enable optional features by blank-importing additional packages. First we’ll see how to use it, then we’ll see how it works.</p>
@@ -9442,7 +9442,7 @@ FAIL    gopl.io/ch9/memo1   2.393s
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>If we feed the output of <code>gopl.io/ch3/mandelbrot</code> (<a href="#Section-3.3" >§3.3</a>) to the converter program, it detects the PNG input format and writes a JPEG version of Figure 3.3.</p>
+<p>If we feed the output of <code>gopl.io/ch3/mandelbrot</code> (<a href="#section-3.3" >§3.3</a>) to the converter program, it detects the PNG input format and writes a JPEG version of Figure 3.3.</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>go build gopl.io/ch3/mandelbrot
 </span><span class="in" ><span class="prompt" >&gt; </span>go build gopl.io/ch10/jpeg
 </span><span class="in" ><span class="prompt" >&gt; </span>./mandelbrot <span class="p">|</span> ./jpeg &gt;mandelbrot.jpg
@@ -9611,7 +9611,7 @@ origin  https://go.googlesource.com/net (push)
 <h4 id="section-10.7.3" >Building Packages</h4>
 <div class="hBody-4" >
 <p>The <code class="command" >go build</code> command compiles each argument package. If the package is a library, the result is discarded; this merely checks that the package is free of compile errors. If the package is named <code>main</code>, <code class="command" >go build</code> invokes the linker to create an executable in the current directory; the name of the executable is taken from the last segment of the package’s import path.</p>
-<p>Since each directory contains one package, each executable program, or <em>command</em> in Unix terminology, requires its own directory. These directories are sometimes children of a directory named <code>cmd</code>, such as the <code>golang.org/x/tools/cmd/godoc</code> command which serves Go package documentation through a web interface (<a href="#Section-10.7.4" >§10.7.4</a>).</p>
+<p>Since each directory contains one package, each executable program, or <em>command</em> in Unix terminology, requires its own directory. These directories are sometimes children of a directory named <code>cmd</code>, such as the <code>golang.org/x/tools/cmd/godoc</code> command which serves Go package documentation through a web interface (<a href="#section-10.7.4" >§10.7.4</a>).</p>
 <p>Packages may be specified by their import paths, as we saw above, or by a relative directory name, which must start with a <code>.</code> or <code>..</code> segment even if this would not ordinarily be required.  If no argument is provided, the current directory is assumed. Thus the following commands build the same package, though each writes the executable to the directory in which <code class="command" >go build</code> is run:</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span><span class="nb">cd</span> <span class="nv">$GOPATH</span>/src/gopl.io/ch1/helloworld
 </span><span class="in" ><span class="prompt" >&gt; </span>go build
@@ -9807,7 +9807,7 @@ gopl.io/ch7/xmlselect
     ]
 }
 </span></code></pre>
-<p>The <code>-f</code> flag lets users customize the output format using the template language of package <code>text/template</code> (<a href="#Section-4.6" >§4.6</a>). This command prints the transitive dependencies of the <code>strconv</code> package, separated by spaces:</p>
+<p>The <code>-f</code> flag lets users customize the output format using the template language of package <code>text/template</code> (<a href="#section-4.6" >§4.6</a>). This command prints the transitive dependencies of the <code>strconv</code> package, separated by spaces:</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>go list -f <span class="s1">&#39;{{join .Deps &#34; &#34;}}&#39;</span> strconv
 </span><span class="out" >errors math runtime unicode/utf8 unsafe
 </span></code></pre>
@@ -9821,7 +9821,7 @@ compress/zlib -&gt; bufio compress/flate errors fmt hash hash/adler32 io
 </span></code></pre>
 <p>The <code class="command" >go list</code> command is useful for both one-off interactive queries and for build and test automation scripts. We’ll use it again in <a href="#section-11.2.4" >Section 11.2.4</a>. For more information, including the set of available fields and their meaning, see the output of <code class="command" >go help list</code>.</p>
 <p>In this chapter, we’ve explained all the important subcommands of the <code class="command" >go</code> tool—except one. In the next chapter, we’ll see how the <code class="command" >go test</code> command is used for testing Go programs.</p>
-<p><b>Exercise 10.4</b>: Construct a tool that reports the set of all packages in the workspace that transitively depend on the packages specified by the arguments. Hint: you will need to run <code class="command" >go list</code> twice, once for the initial packages and once for all packages. You may want to parse its JSON output using the <code class="command" >encoding/json</code> package (<a href="#Section-4.5" >§4.5</a>).</p>
+<p><b>Exercise 10.4</b>: Construct a tool that reports the set of all packages in the workspace that transitively depend on the packages specified by the arguments. Hint: you will need to run <code class="command" >go list</code> twice, once for the initial packages and once for all packages. You may want to parse its JSON output using the <code class="command" >encoding/json</code> package (<a href="#section-4.5" >§4.5</a>).</p>
 </div>
 <h2 id="chapter-11" >Testing</h2>
 <div class="hBody-2" >
@@ -10010,7 +10010,7 @@ FAIL    gopl.io/ch11/word1 0.014s
 <p>When we really must stop a test function, perhaps because some initialization code failed or to prevent a failure already reported from causing a confusing cascade of others, we use <code>t.Fatal</code> or <code>t.Fatalf</code>. These must be called from the same goroutine as the <code>Test</code> function, not from another one created during the test.</p>
 <p>Test failure messages are usually of the form <code>&#34;f(x) = y, want z&#34;</code>, where <code>f(x)</code> explains the attempted operation and its input, <code>y</code> is the actual result, and <code>z</code> the expected result. Where convenient, as in our palindrome example, actual Go syntax is used for the <code>f(x)</code> part. Displaying <code>x</code> is particularly important in a table-driven test, since a given assertion is executed many times with different values. Avoid boilerplate and redundant information. When testing a boolean function such as <code>IsPalindrome</code>, omit the want <code>z</code> part since it adds no information. If <code>x</code>, <code>y</code>, or <code>z</code> is lengthy, print a concise summar y of the relevant parts instead. The author of a test should strive to help the programmer who must diagnose a test failure.</p>
 <p><b>Exercise 11.1</b>: Write tests for the <code class="command" >charcount</code> program in <a href="#section-4.3" >Section 4.3</a>.</p>
-<p><b>Exercise 11.2</b>: Write a set of tests for <code>IntSet</code> (<a href="#Section-6.5" >§6.5</a>) that checks that its behavior after each operation is equivalent to a set based on built-in maps. Save your implementation for benchmarking in Exercise 11.7.</p>
+<p><b>Exercise 11.2</b>: Write a set of tests for <code>IntSet</code> (<a href="#section-6.5" >§6.5</a>) that checks that its behavior after each operation is equivalent to a set based on built-in maps. Save your implementation for benchmarking in Exercise 11.7.</p>
 </div>
 <h4 id="section-11.2.1" >Randomized Testing</h4>
 <div class="hBody-4" >
@@ -10500,7 +10500,7 @@ BenchmarkIsPalindrome    2000000   807 ns/op    128 B/op  1 allocs/op
 <p>The parameter <code>size</code>, which specifies the size of the input, varies across benchmarks but is constant within each benchmark. Resist the temptation to use the parameter <code>b.N</code> as the input size. Unless you interpret it as an iteration count for a fixed-size input, the results of your benchmark will be meaningless.</p>
 <p>Patterns revealed by comparative benchmarks are particularly useful during program design, but we don’t throw the benchmarks away when the program is working. As the program evolves, or its input grows, or it is deployed on new operating systems or processors with different characteristics, we can reuse those benchmarks to revisit design decisions.</p>
 <p><b>Exercise 11.6</b>: Write benchmarks to compare the <code>PopCount</code> implementation in <a href="#section-2.6.2" >Section 2.6.2</a> with your solutions to Exercise 2.4 and Exercise 2.5. At what point does the table-based approach break even?</p>
-<p><b>Exercise 11.7</b>: Write benchmarks for <code>Add</code>, <code>UnionWith</code>, and other methods of <code>*IntSet</code> (<a href="#Section-6.5" >§6.5</a>) using large pseudo-random inputs. How fast can you make these methods run? How does the choice of word size affect performance? How fast is <code>IntSet</code> compared to a set implementation based on the built-in map type?</p>
+<p><b>Exercise 11.7</b>: Write benchmarks for <code>Add</code>, <code>UnionWith</code>, and other methods of <code>*IntSet</code> (<a href="#section-6.5" >§6.5</a>) using large pseudo-random inputs. How fast can you make these methods run? How does the choice of word size affect performance? How fast is <code>IntSet</code> compared to a set implementation based on the built-in map type?</p>
 </div>
 <h3 id="section-11.5" >Profiling</h3>
 <div class="hBody-3" >
@@ -10612,7 +10612,7 @@ flat    flat%   sum%     cum   cum%
 </div>
 <h3 id="section-12.2" ><code>reflect.Type</code> and <code>reflect.Value</code></h3>
 <div class="hBody-3" >
-<p>Reflection is provided by the <code>reflect</code> package. It defines two important types, <code>Type</code> and <code>Value</code>. A <code>Type</code> represents a Go type. It is an interface with many methods for discriminating among types and inspecting their components, like the fields of a struct or the parameters of a function. The sole implementation of <code>reflect.Type</code> is the type descriptor (<a href="#Section-7.5" >§7.5</a>), the same entity that identifies the dynamic type of an interface value.</p>
+<p>Reflection is provided by the <code>reflect</code> package. It defines two important types, <code>Type</code> and <code>Value</code>. A <code>Type</code> represents a Go type. It is an interface with many methods for discriminating among types and inspecting their components, like the fields of a struct or the parameters of a function. The sole implementation of <code>reflect.Type</code> is the type descriptor (<a href="#section-7.5" >§7.5</a>), the same entity that identifies the dynamic type of an interface value.</p>
 <p>The <code>reflect.TypeOf</code> function accepts any <code>interface{}</code> and returns its dynamic type as a <code>reflect.Type</code>:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">t</span> <span class="o">:=</span> <span class="nx">reflect</span><span class="p">.</span><span class="nx">TypeOf</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="c1">// a reflect.Type
 </span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">String</span><span class="p">())</span> <span class="c1">// &#34;int&#34;
@@ -11023,7 +11023,7 @@ strangelove.Sequel = nil
 <p><b>Exercise 12.4</b>: Modify <code>encode</code> to pretty-print the S-expression in the style shown above.</p>
 <p><b>Exercise 12.5</b>: Adapt <code>encode</code> to emit JSON instead of S-expressions. Test your encoder using the standard decoder, <code>json.Unmarshal</code>.</p>
 <p><b>Exercise 12.6</b>: Adapt <code>encode</code> so that, as an optimization, it does not encode a field whose value is the zero value of its type.</p>
-<p><b>Exercise 12.7</b>: Create a streaming API for the S-expression encoder, following the style of <code>json.Encoder</code> (<a href="#Section-4.5" >§4.5</a>).</p>
+<p><b>Exercise 12.7</b>: Create a streaming API for the S-expression encoder, following the style of <code>json.Encoder</code> (<a href="#section-4.5" >§4.5</a>).</p>
 </div>
 <h3 id="section-12.5" >Setting Variables with <code>reflect.Value</code></h3>
 <div class="hBody-3" >
@@ -11096,7 +11096,7 @@ strangelove.Sequel = nil
 </div>
 <h3 id="section-12.6" >Example: Decoding S-Expressions</h3>
 <div class="hBody-3" >
-<p>For each <code>Marshal</code> function provided by the standard library’s <code>encoding/...</code> packages, there is a corresponding <code>Unmarshal</code> function that does decoding. For example, as we saw in <a href="#section-4.5" >Section 4.5</a>, given a byte slice containing JSON-encoded data for our <code>Movie</code> type (<a href="#Section-12.3" >§12.3</a>), we can decode it like this:</p>
+<p>For each <code>Marshal</code> function provided by the standard library’s <code>encoding/...</code> packages, there is a corresponding <code>Unmarshal</code> function that does decoding. For example, as we saw in <a href="#section-4.5" >Section 4.5</a>, given a byte slice containing JSON-encoded data for our <code>Movie</code> type (<a href="#section-12.3" >§12.3</a>), we can decode it like this:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">data</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">{</span><span class="cm">/* ... */</span><span class="p">}</span>
 <span class="kd">var</span> <span class="nx">movie</span> <span class="nx">Movie</span>
 <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">Unmarshal</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">movie</span><span class="p">)</span>
@@ -11210,7 +11210,7 @@ strangelove.Sequel = nil
   <span class="k">return</span> <span class="kc">false</span>
 <span class="p">}</span>
 </code></pre>
-<p>Finally, we wrap up the parser in an exported function <code>Unmarshal</code>, shown below, that hides some of the rough edges of the implementation. Errors encountered during parsing result in a panic, so <code>Unmarshal</code> uses a deferred call to recover from the panic (<a href="#Section-5.10" >§5.10</a>) and return an error message instead.</p>
+<p>Finally, we wrap up the parser in an exported function <code>Unmarshal</code>, shown below, that hides some of the rough edges of the implementation. Errors encountered during parsing result in a panic, so <code>Unmarshal</code> uses a deferred call to recover from the panic (<a href="#section-5.10" >§5.10</a>) and return an error message instead.</p>
 <pre class="code" ><code class="chroma" ><span class="c1">// Unmarshal parses S-expression data and populates the variable
 </span><span class="c1">// whose address is in the non-nil pointer out.
 </span><span class="c1"></span><span class="kd">func</span> <span class="nx">Unmarshal</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">out</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">(</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
@@ -11229,13 +11229,13 @@ strangelove.Sequel = nil
 </code></pre>
 <p>A production-quality implementation should never panic for any input and should report an informative error for every mishap, perhaps with a line number or offset. Nonetheless, we hope this example conveys some idea of what’s happening under the hood of the packages like <code>encoding/json</code>, and how you can use reflection to populate data structures.</p>
 <p><b>Exercise 12.8</b>: The <code>sexpr.Unmarshal</code> function, like <code>json.Unmarshal</code>, requires the complete input in a byte slice before it can begin decoding. Define a <code>sexpr.Decoder</code> type that, like <code>json.Decoder</code>, allows a sequence of values to be decoded from an <code>io.Reader</code>. Change <code>sexpr.Unmarshal</code> to use this new type.</p>
-<p><b>Exercise 12.9</b>: Write a token-based API for decoding S-expressions, following the style of <code>xml.Decoder</code> (<a href="#Section-7.14" >§7.14</a>). You will need five types of tokens: <code>Symbol</code>, <code>String</code>, <code>Int</code>, <code>StartList</code>, and <code>EndList</code>.</p>
+<p><b>Exercise 12.9</b>: Write a token-based API for decoding S-expressions, following the style of <code>xml.Decoder</code> (<a href="#section-7.14" >§7.14</a>). You will need five types of tokens: <code>Symbol</code>, <code>String</code>, <code>Int</code>, <code>StartList</code>, and <code>EndList</code>.</p>
 <p><b>Exercise 12.10</b>: Extend <code>sexpr.Unmarshal</code> to handle the booleans, floating-point numbers, and interfaces encoded by your solution to Exercise 12.3. (Hint: to decode interfaces, you will need a mapping from the name of each supported type to its <code>reflect.Type</code>.)</p>
 </div>
 <h3 id="section-12.7" >Accessing Struct Field Tags</h3>
 <div class="hBody-3" >
 <p>In <a href="#section-4.5" >Section 4.5</a> we used struct <em>field tags</em> to modify the JSON encoding of Go struct values. The <code>json</code> field tag lets us choose alternative field names and suppress the output of empty fields. In this section, we’ll see how to access field tags using reflection.</p>
-<p>In a web server, the first thing most HTTP handler functions do is extract the request parameters into local variables. We’ll define a utility function, <code>params.Unpack</code>, that uses struct field tags to make writing HTTP handlers (<a href="#Section-7.7" >§7.7</a>) more convenient.</p>
+<p>In a web server, the first thing most HTTP handler functions do is extract the request parameters into local variables. We’ll define a utility function, <code>params.Unpack</code>, that uses struct field tags to make writing HTTP handlers (<a href="#section-7.7" >§7.7</a>) more convenient.</p>
 <p>First, we’ll show how it’s used. The <code>search</code> function below is an HTTP handler. It defines a variable called <code>data</code> of an anonymous struct type whose fields correspond to the HTTP request parameters. The struct’s field tags specify the parameter names, which are often short and cryptic since space is precious in a URL. The <code>Unpack</code> function populates the struct from the request so that the parameters can be accessed conveniently and with an appropriate type.</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch12/search/main.go" >gopl.io/ch12/search</a></h1>
@@ -11352,7 +11352,7 @@ strangelove.Sequel = nil
 </span></code></pre>
 <p><b>Exercise 12.11</b>: Write the corresponding <code>Pack</code> function. Given a struct value, <code>Pack</code> should return a URL incorporating the parameter values from the struct.</p>
 <p><b>Exercise 12.12</b>: Extend the field tag notation to express parameter validity requirements. For example, a string might need to be a valid email address or credit-card number, and an integer might need to be a valid US ZIP code. Modify <code>Unpack</code> to check these requirements.</p>
-<p><b>Exercise 12.13</b>: Modify the S-expression encoder (<a href="#Section-12.4" >§12.4</a>) and decoder (<a href="#Section-12.6" >§12.6</a>) so that they honor the <code>sexpr:&#34;...&#34;</code> field tag in a similar manner to <code>encoding/json</code> (<a href="#Section-4.5" >§4.5</a>).</p>
+<p><b>Exercise 12.13</b>: Modify the S-expression encoder (<a href="#section-12.4" >§12.4</a>) and decoder (<a href="#section-12.6" >§12.6</a>) so that they honor the <code>sexpr:&#34;...&#34;</code> field tag in a similar manner to <code>encoding/json</code> (<a href="#section-4.5" >§4.5</a>).</p>
 </div>
 <h3 id="section-12.8" >Displaying the Methods of a Type</h3>
 <div class="hBody-3" >
@@ -11373,7 +11373,7 @@ strangelove.Sequel = nil
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>Both <code>reflect.Type</code> and <code>reflect.Value</code> have a method called <code>Method</code>. Each <code>t.Method(i)</code> call returns an instance of <code>reflect.Method</code>, a struct type that describes the name and type of a single method. Each <code>v.Method(i)</code> call returns a <code>reflect.Value</code> representing a method value (<a href="#Section-6.4" >§6.4</a>), that is, a method bound to its receiver. Using the <code>reflect.Value.Call</code> method (which we don’t have space to show here), it’s possible to call <code>Values</code> of kind <code>Func</code> like this one, but this program needs only its <code>Type</code>.</p>
+<p>Both <code>reflect.Type</code> and <code>reflect.Value</code> have a method called <code>Method</code>. Each <code>t.Method(i)</code> call returns an instance of <code>reflect.Method</code>, a struct type that describes the name and type of a single method. Each <code>v.Method(i)</code> call returns a <code>reflect.Value</code> representing a method value (<a href="#section-6.4" >§6.4</a>), that is, a method bound to its receiver. Using the <code>reflect.Value.Call</code> method (which we don’t have space to show here), it’s possible to call <code>Values</code> of kind <code>Func</code> like this one, but this program needs only its <code>Type</code>.</p>
 <p>Here are the methods belonging to two types, <code>time.Duration</code> and <code>*strings.Replacer</code>:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">methods</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Hour</span><span class="p">)</span>
 <span class="c1">// Output:
@@ -11395,7 +11395,7 @@ strangelove.Sequel = nil
 <div class="hBody-3" >
 <p>There is a lot more to the reflection API than we have space to show, but the preceding examples give an idea of what is possible. Reflection is a powerful and expressive tool, but it should be used with care, for three reasons.</p>
 <p>The first reason is that reflection-based code can be fragile. For every mistake that would cause a compiler to report a type error, there is a corresponding way to misuse reflection, but whereas the compiler reports the mistake at build time, a reflection error is reported during execution as a panic, possibly long after the program was written or even long after it has started running.</p>
-<p>If the <code>readList</code> function (<a href="#Section-12.6" >§12.6</a>), for example, should read a string from the input while populating a variable of type <code>int</code>, the call to <code>reflect.Value.SetString</code> will panic. Most programs that use reflection have similar hazards, and considerable care is required to keep track of the type, addressability, and settability of each <code>reflect.Value</code>.</p>
+<p>If the <code>readList</code> function (<a href="#section-12.6" >§12.6</a>), for example, should read a string from the input while populating a variable of type <code>int</code>, the call to <code>reflect.Value.SetString</code> will panic. Most programs that use reflection have similar hazards, and considerable care is required to keep track of the type, addressability, and settability of each <code>reflect.Value</code>.</p>
 <p>The best way to avoid this fragility is to ensure that the use of reflection is fully encapsulated within your package and, if possible, avoid <code>reflect.Value</code> in favor of specific types in your package’s API, to restrict inputs to legal values. If this is not possible, perform additional dynamic checks before each risky operation. As an example from the standard library, when <code>fmt.Printf</code> applies a verb to an inappropriate operand, it does not panic mysteriously but prints an informative error message. The program still has a bug, but it is easier to diagnose.</p>
 <pre class="code" ><code class="chroma" ><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%d %s\n&#34;</span><span class="p">,</span> <span class="s">&#34;hello&#34;</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span> <span class="c1">// &#34;%!d(string=hello) %!s(int=42)&#34;
 </span><span class="c1"></span></code></pre>
