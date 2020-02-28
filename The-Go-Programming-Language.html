@@ -48,7 +48,7 @@
       </ul>
     <li><a class="h3" href="#section-2.4" >Assignments</a></li>
       <ul>
-      <li><a class="h4" href="#section-2.4.1" >Tuple Assignment</a></li>
+      <li><a class="h4" href="#section-2.4.1" >Tuple assignment</a></li>
       <li><a class="h4" href="#section-2.4.2" >Assignability</a></li>
       </ul>
     <li><a class="h3" href="#section-2.5" >Type Declarations</a></li>
@@ -381,7 +381,7 @@
 <p>The <code>import</code> declarations must follow the <code>package</code> declaration. After that, a program consists of the declarations of functions, variables, constants, and types (introduced by the keywords <code>func</code>, <code>var</code>, <code>const</code>, and <code>type</code>); for the most part, the order of declarations does not matter. This program is about as short as possible since it declares only one function, which in turn calls only one other function. To save space, we will sometimes not show the <code>package</code> and <code>import</code> declarations when presenting examples, but they are in the source file and must be there to compile the code.</p>
 <p>A function declaration consists of the keyword <code>func</code>, the name of the function, a parameter list (empty for <code>main</code>), a result list (also empty here), and the body of the function—the statements that define what it does—enclosed in braces. We’ll take a closer look at functions in <a href="#chapter-5" >Chapter 5</a>.</p>
 <p>Go does not require semicolons at the ends of statements or declarations, except where two or more appear on the same line. In effect, newlines following certain tokens are converted into semicolons, so where newlines are placed matters to proper parsing of Go code. For instance, the opening brace <code>{</code> of the function must be on the same line as the end of the <code>func</code> declaration, not on a line by itself, and in the expression <code>x + y</code>, a newline is permitted after but not before the <code>+</code> operator.</p>
-<p>Go takes a strong stance on code formatting. The <code class="command" >gofmt</code> tool rewrites code into the standard format, and the <code class="command" >go</code> tool’s <code class="command" >fmt</code> subcommand applies <code class="command" >gofmt</code> to all the files in the specified package, or the ones in the current directory by default. All Go source files in the book have been run through <code class="command" >gofmt</code>, and you should get into the habit of doing the same for your own code.  Declaring a standard format by fiat eliminates a lot of pointless debate about trivia and, more importantly, enables a variety of automated source code transformations that would be infeasible if arbitrary formatting were allowed.</p>
+<p>Go takes a strong stance on code formatting. The <code class="command" >gofmt</code> tool rewrites code into the standard format, and the <code class="command" >go</code> tool’s <code class="command" >fmt</code> subcommand applies <code class="command" >gofmt</code> to all the files in the specified package, or the ones in the current directory by default. All Go source files in the book have been run through <code class="command" >gofmt</code>, and you should get into the habit of doing the same for your own code. Declaring a standard format by fiat eliminates a lot of pointless debate about trivia and, more importantly, enables a variety of automated source code transformations that would be infeasible if arbitrary formatting were allowed.</p>
 <p>Many text editors can be configured to run <code class="command" >gofmt</code> each time you save a file, so that your source code is always properly formatted. A related tool, <code class="command" >goimports</code>, additionally manages the insertion and removal of import declarations as needed. It is not part of the standard distribution but you can obtain it with this command:</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>go get golang.org/x/tools/cmd/goimports
 </span></code></pre>
@@ -1105,19 +1105,19 @@ continue   for           import   return      var
 <dt>Types</dt>
 <dd>
 <div class="pre-block" >
-<pre class="pre" >int int8 int16 int32 int64
-uint uint8 uint16 uint32 uint64 uintptr
-float32 float64 complex128 complex64
-bool byte rune string error
+<pre class="pre" >int         int8       int16      int32    int64
+uint       uint8      uint16     uint32   uint64   uintptr
+float32  float64  complex128  complex64
+bool        byte        rune     string    error
 </pre>
 </div>
 </dd>
 <dt>Functions</dt>
 <dd>
 <div class="pre-block" >
-<pre class="pre" >make len cap new append copy close delete
-complex real imag
-panic recover
+<pre class="pre" >make       len   cap   new   append   copy   close   delete
+complex   real  imag
+panic  recover
 </pre>
 </div>
 </dd>
@@ -1407,7 +1407,7 @@ panic recover
 </span><span class="c1"></span><span class="nx">v</span><span class="o">--</span>    <span class="c1">// same as v = v - 1; v becomes 1 again
 </span><span class="c1"></span></code></pre>
 </div>
-<h4 id="section-2.4.1" >Tuple Assignment</h4>
+<h4 id="section-2.4.1" >Tuple assignment</h4>
 <div class="hBody-4" >
 <p>Another form of assignment, known as <em>tuple assignment</em>, allows several variables to be assigned at once. All of the right-hand side expressions are evaluated before any of the variables are updated, making this form most useful when some of the variables appear on both sides of the assignment, as happens, for example, when swapping the values of two variables:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="p">=</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">x</span>
@@ -3288,7 +3288,7 @@ x = 7 eˣ = 1096.633
 <p>The <code class="command" >charcount</code> program also prints a count of the lengths of the UTF-8 encodings of the runes that appeared in the input. A map is not the best data structure for that; since encoding lengths range only from 1 to <code>utf8.UTFMax</code> (which has the value 4), an array is more compact.</p>
 <p>As an experiment, we ran <code class="command" >charcount</code> on this book itself at one point. Although it’s mostly in English, of course, it does have a fair number of non-ASCII characters. Here are the top ten:</p>
 <div class="pre-block" >
-<pre class="pre" >° 27 世 15 界 14 é 13 ˣ 10 ≤ 5 × 5  𢉩 4 � 4 □ 3
+<pre class="pre" >° 27 世 15 界 14 é 13 ˣ 10 ≤ 5 × 5 𢉩 4 � 4 □ 3
 </pre>
 </div>
 <p>and here is the distribution of the lengths of all the UTF-8 encodings:</p>
@@ -3608,7 +3608,7 @@ x = 7 eˣ = 1096.633
 </td><td><p><code>-273.15</code></p>
 </td></tr>
 <tr><td><p><code>string</code></p>
-</td><td><p><code>&#34;She said \&#34;Hello, 世界\&#34;&#34;</code></p>
+</td><td><p><code>&#34;She said \&#34;Hello,  世界\&#34;&#34;</code></p>
 </td></tr>
 <tr><td><p><code>array</code></p>
 </td><td><p><code>[&#34;gold&#34;, &#34;silver&#34;, &#34;bronze&#34;]</code></p>
@@ -4189,7 +4189,7 @@ http://www.google.com/intl/en/policies/privacy/
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>There are four return statements in <code>findLinks</code>, each of which returns a pair of values. The first three <code>returns</code> cause the function to pass the underlying errors from the <code>http</code> and <code>html</code> packages on to the caller. In the first case, the error is returned unchanged; in the second and third, it is augmented with additional context information by <code>fmt.Errorf</code> (<a href="#Section-7.8" >§7.8</a>). If <code>findLinks</code> is successful, the final return statement returns the slice of links, with no error.</p>
+<p>There are four return statements in <code>findLinks</code>, each of which returns a pair of values. The first three <code>return</code>s cause the function to pass the underlying errors from the <code>http</code> and <code>html</code> packages on to the caller. In the first case, the error is returned unchanged; in the second and third, it is augmented with additional context information by <code>fmt.Errorf</code> (<a href="#Section-7.8" >§7.8</a>). If <code>findLinks</code> is successful, the final return statement returns the slice of links, with no error.</p>
 <p>We must ensure that <code>resp.Body</code> is closed so that network resources are properly released even in case of error. Go’s garbage collector recycles unused memory, but do not assume it will release unused operating system resources like open files and network connections. They should be closed explicitly.</p>
 <p>The result of calling a multi-valued function is a tuple of values. The caller of such a function must explicitly assign the values to variables if any of them are to be used:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">links</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">findLinks</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
@@ -8215,7 +8215,7 @@ https://golang.org/blog/
 </div>
 <h3 id="section-8.8" >Example: Concurrent Directory Traversal</h3>
 <div class="hBody-3" >
-<p>In this section, we’ll build a program that reports the disk usage of one or more directories specified on the command line, like the Unix <code class="command" >du</code> command. Most of its work is done by the <code>walkDir</code> function below, which enumerates the entries of the directory  <code>dir</code> using the <code>dirents</code> helper function.</p>
+<p>In this section, we’ll build a program that reports the disk usage of one or more directories specified on the command line, like the Unix <code class="command" >du</code> command. Most of its work is done by the <code>walkDir</code> function below, which enumerates the entries of the directory <code>dir</code> using the <code>dirents</code> helper function.</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch8/du1/main.go" >gopl.io/ch8/du1</a></h1>
 <pre class="code" ><code class="chroma" ><span class="c1">// walkDir recursively walks the file tree rooted at dir
@@ -9308,9 +9308,9 @@ FAIL    gopl.io/ch9/memo1   2.393s
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
-<pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span><span class="nv">GOMAXPROCS</span><span class="o">=</span><span class="m">1</span> go run hacker-cliché.go
+<pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span><span class="nv">GOMAXPROCS</span><span class="o">=</span><span class="m">1</span> go run hacker-cliche.go
 </span><span class="out" >111111111111111111110000000000000000000011111...
-</span><span class="in" ><span class="prompt" >&gt; </span><span class="nv">GOMAXPROCS</span><span class="o">=</span><span class="m">2</span> go run hacker-cliché.go
+</span><span class="in" ><span class="prompt" >&gt; </span><span class="nv">GOMAXPROCS</span><span class="o">=</span><span class="m">2</span> go run hacker-cliche.go
 </span><span class="out" >010101010101010101011001100101011010010100110...
 </span></code></pre>
 <p>In the first run, at most one goroutine was executed at a time. Initially, it was the main goroutine, which prints ones. After a period of time, the Go scheduler put it to sleep and woke up the goroutine that prints zeros, giving it a turn to run on the OS thread. In the second run, there were two OS threads available, so both goroutines ran simultaneously, printing digits at about the same rate. We must stress that many factors are involved in goroutine scheduling, and the runtime is constantly evolving, so your results may differ from the ones above.</p>
@@ -9572,7 +9572,7 @@ Use &#34;go help [command]&#34; for more information about a command.
           ...
 </pre>
 </div>
-<p><code>GOPATH</code> has three subdirectories. The <span class="file" >src</span> subdirectory  holds source code. Each package resides in a directory whose name relative to <code>$GOPATH/src</code> is the package’s import path, such as <code>gopl.io/ch1/helloworld</code>. Observe that a single <code>GOPATH</code> workspace contains multiple version-control repositories beneath <span class="file" >src</span>, such as <code>gopl.io</code> or <code>golang.org</code>. The <span class="file" >pkg</span> subdirectory is where the build tools store compiled packages, and the <span class="file" >bin</span> subdirectory holds executable programs like <code class="command" >helloworld</code>.</p>
+<p><code>GOPATH</code> has three subdirectories. The <span class="file" >src</span> subdirectory holds source code. Each package resides in a directory whose name relative to <code>$GOPATH/src</code> is the package’s import path, such as <code>gopl.io/ch1/helloworld</code>. Observe that a single <code>GOPATH</code> workspace contains multiple version-control repositories beneath <span class="file" >src</span>, such as <code>gopl.io</code> or <code>golang.org</code>. The <span class="file" >pkg</span> subdirectory is where the build tools store compiled packages, and the <span class="file" >bin</span> subdirectory holds executable programs like <code class="command" >helloworld</code>.</p>
 <p>A second environment variable, <code>GOROOT</code>, specifies the root directory of the Go distribution, which provides all the packages of the standard library. The directory structure beneath <code>GOROOT</code> resembles that of <code>GOPATH</code>, so, for example, the source files of the <code>fmt</code> package reside in the <span class="file" >$GOROOT/src/fmt</span> directory. Users never need to set <code>GOROOT</code> since, by default, the <code class="command" >go</code> tool will use the location where it was installed.</p>
 <p>The <code class="command" >go env</code> command prints the effective values of the environment variables relevant to the toolchain, including the default values for the missing ones. <code>GOOS</code> specifies the target operating system (for example, <code>android</code>, <code>linux</code>, <code>darwin</code>, or <code>windows</code>) and <code>GOARCH</code> specifies the target processor architecture, such as <code>amd64</code>, <code>386</code>, or <code>arm</code>. Although <code>GOPATH</code> is the only variable you must set, the others occasionally appear in our explanations.</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>go env
@@ -10092,7 +10092,7 @@ FAIL    gopl.io/ch11/word1 0.014s
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>From the test, we will call <code>echo</code> with a variety of arguments and flag settings and check that it prints the correct output in each case, so we’ve added parameters to <code class="command" >echo</code> to reduce its dependence on global variables. That said, we’ve also introduced another global variable, <code>out</code>, the <code>io.Writer</code> to which the result will be written. By having <code>echo</code> write through this variable, not directly to <code>os.Stdout</code>, the tests can substitute a different <code>Writer</code> implementation that records what was written for later inspection. Here’s the test, in file <span class="file" >echo_test.go</span>:</p>
+<p>From the test, we will call <code>echo</code> with a variety of arguments and flag settings and check that it prints the correct output in each case, so we’ve added parameters to <code>echo</code> to reduce its dependence on global variables. That said, we’ve also introduced another global variable, <code>out</code>, the <code>io.Writer</code> to which the result will be written. By having <code>echo</code> write through this variable, not directly to <code>os.Stdout</code>, the tests can substitute a different <code>Writer</code> implementation that records what was written for later inspection. Here’s the test, in file <span class="file" >echo_test.go</span>:</p>
 <pre class="code" ><code class="chroma" ><span class="kn">package</span> <span class="nx">main</span>
 <span class="kn">import</span> <span class="p">(</span>
   <span class="s">&#34;bytes&#34;</span>

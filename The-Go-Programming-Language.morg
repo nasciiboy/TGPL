@@ -7,6 +7,9 @@
 ..style   > worg-data/worg.css
 ..options > fancyCode toc
 
+@ _es.porg -> en.morg
+@ awk 'length == 0 || /^#/' The-Go-Programming-Language_es.porg | cat -s |sed -e 's/^# \?//' > The-Go-Programming-Language.morg
+@
 @ revision 3b600c, date 29 Sep 2015
 
 ..center >
@@ -91,8 +94,8 @@
    language for writing executable programs.
 
    Rob Pike and others began to experiment with CSP implementations as actual
-   languages. The first was called Squeak (@"(A language for communicating with
-   mice)), which provided a language for handling mouse and keyboard events,
+   languages. The first was called Squeak @%"(A language for communicating with
+   mice), which provided a language for handling mouse and keyboard events,
    with statically created channels. This was followed by Newsqueak, which
    offered C-like statement and expression syntax and Pascal-like type
    notation. It was a purely functional language with garbage collection, again
@@ -166,9 +169,8 @@
    allocations and pointer indirections than languages that use indirect
    fields. And since the modern computer is a parallel machine, Go has
    concurrency features based on CSP, as mentioned earlier. The variablesize
-   stacks of Go’s lightweight threads or @e(goroutines) are initially small
-   enough that creating one goroutine is cheap and creating a million is
-   practical.
+   stacks of Go’s lightweight threads or @e(goroutines) are initially small enough
+   that creating one goroutine is cheap and creating a million is practical.
 
    Go’s standard library, often described as coming with @"(batteries included,)
    provides clean building blocks and APIs for I/O, text processing, graphics,
@@ -264,8 +266,8 @@
      go version go1.5 linux/amd64
    < srci..
 
-   Follow the instructions at @l(https://golang.org/doc/install) if the @$(go)
-   tool on your computer is older or missing.
+   Follow the instructions at @l(https://golang.org/doc/install) if the @$(go) tool
+   on your computer is older or missing.
 
 ** Where to Find More Information
 
@@ -477,8 +479,7 @@
    A function declaration consists of the keyword @c(func), the name of the
    function, a parameter list (empty for @c(main)), a result list (also empty
    here), and the body of the function—the statements that define what it
-   does—enclosed in braces. We’ll take a closer look at functions in @l(#Chapter
-   5).
+   does—enclosed in braces. We’ll take a closer look at functions in @l(#Chapter 5).
 
    Go does not require semicolons at the ends of statements or declarations,
    except where two or more appear on the same line. In effect, newlines
@@ -493,7 +494,7 @@
    @$(gofmt) to all the files in the specified package, or the ones in the
    current directory by default. All Go source files in the book have been run
    through @$(gofmt), and you should get into the habit of doing the same for
-   your own code.  Declaring a standard format by fiat eliminates a lot of
+   your own code. Declaring a standard format by fiat eliminates a lot of
    pointless debate about trivia and, more importantly, enables a variety of
    automated source code transformations that would be infeasible if arbitrary
    formatting were allowed.
@@ -706,7 +707,6 @@
        }
      < src..
 
-
    In each iteration of the loop, @c(range) produces a pair of values: the index and
    the value of the element at that index. In this example, we don’t need the
    index, but the syntax of a @c(range) loop requires that if we deal with the
@@ -764,7 +764,6 @@
          fmt.Println(strings.Join(os.Args[1:], " "))
        }
      < src..
-
 
    Finally, if we don’t care about format but just want to see the values,
    perhaps for debugging, we can let @c(Println) format the results for us:
@@ -828,7 +827,6 @@
          }
        }
      < src..
-
 
    As with @c(for), parentheses are never used around the condition in an @c(if)
    statement, but braces are required for the body. There can be an optional
@@ -914,7 +912,6 @@
    | @c(%%)                 | literal percent sign (no operand)                              |
    +------------------------+----------------------------------------------------------------+
 
-
    The format string in @c(dup1) also contains a tab @c(\t) and a newline
    @c(\n). String literals may contain such @e(escape sequences) for
    representing otherwise invisible characters. @c(Printf) does not write a
@@ -974,7 +971,7 @@
      < src..
 
    The function @c(os.Open) returns two values. The first is an open file
-   (@c(*os.File)) that is used in subsequent reads by the @c(Scanner).
+   @%c(*os.File) that is used in subsequent reads by the @c(Scanner).
 
    The second result of @c(os.Open) is a value of the built-in @c(error)
    type. If @c(err) equals the special built-in value @c(nil), the file was
@@ -1055,10 +1052,10 @@
    at length in @l(#Section 3.5.4).
 
    Under the covers, @c(bufio.Scanner), @c(ioutil.ReadFile), and
-   @c(ioutil.WriteFile) use the @c(Read) and @c(Write) methods of @c(*os.File),
-   but it’s rare that most programmers need to access those lower-level routines
-   directly. The higher-level functions like those from @c(bufio) and
-   @c(io/ioutil) are easier to use.
+   @c(ioutil.WriteFile) use the @c(Read) and @c(Write) methods of @c(*os.File), but it’s
+   rare that most programmers need to access those lower-level routines
+   directly. The higher-level functions like those from @c(bufio) and @c(io/ioutil)
+   are easier to use.
 
    @b(Exercise 1.4): Modify @$(dup2) to print the names of all files in which
    each duplicated line occurs.
@@ -1076,7 +1073,6 @@
    ..figure > Figure 1.1. Four Lissajous figures.
 
      ..img > img/Figure-1.1.jpg
-
 
    There are several new constructs in this code, including @c(const) declarations,
    struct types, and composite literals. Unlike most of our examples, this one
@@ -1150,7 +1146,7 @@
    component. Thus the variable @c(color.White) belongs to the @c(image/color)
    package and @c(gif.GIF) belongs to @c(image/gif).
 
-   A @c(const) declaration (@l(#Section 3.6<>§3.6)) gives names to constants,
+   A @c(const) declaration @%l(#Section 3.6<>§3.6) gives names to constants,
    that is, values that are fixed at compile time, such as the numerical
    parameters for cycles, frames, and delay. Like @c(var) declarations,
    @c(const) declarations may appear at package level (so the names are visible
@@ -1164,7 +1160,7 @@
    element values. Here, the first one is a slice and the second one is a
    @e(struct).
 
-   The type @c(gif.GIF) is a struct type (@l(#Section 4.4<>§4.4)). A struct is a
+   The type @c(gif.GIF) is a struct type @%l(#Section 4.4<>§4.4). A struct is a
    group of values called @e(fields), often of different types, that are
    collected together in a single object that can be treated as a unit. The
    variable @c(anim) is a struct of type @c(gif.GIF). The struct literal creates
@@ -1179,7 +1175,7 @@
    initially set to the palette’s zero value (the zeroth color in the palette),
    which we set to white. Each pass through the outer loop generates a new image
    by setting some pixels to black. The result is appended, using the built-in
-   @c(append) function (@l(#Section 4.2.1<>§4.2.1)), to a list of frames in
+   @c(append) function @%l(#Section 4.2.1<>§4.2.1), to a list of frames in
    @c(anim), along with a specified delay of 80ms. Finally the sequence of
    frames and delays is encoded into GIF format and written to the output stream
    @c(out). The type of @c(out) is @c(io.Writer), which lets us write to a wide
@@ -1397,8 +1393,8 @@
 
    @b(Exercise 1.11): Try @c(fetchall) with longer argument lists, such as
    samples from the top million web sites available at @l(http://www.alexa.com/<>alexa.com).
-   How does the program behave if a web site just doesn’t respond? (@l(#Section
-   8.9) describes mechanisms for coping in such cases.)
+   How does the program behave if a web site just doesn’t respond? (@l(#Section 8.9)
+   describes mechanisms for coping in such cases.)
 
 ** Section 1.7 <> A Web Server
 
@@ -1431,7 +1427,6 @@
        }
      < src..
 
-
    The program is only a handful of lines long because library functions do most
    of the work. The @c(main) function connects a handler function to incoming
    URLs that begin with @c(/), which is all URLs, and starts a server listening
@@ -1443,7 +1438,7 @@
    servers will be explained in detail in @l(#Section 7.7).
 
    Let’s start the server in the background. On Mac OS X or Linux, add an
-   ampersand (@c(&)) to the command; on Microsoft Windows, you will need to run
+   ampersand @%c(&) to the command; on Microsoft Windows, you will need to run
    the command without the ampersand in a separate command window.
 
    ..srci > sh
@@ -1466,7 +1461,6 @@
    ..figure > Figure 1.2. A response from the echo server.
 
      ..img > img/Figure-1.2.jpg
-
 
    It’s easy to add features to the server. One useful addition is a specific
    URL that returns a status of some sort. For example, this version does the
@@ -1518,9 +1512,9 @@
    has the pattern as a prefix. Behind the scenes, the server runs the handler
    for each incoming request in a separate goroutine so that it can serve
    multiple requests simultaneously. However, if two concurrent requests try to
-   update @c(count) at the same time, it might not be incremented consistently;
-   the program would have a serious bug called a @e(race condition) (@l(#Section
-   9.1<>§9.1)). To avoid this problem, we must ensure that at most one goroutine
+   update @c(count) at the same time, it might not be incremented consistently; the
+   program would have a serious bug called a @e(race condition) @%l(#Section
+   9.1<>§9.1). To avoid this problem, we must ensure that at most one goroutine
    accesses the variable at a time, which is the purpose of the @c[mu.Lock()]
    and @c[mu.Unlock()] calls that bracket each access of @c(count). We’ll look
    more closely at concurrency with shared variables in @l(#Chapter 9).
@@ -1638,7 +1632,7 @@
    enough discussion that they will be familiar when they make brief appearances
    before the full treatment.
 
-   - Control flow ::  We covered the two fundamental control-flow statements,
+   - Control flow :: We covered the two fundamental control-flow statements,
      @c(if) and @c(for), but not the @c(switch) statement, which is a multi-way
      branch. Here’s a small example:
 
@@ -1653,16 +1647,15 @@
        }
      < src..
 
+     The result of calling @c(coinflip) is compared to the value of each
+     case. Cases are evaluated from top to bottom, so the first matching one
+     is executed. The optional default case matches if none of the other cases
+     does; it may be placed anywhere. Cases do not fall through from one to
+     the next as in C-like languages (though there is a rarely used
+     @c(fallthrough) statement that overrides this behavior).
 
-     The result of calling @c(coinflip) is compared to the value of each case.
-     Cases are evaluated from top to bottom, so the first matching one is
-     executed. The optional default case matches if none of the other cases
-     does; it may be placed anywhere. Cases do not fall through from one to the
-     next as in C-like languages (though there is a rarely used @c(fallthrough)
-     statement that overrides this behavior).
-
-     A @c(switch) does not need an operand; it can just list the cases, each of
-     which is a boolean expression:
+     A @c(switch) does not need an operand; it can just list the cases, each of which
+     is a boolean expression:
 
      ..src > go
        func Signum(x int) int {
@@ -1753,8 +1746,8 @@
      beginning of a program or package. It’s also good style to write a comment
      before the declaration of each function to specify its behavior. These
      conventions are important, because they are used by tools like @$(go doc)
-     and @$(godoc) to locate and display documentation (@l(#Section
-     10.7.4<>§10.7.4)).
+     and @$(godoc) to locate and display documentation @%l(#Section
+     10.7.4<>§10.7.4).
 
      For comments that span multiple lines or appear within an expression or
      statement, there is also the @c(/* ... */) notation familiar from other
@@ -1806,21 +1799,20 @@
      ..pre >
        true false iota nil
 
-   - Types     ::
+   - Types ::
 
      ..pre >
-       int int8 int16 int32 int64
-       uint uint8 uint16 uint32 uint64 uintptr
-       float32 float64 complex128 complex64
-       bool byte rune string error
+       int         int8       int16      int32    int64
+       uint       uint8      uint16     uint32   uint64   uintptr
+       float32  float64  complex128  complex64
+       bool        byte        rune     string    error
 
    - Functions ::
 
      ..pre >
-       make len cap new append copy close delete
-       complex real imag
-       panic recover
-
+       make       len   cap   new   append   copy   close   delete
+       complex   real  imag
+       panic  recover
 
    These names are not reserved, so you may use them in declarations. We’ll see
    a handful of places where redeclaring one of them makes sense, but beware of
@@ -1967,8 +1959,8 @@
    < src..
 
    Initializers may be literal values or arbitrary expressions. Package-level
-   variables are initialized before @c(main) begins (@l(#Section
-   2.6.2<>§2.6.2)), and local variables are initialized as their declarations
+   variables are initialized before @c(main) begins @%l(#Section
+   2.6.2<>§2.6.2), and local variables are initialized as their declarations
    are encountered during function execution.
 
    A set of variables can also be initialized by calling a function that returns
@@ -1984,7 +1976,7 @@
     may be used to declare and initialize local variables. It takes the form
     @c(name := expression), and the type of @c(name) is determined by the type
     of @c(expression). Here are three of the many short variable declarations in
-    the @c(lissajous) function (@l(#Section 1.4<>§1.4)):
+    the @c(lissajous) function @%l(#Section 1.4<>§1.4):
 
     ..src > go
       anim := gif.GIF{LoopCount: nframes}
@@ -2021,7 +2013,7 @@
 
     Keep in mind that @c(:=) is a declaration, whereas @c(=) is an assignment. A
     multi-variable declaration should not be confused with a @e(tuple
-    assignment) (@l(#Section 2.4.1<>§2.4.1)), in which each variable on the
+    assignment) @%l(#Section 2.4.1<>§2.4.1), in which each variable on the
     left-hand side is assigned the corresponding value from the right-hand side:
 
     ..src > go
@@ -2042,8 +2034,8 @@
 
     One subtle but important point: a short variable declaration does not
     necessarily @e(declare) all the variables on its left-hand side. If some of
-    them were already declared in the @e(same) lexical block (@l(#Section
-    2.7<>§2.7)), then, for those variables, the short variable declaration acts
+    them were already declared in the @e(same) lexical block @%l(#Section
+    2.7<>§2.7), then, for those variables, the short variable declaration acts
     like an @e(assignment) to those variables.
 
     In the code below, the first statement declares both @c(in) and @c(err). The second
@@ -2197,7 +2189,6 @@
         }
       < src..
 
-
     The function @c(flag.Bool) creates a new flag variable of type @c(bool). It
     takes three arguments: the name of the flag (@c("n")), the variable’s
     default value (@c(false)), and a message that will be printed if the user
@@ -2282,7 +2273,7 @@
 
     The @c(new) function is relatively rarely used because the most common
     unnamed variables are of struct types, for which the struct literal syntax
-    (@l(#Section 4.4.1<>§4.4.1)) is more flexible.
+    @%l(#Section 4.4.1<>§4.4.1) is more flexible.
 
     Since @c(new) is a predeclared function, not a keyword, it’s possible to redefine the name for
     something else within a function, for example:
@@ -2409,7 +2400,7 @@
      v--    // same as v = v - 1; v becomes 1 again
    < src..
 
-*** Section 2.4.1 <> Tuple Assignment
+*** Section 2.4.1 <> Tuple assignment
 
     Another form of assignment, known as @e(tuple assignment), allows several
     variables to be assigned at once. All of the right-hand side expressions are
@@ -2466,8 +2457,8 @@
     error, either by returning an @c(error) as in the call to @c(os.Open), or a
     @c(bool), usually called @c(ok). As we’ll see in later chapters, there are
     three operators that sometimes behave this way too. If a map lookup
-    (@l(#Section 4.3<>§4.3)), type assertion (@l(#Section 7.10<>§7.10)), or
-    channel receive (@l(#Section 8.4.2<>§8.4.2)) appears in an assignment in
+    @%l(#Section 4.3<>§4.3), type assertion @%l(#Section 7.10<>§7.10), or
+    channel receive @%l(#Section 8.4.2<>§8.4.2) appears in an assignment in
     which two results are expected, each produces an additional boolean result:
 
     ..src > go
@@ -2491,7 +2482,7 @@
     call implicitly assigns the argument values to the corresponding parameter
     variables; a @c(return) statement implicitly assigns the @c(return) operands
     to the corresponding result variables; and a literal expression for a
-    composite type (@l(#Section 4.2<>§4.2)) such as this slice:
+    composite type @%l(#Section 4.2<>§4.2) such as this slice:
 
     ..src > go
       medals := []string{"gold", "silver", "bronze"}
@@ -2517,7 +2508,7 @@
     the relevant case as we introduce each new type. For the types we’ve
     discussed so far, the rules are simple: the types must exactly match, and
     @c(nil) may be assigned to any variable of interface or reference type.
-    Constants (@l(#Section 3.6<>§3.6)) have more flexible rules for
+    Constants @%l(#Section 3.6<>§3.6) have more flexible rules for
     assignability that avoid the need for most explicit conversions.
 
     Whether two values may be compared with @c(==) and @c(!=) is related to
@@ -2577,7 +2568,6 @@
        func CToF(c Celsius) Fahrenheit { return Fahrenheit(c*9/5 + 32) }
        func FToC(f Fahrenheit) Celsius { return Celsius((f - 32) * 5 / 9) }
      < src..
-
 
    This package defines two types, @c(Celsius) and @c(Fahrenheit), for the two
    units of temperature. Even though both have the same underlying type,
@@ -2725,7 +2715,6 @@
        func (f Fahrenheit) String() string { return fmt.Sprintf("%g°F", f) }
      < src..
 
-
    and the conversion functions in @f(conv.go):
 
    ..src > go
@@ -2760,7 +2749,7 @@
      fmt.Println(tempconv.CToF(tempconv.BoilingC)) // "212°F"
    < src..
 
-   The @e(doc comment) (@l(#Section 10.7.4<>§10.7.4)) immediately preceding the
+   The @e(doc comment) @%l(#Section 10.7.4<>§10.7.4) immediately preceding the
    package declaration documents the package as a whole. Conventionally, it
    should start with a summary sentence in the style illustrated. Only one file
    in each package should have a package doc comment. Extensive doc comments are
@@ -2822,7 +2811,7 @@
     lets us refer to names within @c(gopl.io/ch2/tempconv) by using a
     @e(qualified identifier) like @c(tempconv.CToF). By default, the short name
     is the package name—@c(tempconv) in this case—but an import declaration may
-    specify an alternative name to avoid a conflict (@l(#Section 10.4<>§10.4)).
+    specify an alternative name to avoid a conflict @%l(#Section 10.4<>§10.4).
 
     The @$(cf) program converts a single numeric command-line argument to its value
     in both Celsius and Fahrenheit:
@@ -3213,10 +3202,10 @@
   Go’s types fall into four categories: @e(basic types), @e(aggregate types),
   @e(reference types), and @e(interface types). Basic types, the topic of this
   chapter, include numbers, strings, and booleans. Aggregate types—arrays
-  (@l(#Section 4.1<>§4.1)) and structs (@l(#Section 4.4<>§4.4))—form more
+  @%l(#Section 4.1<>§4.1) and structs @%l(#Section 4.4<>§4.4)—form more
   complicated data types by combining values of several simpler ones. Reference
-  types are a diverse group that includes pointers (@l(#Section 2.3.2<>§2.3.2)),
-  slices (@l(#Section 4.2<>§4.2)), maps (@l(#Section 4.3<>§4.3)), functions
+  types are a diverse group that includes pointers @%l(#Section 2.3.2<>§2.3.2),
+  slices @%l(#Section 4.2<>§4.2), maps @%l(#Section 4.3<>§4.3), functions
   (@l(#Chapter 5)), and channels (@l(#Chapter 8)), but what they have in common
   is that they all refer to program variables or state @e(indirectly), so that
   the effect of an operation applied to one reference is observed by all copies
@@ -3435,7 +3424,7 @@
    be true by definition. After the third iteration, in which @c(i == 0), the
    @c(i--) statement would cause @c(i) to become not -1, but the maximum
    @c(uint) value (for example, 2⁶⁴-1), and the evaluation of @c(medals[i])
-   would fail at run time, or @e(panic) (@l(#Section 5.9<>§5.9)), by attempting
+   would fail at run time, or @e(panic) @%l(#Section 5.9<>§5.9), by attempting
    to access an element outside the bounds of the slice.
 
    For this reason, unsigned numbers tend to be used only when their bitwise
@@ -3647,7 +3636,6 @@
 
      ..img > img/Figure-3.1.jpg
 
-
    ..figure > @l(gopl.io/ch3/surface/main.go<>gopl.io/ch3/surface)
 
      ..src > go
@@ -3707,7 +3695,6 @@
        }
      < src..
 
-
    Notice that the function @c(corner) returns two values, the coordinates of
    the corner of the cell.
 
@@ -3732,7 +3719,6 @@
    ..figure > Figure 3.2. Three different coordinate systems.
 
      ..img > img/Figure-3.2.jpg
-
 
    @m[(x, y, z)] onto the 2-D canvas. A point appears farther to the right on
    the canvas the greater its @m(x) value or the @e(smaller) its @m(y)
@@ -3869,7 +3855,6 @@
        }
      < src..
 
-
    The two nested loops iterate over each point in a 1024x1024 grayscale raster
    image representing the -2 to +2 portion of the complex plane. The program
    tests whether repeatedly squaring and adding the number that point represents
@@ -3882,7 +3867,6 @@
    ..figure > Figure 3.3. The Mandelbrot set.
 
      ..img > img/Figure-3.3.jpg
-
 
    @b(Exercise 3.5): Implement a full-color Mandelbrot set using the function
    @c(image.NewRGBA) and the type @c(color.RGBA) or @c(color.YCbCr).
@@ -4321,7 +4305,6 @@
 
       ..img  > img/Figure-3.5.jpg
 
-
     We could use a simple @c(range) loop to count the number of runes in a string,
     like this:
 
@@ -4463,7 +4446,6 @@
         }
       < src..
 
-
     A simpler version uses the @c(strings.LastIndex) library function:
 
     ..figure > @l(gopl.io/ch3/basename2/main.go<>gopl.io/ch3/basename2)
@@ -4478,7 +4460,6 @@
           return s
         }
       < src..
-
 
     The @c(path) and @c(path/filepath) packages provide a more general set of
     functions for manipulating hierarchical names. The @c(path) package works
@@ -4505,7 +4486,6 @@
           return comma(s[:n-3]) + "," + s[n-3:]
         }
       < src..
-
 
     The argument to @c(comma) is a string. If its length is less than or equal
     to 3, no comma is necessary. Otherwise, @c(comma) calls itself recursively
@@ -4587,7 +4567,6 @@
           fmt.Println(intsToString([]int{1, 2, 3})) // "[1, 2, 3]"
         }
       < src..
-
 
     When appending the UTF-8 encoding of an arbitrary rune to a
     @c(bytes.Buffer), it’s best to use @c(bytes.Buffer)’s @c(WriteRune) method,
@@ -4693,7 +4672,7 @@
    The results of all arithmetic, logical, and comparison operations applied to
    constant operands are themselves constants, as are the results of conversions
    and calls to certain built-in functions such as @c(len), @c(cap), @c(real),
-   @c(imag), @c(complex), and @c(unsafe.Sizeof) (@l(#Section 13.1<>§13.1)).
+   @c(imag), @c(complex), and @c(unsafe.Sizeof) @%l(#Section 13.1<>§13.1).
 
    Since their values are known to the compiler, constant expressions may appear
    in types, specifically as the length of an array type:
@@ -4810,7 +4789,6 @@
           fmt.Printf("%b %t\n", v, IsCast(v)) // "10010 true"
         }
       < src..
-
 
     As a more complex example of @c(iota), this declaration names the powers of
     1024:
@@ -5118,7 +5096,6 @@
        }
      < src..
 
-
    The two inputs differ by only a single bit, but approximately half the bits
    are different in the digests. Notice the @c(Printf) verbs: @c(%x) to print
    all the elements of an array or slice of bytes in hexadecimal, @c(%t) to show
@@ -5251,8 +5228,8 @@
 
    Since a slice contains a pointer to an element of an array, passing a slice
    to a function permits the function to modify the underlying array
-   elements. In other words, copying a slice creates an @e(alias) (@l(#Section
-   2.3.2<>§2.3.2)) for the underlying array. The function @c(reverse) reverses
+   elements. In other words, copying a slice creates an @e(alias) @%l(#Section
+   2.3.2<>§2.3.2) for the underlying array. The function @c(reverse) reverses
    the elements of an @c([]int) slice in place, and it may be applied to slices
    of any length.
 
@@ -5266,7 +5243,6 @@
          }
        }
      < src..
-
 
    Here we reverse the whole array a:
 
@@ -5425,7 +5401,6 @@
         }
       < src..
 
-
     Each call to @c(appendInt) must check whether the slice has sufficient
     capacity to hold the new elements in the existing array. If so, it extends
     the slice by defining a larger slice (still within the original array),
@@ -5490,7 +5465,6 @@
 
       ..img > img/Figure-4.2.jpg
 
-
     On the next iteration, @c(i=4), there is no slack at all, so @c(appendInt)
     allocates a new array of size 8, copies the four elements @c([0 1 2 3]) of
     @c(x), and appends 4, the value of @c(i). The resulting slice @c(y) has a
@@ -5501,7 +5475,6 @@
     ..figure > Figure 4.3. Appending without room to grow.
 
       ..img > img/Figure-4.3.jpg
-
 
     The built-in @c(append) function may use a more sophisticated growth
     strategy than @c(appendInt)’s simplistic one. Usually we don’t know whether
@@ -5592,7 +5565,6 @@
           return strings[:i]
         }
       < src..
-
 
     The subtle part is that the input slice and the output slice share the same
     underlying array.  This avoids the need to allocate another array, though of
@@ -5926,7 +5898,6 @@
        }
      < src..
 
-
    Go programmers often describe a map used in this fashion as a @"(set of
    strings) without further ado, but beware, not all @c(map[string]bool) values
    are simple sets; some may contain both @c(true) and @c(false) values.
@@ -6018,7 +5989,6 @@
        }
      < src..
 
-
    The @c(ReadRune) method performs UTF-8 decoding and returns three values: the
    decoded rune, the length in bytes of its UTF-8 encoding, and an error
    value. The only error we expect is end-of-file. If the input was not a legal
@@ -6035,8 +6005,7 @@
    of non-ASCII characters. Here are the top ten:
 
    ..pre >
-     ° 27 世 15 界 14 é 13 ˣ 10 ≤ 5 × 5  𢉩 4 � 4 □ 3
-
+     ° 27 世 15 界 14 é 13 ˣ 10 ≤ 5 × 5 𢉩 4 � 4 □ 3
 
    and here is the distribution of the lengths of all the UTF-8 encodings:
 
@@ -6047,7 +6016,6 @@
      3    70
      4    0
    < pre..
-
 
    The value type of a map can itself be a composite type, such as a map or
    slice. In the following code, the key type of @c(graph) is @c(string) and the
@@ -6073,7 +6041,6 @@
          return graph[from][to]
        }
      < src..
-
 
    The @c(addEdge) function shows the idiomatic way to populate a map lazily,
    that is, to initialize each value as its key appears for the first time. The
@@ -6241,7 +6208,6 @@
          return t
        }
      < src..
-
 
    The zero value for a struct is composed of the zero values of each of its
    fields. It is usually desirable that the zero value be a natural or sensible
@@ -6528,7 +6494,6 @@
           // Wheel{Circle:Circle{Point:Point{X:42, Y:8}, Radius:5}, Spokes:20}
       < src..
 
-
     Notice how the @c(#) adverb causes @c(Printf)’s @c(%v) verb to display
     values in a form similar to Go syntax. For struct values, this form includes
     the name of each field.
@@ -6566,7 +6531,7 @@
 
    JavaScript Object Notation (JSON) is a standard notation for sending and
    receiving structured information. JSON is not the only such notation. XML
-   (@l(#Section 7.14<>§7.14)), ASN.1, and Google’s Protocol Buffers serve
+   @%l(#Section 7.14<>§7.14), ASN.1, and Google’s Protocol Buffers serve
    similar purposes and each has its niche, but because of its simplicity,
    readability, and universal support, JSON is the most widely used.
 
@@ -6600,7 +6565,7 @@
    +-------------+------------------------------------------+
    | @c(number)  | @c(-273.15)                              |
    +-------------+------------------------------------------+
-   | @c(string)  | @c("She said \"Hello, 世界\"")             |
+   | @c(string)  | @c("She said \"Hello,  世界\"")            |
    +-------------+------------------------------------------+
    | @c(array)   | @c(["gold", "silver", "bronze"])         |
    +-------------+------------------------------------------+
@@ -6608,7 +6573,6 @@
    |             | "event": "archery",                      |
    |             | "medals": ["gold", "silver", "bronze"]}) |
    +-------------+------------------------------------------+
-
 
    Consider an application that gathers movie reviews and offers
    recommendations. Its @c(Movie) data type and a typical list of values are
@@ -6635,7 +6599,6 @@
          // ...
        }
      < src..
-
 
    Data structures like this are an excellent fit for JSON, and it’s easy to
    convert in both directions. Converting a Go data structure like @c(movies) to
@@ -6782,7 +6745,6 @@
        }
      < src..
 
-
    As before, the names of all the struct fields must be capitalized even if
    their JSON names are not. However, the matching process that associates JSON
    names with Go struct names during unmarshaling is case-insensitive, so it’s
@@ -6834,7 +6796,6 @@
        }
      < src..
 
-
    The earlier examples used @c(json.Unmarshal) to decode the entire contents of
    a byte slice as a single JSON entity. For variety, this example uses the
    @e(streaming) decoder, @c(json.Decoder), which allows several JSON entities
@@ -6873,7 +6834,6 @@
          }
        }
      < src..
-
 
    The command-line arguments specify the search terms. The command below
    queries the Go project’s issue tracker for the list of open bugs related to
@@ -6950,7 +6910,6 @@
        {{end}}`
      < src..
 
-
    This template first prints the number of matching issues, then prints the
    number, user, title, and age in days of each one. Within an action, there is
    a notion of the current value, referred to as @"(dot) and written as @"(.), a
@@ -6975,8 +6934,8 @@
    < src..
 
    Notice that the type of @c(CreatedAt) is @c(time.Time), not @c(string). In
-   the same way that a type may control its string formatting (@l(#Section
-   2.5<>§2.5)) by defining certain methods, a type may also define methods to
+   the same way that a type may control its string formatting @%l(#Section
+   2.5<>§2.5) by defining certain methods, a type may also define methods to
    control its JSON marshaling and unmarshaling behavior. The JSON-marshaled
    value of a @c(time.Time) is a string in a standard format.
 
@@ -7080,7 +7039,6 @@
        `))
      < src..
 
-
    The command below executes the new template on the results of a slightly
    different query:
 
@@ -7096,7 +7054,6 @@
      encoding.
 
      ..img > img/Figure-4.4.jpg
-
 
    None of the issues in Figure 4.4 pose a challenge for HTML, but we can see
    the effect more clearly with issues whose titles contain HTML metacharacters
@@ -7144,7 +7101,6 @@
        }
      < src..
 
-
    Figure 4.6 shows the template’s output as it appears in a browser. We can see
    that @c(A) was subject to escaping but @c(B) was not.
 
@@ -7152,7 +7108,6 @@
      values are not.
 
      ..img > img/Figure-4.6.jpg
-
 
    We have space here to show only the most basic features of the template
    system. As always, for more information, consult the package documentation:
@@ -7358,7 +7313,6 @@
        }
      < src..
 
-
    The @c(visit) function traverses an HTML node tree, extracts the link from
    the @c(href) attribute of each @e(anchor) element @c(<a href='...'>), appends
    the links to a slice of strings, and returns the resulting slice:
@@ -7384,7 +7338,7 @@
    each of @c(n)’s children, which are held in the @c(FirstChild) linked list.
 
    Let’s run @$(findlinks) on the Go home page, piping the output of @$(fetch)
-   (@l(#Section 1.5<>§1.5)) to the input of @$(findlinks). We’ve edited the
+   @%l(#Section 1.5<>§1.5) to the input of @$(findlinks). We’ve edited the
    output slightly for brevity.
 
    ..srci > sh
@@ -7435,7 +7389,6 @@
          }
        }
      < src..
-
 
    Note one subtlety: although @c(outline) @"(pushes) an element on @c(stack),
    there is no corresponding pop. When @c(outline) calls itself recursively, the
@@ -7543,13 +7496,12 @@
        }
      < src..
 
-
    There are four return statements in @c(findLinks), each of which returns a
-   pair of values. The first three @c(returns) cause the function to pass the
+   pair of values. The first three @c(return)s cause the function to pass the
    underlying errors from the @c(http) and @c(html) packages on to the
    caller. In the first case, the error is returned unchanged; in the second and
    third, it is augmented with additional context information by @c(fmt.Errorf)
-   (@l(#Section 7.8<>§7.8)). If @c(findLinks) is successful, the final return
+   @%l(#Section 7.8<>§7.8). If @c(findLinks) is successful, the final return
    statement returns the slice of links, with no error.
 
    We must ensure that @c(resp.Body) is closed so that network resources are
@@ -7654,7 +7606,7 @@
    word-splitting.)
 
    @b(Exercise 5.6): Modify the @c(corner) function in @c(gopl.io/ch3/surface)
-   (@l(#Section 3.2<>§3.2)) to use named results and a bare return statement.
+   @%l(#Section 3.2<>§3.2) to use named results and a bare return statement.
 
 ** Section 5.4 <> Errors
 
@@ -7823,7 +7775,6 @@
           return fmt.Errorf("server %s failed to respond after %s", url, timeout)
         }
       < src..
-
 
     Third, if progress is impossible, the caller can print the error and stop
     the program gracefully, but this course of action should generally be
@@ -8042,7 +7993,6 @@
        }
      < src..
 
-
    The @c(forEachNode) function accepts two function arguments, one to call
    before a node’s children are visited and one to call after. This arrangement
    gives the caller a great deal of flexibility. For example, the functions
@@ -8166,7 +8116,6 @@
        }
      < src..
 
-
    The function @c(squares) returns another function, of type @c[func() int]. A
    call to @c(squares) creates a local variable @c(x) and returns an anonymous
    function that, each time it is called, increments @c(x) and returns its
@@ -8215,7 +8164,6 @@
        }
      < src..
 
-
    This kind of problem is known as topological sorting. Conceptually, the
    prerequisite information forms a directed graph with a node for each course
    and edges from each course to the courses that it depends on. The graph is
@@ -8255,7 +8203,6 @@
        return order
      }
    < src..
-
 
    When an anonymous function requires recursion, as in this example, we must
    first declare a variable, and then assign the anonymous function to that
@@ -8351,7 +8298,6 @@
        }
      < src..
 
-
    Instead of appending the raw @c(href) attribute value to the @c(links) slice,
    this version parses it as a URL relative to the base URL of the document,
    @c(resp.Request.URL). The resulting @c(link) is in absolute form, suitable
@@ -8389,7 +8335,6 @@
          }
        }
      < src..
-
 
    As we explained in passing in @l(#Chapter 4), the argument @"{@c[f(item)...]}
    causes all the items in the list returned by @c(f) to be appended to the
@@ -8450,7 +8395,7 @@
    cycles.
 
    @b(Exercise 5.12): The @c(startElement) and @c(endElement) functions in
-   @c(gopl.io/ch5/outline2) (@l(#Section 5.5<>§5.5)) share a global variable,
+   @c(gopl.io/ch5/outline2) @%l(#Section 5.5<>§5.5) share a global variable,
    @c(depth). Turn them into anonymous functions that share a variable local to
    the @c(outline) function.
 
@@ -8575,7 +8520,6 @@
        }
      < src..
 
-
    The @c(sum) function above returns the sum of zero or more @c(int)
    arguments. Within the body of the function, the type of @c(vals) is an
    @c([]int) slice. When @c(sum) is called, any number of values may be provided
@@ -8691,7 +8635,6 @@
        }
      < src..
 
-
    Here’s a typical session, slightly edited to fit:
 
    ..srci > sh
@@ -8770,8 +8713,7 @@
        }
      < src..
 
-
-   or to unlock a mutex (@l(#Section 9.2<>§9.2)):
+   or to unlock a mutex @%l(#Section 9.2<>§9.2):
 
    ..src > go
      var mu sync.Mutex
@@ -8810,7 +8752,6 @@
          return func() { log.Printf("exit %s (%s)", msg, time.Since(start)) }
        }
      < src..
-
 
    Each time @c(bigSlowOperation) is called, it logs its entry and exit and the
    elapsed time between them. (We used @c(time.Sleep) to simulate a slow
@@ -8901,7 +8842,7 @@
      }
    < src..
 
-   The example below is an improved @$(fetch) program (@l(#Section 1.5<>§1.5))
+   The example below is an improved @$(fetch) program @%l(#Section 1.5<>§1.5)
    that writes the HTTP response to a local file instead of to the standard
    output. It derives the file name from the last component of the URL path,
    which it obtains using the @c(path.Base) function.
@@ -8934,7 +8875,6 @@
          return local, n, err
        }
      < src..
-
 
    The deferred call to @c(resp.Body.Close) should be familiar by now. It’s
    tempting to use a second deferred call, to @c(f.Close), to close the local
@@ -9109,7 +9049,6 @@
        }
      < src..
 
-
    the following additional text (again simplified for clarity) is printed to
    the standard output:
 
@@ -9128,7 +9067,6 @@
       main.main()
         src/gopl.io/ch5/defer2/defer.go:15
    < pre..
-
 
    Readers familiar with exceptions in other languages may be surprised that
    @c(runtime.Stack) can print information about functions that seem to have
@@ -9242,7 +9180,6 @@
          return title, nil
        }
      < src..
-
 
    The deferred handler function calls @c(recover), checks the panic value, and
    reports an ordinary error if the value was @c(bailout{}). All other non-nil
@@ -9404,7 +9341,6 @@
 
      ..img > img/perim.Distance.jpg
 
-
    In the two calls above to methods named @c(Distance), the compiler determines
    which function to call based on both the method name and the type of the
    receiver. In the first, @c(path[i-1]) has type @c(Point) so
@@ -9549,8 +9485,8 @@
    liberally copied, including as arguments to functions. But if any method has
    a pointer receiver, you should avoid copying instances of @c(T) because doing
    so may violate internal invariants. For example, copying an instance of
-   @c(bytes.Buffer) would cause the original and the copy to alias (@l(#Section
-   2.3.2<>§2.3.2)) the same underlying array of bytes. Subsequent method calls
+   @c(bytes.Buffer) would cause the original and the copy to alias @%l(#Section
+   2.3.2<>§2.3.2) the same underlying array of bytes. Subsequent method calls
    would have unpredictable effects.
 
 *** Section 6.2.1 <> Nil Is a Valid Receiver Value
@@ -9608,7 +9544,6 @@
         }
       < src..
 
-
     It exposes its representation as a map but also provides methods to simplify
     access to the map, whose values are slices of strings—it’s a @e(multimap).
     Its clients can use its intrinsic operators (@c(make), slice literals,
@@ -9630,7 +9565,6 @@
         fmt.Println(m.Get("item")) // ""
         m.Add("item", "3")         // panic: assignment to entry in nil map
       < src..
-
 
     In the final call to @c(Get), the @c(nil) receiver behaves like an empty
     map. We could equivalently have written it as @c[Values(nil).Get("item")],
@@ -9661,7 +9595,6 @@
          Color color.RGBA
        }
      < src..
-
 
    We could have defined @c(ColoredPoint) as a struct of three fields, but
    instead we @e(embedded) a @c(Point) to provide the @c(X) and @c(Y) fields. As
@@ -9774,8 +9707,8 @@
    useful for @e(unnamed) struct types to have methods too.
 
    Here’s a nice trick to illustrate. This example shows part of a simple cache
-   implemented using two package-level variables, a mutex (@l(#Section
-   9.2<>§9.2)) and the map that it guards:
+   implemented using two package-level variables, a mutex @%l(#Section
+   9.2<>§9.2) and the map that it guards:
 
    ..src > go
      var (
@@ -9958,7 +9891,6 @@
          }
        }
      < src..
-
 
    Since each word has 64 bits, to locate the bit for @c(x), we use the quotient
    @c(x/64) as the word index and the remainder @c(x%64) as the bit index within
@@ -10243,8 +10175,8 @@
   types and their values.  Along the way, we’ll study several important
   interfaces from the standard library. Many Go programs make as much use of
   standard interfaces as they do of their own ones. Finally, we’ll look at
-  @e(type assertions) (@l(#Section 7.10<>§7.10)) and @e(type switches)
-  (@l(#Section 7.13<>§7.13)) and see how they enable a different kind of
+  @e(type assertions) @%l(#Section 7.10<>§7.10) and @e(type switches)
+  @%l(#Section 7.13<>§7.13) and see how they enable a different kind of
   generality.
 
 ** Section 7.1 <> Interfaces as Contracts
@@ -10347,7 +10279,6 @@
        }
      < src..
 
-
    Since @c(*ByteCounter) satisfies the @c(io.Writer) contract, we can pass it
    to @c(Fprintf), which does its string formatting oblivious to this change;
    the @c(ByteCounter) correctly accumulates the length of the result.
@@ -10399,7 +10330,7 @@
    < src..
 
    @b(Exercise 7.3): Write a @c(String) method for the @c(*tree) type in
-   @c(gopl.io/ch4/treesort) (@l(#Section 4.4<>§4.4)) that reveals the sequence
+   @c(gopl.io/ch4/treesort) @%l(#Section 4.4<>§4.4) that reveals the sequence
    of values in the tree.
 
 ** Section 7.2 <> Interface Types
@@ -10471,7 +10402,7 @@
    @b(Exercise 7.4): The @c(strings.NewReader) function returns a value that
    satisfies the @c(io.Reader) interface (and others) by reading from its
    argument, a string. Implement a simple version of @c(NewReader) yourself, and
-   use it to make the HTML parser (@l(#Section 5.2<>§5.2)) take input from a
+   use it to make the HTML parser @%l(#Section 5.2<>§5.2) take input from a
    string.
 
    @b(Exercise 7.5): The @c(LimitReader) function in the @c(io) package accepts
@@ -10494,7 +10425,7 @@
    that it satisfies the interface. For example, a @c(*bytes.Buffer) is an
    @c(io.Writer); an @c(*os.File) is an @c(io.ReadWriter).
 
-   The assignability rule (@l(#Section 2.4.2<>§2.4.2)) for interfaces is very
+   The assignability rule @%l(#Section 2.4.2<>§2.4.2) for interfaces is very
    simple: an expression may be assigned to an interface only if its type
    satisfies the interface. So:
 
@@ -10556,7 +10487,7 @@
    < src..
 
    @l(#Section 12.8) includes a program that prints the methods of an arbitrary
-   value, and the @$(godoc -analysis=type) tool (@l(#Section 10.7.4<>§10.7.4))
+   value, and the @$(godoc -analysis=type) tool @%l(#Section 10.7.4<>§10.7.4)
    displays the methods of each type and the relationship between interfaces and
    concrete types.
 
@@ -10735,7 +10666,6 @@
        }
      < src..
 
-
    Before it goes to sleep it prints the time period. The @c(fmt) package calls
    the @c(time.Duration)’s @c(String) method to print the period not as a number
    of nanoseconds, but in a user-friendly notation:
@@ -10787,7 +10717,7 @@
 
    Let’s define a @c(celsiusFlag) type that allows a temperature to be specified
    in Celsius, or in Fahrenheit with an appropriate conversion. Notice that
-   @c(celsiusFlag) embeds a @c(Celsius) (@l(#Section 2.5<>§2.5)), thereby
+   @c(celsiusFlag) embeds a @c(Celsius) @%l(#Section 2.5<>§2.5), thereby
    getting a @c(String) method for free. To satisfy @c(flag.Value), we need only
    declare the @c(Set) method:
 
@@ -10812,7 +10742,6 @@
          return fmt.Errorf("invalid temperature %q", s)
        }
      < src..
-
 
    The call to @c(fmt.Sscanf) parses a floating-point number (@c[value]) and a
    string (@c[unit]) from the input @c(s). Although one must usually check
@@ -10853,7 +10782,6 @@
        }
      < src..
 
-
    Here’s a typical session:
 
    ..srci > sh
@@ -10874,7 +10802,6 @@
        -temp value
              the temperature (default 20°C)
    < srci..
-
 
    @b(Exercise 7.6): Add support for Kelvin temperatures to @c(tempflag).
 
@@ -10953,7 +10880,6 @@
 
      ..img  > img/Figure-7.2.jpg
 
-
    Calling the @c(Write) method on an interface value containing an @c(*os.File)
    pointer causes the @c[(*os.File).Write] method to be called. The call prints
    @c("hello").
@@ -10987,7 +10913,6 @@
    ..figure > Figure 7.3. An interface value containing a @c(*bytes.Buffer) pointer.
 
      ..img  > img/Figure-7.3.jpg
-
 
    A call to the @c(Write) method uses the same mechanism as before:
 
@@ -11024,7 +10949,6 @@
    ..figure > Figure 7.4. An interface value holding a @c(time.Time) struct.
 
      ..img  > img/Figure-7.4.jpg
-
 
    Interface values may be compared using @c(==) and @c(!=). Two interface
    values are equal if both are nil, or if their dynamic types are identical and
@@ -11126,11 +11050,10 @@
               ┗━━━━━━━━━━━━━━━━━┛
       < art..
 
-
     As before, the dynamic dispatch mechanism determines that
     @c[(*bytes.Buffer).Write] must be called but this time with a receiver value
     that is nil. For some types, such as @c(*os.File), @c(nil) is a valid
-    receiver (@l(#Section 6.2.1<>§6.2.1)), but @c(*bytes.Buffer) is not among
+    receiver @%l(#Section 6.2.1<>§6.2.1), but @c(*bytes.Buffer) is not among
     them. The method is called, but it panics as it tries to access the buffer.
 
     The problem is that although a nil @c(*bytes.Buffer) pointer has the methods
@@ -11265,7 +11188,6 @@
        }
      < src..
 
-
    The @c(printTracks) function prints the playlist as a table. A graphical
    display would be nicer, but this little routine uses the @c(text/tabwriter)
    package to produce a table whose columns are neatly aligned and padded as
@@ -11315,7 +11237,6 @@
      Go          Moby            Moby               1992  3m37s
    < pre..
 
-
    If the user requests @"(sort by artist) a second time, we’ll sort the tracks
    in reverse. We needn’t define a new type @c(byReverseArtist) with an inverted
    @c(Less) method, however, since the @c(sort) package provides a @c(Reverse)
@@ -11336,9 +11257,8 @@
      Go Ahead    Alicia Keys     As I Am            2007  4m36s
    < pre..
 
-
    The @c(sort.Reverse) function deserves a closer look since it uses
-   composition (@l(#Section 6.3<>§6.3)), which is an important idea. The
+   composition @%l(#Section 6.3<>§6.3), which is an important idea. The
    @c(sort) package defines an unexported type @c(reverse), which is a struct
    that embeds a @c(sort.Interface). The @c(Less) method for @c(reverse) calls
    the @c(Less) method of the embedded @c(sort.Interface) value, but with the
@@ -11451,7 +11371,6 @@
      fmt.Println(sort.IntsAreSorted(values)) // "false"
    < src..
 
-
    For convenience, the @c(sort) package provides versions of its functions and
    types specialized for @c([]int), @c([]string), and @c([]float64) using their
    natural orderings. For other types, such as @c([]int64) or @c([]uint), we’re
@@ -11463,7 +11382,7 @@
    on. Define an implementation of @c(sort.Interface) for use by such a
    table. Compare that approach with repeated sorting using @c(sort.Stable).
 
-   @b(Exercise 7.9): Use the @c(html/template) package (@l(#Section 4.6<>§4.6))
+   @b(Exercise 7.9): Use the @c(html/template) package @%l(#Section 4.6<>§4.6)
    to replace @c(printTracks) with a function that displays the tracks as an
    HTML table. Use the solution to the previous exercise to arrange that each
    click on a column head makes an HTTP request to sort the table.
@@ -11477,8 +11396,8 @@
 ** Section 7.7 <> The @c(http.Handler) Interface
 
    In @l(#Chapter 1), we saw a glimpse of how to use the @c(net/http) package to
-   implement web clients (@l(#Section 1.5<>§1.5)) and servers (@l(#Section
-   1.7<>§1.7)). In this section, we’ll look more closely at the server API,
+   implement web clients @%l(#Section 1.5<>§1.5) and servers @%l(#Section
+   1.7<>§1.7). In this section, we’ll look more closely at the server API,
    whose foundation is the @c(http.Handler) interface:
 
    ..figure > @c(net/http)
@@ -11525,7 +11444,6 @@
          }
        }
      < src..
-
 
    If we start the server,
 
@@ -11575,7 +11493,6 @@
        }
      < src..
 
-
    Now the handler decides what logic to execute based on the path component of
    the URL, @c(req.URL.Path). If the handler doesn’t recognize the path, it
    reports an HTTP error to the client by calling
@@ -11591,7 +11508,7 @@
 
    The case for @c(/price) calls the URL’s @c(Query) method to parse the HTTP
    request parameters as a map, or more precisely, a multimap of type
-   @c(url.Values) (@l(#Section 6.2.1<>§6.2.1)) from the @c(net/url) package. It
+   @c(url.Values) @%l(#Section 6.2.1<>§6.2.1) from the @c(net/url) package. It
    then finds the first @c(item) parameter and looks up its price. If the item
    wasn’t found, it reports an error.
 
@@ -11669,9 +11586,8 @@
        }
      < src..
 
-
    Let’s focus on the two calls to @c(mux.Handle) that register the handlers. In
-   the first one, @c(db.list) is a method value (@l(#Section 6.4<>§6.4)), that
+   the first one, @c(db.list) is a method value @%l(#Section 6.4<>§6.4), that
    is, a value of type
 
    ..src > go
@@ -11698,7 +11614,6 @@
        }
      < src..
 
-
    @c(HandlerFunc) demonstrates some unusual features of Go’s interface
    mechanism. It is a function type that has methods and satisfies an interface,
    @c(http.Handler). The behavior of its @c(ServeHTTP) method is to call the
@@ -11719,7 +11634,6 @@
        mux.HandleFunc("/list", db.list)
        mux.HandleFunc("/price", db.price)
      < src..
-
 
    It’s easy to see from the code above how one would construct a program in
    which there are two different web servers, listening on different ports,
@@ -11748,7 +11662,6 @@
        }
      < src..
 
-
    Finally, an important reminder: as we mentioned in @l(#Section 1.7), the web
    server invokes each handler in a new goroutine, so handlers must take
    precautions such as @e(locking) when accessing variables that other
@@ -11763,7 +11676,7 @@
 
    @b(Exercise 7.12): Change the handler for @c(/list) to print its output as an
    HTML table, not text.  You may find the @c(html/template) package
-   (@l(#Section 4.6<>§4.6)) useful.
+   @%l(#Section 4.6<>§4.6) useful.
 
 ** Section 7.8 <> The @c(error) Interface
 
@@ -11867,7 +11780,6 @@
              ┗━━━━━━━━━━━━━━━━━┛
      < art..
 
-
    @c(Errno) is an efficient representation of system call errors drawn from a
    finite set, and it satisfies the standard @c(error) interface. We’ll see
    other types that satisfy this interface in @l(#Section 7.11).
@@ -11931,7 +11843,6 @@
          args []Expr
        }
      < src..
-
 
    To evaluate an expression containing variables, we’ll need an @e(environment)
    that maps variable names to values:
@@ -12072,7 +11983,7 @@
    @c(Parse) function here, but you’ll find it if you download the package using
    @$(go get).
 
-   The @$(go test) command (@l(#Section 11.1<>§11.1)) runs a package’s tests:
+   The @$(go test) command @%l(#Section 11.1<>§11.1) runs a package’s tests:
 
    ..srci > sh
      > go test -v gopl.io/ch7/eval
@@ -12229,7 +12140,6 @@
        }
      < src..
 
-
    To make this a web application, all we need is the @c(plot) function below,
    which has the familiar signature of an @c(http.HandlerFunc):
 
@@ -12269,7 +12179,6 @@
      ..img  > img/Figure-7.7.b.jpg
 
      ..img  > img/Figure-7.7.c.jpg
-
 
    @b(Exercise 7.13): Add a @c(String) method to @c(Expr) to pretty-print the
    syntax tree. Check that the results, when parsed again, yield an equivalent
@@ -12452,7 +12361,7 @@
 
    That’s how the three helper functions work. For example, @c(IsNotExist),
    shown below, reports whether an error is equal to @c(syscall.ENOENT)
-   (@l(#Section 7.8<>§7.8)) or to the distinguished error @c(os.ErrNotExist)
+   @%l(#Section 7.8<>§7.8) or to the distinguished error @c(os.ErrNotExist)
    (see @c(io.EOF) in @l(#Section 5.4.2<>§5.4.2)), or is a @c(*PathError) whose
    underlying error is one of those two.
 
@@ -12701,7 +12610,7 @@
      }
    < src..
 
-   As with an ordinary switch statement (@l(#Section 1.8<>§1.8)), cases are
+   As with an ordinary switch statement @%l(#Section 1.8<>§1.8), cases are
    considered in order and, when a match is found, the case’s body is
    executed. Case order becomes significant when one or more case types are
    interfaces, since then there is a possibility of two cases matching. The
@@ -12874,7 +12783,6 @@
        }
      < src..
 
-
    Each time the loop in @c(main) encounters a @c(StartElement), it pushes the
    element’s name onto a stack, and for each @c(EndElement) it pops the name
    from the stack. The API guarantees that the sequence of @c(StartElement) and
@@ -12937,7 +12845,7 @@
    single implementation. Don’t do that. Such interfaces are unnecessary
    abstractions; they also have a run-time cost. You can restrict which methods
    of a type or fields of a struct are visible outside a package using the
-   export mechanism (@l(#Section 6.6<>§6.6)).  Interfaces are only needed when
+   export mechanism @%l(#Section 6.6<>§6.6).  Interfaces are only needed when
    there are two or more concrete types that must be dealt with in a uniform
    way.
 
@@ -13050,13 +12958,11 @@
        }
      < src..
 
-
    After several seconds of animation, the @c[fib(45)] call returns and the
    @c(main) function prints its result:
 
    ..pre >
      Fibonacci(45) = 1134903170
-
 
    The @c(main) function then returns. When this happens, all goroutines are
    abruptly terminated and the program exits. Other than by returning from
@@ -13120,7 +13026,6 @@
          }
        }
      < src..
-
 
    The @c(Listen) function creates a @c(net.Listener), an object that listens
    for incoming connections on a network port, in this case TCP port
@@ -13197,7 +13102,6 @@
        }
      < src..
 
-
    This program reads data from the connection and writes it to the standard
    output until an end-of-file condition or an error occurs. The @c(mustCopy)
    function is a utility used in several examples in this section. Let’s run two
@@ -13230,7 +13134,6 @@
        ^C
      < srci..
 
-
    The @$(killall) command is a Unix utility that kills all processes with the
    given name.
 
@@ -13252,7 +13155,6 @@
          go handleConn(conn) // handle connections concurrently
        }
      < src..
-
 
    Now, multiple clients can receive the time at once:
 
@@ -13295,7 +13197,6 @@
        ^C
      < srci..
 
-
    @b(Exercise 8.1): Modify @$(clock2) to accept a port number, and write a
    program, @$(clockwall), that acts as a client of several clock servers at
    once, reading the times from each one and displaying the results in a table,
@@ -13309,7 +13210,6 @@
      > TZ=Asia/Tokyo    ./clock2 -port 8030 &
      > clockwall NewYork=localhost:8010 London=localhost:8020 Tokyo=localhost:8030
    < srci..
-
 
    @b(Exercise 8.2): Implement a concurrent File Transfer Protocol (FTP)
    server. The server should interpret commands from each client such as @$(cd)
@@ -13357,7 +13257,6 @@
        }
      < src..
 
-
    We’ll need to upgrade our client program so that it sends terminal input to
    the server while also copying the server response to the output, which
    presents another opportunity to use concurrency:
@@ -13375,7 +13274,6 @@
          mustCopy(conn, os.Stdin)
        }
      < src..
-
 
    While the main goroutine reads the standard input and sends it to the server,
    a second goroutine reads and prints the server’s response. When the main
@@ -13427,7 +13325,6 @@
          c.Close()
        }
      < src..
-
 
    The arguments to the function started by @c(go) are evaluated when the @c(go)
    statement itself is executed; thus @c[input.Text()] is evaluated in the main
@@ -13579,7 +13476,6 @@
         }
       < src..
 
-
     When the user closes the standard input stream, @c(mustCopy) returns and the
     main goroutine calls @c[conn.Close()], closing both halves of the network
     connection. Closing the write half of the connection causes the server to
@@ -13623,7 +13519,6 @@
 
       ..img  > img/Figure-8.1.jpg
 
-
     The first goroutine, @e(counter), generates the integers 0, 1, 2, ..., and
     sends them over a channel to the second goroutine, @e(squarer), which
     receives each value, squares it, and sends the result over another channel
@@ -13660,7 +13555,6 @@
           }
         }
       < src..
-
 
     As you might expect, the program prints the infinite series of squares 0, 1,
     4, 9, and so on.  Pipelines like this may be found in long-running server
@@ -13749,7 +13643,6 @@
         }
       < src..
 
-
     You needn’t close every channel when you’ve finished with it. It’s only
     necessary to close a channel when it is important to tell the receiving
     goroutines that all data have been sent. A channel that the garbage
@@ -13836,7 +13729,6 @@
         }
       < src..
 
-
     The call @c[counter(naturals)] implicitly converts @c(naturals), a value of
     type @c(chan int), to the type of the parameter, @c(chan<- int). The
     @c[printer(squares)] call does a similar implicit conversion to @c(<-chan
@@ -13861,7 +13753,6 @@
     ..figure > Figure 8.2. An empty buffered channel.
 
       ..img  > img/Figure-8.2.jpg
-
 
     A send operation on a buffered channel inserts an element at the back of the
     queue, and a receive operation removes an element from the front. If the
@@ -14003,7 +13894,7 @@
 
     We don’t have space to show it here, but the @c(gopl.io/ch8/cake) package
     simulates this cake shop, with several parameters you can vary. It includes
-    benchmarks (@l(#Section 11.4<>§11.4)) for a few of the scenarios described
+    benchmarks @%l(#Section 11.4<>§11.4) for a few of the scenarios described
     above.
 
 ** Section 8.5 <> Looping in Parallel
@@ -14024,7 +13915,6 @@
        func ImageFile(infile string) (string, error)
      < src..
 
-
    The program below loops over a list of image file names and produces a
    thumbnail for each one:
 
@@ -14040,7 +13930,6 @@
          }
        }
      < src..
-
 
    Obviously the order in which we process the files doesn’t matter, since each
    scaling operation is independent of all the others. Problems like this that
@@ -14148,7 +14037,7 @@
    it returns the error to the caller, leaving no goroutine draining the
    @c(errors) channel. Each remaining worker goroutine will block forever when
    it tries to send a value on that channel, and will never terminate. This
-   situation, a goroutine leak (@l(#Section 8.4.4<>§8.4.4)), may cause the whole
+   situation, a goroutine leak @%l(#Section 8.4.4<>§8.4.4), may cause the whole
    program to get stuck or to run out of memory.
 
    The simplest solution is to use a buffered channel with sufficient capacity
@@ -14244,8 +14133,8 @@
    before) the @"(closer) goroutine calls @c(Wait). Also, @c(Add) takes a
    parameter, but @c(Done) does not; it’s equivalent to @c[Add(-1)]. We use
    @c(defer) to ensure that the counter is decremented even in the error
-   case. The structure of the code above is a common and idiomatic pattern for
-   looping in parallel when we don’t know the number of iterations.
+   case. The structure of the code above is a common and idiomatic pattern
+   for looping in parallel when we don’t know the number of iterations.
 
    The @c(sizes) channel carries each file size back to the main goroutine,
    which receives them using a @c(range) loop and computes the sum. Observe how
@@ -14266,7 +14155,6 @@
    ..figure > Figure 8.5. The sequence of events in @c(makeThumbnails6).
 
      ..img  > img/Figure-8.5.jpg
-
 
    @b(Exercise 8.4): Modify the @$(reverb2) server to use a @c(sync.WaitGroup)
    per connection to count the number of active @c(echo) goroutines. When it
@@ -14302,8 +14190,7 @@
        }
      < src..
 
-
-   The main function resembles @c(breadthFirst) (@l(#Section 5.6<>§5.6)). As
+   The main function resembles @c(breadthFirst) @%l(#Section 5.6<>§5.6). As
    before, a worklist records the queue of items that need processing, each item
    being a list of URLs to crawl, but this time, instead of representing the
    queue using a slice, we use a channel. Each call to @c(crawl) occurs in its
@@ -14411,7 +14298,6 @@
        }
      < src..
 
-
    The second problem is that the program never terminates, even when it has
    discovered all the links reachable from the initial URLs. (Of course, you’re
    unlikely to notice this problem unless you choose the initial URLs carefully
@@ -14496,7 +14382,6 @@
        }
      < src..
 
-
    The crawler goroutines are all fed by the same channel, @c(unseenLinks). The
    main goroutine is responsible for de-duplicating items it receives from the
    worklist, and then sending each unseen one over the @c(unseenLinks) channel
@@ -14506,8 +14391,8 @@
    be accessed only by that goroutine. Like other forms of information hiding,
    confinement helps us reason about the correctness of a program. For example,
    local variables cannot be mentioned by name from outside the function in
-   which they are declared; variables that do not escape (@l(#Section
-   2.3.4<>§2.3.4)) from a function cannot be accessed from outside that
+   which they are declared; variables that do not escape @%l(#Section
+   2.3.4<>§2.3.4) from a function cannot be accessed from outside that
    function; and encapsulated fields of an object cannot be accessed except by
    the methods of that object. In all cases, information hiding helps to limit
    unintended interactions between parts of the program.
@@ -14550,7 +14435,6 @@
        }
      < src..
 
-
    Now let’s add the ability to abort the launch sequence by pressing the return
    key during the countdown. First, we start a goroutine that tries to read a
    single byte from the standard input and, if it succeeds, sends a value on a
@@ -14565,7 +14449,6 @@
          abort <- struct{}{}
        }()
      < src..
-
 
    Now each iteration of the countdown loop needs to wait for an event to arrive
    on one of the two channels: the ticker channel if everything is fine
@@ -14670,13 +14553,12 @@
        }
      < src..
 
-
    The @c(time.Tick) function behaves as if it creates a goroutine that calls
    @c(time.Sleep) in a loop, sending an event each time it wakes up. When the
    countdown function above returns, it stops receiving events from @c(tick),
    but the ticker goroutine is still there, trying in vain to send on a channel
-   from which no goroutine is receiving—a @e(goroutine leak) (@l(#Section
-   8.4.4<>§8.4.4)).
+   from which no goroutine is receiving—a @e(goroutine leak) @%l(#Section
+   8.4.4<>§8.4.4).
 
    The @c(Tick) function is convenient, but it’s appropriate only when the ticks
    will be needed throughout the lifetime of the application. Otherwise, we
@@ -14726,7 +14608,7 @@
    In this section, we’ll build a program that reports the disk usage of one or
    more directories specified on the command line, like the Unix @$(du)
    command. Most of its work is done by the @c(walkDir) function below, which
-   enumerates the entries of the directory  @c(dir) using the @c(dirents) helper
+   enumerates the entries of the directory @c(dir) using the @c(dirents) helper
    function.
 
    ..figure > @l(gopl.io/ch8/du1/main.go<>gopl.io/ch8/du1)
@@ -14755,7 +14637,6 @@
          return entries
        }
      < src..
-
 
    The @c(ioutil.ReadDir) function returns a slice of @c(os.FileInfo)—the same
    information that a call to @c(os.Stat) returns for a single file. For each
@@ -14863,7 +14744,6 @@
        }
      < src..
 
-
    Since the program no longer uses a @c(range) loop, the first @c(select) case
    must explicitly test whether the @c(fileSizes) channel has been closed, using
    the two-result form of receive operation. If the channel has been closed, the
@@ -14888,7 +14768,7 @@
    calls to @c(walkDir) can’t be done concurrently, thereby exploiting
    parallelism in the disk system. The third version of @$(du), below, creates a
    new goroutine for each call to @c(walkDir). It uses a @c(sync.WaitGroup)
-   (@l(#Section 8.5<>§8.5)) to count the number of calls to @c(walkDir) that are
+   @%l(#Section 8.5<>§8.5) to count the number of calls to @c(walkDir) that are
    still active, and a closer goroutine to close the @c(fileSizes) channel when
    the counter drops to zero.
 
@@ -14926,11 +14806,9 @@
        }
      < src..
 
-
    Since this program creates many thousands of goroutines at its peak, we have
    to change @c(dirents) to use a counting semaphore to prevent it from opening
-   too many files at once, just as we did for the web crawler in @l(#Section
-   8.6):
+   too many files at once, just as we did for the web crawler in @l(#Section 8.6):
 
    ..src > go
      // sema is a counting semaphore for limiting concurrency in dirents.
@@ -14957,7 +14835,7 @@
 
    There is no way for one goroutine to terminate another directly, since that
    would leave all its shared variables in undefined states. In the rocket
-   launch program (@l(#Section 8.7<>§8.7)) we sent a single value on a channel
+   launch program @%l(#Section 8.7<>§8.7) we sent a single value on a channel
    named @c(abort), which the countdown goroutine interpreted as a request to
    stop itself. But what if we need to cancel two goroutines, or an arbitrary
    number?
@@ -15001,7 +14879,6 @@
          }
        }
      < src..
-
 
    Next, we create a goroutine that will read from the standard input, which is
    typically connected to the terminal. As soon as any input is read (for
@@ -15143,7 +15020,6 @@
        }
      < src..
 
-
    Next is the broadcaster. Its local variable @c(clients) records the current
    set of connected clients.  The only information recorded about each client is
    the identity of its outgoing message channel, about which more later.
@@ -15276,10 +15152,9 @@
        ^C
      < srci..
 
-
    While hosting a chat session for @m(n) clients, this program runs @m(2n+2)
    concurrently communicating goroutines, yet it needs no explicit locking
-   operations (@l(#Section 9.2<>§9.2)). The @c(clients) map is confined to a
+   operations @%l(#Section 9.2<>§9.2). The @c(clients) map is confined to a
    single goroutine, the broadcaster, so it cannot be accessed concurrently. The
    only variables that are shared by multiple goroutines are channels and
    instances of @c(net.Conn), both of which are @e(concurrency safe). We’ll talk
@@ -15416,7 +15291,6 @@
        A2 "= 200"            A1    300                B     300
        B     300             A2 "= 300"               A2 "= 300"
 
-
    In all cases the final balance is $300. The only variation is whether Alice’s
    balance slip includes Bob’s transaction or not, but the customers are
    satisfied either way.
@@ -15435,7 +15309,6 @@
      B      100
      A1w    200          balance = ...
      A2  "= 200"
-
 
    After @c(A1r), the expression @c(balance + amount) evaluates to 200, so this
    is the value written during @c(A1w), despite the intervening deposit. The
@@ -15532,9 +15405,9 @@
    The second way to avoid a data race is to avoid accessing the variable from
    multiple goroutines. This is the approach taken by many of the programs in
    the previous chapter. For example, the main goroutine in the concurrent web
-   crawler (@l(#Section 8.6<>§8.6)) is the sole goroutine that accesses the
+   crawler @%l(#Section 8.6<>§8.6) is the sole goroutine that accesses the
    @c(seen) map, and the @c(broadcaster) goroutine in the chat server
-   (@l(#Section 8.10<>§8.10)) is the only goroutine that accesses the
+   @%l(#Section 8.10<>§8.10) is the only goroutine that accesses the
    @c(clients) map. These variables are @e(confined) to a single goroutine.
 
    Since other goroutines cannot access the variable directly, they must use a
@@ -15575,7 +15448,6 @@
          go teller() // start the monitor goroutine
        }
      < src..
-
 
    Even when a variable cannot be confined to a single goroutine for its entire
    lifetime, confinement may still be a solution to the problem of concurrent
@@ -15650,7 +15522,6 @@
        }
      < src..
 
-
    This pattern of @e(mutual exclusion) is so useful that it is supported
    directly by the @e(Mutex) type from the @c(sync) package. Its @c(Lock) method
    acquires the token (called a @e(lock)) and its @c(Unlock) method releases it:
@@ -15678,7 +15549,6 @@
          return b
        }
      < src..
-
 
    Each time a goroutine accesses the variables of the bank (just @c(balance)
    here), it must call the mutex’s @c(Lock) method to acquire an exclusive
@@ -15730,7 +15600,7 @@
 
    Furthermore, a deferred @c(Unlock) will run even if the critical section
    panics, which may be important in programs that make use of @c(recover)
-   (@l(#Section 5.10<>§5.10)). A @c(defer) is marginally more expensive than an
+   @%l(#Section 5.10<>§5.10). A @c(defer) is marginally more expensive than an
    explicit call to @c(Unlock), but not enough to justify less clear code. As
    always with concurrent programs, favor clarity and resist premature
    optimization. Where possible, use @c(defer) and let critical sections extend
@@ -15834,7 +15704,7 @@
    @c(Withdraw) function wouldn’t bother calling it, but nonetheless it
    illustrates the principle.
 
-   Encapsulation (@l(#Section 6.6<>§6.6)), by reducing unexpected interactions
+   Encapsulation @%l(#Section 6.6<>§6.6), by reducing unexpected interactions
    in a program, helps us maintain data structure invariants. For the same
    reason, encapsulation also helps us maintain concurrency invariants. When you
    use a mutex, make sure that both it and the variables it guards are not
@@ -16230,7 +16100,6 @@
        }
      < src..
 
-
    A @c(Memo) instance holds the function @c(f) to memoize, of type @c(Func),
    and the cache, which is a mapping from strings to @c(results). Each
    @c(result) is simply the pair of results returned by a call to @c(f)—a value
@@ -16308,7 +16177,7 @@
 
    Worse, it is likely to work correctly @e(some) of the time, so we may not
    even notice that it has a problem. But if we run it with the @c(-race) flag,
-   the race detector (@l(#Section 9.6<>§9.6)) often prints a report such as this
+   the race detector @%l(#Section 9.6<>§9.6) often prints a report such as this
    one:
 
    ..srci > sh
@@ -16374,7 +16243,6 @@
        }
      < src..
 
-
    Now the race detector is silent, even when running the tests
    concurrently. Unfortunately this change to @c(Memo) reverses our earlier
    performance gains. By holding the lock for the duration of each call to
@@ -16407,7 +16275,6 @@
        }
      < src..
 
-
    The performance improves again, but now we notice that some URLs are being
    fetched twice.  This happens when two or more goroutines call @c(Get) for the
    same URL at about the same time.  Both consult the cache, find no value
@@ -16421,7 +16288,7 @@
    memoized result of a call to the function @c(f), as before, but it
    additionally contains a channel called @c(ready). Just after the @c(entry)’s
    @c(result) has been set, this channel will be closed, to @e(broadcast)
-   (@l(#Section 8.9<>§8.9)) to any other goroutines that it is now safe for them
+   @%l(#Section 8.9<>§8.9) to any other goroutines that it is now safe for them
    to read the result from the @c(entry).
 
    ..figure > @l(gopl.io/ch9/memo4/memo.go<>gopl.io/ch9/memo4)
@@ -16466,7 +16333,6 @@
        }
      < src..
 
-
    A call to @c(Get) now involves acquiring the mutex lock that guards the
    @c(cache) map, looking in the map for a pointer to an existing @c(entry),
    allocating and inserting a new @c(entry) if none was found, then releasing
@@ -16474,8 +16340,7 @@
    ready yet—another goroutine could still be calling the slow function @c(f)—so
    the calling goroutine must wait for the @c(entry)’s @"(ready) condition
    before it reads the @c(entry)’s @c(result). It does this by reading a value
-   from the @c(ready) channel, since this operation blocks until the channel is
-   closed.
+   from the @c(ready) channel, since this operation blocks until the channel is closed.
 
    If there was no existing @c(entry), then by inserting a new @"(not ready)
    @c(entry) into the map, the current goroutine becomes responsible for
@@ -16554,7 +16419,6 @@
        func (memo *Memo) Close() { close(memo.requests) }
      < src..
 
-
    The @c(Get) method, above, creates a response channel, puts it in the
    request, sends it to the monitor goroutine, then immediately receives from
    it.
@@ -16616,7 +16480,7 @@
 
    @b(Exercise 9.3): Extend the Func type and the @c[(*Memo).Get] method so that
    callers may provide an optional @c(done) channel through which they can
-   cancel the operation (@l(#Section 8.9<>§8.9)). The results of a cancelled
+   cancel the operation @%l(#Section 8.9<>§8.9). The results of a cancelled
    @c(Func) call should not be cached.
 
 ** Section 9.8 <> Goroutines and Threads
@@ -16714,9 +16578,9 @@
     < src..
 
     ..srci > sh
-      > GOMAXPROCS=1 go run hacker-cliché.go
+      > GOMAXPROCS=1 go run hacker-cliche.go
       111111111111111111110000000000000000000011111...
-      > GOMAXPROCS=2 go run hacker-cliché.go
+      > GOMAXPROCS=2 go run hacker-cliche.go
       010101010101010101011001100101011010010100110...
     < srci..
 
@@ -16888,7 +16752,7 @@
    There are three major exceptions to the @"(last segment) convention. The
    first is that a package defining a command (an executable Go program) always
    has the name @c(main), regardless of the package’s import path. This is a
-   signal to @$(go build) (@l(#Section 10.7.3<>§10.7.3)) that it must invoke the
+   signal to @$(go build) @%l(#Section 10.7.3<>§10.7.3) that it must invoke the
    linker to make an executable file.
 
    The second exception is that some files in the directory may have the suffix
@@ -16975,7 +16839,7 @@
    defines within that file.  However, on occasion we must import a package
    merely for the side effects of doing so: evaluation of the initializer
    expressions of its package-level variables and execution of its @c(init)
-   functions (@l(#Section 2.6.2<>§2.6.2)). To suppress the @"(unused import)
+   functions @%l(#Section 2.6.2<>§2.6.2). To suppress the @"(unused import)
    error we would otherwise encounter, we must use a renaming import in which
    the alternative name is @c(_), the blank identifier. As usual, the blank
    identifier can never be referenced.
@@ -17028,8 +16892,7 @@
        }
      < src..
 
-
-   If we feed the output of @c(gopl.io/ch3/mandelbrot) (@l(#Section 3.3<>§3.3))
+   If we feed the output of @c(gopl.io/ch3/mandelbrot) @%l(#Section 3.3<>§3.3)
    to the converter program, it detects the PNG input format and writes a JPEG
    version of Figure 3.3.
 
@@ -17271,7 +17134,7 @@
                 ...
     < pre..
 
-    @c(GOPATH) has three subdirectories. The @f(src) subdirectory  holds source
+    @c(GOPATH) has three subdirectories. The @f(src) subdirectory holds source
     code. Each package resides in a directory whose name relative to
     @c($GOPATH/src) is the package’s import path, such as
     @c(gopl.io/ch1/helloworld). Observe that a single @c(GOPATH) workspace
@@ -17400,7 +17263,7 @@
     @e(command) in Unix terminology, requires its own directory. These
     directories are sometimes children of a directory named @c(cmd), such as the
     @c(golang.org/x/tools/cmd/godoc) command which serves Go package
-    documentation through a web interface (@l(#Section 10.7.4<>§10.7.4)).
+    documentation through a web interface @%l(#Section 10.7.4<>§10.7.4).
 
     Packages may be specified by their import paths, as we saw above, or by a
     relative directory name, which must start with a @c(.) or @c(..) segment
@@ -17507,7 +17370,6 @@
           fmt.Println(runtime.GOOS, runtime.GOARCH)
         }
       < src..
-
 
     The following commands produce 64-bit and 32-bit executables respectively:
 
@@ -17767,7 +17629,7 @@
     < srci..
 
     The @c(-f) flag lets users customize the output format using the template
-    language of package @c(text/template) (@l(#Section 4.6<>§4.6)). This command
+    language of package @c(text/template) @%l(#Section 4.6<>§4.6). This command
     prints the transitive dependencies of the @c(strconv) package, separated by
     spaces:
 
@@ -17801,7 +17663,7 @@
     the workspace that transitively depend on the packages specified by the
     arguments. Hint: you will need to run @$(go list) twice, once for the
     initial packages and once for all packages. You may want to parse its JSON
-    output using the @$(encoding/json) package (@l(#Section 4.5<>§4.5)).
+    output using the @$(encoding/json) package @%l(#Section 4.5<>§4.5).
 
 * Chapter 11 <> Testing
 
@@ -17914,7 +17776,6 @@
          return true
        }
      < src..
-
 
    In the same directory, the file @f(word_test.go) contains two test functions
    named @c(TestPalindrome) and @c(TestNonPalindrome). Each checks that
@@ -18072,7 +17933,6 @@
        }
      < src..
 
-
    We also write a more comprehensive set of test cases that combines all the
    previous ones and a number of new ones into a table.
 
@@ -18144,8 +18004,8 @@
 
    @b(Exercise 11.1): Write tests for the @$(charcount) program in @l(#Section 4.3).
 
-   @b(Exercise 11.2): Write a set of tests for @c(IntSet) (@l(#Section
-   6.5<>§6.5)) that checks that its behavior after each operation is equivalent
+   @b(Exercise 11.2): Write a set of tests for @c(IntSet) @%l(#Section
+   6.5<>§6.5) that checks that its behavior after each operation is equivalent
    to a set based on built-in maps. Save your implementation for benchmarking in
    Exercise 11.7.
 
@@ -18266,10 +18126,9 @@
         }
       < src..
 
-
     From the test, we will call @c(echo) with a variety of arguments and flag
     settings and check that it prints the correct output in each case, so we’ve
-    added parameters to @$(echo) to reduce its dependence on global
+    added parameters to @c(echo) to reduce its dependence on global
     variables. That said, we’ve also introduced another global variable,
     @c(out), the @c(io.Writer) to which the result will be written. By having
     @c(echo) write through this variable, not directly to @c(os.Stdout), the
@@ -18430,7 +18289,6 @@
         }
       < src..
 
-
     We’d like to test it, but we don’t want the test to send out real email. So
     we move the email logic into its own function and store that function in an
     unexported package-level variable, @c(notifyUser).
@@ -18458,7 +18316,6 @@
           notifyUser(username, msg)
         }
       < src..
-
 
     We can now write a test that substitutes a simple fake notification
     mechanism instead of sending real email. This one records the notified user
@@ -18817,7 +18674,6 @@
        }
      < src..
 
-
    First, let’s check that the test passes:
 
    ..srci > sh
@@ -19065,7 +18921,7 @@
    Exercise 2.5. At what point does the table-based approach break even?
 
    @b(Exercise 11.7): Write benchmarks for @c(Add), @c(UnionWith), and other
-   methods of @c(*IntSet) (@l(#Section 6.5<>§6.5)) using large pseudo-random
+   methods of @c(*IntSet) @%l(#Section 6.5<>§6.5) using large pseudo-random
    inputs. How fast can you make these methods run? How does the choice of word
    size affect performance? How fast is @c(IntSet) compared to a set
    implementation based on the built-in map type?
@@ -19253,7 +19109,6 @@
 
      ..img  > img/Figure-11.4.jpg
 
-
    The final two chapters of the book examine the @c(reflect) and @c(unsafe)
    packages, which few Go programmers regularly use—and even fewer @e(need) to
    use. If you haven’t written any substantial Go programs yet, now would be a
@@ -19340,7 +19195,7 @@
    interface with many methods for discriminating among types and inspecting
    their components, like the fields of a struct or the parameters of a
    function. The sole implementation of @c(reflect.Type) is the type descriptor
-   (@l(#Section 7.5<>§7.5)), the same entity that identifies the dynamic type of
+   @%l(#Section 7.5<>§7.5), the same entity that identifies the dynamic type of
    an interface value.
 
    The @c(reflect.TypeOf) function accepts any @c(interface{}) and returns its
@@ -19361,8 +19216,8 @@
 
    Because @c(reflect.TypeOf) returns an interface value’s dynamic type, it
    always returns a concrete type. So, for example, the code below prints
-   @"(@c(*os.File)), not @"(@c(*io.Writer)). Later, we will see that
-   @c(reflect.Type) is capable of representing interface types too.
+   @"c(*os.File), not @"c(*io.Writer). Later, we will see that @c(reflect.Type)
+   is capable of representing interface types too.
 
    ..src > go
      var w io.Writer = os.Stdout
@@ -19473,7 +19328,6 @@
        }
      < src..
 
-
    So far, our function treats each value as an indivisible thing with no
    internal structure—hence @c(formatAtom). For aggregate types (structs and
    arrays) and interfaces it prints only the @e(type) of the value, and for
@@ -19535,7 +19389,6 @@
        }
      < src..
 
-
    In @c(display), we’ll use the @c(formatAtom) function we defined earlier to
    print elementary values—basic types, functions, and channels—but we’ll use
    the methods of @c(reflect.Value) to recursively display each component of a
@@ -19584,7 +19437,6 @@
      }
    < src..
 
-
    Let’s discuss the cases in order.
 
    - Slices and arrays :: The logic is the same for both. The Len method returns
@@ -19625,7 +19477,6 @@
    - Interfaces :: Again, we use @c(IsNil) to test whether the interface is
      nil, and if not, we retrieve its dynamic value using @c[v.Elem()] and print
      its type and value.
-
 
    Now that our @c(Display) function is complete, let’s put it to work. The
    @c(Movie) type below is a slight variation on the one in @l(#Section 4.5):
@@ -19914,7 +19765,6 @@
        }
      < src..
 
-
    The @c(Marshal) function wraps the encoder in an API similar to those of the
    other @c(encoding/...) packages:
 
@@ -19985,7 +19835,7 @@
    encode a field whose value is the zero value of its type.
 
    @b(Exercise 12.7): Create a streaming API for the S-expression encoder,
-   following the style of @c(json.Encoder) (@l(#Section 4.5<>§4.5)).
+   following the style of @c(json.Encoder) @%l(#Section 4.5<>§4.5).
 
 ** Section 12.5 <> Setting Variables with @c(reflect.Value)
 
@@ -20007,7 +19857,6 @@
      c := reflect.ValueOf(&x)   // &x      *int   no
      d := c.Elem()              // 2       int    yes (x)
    < src..
-
 
    The value within @c(a) is not addressable. It is merely a copy of the
    integer 2. The same is true of @c(b). The value within @c(c) is also
@@ -20141,8 +19990,8 @@
    For each @c(Marshal) function provided by the standard library’s
    @c(encoding/...) packages, there is a corresponding @c(Unmarshal) function
    that does decoding. For example, as we saw in @l(#Section 4.5), given a byte
-   slice containing JSON-encoded data for our @c(Movie) type (@l(#Section
-   12.3<>§12.3)), we can decode it like this:
+   slice containing JSON-encoded data for our @c(Movie) type @%l(#Section
+   12.3<>§12.3), we can decode it like this:
 
    ..src > go
      data := []byte{/* ... */}
@@ -20196,7 +20045,6 @@
          lex.next()
        }
      < src..
-
 
    Now let’s turn to the parser. It consists of two principal functions. The
    first of these, @c(read), reads the S-expression that starts with the current
@@ -20322,7 +20170,7 @@
    Finally, we wrap up the parser in an exported function @c(Unmarshal), shown
    below, that hides some of the rough edges of the implementation. Errors
    encountered during parsing result in a panic, so @c(Unmarshal) uses a
-   deferred call to recover from the panic (@l(#Section 5.10<>§5.10)) and return
+   deferred call to recover from the panic @%l(#Section 5.10<>§5.10) and return
    an error message instead.
 
    ..src > go
@@ -20356,7 +20204,7 @@
    @c(sexpr.Unmarshal) to use this new type.
 
    @b(Exercise 12.9): Write a token-based API for decoding S-expressions,
-   following the style of @c(xml.Decoder) (@l(#Section 7.14<>§7.14)). You will
+   following the style of @c(xml.Decoder) @%l(#Section 7.14<>§7.14). You will
    need five types of tokens: @c(Symbol), @c(String), @c(Int), @c(StartList),
    and @c(EndList).
 
@@ -20375,7 +20223,7 @@
    In a web server, the first thing most HTTP handler functions do is extract
    the request parameters into local variables. We’ll define a utility function,
    @c(params.Unpack), that uses struct field tags to make writing HTTP handlers
-   (@l(#Section 7.7<>§7.7)) more convenient.
+   @%l(#Section 7.7<>§7.7) more convenient.
 
    First, we’ll show how it’s used. The @c(search) function below is an HTTP
    handler. It defines a variable called @c(data) of an anonymous struct type
@@ -20407,7 +20255,6 @@
          fmt.Fprintf(resp, "Search: %+v\n", data)
        }
      < src..
-
 
    The @c(Unpack) function below does three things. First, it calls
    @c[req.ParseForm()] to parse the request. Thereafter, @c(req.Form) contains
@@ -20469,7 +20316,6 @@
          return nil
        }
      < src..
-
 
    Finally, @c(Unpack) iterates over the name/value pairs of the HTTP parameters
    and updates the corresponding struct fields. Recall that the same parameter
@@ -20539,10 +20385,10 @@
    address or credit-card number, and an integer might need to be a valid US ZIP
    code. Modify @c(Unpack) to check these requirements.
 
-   @b(Exercise 12.13): Modify the S-expression encoder (@l(#Section
-   12.4<>§12.4)) and decoder (@l(#Section 12.6<>§12.6)) so that they honor the
+   @b(Exercise 12.13): Modify the S-expression encoder @%l(#Section
+   12.4<>§12.4) and decoder @%l(#Section 12.6<>§12.6) so that they honor the
    @c(sexpr:"...") field tag in a similar manner to @c(encoding/json)
-   (@l(#Section 4.5<>§4.5)).
+   @%l(#Section 4.5<>§4.5).
 
 ** Section 12.8 <> Displaying the Methods of a Type
 
@@ -20566,12 +20412,11 @@
        }
      < src..
 
-
    Both @c(reflect.Type) and @c(reflect.Value) have a method called
    @c(Method). Each @c[t.Method(i)] call returns an instance of
    @c(reflect.Method), a struct type that describes the name and type of a
    single method. Each @c[v.Method(i)] call returns a @c(reflect.Value)
-   representing a method value (@l(#Section 6.4<>§6.4)), that is, a method bound
+   representing a method value @%l(#Section 6.4<>§6.4), that is, a method bound
    to its receiver. Using the @c(reflect.Value.Call) method (which we don’t have
    space to show here), it’s possible to call @c(Values) of kind @c(Func) like
    this one, but this program needs only its @c(Type).
@@ -20609,7 +20454,7 @@
    panic, possibly long after the program was written or even long after it has
    started running.
 
-   If the @c(readList) function (@l(#Section 12.6<>§12.6)), for example, should
+   If the @c(readList) function @%l(#Section 12.6<>§12.6), for example, should
    read a string from the input while populating a variable of type @c(int), the
    call to @c(reflect.Value.SetString) will panic. Most programs that use
    reflection have similar hazards, and considerable care is required to keep
@@ -20765,7 +20610,6 @@
    | @c(interface)                                                 | 2 words (type, value)                                 |
    +---------------------------------------------------------------+-------------------------------------------------------+
 
-
    The language specification does not guarantee that the order in which fields
    are declared is the order in which they are laid out in memory, so in theory
    a compiler is free to rearrange them, although as we write this, none do. If
@@ -20810,7 +20654,6 @@
    ..figure > Figure 13.1. Holes in a struct.
 
      ..img  > img/Figure-13.1.jpg
-
 
    The table below shows the results of applying the three @c(unsafe) functions
    to @c(x) itself and to each of its three fields:
@@ -20893,7 +20736,6 @@
 
        fmt.Println(x.b) // "42"
      < src..
-
 
    Although the syntax is cumbersome—perhaps no bad thing since these features
    should be used sparingly—do not be tempted to introduce temporary variables
@@ -21047,7 +20889,6 @@
          panic("unreachable")
        }
      < src..
-
 
    As usual, we don’t expose the use of reflection in the API, so the exported
    function @c(Equal) must call @c(reflect.ValueOf) on its arguments:
@@ -21208,7 +21049,6 @@
          return r;
        }
      < src..
-
 
    Now let’s turn to the Go code, the first part of which is shown below. The
    @c(import "C") declaration is special. There is no package @c(C), but this
@@ -21374,7 +21214,6 @@
          }
        }
      < src..
-
 
    In the session below, we use @$(bzipper) to compress
    @c(/usr/share/dict/words), the system dictionary, from 938,848 bytes to
