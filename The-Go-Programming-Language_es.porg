@@ -1,3 +1,11 @@
+# ..title   > The Go Programming Language
+# ..author  > Alan A. A. Donovan
+# ..author  > Brian W. Kernighan
+# ..date    > 29/09/2015
+# ..id      > isbn-13 978-0-13-419044-0
+# ..id      > isbn-10 0-13-419044-0
+# ..style   > worg-data/worg.css
+# ..options > fancyCode toc
 ..title   > El lenguaje de programacion Go
 ..author  > Alan A. A. Donovan
 ..author  > Brian W. Kernighan
@@ -7,6 +15,10 @@
 ..style   > worg-data/worg.css
 ..options > fancyCode toc
 
+# @ _es.porg -> en.morg
+# @ awk 'length == 0 || /^#/' The-Go-Programming-Language_es.porg | cat -s |sed -e 's/^# \?//' > The-Go-Programming-Language.morg
+# @
+# @ revision 3b600c, date 29 Sep 2015
 @ revision 3b600c, date 29 Sep 2015
 
 # ..center >
@@ -196,7 +208,7 @@
 #    functions is from Scheme (and most languages since). Here too we find novel
 #    mutations. Go’s innovative slices provide dynamic arrays with efficient
 #    random access but also permit sophisticated sharing arrangements reminiscent
-#    of linked lists. And the defer statement is new with Go.
+#    of linked lists. And the @c(defer) statement is new with Go.
    Otras construcciones en Go muestran la influencia de genes no ancestrales
    aqui y alla; Por ejemplo @c(iota) es tomado libremente de APL, y el ambito
    lexico con funciones anidadas es de Scheme (y la mayoria de lenguajes desde
@@ -306,7 +318,7 @@
 #    allocations and pointer indirections than languages that use indirect
 #    fields. And since the modern computer is a parallel machine, Go has
 #    concurrency features based on CSP, as mentioned earlier. The variablesize
-#    stacks of Go’s lightweight threads or goroutines are initially small enough
+#    stacks of Go’s lightweight threads or @e(goroutines) are initially small enough
 #    that creating one goroutine is cheap and creating a million is practical.
    Go fomenta una conciencia del diseño de sistemas informaticos contemporaneos,
    particularmente la importancia de la localidad. Sus tipos de datos
@@ -329,7 +341,7 @@
 #    standard file formats and protocols. The libraries and tools make extensive
 #    use of convention to reduce the need for configuration and explanation, thus
 #    simplifying program logic and making diverse Go programs more similar to each
-#    other and thus easier to learn. Projects built using the go tool use only
+#    other and thus easier to learn. Projects built using the @$(go) tool use only
 #    file and identifier names and an occasional special comment to determine all
 #    the libraries, executables, tests, benchmarks, examples, platform-specific
 #    variants, and documentation for a project; the Go source itself contains the
@@ -469,7 +481,7 @@
 #    example is identified by its package import path and may be conveniently
 #    fetched, built, and installed using the @$(go get) command. You’ll need to
 #    choose a directory to be your Go workspace and set the @c(GOPATH) environment
-#    variable to point to it.  The go tool will create the directory if
+#    variable to point to it.  The @$(go) tool will create the directory if
 #    necessary. For example:
    Todos menos los ejemplos de codigo, exepto los mas triviales estan
    disponibles para su descarga desde un repositorio publico Git en
@@ -480,7 +492,7 @@
    @c(GOPATH) apuntando a el. La herramienta @$(go) creara el directorio si es
    necesario. Por iejemplo:
 
-#    ..src > sh
+#    ..srci > sh
 #      > export GOPATH=$HOME/gobook        # choose workspace directory
 #      > go get gopl.io/ch1/helloworld     # fetch, build, install
 #      > $GOPATH/bin/helloworld            # run
@@ -505,7 +517,7 @@
      go version go1.5 linux/amd64
    < srci..
 
-#    Follow the instructions at @l(https://golang.org/doc/install) if the go tool
+#    Follow the instructions at @l(https://golang.org/doc/install) if the @$(go) tool
 #    on your computer is older or missing.
    Siga las instrucciones en @l(https://golang.org/doc/install) si en su equipo
    la herramienta @$(go) esta ausente o es antigua.
@@ -538,7 +550,7 @@
 #    pages that describe them. This functionality is provided by the Go Playground
 #    at @l(https://play.golang.org<>play.golang.org), and may be embedded within
 #    other pages, such as the home page at @l(https://golang.org<>golang.org) or
-#    the documentation pages served by the godoc tool.
+#    the documentation pages served by the @$(godoc) tool.
    Uno de los aspectos mas utiles del acceso en linea a Go (y una limitacion
    lamentable de un libro de papel) es la capacidad de ejecutar programas Go
    desde las paginas web que los describen. Esta funcionalidad es proporcionada
@@ -1237,7 +1249,7 @@
 #    call. The @c(condition) is a boolean expression that is evaluated at the
 #    beginning of each iteration of the loop; if it evaluates to @c(true), the
 #    statements controlled by the loop are executed. The @c(post) statement is
-#    executed after the body of the loop, then the condition is evaluated
+#    executed after the body of the loop, then the @c(condition) is evaluated
 #    again. The loop ends when the condition becomes false.
    La declaracion opcional @c(inicializacion) se ejecuta antes de que comience
    el bucle. Si esta presente, debe ser una simple declaracion, es decir, una
@@ -1506,7 +1518,7 @@
 
 #    The first version of @$(dup) prints each line that appears more than once in the
 #    standard input, preceded by its count. This program introduces the @c(if)
-#    statement, the @$(map) data type, and the @c(bufio) package.
+#    statement, the @c(map) data type, and the @c(bufio) package.
    La primer version de @$(dup) imprime cada linea que aparece mas de una vez en
    la entrada estandar, precedido por su recuento. Este programa presenta la
    declaracion @c(if), el tipo de datos @c(map) y el paquete @c(bufio).
@@ -1890,7 +1902,7 @@
 #    passed to a function, the function receives a copy of the reference, so any
 #    changes the called function makes to the underlying data structure will be
 #    visible through the caller’s map reference too. In our example, the values
-#    inserted into the counts map by @c(countLines) are seen by @c(main).
+#    inserted into the @c(counts) map by @c(countLines) are seen by @c(main).
    Un mapa es una referencia a la estructura de datos creada por @c(make).
    Cuando un mapa se pasa a una funcion, la funcion recibe una copia de la
    referencia, De modo que cualquier cambio que haga la funcion llamada en la
@@ -1998,7 +2010,7 @@
    discutir los strings y slices de bytes en detalle en la @l(#Seccion 3.5.4).
 
 #    Under the covers, @c(bufio.Scanner), @c(ioutil.ReadFile), and
-#    @c(ioutil.WriteFile) use the Read and Write methods of @c(*os.File), but it’s
+#    @c(ioutil.WriteFile) use the @c(Read) and @c(Write) methods of @c(*os.File), but it’s
 #    rare that most programmers need to access those lower-level routines
 #    directly. The higher-level functions like those from @c(bufio) and @c(io/ioutil)
 #    are easier to use.
@@ -2074,8 +2086,8 @@
 #        var palette = []color.Color{color.White, color.Black}
 #
 #        const (
-#          whiteIndex = 0 // primer color en la paleta
-#          blackIndex = 1 // siguiente color en la paleta
+#          whiteIndex = 0 // first color in palette
+#          blackIndex = 1 // next color in palette
 #        )
 #
 #        func main() {
@@ -2181,14 +2193,14 @@
    ultimo componente. Por lo tanto la variable @c(color.White) pertenece al
    paquete @c(image/color) y @c(gif.GIF) pertenece a @c(image/gif).
 
-#    A @c(const) declaration (@l(#Section 3.6<>§3.6)) gives names to constants,
+#    A @c(const) declaration @%l(#Section 3.6<>§3.6) gives names to constants,
 #    that is, values that are fixed at compile time, such as the numerical
 #    parameters for cycles, frames, and delay. Like @c(var) declarations,
 #    @c(const) declarations may appear at package level (so the names are visible
 #    throughout the package) or within a function (so the names are visible only
 #    within that function). The value of a constant must be a number, string, or
 #    boolean.
-   Una declaracion @c(const) (@l(#Seccion 3.6<>§3.6)) da nombres a las
+   Una declaracion @c(const) @%l(#Seccion 3.6<>§3.6) da nombres a las
    constantes, es decir, valores que se establecen en tiempo de compilacion,
    como los parametros numericos para ciclos, cuadros, y el retardo. Igual que las
    declaraciones @c(var), las declaraciones @c(const) pueden aparecer a nivel de
@@ -2208,7 +2220,7 @@
    una secuencia de valores de los elementos. Aqui, la primera es un slice y
    la segunda es una @e(estructura).
 
-#    The type @c(gif.GIF) is a struct type (@l(#Section 4.4<>§4.4)). A struct is a
+#    The type @c(gif.GIF) is a struct type @%l(#Section 4.4<>§4.4). A struct is a
 #    group of values called @e(fields), often of different types, that are
 #    collected together in a single object that can be treated as a unit. The
 #    variable @c(anim) is a struct of type @c(gif.GIF). The struct literal creates
@@ -2216,7 +2228,7 @@
 #    fields have the zero value for their type. The individual fields of a struct
 #    can be accessed using dot notation, as in the final two assignments which
 #    explicitly update the @c(Delay) and @c(Image) fields of @c(anim).
-   El tipo @c(gif.GIF) es de tipo estructura (@l(#Seccion 4.4<>§4.4)). Una
+   El tipo @c(gif.GIF) es de tipo estructura @%l(#Seccion 4.4<>§4.4). Una
    estructura es un grupo de valores denominados @e(campos), a menudo de
    diferentes tipos, que se recogen juntos en un unico objeto que puede tratarse
    como una unidad. La variable @c(anim) es una estructura de tipo @c(gif.GIF).
@@ -2232,7 +2244,7 @@
 #    initially set to the palette’s zero value (the zeroth color in the palette),
 #    which we set to white. Each pass through the outer loop generates a new image
 #    by setting some pixels to black. The result is appended, using the built-in
-#    @c(append) function (@l(#Section 4.2.1<>§4.2.1)), to a list of frames in
+#    @c(append) function @%l(#Section 4.2.1<>§4.2.1), to a list of frames in
 #    @c(anim), along with a specified delay of 80ms. Finally the sequence of
 #    frames and delays is encoded into GIF format and written to the output stream
 #    @c(out). The type of @c(out) is @c(io.Writer), which lets us write to a wide
@@ -2244,7 +2256,7 @@
    paleta (el color cero de la paleta), que se establece en blanco. Cada paso a
    traves del bucle externo genera una nueva imagen estableciendo algunos
    pixeles en negro. El resultado se añade a una lista de cuadros en @c(anim)
-   utilizando la funcion nativa @c(append) (@l(#Seccion 4.2.1<>§4.2.1)), junto
+   utilizando la funcion nativa @c(append) @%l(#Seccion 4.2.1<>§4.2.1), junto
    con un retardo especificado de 80ms. Por ultimo, la secuencia de cuadros y
    los retrasos se codifican en formato GIF y se escribe en la salida de flujo
    @c(out). El tipo de @c(out) es @c(io.Writer), lo que nos permite escribir a
@@ -2306,7 +2318,7 @@
 
 #    For many applications, access to information from the Internet is as
 #    important as access to the local file system. Go provides a collection of
-#    packages, grouped under net, that make it easy to send and receive
+#    packages, grouped under @c(net), that make it easy to send and receive
 #    information through the Internet, make low-level network connections, and set
 #    up servers, for which Go’s concurrency features (introduced in @l(#Chapter
 #    8)) are particularly useful.
@@ -2423,7 +2435,7 @@
      ...
    < srci..
 
-#    If the HTTP request fails, fetch reports the failure instead:
+#    If the HTTP request fails, @$(fetch) reports the failure instead:
    Si la solicitud HTTP falla, en su lugar, @$(fetch) reportara el error:
 
 #    ..srci > sh
@@ -2652,8 +2664,8 @@
    imprimir su salida a un archivo para que pueda ser examinado.
 
 #    @b(Exercise 1.11): Try @c(fetchall) with longer argument lists, such as
-#    samples from the top million web sites available at @l(http://www.alexa.com/<>alexa.com). How does
-#    the program behave if a web site just doesn’t respond? (@l(#Section 8.9)
+#    samples from the top million web sites available at @l(http://www.alexa.com/<>alexa.com).
+#    How does the program behave if a web site just doesn’t respond? (@l(#Section 8.9)
 #    describes mechanisms for coping in such cases.)
    @b(Ejercicio 1.11): Pruebe @$(fetchall) con listas de argumentos mas
    extensas, como muestras de los mejores sitios web disponibles en
@@ -2878,9 +2890,9 @@
 #    has the pattern as a prefix. Behind the scenes, the server runs the handler
 #    for each incoming request in a separate goroutine so that it can serve
 #    multiple requests simultaneously. However, if two concurrent requests try to
-#    update count at the same time, it might not be incremented consistently; the
-#    program would have a serious bug called a @e(race condition) (@l(#Section
-#    9.1<>§9.1)). To avoid this problem, we must ensure that at most one goroutine
+#    update @c(count) at the same time, it might not be incremented consistently; the
+#    program would have a serious bug called a @e(race condition) @%l(#Section
+#    9.1<>§9.1). To avoid this problem, we must ensure that at most one goroutine
 #    accesses the variable at a time, which is the purpose of the @c[mu.Lock()]
 #    and @c[mu.Unlock()] calls that bracket each access of @c(count). We’ll look
 #    more closely at concurrency with shared variables in @l(#Chapter 9).
@@ -2893,7 +2905,7 @@
    simultaneamente. Sin embargo, si dos solicitudes simultaneas intentan
    actualizar @c(count) al mismo tiempo, es posible que no se incremente
    consistentemente; El programa tendria un error grave llamado @e(condicion de
-   carrera) (@l(#Seccion 9.1<>§9.1)). Para evitar este problema, debemos
+   carrera) @%l(#Seccion 9.1<>§9.1). Para evitar este problema, debemos
    asegurarnos de que a lo sumo solo una gorutina accede a la variable a la vez,
    que es el proposito de las llamadas a @c[mu.Lock()] y @c[mu.Unlock()] que
    rodean el acceso a @c(count). Examinaremos mas de cerca a la concurrencia con
@@ -3109,8 +3121,8 @@
    tratamiento completo.
 
 #    - Control flow :: We covered the two fundamental control-flow statements,
-#      @c(if) # and @c(for), but not the @c(switch) statement, which is a
-#      multi-way branch. Here’s a # small example:
+#      @c(if) and @c(for), but not the @c(switch) statement, which is a multi-way
+#      branch. Here’s a small example:
    - Control de Flujo :: Cubrimos los dos estados de control de flujo
      fundamentales, @c(if) y @c(for), pero no la sentencia @c(switch), que es
      una via de multiples ramas. Aqui hay un pequeño ejemplo:
@@ -3197,11 +3209,10 @@
 #      innermost @c(for), @c(switch), or @c(select) statement (which we’ll see
 #      later), and as we saw in @l(#Section 1.3), a @c(continue) causes the
 #      innermost @c(for) loop to start its next iteration. Statements may be
-#      labeled so that @c(break) and @c(continue) can refer to them, for
-#      instance to break out of several nested loops at once or to start the
-#      next iteration of the outermost loop. There is even a @c(goto) statement,
-#      though it’s intended for machine-generated code, not regular use by
-#      programmers.
+#      labeled so that @c(break) and @c(continue) can refer to them, for instance
+#      to break out of several nested loops at once or to start the next iteration
+#      of the outermost loop. There is even a @c(goto) statement, though it’s
+#      intended for machine-generated code, not regular use by programmers.
      Las declaraciones @c(break) y @c(continue) modifican el flujo de control.
      Un @c(break) hace que el control se reanude en la siguiente sentencia despues
      de la secuenca @c(for), @c(switch), o @c(select) (que veremos mas adelante)
@@ -3321,14 +3332,14 @@
 #      beginning of a program or package. It’s also good style to write a comment
 #      before the declaration of each function to specify its behavior. These
 #      conventions are important, because they are used by tools like @$(go doc)
-#      and @$(godoc) to locate and display documentation (@l(#Section
-#      10.7.4<>§10.7.4)).
+#      and @$(godoc) to locate and display documentation @%l(#Section
+#      10.7.4<>§10.7.4).
    - Comentarios :: Ya hemos mencionado los comentarios de documentacion al
      inicio de un programa o paquete. Tambien es un buen estilo escribir un
      comentario antes de la declaracion de cada funcion para especificar su
      comportamiento. Estas convenciones son importantes, ya que se utilizan por
      herramientas como @$(go doc) y @$(godoc) para localizar y monstrar la
-     documentacion en pantalla (@l(#Seccion 10.7.4<>§10.7.4)).
+     documentacion en pantalla @%l(#Seccion 10.7.4<>§10.7.4).
 
 #      For comments that span multiple lines or appear within an expression or
 #      statement, there is also the @c(/* ... */) notation familiar from other
@@ -3355,12 +3366,12 @@
 #   isolation and reuse. Functions are gathered into source files and packages.
   En Go, como en cualquier otro lenguaje de programacion, se construyen grandes
   programas a partir de un pequeño conjunto de construcciones basicas. Las
-  variables almacenan los valores. Las expresiones simples se combinan en las
-  mas grandes con operaciones como suma y resta. Los tipos basicos se reunen en
+  variables almacenan los valores. Las expresiones simples se combinan en otras
+  mas grandes con operaciones como la suma y la resta. Los tipos basicos se reunen en
   agregados como arreglos y estructuras. Las expresiones se utilizan en
   declaraciones cuyo orden de ejecucion es determinado por instrucciones de
   control de flujo como @c(if) y @c(for). Las declaraciones se agrupan en
-  funciones por aislamiento y reutilizacion. Las funciones se agrupan en
+  funciones para su aislamiento y reutilizacion. Las funciones se agrupan en
   archivos de codigo fuente y paquetes.
 
 #   We saw examples of most of these in the previous chapter. In this chapter,
@@ -3371,7 +3382,7 @@
   Vimos ejemplos de la mayoria de estos en el capitulo anterior. En este
   capitulo, vamos a entrar en mas detalles sobre los elementos estructurales
   basicos de un programa Go. Los programas de ejemplo son intencionalmente
-  simples, por lo que podemos centrarnos en el lenguaje sin desviarnos de
+  simples, por lo que podemos centrarnos en el lenguaje sin desviarnos por
   complicados algoritmos o estructuras de datos.
 
 # ** Section 2.1 <> Names
@@ -3382,10 +3393,10 @@
 #    that Unicode deems a letter) or an underscore and may have any number of
 #    additional letters, digits, and underscores. Case matters: @c(heapSort) and
 #    @c(Heapsort) are different names.
-   Los nombres de las funciones Go, variables, constantes, tipos, etiquetas de
+   En Go los nombres de las funciones, variables, constantes, tipos, etiquetas de
    instrucciones y paquetes siguen una regla simple: un nombre comienza con una
    letra (es decir, cualquier cosa que Unicode considera una letra) o un guion
-   bajo y puede tener cualquier numero de letras adicionales, Digitos y giones
+   bajo y puede tener cualquier numero de letras adicionales, digitos y giones
    bajos. Las mayusculas importan: @c(heapSort) y @c(Heapsort) son nombres
    diferentes.
 
@@ -3420,33 +3431,33 @@
 #      ..pre >
 #        true false iota nil
      ..pre >
-       true false iota nil
+       true    false    iota    nil
 
-#    - Types     ::
-   - Tipos      ::
+#    - Types ::
+   - Tipos ::
 
 #      ..pre >
-#        int int8 int16 int32 int64
-#        uint uint8 uint16 uint32 uint64 uintptr
-#        float32 float64 complex128 complex64
-#        bool byte rune string error
+#        int         int8       int16      int32    int64
+#        uint       uint8      uint16     uint32   uint64   uintptr
+#        float32  float64  complex128  complex64
+#        bool        byte        rune     string    error
      ..pre >
-       int  int8  int16  int32  int64
-       uint uint8 uint16 uint32 uint64 uintptr
-       float32 float64 complex64 complex128
-       bool byte rune string error
+       int         int8       int16      int32    int64
+       uint       uint8      uint16     uint32   uint64   uintptr
+       float32  float64  complex128  complex64
+       bool        byte        rune     string    error
 
 #    - Functions ::
-   - Funciones  ::
+   - Funciones ::
 
 #      ..pre >
-#        make len cap new append copy close delete
-#        complex real imag
-#        panic recover
+#        make       len   cap   new   append   copy   close   delete
+#        complex   real  imag
+#        panic  recover
      ..pre >
-       make len cap new append copy close delete
-       complex real imag
-       panic recover
+       make       len   cap   new   append   copy   close   delete
+       complex   real  imag
+       panic  recover
 
 
 #    These names are not reserved, so you may use them in declarations. We’ll see
@@ -3464,7 +3475,7 @@
 #    and accessible outside of its own package and may be referred to by other
 #    parts of the program, as with @c(Printf) in the @c(fmt) package. Package
 #    names themselves are always in lower case.
-   Si una entidad se declara dentro de una funcion, esta es @e(local) a esa
+   Si se declara una entidad dentro de una funcion, esta es @e(local) a esa
    funcion. Si se declara fuera de una funcion, sin embargo, es visible en todos
    los archivos del paquete al que pertenece. La primer letra de un nombre
    determina su visibilidad a traves de los limites del paquete. Si el nombre
@@ -3493,7 +3504,7 @@
 #    case, so a function might be called @c(htmlEscape), @c(HTMLEscape), or @c(escapeHTML),
 #    but not @c(escapeHtml).
    Estilisticamente, los programadores Go utilizan la @"(notacion camello)
-   cuando se forma nombres mediante la combinacion de palabras; Es decir, las
+   cuando se forman nombres mediante la combinacion de palabras; Es decir, las
    letras mayusculas internas se prefieren sobre los subrayados interiores. Por
    lo tanto las librerias estandar tienen funciones con nombres como
    @c(QuoteRuneToASCII) y @c(parseRequestLine) pero nunca @c(quote_rune_to_ASCII)
@@ -3509,8 +3520,8 @@
 #    properties. There are four major kinds of declarations: @c(var), @c(const),
 #    @c(type), and @c(func). We’ll talk about variables and types in this chapter,
 #    constants in @l(#Chapter 3), and functions in @l(#Chapter 5).
-   Una @e(declaracion) nombra una entidad del programa y especifica todas o
-   algunas de sus propiedades. Hay cuatro tipos principales de declaraciones:
+   Una @e(declaracion) nombra una entidad del programa y especifica algunas o
+   todas sus propiedades. Hay cuatro tipos principales de declaraciones:
    @c(var), @c(const), @c(type) y @c(func). Hablaremos sobre variables y tipos
    en este capitulo, constantes en el @l(#Capitulo 3), y funciones en el
    @l(#Capitulo 5).
@@ -3559,9 +3570,9 @@
        func main() {
          var f = boilingF
          var c = (f - 32) * 5 / 9
-         fmt.Printf("boiling point = %g°F or %g°C\n", f, c)
+         fmt.Printf("punto de ebullicion = %g°F o %g°C\n", f, c)
          // Salida:
-         // boiling point = 212°F or 100°C
+         // punto de ebullicion = 212°F o 100°C
        }
      < src..
 
@@ -3572,7 +3583,7 @@
 #    file that contains its declaration, but throughout all the files of the
 #    package. By contrast, local declarations are visible only within the function
 #    in which they are declared and perhaps only within a small part of it.
-   La constante @c(boilingF) es una declaracion de nivel de paquete (como es
+   La constante @c(boilingF) es una declaracion de nivel de paquete (como lo es
    @c(main)), mientras que las variables @c(f) y @c(c) son locales a la funcion
    @c(main). El nombre de cada entidad de nivel de paquete es visible no solo en
    todo el archivo de origen que contiene su declaracion, sino en todos los
@@ -3604,11 +3615,11 @@
 #    places. Here @c(main) calls it twice, using the values of two different local
 #    constants:
    Hemos visto un buen numero de funciones ya y hay muchas mas por venir,
-   incluyendo una extenso tratamiento en el @l(#Capitulo 5), asi que esto es
+   incluyendo un extenso tratamiento en el @l(#Capitulo 5), asi que esto es
    solo un esbozo. La funcion @c(fToC) a continuacion, encapsula la logica de
    conversion de temperatura de manera que se define solo una vez, pero puede
    utilizarse desde multiples lugares. Aqui @c(main) la llama dos veces,
-   utilizando los valores de las dos constantes locales diferentes:
+   utilizando los valores de dos constantes locales diferentes:
 
 #    ..figure > @l(gopl.io/ch2/ftoc/main.go<>gopl.io/ch2/ftoc)
    ..figure > @l(gopl.io/ch2/ftoc/main.go<>gopl.io/ch2/ftoc)
@@ -3651,9 +3662,8 @@
 
 #    A @c(var) declaration creates a variable of a particular type, attaches a
 #    name to it, and sets its initial value. Each declaration has the general form
-   Un declaracion @c(var) crea una variable de un tipo particular, vinculando un
-   nombre a la misma, y definiendo su valor inicial. Cada declaracion tiene la
-   forma general
+   Un declaracion @c(var) crea una variable de un tipo particular, le da un
+   nombre y establece su valor inicial. Cada declaracion tiene la forma general
 
 #    ..src > go
 #      var name type = expression
@@ -3669,11 +3679,11 @@
 #    @c(nil) for interfaces and reference types (slice, pointer, map, channel,
 #    function). The zero value of an aggregate type like an array or a struct has
 #    the zero value of all of its elements or fields.
-   O bien el tipo o la parte @c(= expresion) pueden omitirse, pero no ambos. Si
-   se omite el tipo, se determina mediante la expresion del inicializador. Si se
+   Puede omitirse el tipo o la parte @c(= expresion), pero no ambas. Si
+   se omite el tipo, se determina por la expresion inicializadora. Si se
    omite la expresion, el valor inicial es el @e(valor cero) para el tipo, que
-   es 0 para los numeros, @c(false) para booleanos, @c("") para string, y
-   @c(nil) para interfaces y tipos de referencia (slices, punteros, mapa, canal,
+   es @c(0) para los numeros, @c(false) para booleanos, @c("") para string, y
+   @c(nil) para interfaces y tipos de referencia (slice, puntero, mapa, canal,
    funcion). El valor cero de un tipo agregado como una matriz o una estructura
    tiene el valor cero de todos sus elementos o campos.
 
@@ -3682,9 +3692,9 @@
 #    variable. This simplifies code and often ensures sensible behavior of
 #    boundary conditions without extra work. For example,
    El mecanismo de valor cero asegura que una variable siempre tenga un valor
-   bien definido de su tipo; En Go no hay tal cosa como una variable no
+   bien definido de su tipo; en Go no hay tal cosa como una variable no
    inicializada. Esto simplifica el codigo y, a menudo, asegura un
-   comportamiento sensible de las condiciones limite sin trabajo adicional. Por
+   comportamiento sensato de las condiciones limite sin trabajo extra. Por
    ejemplo,
 
 #    ..src > go
@@ -3701,14 +3711,14 @@
 #    zero value of a more complicated type meaningful, so that variables begin
 #    life in a useful state.
    Imprime una cadena vacia, en lugar de causar algun tipo de error o
-   comportamiento impredecible. Los programadores Go, suelen hacer algun
-   esfuerzo por hacer el valor cero de un tipo mas complicado significativo, por
-   lo que las variables comienzan su vida en un estado util.
+   comportamiento impredecible. Los programadores de Go, a menudo se esfuerzan
+   por hacer que el valor cero de un tipo mas complicado tenga sentido, por lo
+   que las variables comienzan su vida en un estado util.
 
 #    It is possible to declare and optionally initialize a set of variables in a
 #    single declaration, with a matching list of expressions. Omitting the type
 #    allows declaration of multiple variables of different types:
-   Es posible declarar y opcionalmente inicializar un conjunto de variables en
+   Es posible declarar e inicializar opcionalmente un conjunto de variables en
    una sola declaracion, con una lista de expresiones correspondiente. Omitir el
    tipo permite la declaracion de multiples variables de diferentes tipos:
 
@@ -3722,12 +3732,12 @@
    < src..
 
 #    Initializers may be literal values or arbitrary expressions. Package-level
-#    variables are initialized before @c(main) begins (@l(#Section
-#    2.6.2<>§2.6.2)), and local variables are initialized as their declarations
+#    variables are initialized before @c(main) begins @%l(#Section
+#    2.6.2<>§2.6.2), and local variables are initialized as their declarations
 #    are encountered during function execution.
    Los inicializadores pueden ser valores literales o expresiones arbitrarias.
    Las variables a nivel de paquete se inicializan antes del inicio de @c(main)
-   (@l(#Seccion 2.6.2<>§2.6.2)), y las variables locales se inicializan a medida
+   @%l(#Seccion 2.6.2<>§2.6.2), y las variables locales se inicializan a medida
    que se encuentran sus declaraciones durante la ejecucion de la funcion.
 
 #    A set of variables can also be initialized by calling a function that returns
@@ -3739,23 +3749,23 @@
 #      var f, err = os.Open(name) // os.Open returns a file and an error
 #    < src..
    ..src > go
-     var f, err = os.Open(name) // os.Open returns a file and an error
+     var f, err = os.Open(name) // os.Open devuelve un fichero y un error
    < src..
 
 # *** Section 2.3.1 <> Short Variable Declarations
-*** Seccion 2.3.1 <> Declaraciones de Variables Compacta
+*** Seccion 2.3.1 <> Declaracion de Variables Compacta
 
 #     Within a function, an alternate form called a @e(short variable declaration)
 #     may be used to declare and initialize local variables. It takes the form
 #     @c(name := expression), and the type of @c(name) is determined by the type
 #     of @c(expression). Here are three of the many short variable declarations in
-#     the @c(lissajous) function (@l(#Section 1.4<>§1.4)):
-    Dentro de una funcion, una forma alternativa llamada @e(declaracion de
-    variables compacta) se puede usar para declarar e inicializar las variables
+#     the @c(lissajous) function @%l(#Section 1.4<>§1.4):
+    Dentro de una funcion, se puede utilizar una forma alternativa llamada
+    @e(declaracion de variables compacta) para declarar e inicializar variables
     locales. Toma la forma @c(nombre := expresion), y el tipo de @c(nombre) esta
     determinada por el tipo de @c(expresion). Aqui estan tres de las muchas
-    declaraciones de variables compacta en la funcion @c(lissajous) (@l(#Seccion
-    1.4<>§1.4)):
+    declaraciones de variables compacta en la funcion @c(lissajous) @%l(#Seccion
+    1.4<>§1.4):
 
 #     ..src > go
 #       anim := gif.GIF{LoopCount: nframes}
@@ -3774,12 +3784,12 @@
 #     type that differs from that of the initializer expression, or for when the
 #     variable will be assigned a value later and its initial value is
 #     unimportant.
-    Debido a su brevedad y flexibilidad, la declaracion compacta de variables se
-    utilizan para declarar e inicializar la mayoria de las variables
-    locales. Una sentencia @c(var) tiende a ser reservado para las variables
-    locales que necesitan un tipo explicito que difiere de la de la expresion de
-    inicializacion, o para cuando se le asignara un valor mas adelante la
-    variable y su valor inicial no es importante.
+    Debido a su brevedad y flexibilidad, la declaracion de variables compacta se
+    utiliza para declarar e inicializar la mayoria de las variables locales. Una
+    sentencia @c(var) tiende a reservarse para las variables locales que
+    necesitan un tipo explicito que difiere del de la expresion inicializadora,
+    o para cuando a la variable se le asignara un valor mas adelante y su valor
+    inicial no es importante.
 
 #     ..src > go
 #       i := 100                  // an int
@@ -3800,8 +3810,8 @@
 
 #     As with @c(var) declarations, multiple variables may be declared and initialized
 #     in the same short variable declaration,
-    Como con las sentencias @c(var), multiples variables pueden ser declaradas e
-    inicializadas en la misma declaracion compacta de variables,
+    Como con las sentencias @c(var), pueden declararse y ser inicializadas
+    multiples variables en la misma declaracion compacta,
 
 #     ..src > go
 #       i, j := 0, 1
@@ -3813,19 +3823,19 @@
 #     but declarations with multiple initializer expressions should be used only
 #     when they help readability, such as for short and natural groupings like the
 #     initialization part of a @c(for) loop.
-    pero las declaraciones con multiples expresiones de inicializador deben
-    utilizarse solo cuando ayudan a la legibilidad, como en agrupaciones cortas
-    y naturales, como la parte de inicializacion de un bucle @c(for).
+    pero las declaraciones con multiples expresiones de inicializacion deben
+    utilizarse solo cuando ayudan a la legibilidad, como en el caso de agrupaciones
+    cortas y naturales, como la parte de inicializacion de un bucle @c(for).
 
 #     Keep in mind that @c(:=) is a declaration, whereas @c(=) is an assignment. A
 #     multi-variable declaration should not be confused with a @e(tuple
-#     assignment) (@l(#Section 2.4.1<>§2.4.1)), in which each variable on the
+#     assignment) @%l(#Section 2.4.1<>§2.4.1), in which each variable on the
 #     left-hand side is assigned the corresponding value from the right-hand side:
     Tenga en cuenta que @c(:=) es una declaracion, mientras que @c(=) es una
     asignacion. Una declaracion de multiples variables no debe confundirse con
-    una asignacion de tuplas (@l(#Seccion 2.4.1<>§2.4.1)), en la que se asigna a
-    cada variable en el lado de la izquierda el valor correspondiente de la
-    parte derecha:
+    una asignacion de tuplas @%l(#Seccion 2.4.1<>§2.4.1), en la que a cada
+    variable del lado izquierdo se le asigna el valor correspondiente del lado
+    derecho:
 
 #     ..src > go
 #       i, j = j, i // swap values of i and j
@@ -3836,9 +3846,9 @@
 
 #     Like ordinary @c(var) declarations, short variable declarations may be used
 #     for calls to functions like @c(os.Open) that return two or more values:
-    Al igual que en declaraciones @c(var) ordinarias, la declaraciones de
+    Al igual que las declaraciones @c(var) ordinarias, la declaracion de
     variables compacta se puede utilizar para las llamadas a funciones como
-    @c(os.Open) que devuelve dos o mas valores:
+    @c(os.Open) que devuelven dos o mas valores:
 
 #     ..src > go
 #       f, err := os.Open(name)
@@ -3853,19 +3863,19 @@
       if err != nil {
         return err
       }
-      // ...use f...
+      // ...usar f...
       f.Close()
     < src..
 
 #     One subtle but important point: a short variable declaration does not
 #     necessarily @e(declare) all the variables on its left-hand side. If some of
-#     them were already declared in the @e(same) lexical block (@l(#Section
-#     2.7<>§2.7)), then, for those variables, the short variable declaration acts
+#     them were already declared in the @e(same) lexical block @%l(#Section
+#     2.7<>§2.7), then, for those variables, the short variable declaration acts
 #     like an @e(assignment) to those variables.
     Un punto sutil pero importante: una declaracion de variables compacta no
-    declara necesariamente todas las variables en su lado izquierdo. Si algunos
-    de ellos ya fueron declarados en el @e(mismo) bloque lexico (@l(#Seccion
-    2.7<>§2.7)), entonces, la declaracion de variables compacta se comporta como
+    declara necesariamente todas las variables en su lado izquierdo. Si algunas
+    de ellas ya fueron declaradas en el @e(mismo) bloque lexico @%l(#Seccion
+    2.7<>§2.7), entonces, la declaracion de variables compacta se comporta como
     una asignacion a esas variables.
 
 #     In the code below, the first statement declares both @c(in) and @c(err). The second
@@ -3887,7 +3897,7 @@
 
 #     A short variable declaration must declare at least one new variable,
 #     however, so this code will not compile:
-    Sin embargo, una declaracion de variable corta debe declarar al menos una
+    Sin embargo, una declaracion de variables compacta debe declarar al menos una
     variable nueva, por lo que este codigo no compilara:
 
 #     ..src > go
@@ -3924,7 +3934,7 @@
 #     lefthand side of an assignment, in which case a new value is assigned to the
 #     variable.
     Una variable es una pieza de almacenamiento que contiene un valor. Las
-    variables creadas por las declaraciones se identifican por un nombre, como
+    variables creadas por declaraciones se identifican por un nombre, como
     @c(x), pero muchas variables se idientifican solo por expresiones como
     @c(x[i]) o @c(x.f). Todas estas expresiones leen el valor de una variable,
     excepto cuando aparecen en el lado izquierdo de una asignacion, en cuyo caso
@@ -3942,18 +3952,18 @@
     utilizar o incluso saber el nombre de la variable, si es que tiene un
     nombre.
 
-#     If a variable is declared @c(var x int), the expression @c(&x) (@"(address of
-#     @c(x))) yields a pointer to an integer variable, that is, a value of type
+#     If a variable is declared @c(var x int), the expression @c(&x) @%"(address of
+#     @c(x)) yields a pointer to an integer variable, that is, a value of type
 #     @c(*int), which is pronounced @"(pointer to int.) If this value is called
 #     @c(p), we say @"(@c(p) points to @c(x),) or equivalently @"(@c(p) contains
 #     the address of @c(x).) The variable to which @c(p) points is written
 #     @c(*p). The expression @c(*p) yields the value of that variable, an @c(int),
 #     but since @c(*p) denotes a variable, it may also appear on the left-hand
 #     side of an assignment, in which case the assignment updates the variable.
-    Si se declara una variable @c(var x int), la expresion @c(&x) (@"(direccion
-    de @c(x))) produce un puntero a una variable de de tipo entero, es decir, un
+    Si se declara una variable @c(var x int), la expresion @c(&x) @%"(direccion
+    de @c(x)) produce un puntero a una variable de tipo entero, es decir, un
     valor de tipo @c(*int), que se pronuncia @"(puntero a int.) Si este valor se
-    llama @c(p), decimos @"(@c(p) apunta a @c(x),)" o equivalentemente @"(@c(p)
+    llama @c(p), decimos @"(@c(p) apunta a @c(x),) o equivalentemente @"(@c(p)
     contiene la direccion de @c(x).) La variable a la que @c(p) apunta se
     escribe @c(*p). La expresion @c(*p) produce el valor de dicha variable, un
     @c(int), pero ya que @c(*p) indica una variable, tambien puede aparecer en la
@@ -3978,22 +3988,22 @@
 #     Each component of a variable of aggregate type—a field of a struct or an
 #     element of an array— is also a variable and thus has an address too.
     Cada componente de una variable de tipo agregado–un campo de una estructura
-    o un elemento de una matriz–es tambien una variable y por lo tanto tiene
-    una direccion tambien.
+    o un elemento de una arreglo–es tambien una variable y por lo tanto tiene tambien
+    una direccion.
 
 #     Variables are sometimes described as @e(addressable) values. Expressions
 #     that denote variables are the only expressions to which the @e(address-of)
 #     operator @c(&) may be applied.
     Las variables se describen a veces como valores @e(direccionables).
-    Expresiones que denotan variables son las unicas expresiones a las que el
-    operador de direccion @c(&) se puede aplicar.
+    Las expresiones que denotan variables son las unicas expresiones a las que se
+    puede aplicar el operador de direccion @c(&).
 
 #     The zero value for a pointer of any type is @c(nil). The test @c(p != nil) is true
 #     if @c(p) points to a variable. Pointers are comparable; two pointers are equal
 #     if and only if they point to the same variable or both are nil.
     El valor cero de un puntero de cualquier tipo es @c(nil). La prueba de @c(p
     != nil) es verdadera si @c(p) apunta a una variable. Los punteros son
-    comparables; Dos punteros son iguales si y solo si apuntan a la misma
+    comparables; dos punteros son iguales si y solo si apuntan a la misma
     variable o ambos son @c(nil).
 
 #     ..src > go
@@ -4009,7 +4019,7 @@
 #     variable. For instance, in the code below, the local variable @c(v) created by
 #     this particular call to @c(f) will remain in existence even after the call has
 #     returned, and the pointer @c(p) will still refer to it:
-    Es perfectamente seguro para una funcion devolver la direccion de una
+    Es perfectamente seguro que una funcion devuelva la direccion de una
     variable local. Por ejemplo, en el codigo siguiente, la variable local @c(v)
     creada por la llamada a @c(f) seguira existiendo incluso despues de devolver
     la llamada, y el puntero @c(p) todavia se referira a ella:
@@ -4081,15 +4091,15 @@
 #     aliases. It’s not just pointers that create aliases; aliasing also occurs
 #     when we copy values of other reference types like slices, maps, and
 #     channels, and even structs, arrays, and interfaces that contain these types.
-    Cada vez que se toma la direccion de una variable o se copia un puntero,
-    creamos nuevos @e(alias) o maneras de identificar a la misma variable. Por
+    Cada vez que se toma la direccion de una variable o copiamos un puntero,
+    creamos nuevos @e(alias) o formas de identificar a la misma variable. Por
     ejemplo, @c(*p) es un alias para @c(v). Los punteros como alias son utiles
     porque nos permite acceder a una variable sin usar su nombre, pero esto es
     una espada de doble filo: para encontrar todas las sentencias que acceden a
     una variable, tenemos que conocer todos sus alias. No son solo los punteros
-    que crean alias; los alias tambien se crean cuando copiamos valores de otros
+    los que crean alias; los alias tambien se crean cuando copiamos valores de otros
     tipos de referencia como slices, mapas y canales, e incluso estructuras,
-    matrices e interfaces que contienen estos tipos.
+    arreglos e interfaces que contienen estos tipos.
 
 #     Pointers are key to the @c(flag) package, which uses a program’s
 #     command-line arguments to set the values of certain variables distributed
@@ -4100,12 +4110,12 @@
 #     instead of the default single space. Since this is our fourth version, the
 #     package is called @f(gopl.io/ch2/echo4).
     Los punteros son clave para el paquete @c(flag), que utiliza los argumentos
-    de linea de comandos de un programa, para establecer los valores de ciertas
-    variables distribuidas a lo largo del programa. Para ilustrar, esta
-    variacion en el anterior comando @$(echo) tiene dos indicadores opcionales:
-    @c(-n) provoca que @$(echo) omita el salto de linea final que normalmente se
+    de linea de comandos de un programa para establecer los valores de ciertas
+    variables distribuidas a lo largo del programa. Para ilustrarlo, esta
+    variacion del anterior comando @$(echo) toma dos indicadores opcionales:
+    @c(-n) hace que @$(echo) omita el salto de linea final que normalmente se
     imprime, y @c(-s sep) hace que se separe los argumentos de salida por el
-    contenido de la cadena @c(sep) en lugar de el espacio unico predeterminado.
+    contenido de la cadena @c(sep) en lugar del espacio unico por defecto.
     Como esta es nuestra cuarta version, el paquete se llama @f(gopl.io/ch2/echo4).
 
 #     ..figure > @l(gopl.io/ch2/echo4/main.go<>gopl.io/ch2/echo4)
@@ -4156,16 +4166,16 @@
 
 
 #     The function @c(flag.Bool) creates a new flag variable of type @c(bool). It
-#     takes three arguments: the name of the flag (@c("n")), the variable’s
-#     default value (@c(false)), and a message that will be printed if the user
+#     takes three arguments: the name of the flag @%c("n"), the variable’s
+#     default value @%c(false), and a message that will be printed if the user
 #     provides an invalid argument, an invalid flag, or @c(-h) or
 #     @c(-help). Similarly, @c(flag.String) takes a name, a default value, and a
 #     message, and creates a @c(string) variable. The variables @c(sep) and @c(n)
 #     are pointers to the flag variables, which must be accessed indirectly as
 #     @c(*sep) and @c(*n).
     La funcion @c(flag.Bool) crea una nueva variable bandera de tipo @c(bool).
-    Toma tres argumentos: el nombre de la bandera (@c("n")), el valor por
-    defecto de la variable (@c(false)), y un mensaje que se imprimira si el
+    Toma tres argumentos: el nombre de la bandera @%c("n"), el valor por
+    defecto de la variable @%c(false), y un mensaje que se imprimira si el
     usuario proporciona un argumento invalido, una bandera invalida, o @c(-h) o
     @c(-help). Del mismo modo, @c(flag.String) toma un nombre, un valor por
     defecto, y un mensaje, y crea una variable @c(string). Las variables @c(sep)
@@ -4185,7 +4195,7 @@
     el programa.
 
 #     Let’s run some test cases on @$(echo):
-    Vamos a ejecutar algunos casos de prueba a @$(echo):
+    Hagamos algunas pruebas a @$(echo):
 
 #     ..srci > sh
 #       > go build gopl.io/ch2/echo4
@@ -4245,11 +4255,10 @@
 #     variable whose address is taken, except that there’s no need to invent (and
 #     declare) a dummy name, and we can use @c[new(T)] in an expression. Thus
 #     @c(new) is only a syntactic convenience, not a fundamental notion:
-    Una variable creada con @c(new) no es diferente de una variable local
-    ordinaria cuya direccion es tomada, excepto que no hay necesidad de inventar
-    (y declarar) un nombre ficticio, y podemos usar @c[new(T)] en una expresion.
-    De este modo @c(new) es solo una conveniencia sintactica, no es una idea
-    fundamental:
+    Una variable creada con @c(new) no es diferente a tomar la direccion de una
+    variable local, excepto que no hay necesidad de inventar (y declarar) un
+    nombre ficticio, y podemos usar @c[new(T)] en una expresion. De este modo
+    @c(new) es solo una conveniencia sintactica, no una nocion fundamental:
 
 #     the two @c(newInt) functions below have identical behaviors.
     las dos funciones @c(newInt) a continuacion tienen comportamientos
@@ -4309,10 +4318,10 @@
 
 #     The @c(new) function is relatively rarely used because the most common
 #     unnamed variables are of struct types, for which the struct literal syntax
-#     (@l(#Section 4.4.1<>§4.4.1)) is more flexible.
-    La funcion @c(new) se utiliza relativamente rara vez porque las variables
-    sin nombre mas comunes son de tipo estructura, para el que la sintaxis
-    literal @c(struct) (@l(#Seccion 4.4.1<>§4.4.1)) es mas flexible.
+#     @%l(#Section 4.4.1<>§4.4.1) is more flexible.
+    La funcion @c(new) se utiliza relativamente poco porque las variables
+    sin nombre mas comunes son de tipo estructura, para las cuales la sintaxis
+    literal @c(struct) @%l(#Seccion 4.4.1<>§4.4.1) es mas flexible.
 
 #     Since @c(new) is a predeclared function, not a keyword, it’s possible to redefine the name for
 #     something else within a function, for example:
@@ -4331,7 +4340,7 @@
     disponible.
 
 # *** Section 2.3.4 <> Lifetime of Variables
-*** Seccion 2.3.4 <> Tiempo de Vida de las Variables
+*** Seccion 2.3.4 <> Vida Util de las Variables
 
 #     The @e(lifetime) of a variable is the interval of time during which it
 #     exists as the program executes.  The lifetime of a package-level variable is
@@ -4352,7 +4361,7 @@
     que las encierra.
 
 #     For example, in this excerpt from the Lissajous program of @l(#Section 1.4),
-    Por ejemplo, en este extracto del programa de Lissajous de la @l(#Seccion 1.4),
+    Por ejemplo, en este extracto del programa Lissajous de la @l(#Seccion 1.4),
 
 #     ..src > go
 #       for t := 0.0; t < cycles*2*math.Pi; t += res {
@@ -4373,7 +4382,7 @@
 
 #     the variable @c(t) is created each time the @c(for) loop begins, and new
 #     variables @c(x) and @c(y) are created on each iteration of the loop.
-    la variable @c(t) se crea cada vez que el bucle @c(for) comienza, y nuevas
+    la variable @c(t) se crea cada vez que comienza el bucle @c(for), y nuevas
     variables @c(x) y @c(y) se crean en cada iteracion del bucle.
 
 #     How does the garbage collector know that a variable’s storage can be
@@ -4391,20 +4400,20 @@
     el inicio o la raiz de una ruta a la variable en cuestion, sugiendo punteros
     y otros tipos de referencias que finalmente conducen a la variable. Si no
     existe tal ruta, la variable se ha vuelto inaccesible, por lo que ya no
-    puede afectar el resto del calculo.
+    puede afectar al resto del calculo.
 
 #     Because the lifetime of a variable is determined only by whether or not it
 #     is reachable, a local variable may outlive a single iteration of the
 #     enclosing loop. It may continue to exist even after its enclosing function
 #     has returned.
-    Debido a que el tiempo de vida de una variable se determina por ser o no
+    Dado que el tiempo de vida de una variable se determina por si es o no
     accesible, una variable local puede sobrevivir a una sola iteracion del
-    bucle que lo rodea. Puede seguir existiendo incluso despues de que su
-    funcion de inclusion ha regresado.
+    bucle que la rodea. Tambien puede seguir existiendo incluso despues de que
+    la funcion que la rodea haya regresado.
 
 #     A compiler may choose to allocate local variables on the heap or on the
 #     stack but, perhaps surprisingly, this choice is not determined by whether
-#     var or @c(new) was used to declare the variable.
+#     @c(var) or @c(new) was used to declare the variable.
     Un compilador puede elegir asignar las variables locales en el monticulo o
     en la pila, pero, tal vez sorprendentemente, esta eleccion no depende de si
     se utiliza @c(var) o @c(new) para declarar la variable.
@@ -4465,7 +4474,7 @@
     compilador asignar @c(*y) en la pila, a pesar de que se asigno con @c(new).
     En cualquier caso, la nocion de escapar no es algo de lo que tengas que
     preocuparte para escribir codigo correcto, aunque es bueno tenerlo en cuenta
-    durante la optimizacion de rendimiento, ya que cada variable que escapa
+    durante la optimizacion del rendimiento, ya que cada variable que escapa
     requiere una asignacion de memoria adicional.
 
 #     Garbage collection is a tremendous help in writing correct programs, but it
@@ -4489,7 +4498,7 @@
 #    The value held by a variable is updated by an assignment statement, which in
 #    its simplest form has a variable on the left of the @c(=) sign and an expression
 #    on the right.
-   El valor contenido en una variable es actualizado por una instruccion de
+   El valor que posee una variable se actualiza mediante una instruccion de
    asignacion, que en su forma mas simple tiene una variable a la izquierda del
    signo @c(=) y una expresion a la derecha.
 
@@ -4502,7 +4511,7 @@
    ..src > go
      x = 1                       // variable con nombre
      *p = true                   // variable indirecta
-     person.name = "bob"         // campo de ustructura
+     person.name = "bob"         // campo de estructura
      count[x] = count[x] * scale // elemento de arreglo, slice o mapa
    < src..
 
@@ -4541,11 +4550,11 @@
      v--    // igual a v = v - 1; v es 1 de nuevo
    < src..
 
-# *** section 2.4.1 <> tuple assignment
-*** seccion 2.4.1 <> Asignacion de Tuplas
+# *** Section 2.4.1 <> Tuple assignment
+*** Seccion 2.4.1 <> Asignacion de Tuplas
 
-#     another form of assignment, known as @e(tuple assignment), allows several
-#     variables to be assigned at once. all of the right-hand side expressions are
+#     Another form of assignment, known as @e(tuple assignment), allows several
+#     variables to be assigned at once. All of the right-hand side expressions are
 #     evaluated before any of the variables are updated, making this form most
 #     useful when some of the variables appear on both sides of the assignment, as
 #     happens, for example, when swapping the values of two variables:
@@ -4566,7 +4575,7 @@
     < src..
 
 #     or when computing the greatest common divisor (GCD) of two integers:
-    O cuando se calcula el mayor comun divisor de dos enteros:
+    o cuando se calcula el mayor comun divisor (MCD) de dos enteros:
 
 #     ..src > go
 #       func gcd(x, y int) int {
@@ -4577,7 +4586,7 @@
 #       }
 #     < src..
     ..src > go
-      func gcd(x, y int) int {
+      func mcd(x, y int) int {
         for y != 0 {
           x, y = y, x%y
         }
@@ -4586,7 +4595,7 @@
     < src..
 
 #     or when computing the n-th Fibonacci number iteratively:
-    O al calcular el n-esimo numero de Fibonacci iterativamente:
+    o al calcular el n-esimo numero de Fibonacci iterativamente:
 
 #     ..src > go
 #       func fib(n int) int {
@@ -4608,8 +4617,8 @@
     < src..
 
 #     Tuple assignment can also make a sequence of trivial assignments more compact,
-    La asignacion de tuplas tambien puede hacer una secuencia de tareas
-    triviales mas compacta,
+    La asignacion de tuplas tambien puede hacer mas compata una secuencia de
+    asignaciones trivial,
 
 #     ..src > go
 #       i, j, k = 2, 3, 5
@@ -4620,14 +4629,14 @@
 
 #     though as a matter of style, avoid the tuple form if the expressions are
 #     complex; a sequence of separate statements is easier to read.
-    Aunque por una cuestion de estilo, evite la forma de tupla si las
+    aunque como cuestion de estilo, evite la forma de tupla si las
     expresiones son complejas; una secuencia de declaraciones separadas es mas
     facil de leer.
 
 #     Certain expressions, such as a call to a function with multiple results,
 #     produce several values. When such a call is used in an assignment statement,
 #     the left-hand side must have as many variables as the function has results.
-    Ciertas expresiones, como una llamada a una funcion con resultados
+    Ciertas expresiones, como la llamada a una funcion con resultados
     multiples, producen varios valores. Cuando se utiliza una llamada de este
     tipo en una instruccion de asignacion, el lado izquierdo debe tener tantas
     variables como la funcion tenga resultados.
@@ -4636,23 +4645,23 @@
 #       f, err = os.Open("foo.txt") // function call returns two values
 #     < src..
     ..src > go
-      f, err = os.Open("foo.txt") // la funcion llamada devuelve dos valores
+      f, err = os.Open("foo.txt") // la llamada de funcion devuelve dos valores
     < src..
 
 #     Often, functions use these additional results to indicate some kind of
 #     error, either by returning an @c(error) as in the call to @c(os.Open), or a
 #     @c(bool), usually called @c(ok). As we’ll see in later chapters, there are
 #     three operators that sometimes behave this way too. If a map lookup
-#     (@l(#Section 4.3<>§4.3)), type assertion (@l(#Section 7.10<>§7.10)), or
-#     channel receive (@l(#Section 8.4.2<>§8.4.2)) appears in an assignment in
+#     @%l(#Section 4.3<>§4.3), type assertion @%l(#Section 7.10<>§7.10), or
+#     channel receive @%l(#Section 8.4.2<>§8.4.2) appears in an assignment in
 #     which two results are expected, each produces an additional boolean result:
     A menudo, las funciones utilizan estos resultados adicionales para indicar
     algun tipo de error, ya sea devolviendo un @c(error) como en la llamada a
-    @c(os.Open), o un @c(bool), generalmente llamado @c(ok). Como veremos en
+    @c(os.Open), o un @c(bool), normalmente llamado @c(ok). Como veremos en
     capitulos posteriores, hay tres operadores que a veces se comportan de esta
-    manera tambien. Si la busqueda en un mapa (@l(#Seccion 4.3<>§4.3)), la
-    asercion de tipo (@l(#Seccion 7.10<>§7.10)), o la recepcion de un canal
-    (@l(#Seccion 8.4.2<>§8.4.2)) aparece en una asignacion en la que se esperan
+    manera tambien. Si la busqueda en un mapa @%l(#Seccion 4.3<>§4.3), la
+    asercion de tipo @%l(#Seccion 7.10<>§7.10), o la recepcion de un canal
+    @%l(#Seccion 8.4.2<>§8.4.2) aparece en una asignacion en la que se esperan
     dos resultados, cada una produce un resultado booleano adicional:
 
 #     ..src > go
@@ -4688,14 +4697,14 @@
 #     call implicitly assigns the argument values to the corresponding parameter
 #     variables; a @c(return) statement implicitly assigns the @c(return) operands
 #     to the corresponding result variables; and a literal expression for a
-#     composite type (@l(#Section 4.2<>§4.2)) such as this slice:
+#     composite type @%l(#Section 4.2<>§4.2) such as this slice:
     Las sentencias de asignacion son una forma explicita de asignacion, pero hay
-    muchos lugares en un programa donde se produce una asignacion @e(implicita):
+    muchos lugares en un programa donde una asignacion se produce de forma @e(implicita):
     una llamada de funcion asigna implicitamente los valores de los argumentos a
     las variables de parametros correspondientes; una instruccion @c(return)
     asigna implicitamente los operandos de retorno a las variables de resultado
     correspondientes; y una expresion literal para un tipo compuesto
-    (@l(#Seccion 4.2<>§4.2)), como este slice:
+    @%l(#Seccion 4.2<>§4.2), como este slice:
 
 #     ..src > go
 #       medals := []string{"gold", "silver", "bronze"}
@@ -4705,7 +4714,7 @@
     < src..
 
 #     implicitly assigns each element, as if it had been written like this:
-    Implicitamente asigna cada elemento, como si se hubiera escrito asi:
+    asigna implicitamente cada elemento, como si se hubiera escrito asi:
 
 #     ..src > go
 #       medals[0] = "gold"
@@ -4720,7 +4729,7 @@
 
 #     The elements of maps and channels, though not ordinary variables, are also
 #     subject to similar implicit assignments.
-    Los elementos de mapas y canales, aunque no son variables ordinarias,
+    Los elementos de los mapas y canales, aunque no son variables ordinarias,
     tambien estan sujetos a asignaciones implicitas similares.
 
 #     An assignment, explicit or implicit, is always legal if the left-hand side
@@ -4736,14 +4745,14 @@
 #     the relevant case as we introduce each new type. For the types we’ve
 #     discussed so far, the rules are simple: the types must exactly match, and
 #     @c(nil) may be assigned to any variable of interface or reference type.
-#     Constants (@l(#Section 3.6<>§3.6)) have more flexible rules for
+#     Constants @%l(#Section 3.6<>§3.6) have more flexible rules for
 #     assignability that avoid the need for most explicit conversions.
-    La regla para la @e(asignabilidad) tiene casos para varios tipos, por lo que
-    vamos a explicar el caso relevante a medida que introducimos cada nuevo
+    La regla de @e(asignacion) tiene casos para varios tipos, por lo que
+    explicaremos el caso pertinente a medida que introduzcamos cada nuevo
     tipo. Para los tipos que hemos discutido hasta ahora, las reglas son
     simples: los tipos deben coincidir exactamente, y @c(nil) puede ser asignado
     a cualquier variable de interfaz o tipo de referencia. Las constantes
-    (@l(#Seccion 3.6<>§3.6)) tienen reglas mas flexibles para la asignacion que
+    @%l(#Seccion 3.6<>§3.6) tienen reglas mas flexibles de asignacion que
     evitan la necesidad de conversiones mas explicitas.
 
 #     Whether two values may be compared with @c(==) and @c(!=) is related to
@@ -4751,14 +4760,14 @@
 #     the type of the second operand, or vice versa.  As with assignability, we’ll
 #     explain the relevant cases for @e(comparability) when we present each new
 #     type.
-    Si dos valores pueden compararse con @c(==) y @c(!=) se relaciona con la
+    Si dos valores pueden compararse con @c(==) y @c(!=) esta relacionado con la
     asignacion: en cualquier comparacion, el primer operando debe ser asignable
     al tipo del segundo operando, o viceversa. Al igual que con la
-    asignabilidad, vamos a explicar los casos relevantes para la comparabilidad
+    asignabilidad, explicaremos los casos relevantes para la comparabilidad
     cuando presentamos cada nuevo tipo.
 
 # ** Section 2.5 <> Type Declarations
-** Seccion 2.5 <> Declaraciones de tipo
+** Seccion 2.5 <> Declaraciones de Tipo
 
 #    The type of a variable or expression defines the characteristics of the
 #    values it may take on, such as their size (number of bits or number of
@@ -4766,9 +4775,9 @@
 #    operations that can be performed on them, and the methods associated with
 #    them.
    El tipo de una variable o expresion define las caracteristicas de los valores
-   que puede tomar, como su tamaño (numero de bits o numero de elementos, tal
+   que puede asumir, como su tamaño (numero de bits o numero de elementos, tal
    vez), como se representan internamente, las operaciones intrinsecas que se
-   pueden realizar en ellos, Y los metodos asociados con ellos.
+   pueden realizar en ellos, Y los metodos asociados a ellos.
 
 #    In any program there are variables that share the same representation but
 #    signify very different concepts. For instance, an @c(int) could be used to
@@ -4788,9 +4797,9 @@
 #    separate different and perhaps incompatible uses of the underlying type so
 #    that they can’t be mixed unintentionally.
    Una declaracion @c(type) define un nuevo @e(tipo con nombre) que tiene el
-   mismo @e(tipo subyacente) como un tipo existente. El tipo nombrado
+   mismo @e(tipo subyacente) que un tipo existente. El tipo nombrado
    proporciona una manera de separar los diferentes usos y quizas incompatibles
-   del tipo subyacente para que no puedan ser mezclados involuntariamente.
+   del tipo subyacente de modo que que no puedan mezclarse involuntariamente.
 
 #    ..src > go
 #      type name underlying-type
@@ -4802,9 +4811,9 @@
 #    Type declarations most often appear at package level, where the named type is
 #    visible throughout the package, and if the name is exported (it starts with
 #    an upper-case letter), it’s accessible from other packages as well.
-   Las declaraciones de tipo aparecen mas a menudo en el nivel de paquete, donde
+   Las declaraciones de tipo aparecen mas a menudo a nivel de paquete, donde
    el tipo nombrado es visible en todo el paquete, y si el nombre se exporta
-   (inicia con una letra mayuscula), es accesible desde otros paquetes tambien.
+   (inicia con una letra mayuscula), tambien es accesible desde otros paquetes.
 
 #    To illustrate type declarations, let’s turn the different temperature scales
 #    into different types:
@@ -4865,10 +4874,10 @@
 #    between the two scales; they do return different values.
    Este paquete define dos tipos, @c(Celsius) y @c(Fahrenheit), para las dos
    unidades de temperatura. A pesar de que ambos tienen el mismo tipo
-   subyacente, @c(float64), no son del mismo tipo, por lo que no pueden
-   compararse o ser combinados en expresiones aritmeticas. Distinguir los tipos
-   hace posible evitar errores como combinar inadvertidamente temperaturas en
-   las dos escalas diferentes; es necesaria una conversion de tipo explicita
+   subyacente, @c(float64), no son del mismo tipo, por lo que no pueden ser
+   comparados o combinados en expresiones aritmeticas. Distinguir los tipos
+   permite evitar errores como combinar inadvertidamente temperaturas en
+   las dos escalas diferentes; se requiere una conversion de tipo explicita
    como @c[Celsius(t)] o @c[Fahrenheit(t)] para convertir desde un @c(float64).
    @c[Celsius(t)] y @c[Fahrenheit(t)] son conversiones, no llamadas a funcion.
    No cambian el valor o la representacion de ninguna manera, pero hacen que el
@@ -4886,8 +4895,8 @@
    Para cada tipo @c(T), hay una operacion de conversion correspondiente
    @c[T(x)] que convierte el valor @c(x) al tipo @c(T). Se permite una
    conversion de un tipo a otro si ambos tienen el mismo tipo subyacente, o si
-   ambos son tipos apuntador sin nombre que apuntan a variables del mismo tipo
-   subyacente; Estas conversiones cambian el tipo pero no la representacion del
+   ambos son de tipo puntero sin nombre que apuntan a variables del mismo tipo
+   subyacente; estas conversiones cambian el tipo pero no la representacion del
    valor. Si @c(x) es asignable a @c(T), se permite una conversion, pero suele
    ser redundante.
 
@@ -4897,12 +4906,12 @@
 #    floating-point number to an integer discards any fractional part, and
 #    converting a string to a @c([]byte) slice allocates a copy of the string
 #    data. In any case, a conversion never fails at run time.
-   Las conversiones tambien se permiten entre tipos numericos, y entre la cadena
+   Tambien se permiten las conversiones entre tipos numericos, y entre tipos de cadena
    y algunos tipos de slices, como veremos en el siguiente capitulo. Estas
    conversiones pueden cambiar la representacion del valor. Por ejemplo, la
    conversion de un numero de coma flotante a un entero descarta cualquier parte
    fraccionaria, y la conversion de una cadena a un slice @c([]byte) asigna una
-   copia de los datos de cadena. En cualquier caso, una conversion nunca falla
+   copia de los datos de la cadena. En cualquier caso, una conversion nunca falla
    en tiempo de ejecucion.
 
 #    The underlying type of a named type determines its structure and
@@ -4912,9 +4921,9 @@
 #    they do for @c(float64), as you might expect.
    El tipo subyacente de un tipo con nombre determina su estructura y
    representacion, asi como el conjunto de operaciones intrinsecas que admite,
-   que son iguales que si el tipo subyacente se hubiera utilizado directamente.
+   que son las mismas que si el tipo subyacente se hubiera utilizado directamente.
    Eso significa que los operadores aritmeticos funcionan igual para @c(Celsius)
-   y @c(Fahrenheit) como lo hacen para @c(float64), como se podria esperar.
+   y @c(Fahrenheit) que para @c(float64), como es de esperar.
 
 #    ..src > go
 #      fmt.Printf("%g\n", BoilingC-FreezingC)       // "100" °C
@@ -4934,8 +4943,8 @@
 #    unnamed type with the same underlying type. But two values of different named
 #    types cannot be compared directly :
    Los operadores de comparacion como @c(==) y @c(<) tambien se puede utilizar
-   para comparar un valor de un tipo con nombre a otro del mismo tipo, o a un
-   Valor de un tipo sin nombre con el mismo tipo subyacente. Pero dos valores de
+   para comparar un valor de un tipo con nombre con otro del mismo tipo, o con un
+   valor de un tipo sin nombre con el mismo tipo subyacente. Pero dos valores de
    diferentes tipos con nombre no pueden compararse directamente:
 
 #    ..src > go
@@ -4958,15 +4967,15 @@
 #    Note the last case carefully. In spite of its name, the type conversion
 #    @c[Celsius(f)] does not change the value of its argument, just its type. The
 #    test is true because @c(c) and @c(f) are both zero.
-   Anote cuidadosamente el ultimo caso. A pesar de su nombre, la conversion de
+   Observe cuidadosamente el ultimo caso. A pesar de su nombre, la conversion de
    tipo @c[Celsius(f)] no cambia el valor de su argumento, solo su tipo. La prueba
-   es verdadera porque @c(c) y @c(f) son ambos cero.
+   es verdadera porque tanto @c(c) como @c(f) son cero.
 
 #    A named type may provide notational convenience if it helps avoid writing out
 #    complex types over and over again. The advantage is small when the underlying
 #    type is simple like @c(float64), but big for complicated types, as we will see
 #    when we discuss structs.
-   Un tipo con nombre puede proporcionar conveniencia de notacion si ayuda a
+   Un tipo con nombre puede proporcionar una conveniencia de notacion si ayuda a
    evitar escribir tipos complejos una y otra vez. La ventaja es pequeña cuando
    el tipo subyacente es tan simple como @c(float64), pero grande para los tipos
    complicados, como veremos cuando hablemos de las estructuras.
@@ -4975,10 +4984,10 @@
 #    type. These behaviors are expressed as a set of functions associated with the
 #    type, called the type’s @e(methods).  We’ll look at methods in detail in
 #    @l(#Chapter 6) but will give a taste of the mechanism here.
-   Los tipos nombrados tambien permiten definir nuevos comportamientos para los
+   Los tipos con nombre tambien permiten definir nuevos comportamientos para los
    valores del tipo. Estos comportamientos se expresan como un conjunto de
    funciones asociadas con el tipo, denominados @e(metodos) del tipo. Veremos los
-   metodos en detalle en el @l(#Capitulo 6), pero daremos una idea del mecanismo
+   metodos en detalle en el @l(#Capitulo 6), pero daremos una muestra del mecanismo
    aqui.
 
 #    The declaration below, in which the @c(Celsius) parameter @c(c) appears before the
@@ -5000,8 +5009,8 @@
 #    Many types declare a @c(String) method of this form because it controls how
 #    values of the type appear when printed as a string by the @c(fmt) package, as
 #    we will see in @l(#Section 7.1).
-   Muchos tipos declaran un metodo @c(String) de esta forma debido a que controla
-   como aparecen los valores del tipo cuando se imprimen en una cadena con el
+   Muchos tipos declaran un metodo @c(String) de esta forma porque controla
+   como aparecen los valores del tipo cuando se imprimen en una cadena por el
    paquete @c(fmt), como veremos en la @l(#Seccion 7.1).
 
 #    ..src > go
@@ -5190,12 +5199,12 @@
      fmt.Println(tempconv.CToF(tempconv.BoilingC)) // "212°F"
    < src..
 
-#    The @e(doc comment) (@l(#Section 10.7.4<>§10.7.4)) immediately preceding the
+#    The @e(doc comment) @%l(#Section 10.7.4<>§10.7.4) immediately preceding the
 #    package declaration documents the package as a whole. Conventionally, it
 #    should start with a summary sentence in the style illustrated. Only one file
 #    in each package should have a package doc comment. Extensive doc comments are
 #    often placed in a file of their own, conventionally called @f(doc.go).
-   El @c(comentario de documentacion) (@l(#Seccion 10.7.4<>§10.7.4))
+   El @c(comentario de documentacion) @%l(#Seccion 10.7.4<>§10.7.4)
    inmediatamente anterior a la declaracion del paquete, documenta el paquete en
    su conjunto. Convencionalmente, debe comenzar con una oracion de resumen en
    el estilo ilustrado. Solo un archivo en cada paquete debe tener un comentario
@@ -5304,15 +5313,15 @@
 #     lets us refer to names within @c(gopl.io/ch2/tempconv) by using a
 #     @e(qualified identifier) like @c(tempconv.CToF). By default, the short name
 #     is the package name—@c(tempconv) in this case—but an import declaration may
-#     specify an alternative name to avoid a conflict (@l(#Section 10.4<>§10.4)).
+#     specify an alternative name to avoid a conflict @%l(#Section 10.4<>§10.4).
     La declaracion de importacion vincula un nombre corto al paquete importado
     que se puede utilizar para referirse a su contenido en todo el archivo. El
     @c(import) anterior nos permite referimos a nombres dentro de
     @c(gopl.io/ch2/tempconv) mediante el uso de un identificador calificado como
     @c(tempconv.CToF). Por defecto, el nombre corto es el nombre del paquete–en
     este caso @c(tempconv), pero una declaracion de importacion puede
-    especificar un nombre alternativo para evitar un conflicto (@l(#Seccion
-    10.4<>§10.4)).
+    especificar un nombre alternativo para evitar un conflicto @%l(#Seccion
+    10.4<>§10.4).
 
 #     The @$(cf) program converts a single numeric command-line argument to its value
 #     in both Celsius and Fahrenheit:
@@ -5342,8 +5351,8 @@
 #     helps eliminate dependencies that become unnecessary as the code evolves,
 #     although it can be a nuisance during debugging, since commenting out a line
 #     of code like @c[log.Print("got here!")] may remove the sole reference to the
-#     package name @c(log), causing the compiler to emit an error. In this situation,
-#     you need to comment out or delete the unnecessary @c(import).
+#     package name @c(log), causing the compiler to emit an error. In this
+#     situation, you need to comment out or delete the unnecessary @c(import).
     Es un error importar un paquete y luego no hacer referencia a el. Esta
     verificacion ayuda a eliminar las dependencias que se hacen innecesarias,
     cuando el codigo evoluciona, aunque puede ser una molestia durante la
@@ -6052,10 +6061,10 @@
 #   Go’s types fall into four categories: @e(basic types), @e(aggregate types),
 #   @e(reference types), and @e(interface types). Basic types, the topic of this
 #   chapter, include numbers, strings, and booleans. Aggregate types—arrays
-#   (@l(#Section 4.1<>§4.1)) and structs (@l(#Section 4.4<>§4.4))—form more
+#   @%l(#Section 4.1<>§4.1) and structs @%l(#Section 4.4<>§4.4)—form more
 #   complicated data types by combining values of several simpler ones. Reference
-#   types are a diverse group that includes pointers (@l(#Section 2.3.2<>§2.3.2)),
-#   slices (@l(#Section 4.2<>§4.2)), maps (@l(#Section 4.3<>§4.3)), functions
+#   types are a diverse group that includes pointers @%l(#Section 2.3.2<>§2.3.2),
+#   slices @%l(#Section 4.2<>§4.2), maps @%l(#Section 4.3<>§4.3), functions
 #   (@l(#Chapter 5)), and channels (@l(#Chapter 8)), but what they have in common
 #   is that they all refer to program variables or state @e(indirectly), so that
 #   the effect of an operation applied to one reference is observed by all copies
@@ -6064,11 +6073,11 @@
   Los tipos de datos de Go se dividen en cuatro categorias: @e(tipos basicos),
   @e(tipos de agregados), @e(tipos de referencia), y @e(tipos de interfaz). Los
   tipos basicos, el tema de este capitulo, incluyen numeros, cadenas y
-  booleanos. Los tipos agregados–arreglos (@l(#Seccion 4.1<>§4.1)) y estructuras
-  (@l(#Seccion 4.4<>§4.4))–forma tipos de datos mas complejos mediante la
+  booleanos. Los tipos agregados–arreglos @%l(#Seccion 4.1<>§4.1) y estructuras
+  @%l(#Seccion 4.4<>§4.4)–forma tipos de datos mas complejos mediante la
   combinacion de otros valores mas simples. Los tipos de referencia son un grupo
-  diverso, que incluye punteros (@l(#Seccion 2.3.2<>§2.3.2)), slices
-  (@l(#Seccion 4.2<>§4.2)), mapas (@l(#Seccion 4.3<>§4.3)), funciones
+  diverso, que incluye punteros @%l(#Seccion 2.3.2<>§2.3.2), slices
+  @%l(#Seccion 4.2<>§4.2), mapas @%l(#Seccion 4.3<>§4.3), funciones
   (@l(#Capitulo 5)), y canales (@l(#Capitulo 8)), pero lo que tienen en comun es
   que se todos ellos se refieren a variables del programa o estados
   indirectamente, por lo que el efecto de una operacion que se aplica a una
@@ -6471,7 +6480,7 @@
 #    be true by definition. After the third iteration, in which @c(i == 0), the
 #    @c(i--) statement would cause @c(i) to become not -1, but the maximum
 #    @c(uint) value (for example, 2⁶⁴-1), and the evaluation of @c(medals[i])
-#    would fail at run time, or @e(panic) (@l(#Section 5.9<>§5.9)), by attempting
+#    would fail at run time, or @e(panic) @%l(#Section 5.9<>§5.9), by attempting
 #    to access an element outside the bounds of the slice.
    La alternativa seria calamitosa. Si @c(len) devuelve un numero sin signo,
    entonces @c(i) tambien seria un @c(uint), y la condicion @c(i >= 0) siempre
@@ -6479,7 +6488,7 @@
    @c(i == 0), la instruccion @c(i--) no haria que @c(i) se volviera -1, en
    cambio seria el valor maximo de @c(uint) (es decir, 2⁶⁴-1), y la evaluacion
    de @c(medallas[i]) fallaria en tiempo de ejecucion, o entraria en @e(panico)
-   (@l(#Seccion 5.9<>§5.9)), al tratar de acceder a un elemento fuera de los
+   @%l(#Seccion 5.9<>§5.9), al tratar de acceder a un elemento fuera de los
    limites del slice.
 
 #    For this reason, unsigned numbers tend to be used only when their bitwise
@@ -6601,7 +6610,7 @@
    numeros hexadecimales se utilizan ampliamente para enfatizar el patron de
    bits de un numero sobre su valor numerico.
 
-#    When printing numbers using the fmt package, we can control the radix and
+#    When printing numbers using the @c(fmt) package, we can control the radix and
 #    format with the @c(%d), @c(%o), and @c(%x) verbs, as shown in this example:
    Al imprimir numeros usando el paquete @c(fmt), podemos controlar la base y el
    formato con los verbos @c(%d), @c(%o), y @c(%x), como se muestra en este
@@ -6807,8 +6816,8 @@
 #    value, and @c(math.NaN) returns such a value. It’s tempting to use NaN as a
 #    sentinel value in a numeric computation, but testing whether a specific
 #    computational result is equal to NaN is fraught with peril because any
-#    comparison with NaN @e(always) yields @c(false) (except @c(!=), which is always
-#    the negation of @c(==)):
+#    comparison with NaN @e(always) yields @c(false) (except @c(!=), which is
+#    always the negation of @c(==)):
    La funcion @c(math.IsNaN) prueba si su argumento es un valor no-numerico, y
    @c(math.NaN) devuelve ese valor. Es tentador utilizar NaN como un valor
    centinela en un calculo numerico, pero probar si el resultado de un calculo
@@ -6984,8 +6993,8 @@
      < src..
 
 
-#    Notice that the function @c(corner) returns two values, the coordinates of the
-#    corner of the cell.
+#    Notice that the function @c(corner) returns two values, the coordinates of
+#    the corner of the cell.
    Observe que la funcion @c(corner) devuelve dos valores, las coordenadas de la
    esquina de la celda.
 
@@ -7132,8 +7141,7 @@
 
 #    If a floating-point literal or decimal integer literal is immediately
 #    followed by @c(i), such as @c(3.141592i) or @c(2i), it becomes an
-#    @e(imaginary literal), denoting a complex number with a zero real
-#    component:
+#    @e(imaginary literal), denoting a complex number with a zero real component:
    Si un punto flotante literal entero o decimal literal es seguido
    inmediatamente por @c(i), como @c(3.141592i) o @c(2i), se convierte en un
    literal imaginario, que denota un numero complejo con un componente real
@@ -7724,7 +7732,7 @@
 #     octal escapes. A @e(hexadecimal) escape is written @c(\x)@e(hh), with exactly
 #     two hexadecimal digits @e(h) (in upper or lower case). An octal escape is
 #     written @e(\ooo) with exactly three octal digits @e(o) (0 through 7) not
-#     exceeding @e(\377). Both denote a single byte with the specified
+#     exceeding @c(\377). Both denote a single byte with the specified
 #     value. Later, we’ll see how to encode Unicode code points numerically in
 #     string literals.
     Los bytes arbitrarios tambien se pueden incluir en cadenas literales usando
@@ -8047,8 +8055,8 @@
 #     On the other hand, if we really care about the individual Unicode
 #     characters, we have to use other mechanisms. Consider the string from our
 #     very first example, which includes two East Asian characters. Figure 3.5
-#     illustrates its representation in memory. The string contains 13 bytes,
-#     but interpreted as UTF-8, it encodes only nine code points or runes:
+#     illustrates its representation in memory. The string contains 13 bytes, but
+#     interpreted as UTF-8, it encodes only nine code points or runes:
     Por otro lado, si realmente nos preocupamos por los caracteres Unicode
     individuales, tenemos que usar otros mecanismos. Consideremos la cadena de
     nuestro primer ejemplo, la cual incluye dos caracteres asiaticos. La Figura
@@ -8245,7 +8253,6 @@
     runa, y produce la representacion UTF-8 de esa runa:
 
 #     ..src > go
-#       UTF-8 representation of that rune:
 #       fmt.Println(string(65))     // "A", not "65"
 #       fmt.Println(string(0x4eac)) // "京"
 #     < src..
@@ -8268,9 +8275,9 @@
 *** Seccion 3.5.4 <> Cadenas y Slices de Bytes
 
 #     Four standard packages are particularly important for manipulating strings:
-#     @c(bytes), @c(strings), @c(strconv), and @c(unicode). The @c(string) spackage
-#     provides many functions for searching, replacing, comparing, trimming,
-#     splitting, and joining strings.
+#     @c(bytes), @c(strings), @c(strconv), and @c(unicode). The @c(strings)
+#     package provides many functions for searching, replacing, comparing,
+#     trimming, splitting, and joining strings.
     cuatro paquetes estandar son particularmente importantes para la
     manipulacion de cadenas: @c(bytes), @c(strings), @c(strconv) y
     @c(unicode). El paquete @c(strings) ofrece muchas funciones para busqueda,
@@ -8800,12 +8807,12 @@
 #    The results of all arithmetic, logical, and comparison operations applied to
 #    constant operands are themselves constants, as are the results of conversions
 #    and calls to certain built-in functions such as @c(len), @c(cap), @c(real),
-#    @c(imag), @c(complex), and @c(unsafe.Sizeof) (@l(#Section 13.1<>§13.1)).
+#    @c(imag), @c(complex), and @c(unsafe.Sizeof) @%l(#Section 13.1<>§13.1).
    Los resultados de toda la aritmetica, y operaciones de comparacion logicos
    aplicados a operandos constantes son en si mismas constantes, como son los
    resultados de las conversiones y las llamadas a ciertas funciones nativas
    como @c(len), @c(cap), @c(real), @c(imag), @c(complex), y @c(unsafe.Sizeof)
-   (@l(#Seccion 13.1<>§13.1)).
+   @%l(#Seccion 13.1<>§13.1).
 
 #    Since their values are known to the compiler, constant expressions may appear
 #    in types, specifically as the length of an array type:
@@ -9437,10 +9444,10 @@
      fmt.Println(r[2]) // "0"
    < src..
 
-#    In an array literal, if an ellipsis @"(@c(...)) appears in place of the
+#    In an array literal, if an ellipsis @"c(...) appears in place of the
 #    length, the array length is determined by the number of initializers. The
 #    definition of @c(q) can be simplified to
-   En un arreglo literal, si una elipsis @"(@c(...)) aparece en lugar de la
+   En un arreglo literal, si una elipsis @"c(...) aparece en lugar de la
    longitud, la longitud del arreglo se determina por el numero de
    inicializadores. La definicion de @c(q) se puede simplificar como
 
@@ -9842,14 +9849,14 @@
 
 #    Since a slice contains a pointer to an element of an array, passing a slice
 #    to a function permits the function to modify the underlying array
-#    elements. In other words, copying a slice creates an @e(alias) (@l(#Section
-#    2.3.2<>§2.3.2)) for the underlying array. The function @c(reverse) reverses
+#    elements. In other words, copying a slice creates an @e(alias) @%l(#Section
+#    2.3.2<>§2.3.2) for the underlying array. The function @c(reverse) reverses
 #    the elements of an @c([]int) slice in place, and it may be applied to slices
 #    of any length.
    Dado que un slice contiene un puntero a un elemento de un arreglo, el paso de
    un slice a una funcion permite a la funcion modificar los elementos del
    arreglo subyacente. En otras palabras, la copia de una slice crea un alias
-   (@l(#Seccion 2.3.2<>§2.3.2)) para el arreglo subyacente. La funcion
+   @%l(#Seccion 2.3.2<>§2.3.2) para el arreglo subyacente. La funcion
    @c(reverse) invierte los elementos de un slice @c([]int) en su lugar, y se
    puede aplicar a slices de cualquier longitud.
 
@@ -10223,6 +10230,16 @@
     que anexar un solo elemento tome un tiempo constante en promedio. Este
     programa demuestra el efecto:
 
+#     ..src > go
+#       func main() {
+#         var x, y []int
+#         for i := 0; i < 10; i++ {
+#           y = appendInt(x, i)
+#           fmt.Printf("%d cap=%d\t%v\n", i, cap(y), y)
+#           x = y
+#         }
+#       }
+#     < src..
     ..src > go
       func main() {
         var x, y []int
@@ -10266,8 +10283,8 @@
 #     Let’s take a closer look at the @c(i=3) iteration. The slice @c(x) contains
 #     the three elements @c([0 1 2]) but has capacity 4, so there is a single
 #     element of slack at the end, and @c(appendInt) of the element 3 may proceed
-#     without reallocating. The resulting slice @c(y) has length and capacity 4, and
-#     has the same underlying array as the original slice @c(x), as Figure 4.2
+#     without reallocating. The resulting slice @c(y) has length and capacity 4,
+#     and has the same underlying array as the original slice @c(x), as Figure 4.2
 #     shows.
     Echemos un vistazo mas cercano a la iteracion @c(i=3). El slice @c(x)
     contiene tres elementos @c([0 1 2]), pero tiene la capacidad de 4, por lo
@@ -10385,14 +10402,14 @@
     < src..
 
 #     With the small modification shown below, we can match the behavior of the
-#     built-in @c(append).  The ellipsis @"(@c(...)) in the declaration of
+#     built-in @c(append).  The ellipsis @"c(...) in the declaration of
 #     @c(appendInt) makes the function @e(variadic): it accepts any number of
 #     final arguments. The corresponding ellipsis in the call above to @c(append)
 #     shows how to supply a list of arguments from a slice. We’ll explain this
 #     mechanism in detail in @l(#Section 5.7).
     Con la pequeña modificacion que se muestra a continuacion, podemos hacer
     coincidir el comportamiento con el @c(append) nativo. Los puntos suspensivos
-    (@c("...")) en la declaracion de @c(appendInt) crean una funcion
+    @"c("...") en la declaracion de @c(appendInt) crean una funcion
     @e(variadic): acepta cualquier numero de argumentos finales. Los puntos
     suspensivos en la llamada @c(append) anterior muestran como suministrar una
     lista de argumentos apartir de un slice. Vamos a explicar este mecanismo en
@@ -11884,7 +11901,7 @@
 #     to use this shorthand notation to create and initialize a struct variable
 #     and obtain its address:
     Debido a que las estructuras se manejan tan comunmente mediante punteros, es
-    posible utilizar esta notacion conpacta para crear e inicializar una
+    posible utilizar esta notacion compacta para crear e inicializar una
     estructura y obtener su direccion:
 
 #     ..src > go
@@ -12283,12 +12300,12 @@
 
 #    JavaScript Object Notation (JSON) is a standard notation for sending and
 #    receiving structured information. JSON is not the only such notation. XML
-#    (@l(#Section 7.14<>§7.14)), ASN.1, and Google’s Protocol Buffers serve
+#    @%l(#Section 7.14<>§7.14), ASN.1, and Google’s Protocol Buffers serve
 #    similar purposes and each has its niche, but because of its simplicity,
 #    readability, and universal support, JSON is the most widely used.
    JavaScript Object Notation (JSON) es una notacion estandar para enviar y
    recibir informacion estructurada. JSON no es la unica notacion. XML
-   (@l(#Seccion 7.14<>§7.14)), ASN.1, y Google’s Protocol Buffers sirven a
+   @%l(#Seccion 7.14<>§7.14), ASN.1, y Google’s Protocol Buffers sirven a
    propositos similares y cada uno tiene su nicho, pero debido a su simplicidad,
    facilidad de lectura, y un apoyo universal, JSON es el mas utilizado.
 
@@ -13063,13 +13080,13 @@
    < src..
 
 #    Notice that the type of @c(CreatedAt) is @c(time.Time), not @c(string). In
-#    the same way that a type may control its string formatting (@l(#Section
-#    2.5<>§2.5)) by defining certain methods, a type may also define methods to
+#    the same way that a type may control its string formatting @%l(#Section
+#    2.5<>§2.5) by defining certain methods, a type may also define methods to
 #    control its JSON marshaling and unmarshaling behavior. The JSON-marshaled
 #    value of a @c(time.Time) is a string in a standard format.
    Observe que el tipo de @c(CreatedAt) es @c(time.Time), no @c(string). Del
-   mismo modo que un tipo puede controlar su formato de cadena (@l(#Seccion
-   2.5<>§2.5)) mediante la definicion de ciertos metodos, un tipo puede definir
+   mismo modo que un tipo puede controlar su formato de cadena @%l(#Seccion
+   2.5<>§2.5) mediante la definicion de ciertos metodos, un tipo puede definir
    tambien metodos para controlar su comportamiento para el marshaling y
    unmarshaling JSON. El valor marshaling JSON de un @c(time.Time) es una cadena
    en un formato estandar.
@@ -13826,10 +13843,10 @@
    lista enlazada @c(FirstChild).
 
 #    Let’s run @$(findlinks) on the Go home page, piping the output of @$(fetch)
-#    (@l(#Section 1.5<>§1.5)) to the input of @$(findlinks). We’ve edited the
+#    @%l(#Section 1.5<>§1.5) to the input of @$(findlinks). We’ve edited the
 #    output slightly for brevity.
    Vamos a ejecutar @$(findlinks) en la pagina principal de Go, canalizando el
-   resultado de @$(fetch) (@l(#Seccion 1.5<>§1.5)) a la entrada de
+   resultado de @$(fetch) @%l(#Seccion 1.5<>§1.5) a la entrada de
    @$(findlinks). Hemos modificado la salida ligeramente por brevedad.
 
 #    ..srci > sh
@@ -13927,7 +13944,7 @@
 
 
 #    Note one subtlety: although @c(outline) @"(pushes) an element on @c(stack),
-#    there is no corresponding pop. When outline calls itself recursively, the
+#    there is no corresponding pop. When @c(outline) calls itself recursively, the
 #    callee receives a copy of @c(stack). Although the callee may append elements
 #    to this slice, modifying its underlying array and perhaps even allocating a
 #    new array, it doesn’t modify the initial elements that are visible to the
@@ -14138,14 +14155,14 @@
 #    underlying errors from the @c(http) and @c(html) packages on to the
 #    caller. In the first case, the error is returned unchanged; in the second and
 #    third, it is augmented with additional context information by @c(fmt.Errorf)
-#    (@l(#Section 7.8<>§7.8)). If @c(findLinks) is successful, the final return
+#    @%l(#Section 7.8<>§7.8). If @c(findLinks) is successful, the final return
 #    statement returns the slice of links, with no error.
    Hay cuatro sentencias @c(return) en @c(findLinks), cada una de las cuales
    devuelve un par de valores. Los tres primeros @c(return) hacen que la funcion
    pase los errores subyacentes de los paquetes @c(http) y @c(html) al
    llamador. En el primer caso, el error se devuelve sin cambios; en el segundo
    y tercero, que expande con informacion de contexto adicional con
-   @c(fmt.Errorf) (@l(#Seccion 7.8<>§7.8)). Si @c(findLinks) tiene exito, la
+   @c(fmt.Errorf) @%l(#Seccion 7.8<>§7.8). Si @c(findLinks) tiene exito, la
    ultima sentencia @c(return) devuelve el slice de enlaces, sin error.
 
 #    We must ensure that @c(resp.Body) is closed so that network resources are
@@ -14337,9 +14354,9 @@
    para la division de palabras.)
 
 #    @b(Exercise 5.6): Modify the @c(corner) function in @c(gopl.io/ch3/surface)
-#    (@l(#Section 3.2<>§3.2)) to use named results and a bare return statement.
+#    @%l(#Section 3.2<>§3.2) to use named results and a bare return statement.
    @b(Ejercicio 5.6): Modificar la funcion @c(corner) en @c(gopl.io/ch3/surface)
-   (@l(#Seccion 3.2<>§3.2)) para utilizar resultados con nombre y una
+   @%l(#Seccion 3.2<>§3.2) para utilizar resultados con nombre y una
    declaracion de retorno desnudo.
 
 # ** Section 5.4 <> Errors
@@ -14347,7 +14364,7 @@
 
 #    Some functions always succeed at their task. For example,
 #    @c(strings.Contains) and @c(strconv.FormatBool) have well-defined results for
-#    all possible argument values and cannot fail— barring catastrophic and
+#    all possible argument values and cannot fail—barring catastrophic and
 #    unpredictable scenarios like running out of memory, where the symptom is far
 #    from the cause and from which there’s little hope of recovery.
    Algunas funciones siempre tienen exito en su tarea. Por ejemplo,
@@ -14495,8 +14512,8 @@
 #     First, and most common, is to @e(propagate) the error, so that a failure in
 #     a subroutine becomes a failure of the calling routine. We saw examples of
 #     this in the @c(findLinks) function of @l(#Section 5.3). If the call to
-#     @c(http.Get) fails, @c(findLinks) returns the HTTP error to the caller without
-#     further ado:
+#     @c(http.Get) fails, @c(findLinks) returns the HTTP error to the caller
+#     without further ado:
     La primera y mas comun, es @e(propagar) el error, por lo que un fallo en una
     subrutina se convierte en un fracaso de la rutina de llamada. Vimos ejemplos
     de esto en la funcion @c(findLinks) de la @l(#Seccion 5.3). Si la llamada a
@@ -15213,10 +15230,10 @@
    < src..
 
 #    @b(Exercise 5.9): Write a function @c[expand(s string, f func(string) string)
-#    string] that replaces each substring @"(@c($foo)) within s by the text
+#    string] that replaces each substring @"c($foo) within @c(s) by the text
 #    returned by @c[f("foo")].
    @b(Ejercicio 5.9): Escribir una funcion @c[expand(s string, f func(string)
-   string) string] que reemplaze cada subcadena @c("$foo") dentro de @c(s) con
+   string) string] que reemplaze cada subcadena @"c($foo) dentro de @c(s) con
    el texto devuelto por @c[f("foo")].
 
 # ** Section 5.6 <> Anonymous Functions
@@ -15833,11 +15850,11 @@
    reportar ciclos.
 
 #    @b(Exercise 5.12): The @c(startElement) and @c(endElement) functions in
-#    @c(gopl.io/ch5/outline2) (@l(#Section 5.5<>§5.5)) share a global variable,
+#    @c(gopl.io/ch5/outline2) @%l(#Section 5.5<>§5.5) share a global variable,
 #    @c(depth). Turn them into anonymous functions that share a variable local to
 #    the @c(outline) function.
    @b(Ejercicio 5.12): Las funciones @c(startElement) y @c(endElement) en
-   @c(gopl.io/ch5/outline2) (@l(#Seccion 5.5<>§5.5)) comparten una variable
+   @c(gopl.io/ch5/outline2) @%l(#Seccion 5.5<>§5.5) comparten una variable
    global, @c(depth). Conviertalas en funciones anonimas que compartan una
    variable local de la funcion @c(outline).
 
@@ -16040,10 +16057,10 @@
    cualquier numero de argumentos posteriores.
 
 #    To declare a variadic function, the type of the final parameter is preceded
-#    by an ellipsis, @"(@c(...)), which indicates that the function may be called with
+#    by an ellipsis, @"c(...), which indicates that the function may be called with
 #    any number of arguments of this type.
    Para declarar una funcion variadic, el tipo del parametro final va precedido
-   por una elipsis, @"(@c(...)), que indica que la funcion puede ser llamada con
+   por una elipsis, @"c(...), que indica que la funcion puede ser llamada con
    cualquier numero de argumentos de ese tipo.
 
 #    ..figure > @l(gopl.io/ch5/sum/main.go<>gopl.io/ch5/sum)
@@ -16435,8 +16452,8 @@
      < src..
 
 
-#    or to unlock a mutex (@l(#Section 9.2<>§9.2)):
-   o para desbloquear un mutex (@l(#Seccion 9.2<>§9.2)):
+#    or to unlock a mutex @%l(#Section 9.2<>§9.2):
+   o para desbloquear un mutex @%l(#Seccion 9.2<>§9.2):
 
 #    ..src > go
 #      var mu sync.Mutex
@@ -16679,12 +16696,12 @@
      }
    < src..
 
-#    The example below is an improved @$(fetch) program (@l(#Section 1.5<>§1.5))
+#    The example below is an improved @$(fetch) program @%l(#Section 1.5<>§1.5)
 #    that writes the HTTP response to a local file instead of to the standard
 #    output. It derives the file name from the last component of the URL path,
 #    which it obtains using the @c(path.Base) function.
-   El siguiente ejemplo es una mejora del programa @$(fetch) (@l(#Seccion
-   1.5<>§1.5)) que escribe la respuesta HTTP a un archivo local en lugar de a la
+   El siguiente ejemplo es una mejora del programa @$(fetch) @%l(#Seccion
+   1.5<>§1.5) que escribe la respuesta HTTP a un archivo local en lugar de a la
    salida estandar. Deriva el nombre del archivo del el ultimo componente de la
    ruta URL, que obtiene utilizando la funcion @c(path.Base).
 
@@ -17714,11 +17731,11 @@
    estrictamente. Hemos roto esta regla para @c(Point) de modo que podamos
    mostrar ambos tipos de metodo.
 
-#    Named types (@c(Point)) and pointers to them @c[(*Point)] are the only types
+#    Named types @%c(Point) and pointers to them @c[(*Point)] are the only types
 #    that may appear in a receiver declaration. Furthermore, to avoid ambiguities,
 #    method declarations are not permitted on named types that are themselves
 #    pointer types:
-   Tipos con nombre (@c(Point)) y punteros a ellos @c[(*Point)] son los unicos
+   Tipos con nombre @%c(Point) y punteros a ellos @c[(*Point)] son los unicos
    tipos que pueden aparecer en una declaracion receptor. Ademas, para evitar
    ambiguedades, las declaraciones de metodos no estan permitidas en tipos con
    nombre que son ellos mismos tipos de puntero:
@@ -17884,8 +17901,8 @@
 #    liberally copied, including as arguments to functions. But if any method has
 #    a pointer receiver, you should avoid copying instances of @c(T) because doing
 #    so may violate internal invariants. For example, copying an instance of
-#    @c(bytes.Buffer) would cause the original and the copy to alias (@l(#Section
-#    2.3.2<>§2.3.2)) the same underlying array of bytes. Subsequent method calls
+#    @c(bytes.Buffer) would cause the original and the copy to alias @%l(#Section
+#    2.3.2<>§2.3.2) the same underlying array of bytes. Subsequent method calls
 #    would have unpredictable effects.
    Si todos los metodos de un tipo con nombre @c(T) tienen un tipo de receptor
    @c(T) en si (no @c(*T)), es seguro copiar las instancias de ese tipo; Llamar
@@ -17894,7 +17911,7 @@
    a las funciones. Pero si cualquier metodo tiene un receptor de puntero, se
    debe evitar copiar instancas de @c(T), ya que hacerlo puede violar
    invariantes internos. Por ejemplo, copiar una instancia de @c(bytes.Buffer)
-   haria que el original y la copia como alias (@l(#Seccion 2.3.2<>§2.3.2))
+   haria que el original y la copia como alias @%l(#Seccion 2.3.2<>§2.3.2)
    tubieran el mismo arreglo subyacente de bytes. Las llamadas de metodo
    subsiguientes tendrian efectos impredecibles.
 
@@ -18045,9 +18062,9 @@
       < src..
 
 
-#     In the final call to @c(Get), the @c(nil) receiver behaves like an empty map. We
-#     could equivalently have written it as @c[Values(nil).Get("item")], but
-#     @c[nil.Get("item")] will not compile because the type of @c(nil) has not
+#     In the final call to @c(Get), the @c(nil) receiver behaves like an empty
+#     map. We could equivalently have written it as @c[Values(nil).Get("item")],
+#     but @c[nil.Get("item")] will not compile because the type of @c(nil) has not
 #     been determined. By contrast, the final call to @c(Add) panics as it tries
 #     to update a nil map.
     En la llamada final a @c(Get), el receptor @c(nil) se comporta como un mapa
@@ -18172,9 +18189,9 @@
 #    class, or to interpret the relationship between these types as if a
 #    @c(ColoredPoint) @"(is a) @c(Point). But that would be a mistake. Notice the
 #    calls to @c(Distance) above. @c(Distance) has a parameter of type @c(Point),
-#    and @c(q) is not a @c(Point), so although @c(q) does have an embedded field of
-#    that type, we must explicitly select it. Attempting to pass @c(q) would be an
-#    error:
+#    and @c(q) is not a @c(Point), so although @c(q) does have an embedded field
+#    of that type, we must explicitly select it. Attempting to pass @c(q) would be
+#    an error:
    Los lectores familiarizados con lenguajes orientados a objetos basados en
    clases pueden ser tentados a ver @c(Point) como una clase base y
    @c(ColoredPoint) como una subclase o clase derivada, o a interpretar la
@@ -18310,11 +18327,11 @@
    veces util que los tipos de estructura @e(sin nombre) tambien tengan metodos.
 
 #    Here’s a nice trick to illustrate. This example shows part of a simple cache
-#    implemented using two package-level variables, a mutex (@l(#Section
-#    9.2<>§9.2)) and the map that it guards:
+#    implemented using two package-level variables, a mutex @%l(#Section
+#    9.2<>§9.2) and the map that it guards:
    Aqui hay un buen truco para ilustrarlo. Este ejemplo muestra parte de una
    cache simple implementada usando dos variables a nivel de paquete, un mutex
-   (@l(#Seccion 9.2<>§9.2)) y el mapa que protege:
+   @%l(#Seccion 9.2<>§9.2) y el mapa que protege:
 
 #    ..src > go
 #      var (
@@ -19202,15 +19219,15 @@
 #   types and their values.  Along the way, we’ll study several important
 #   interfaces from the standard library. Many Go programs make as much use of
 #   standard interfaces as they do of their own ones. Finally, we’ll look at
-#   @e(type assertions) (@l(#Section 7.10<>§7.10)) and @e(type switches)
-#   (@l(#Section 7.13<>§7.13)) and see how they enable a different kind of
+#   @e(type assertions) @%l(#Section 7.10<>§7.10) and @e(type switches)
+#   @%l(#Section 7.13<>§7.13) and see how they enable a different kind of
 #   generality.
   En este capitulo, comenzaremos examinando la mecanica basica de los tipos de
   interfaz y sus valores. En el camino, estudiaremos varias interfaces
   importantes de la libreria estandar. Muchos programas Go hacen uso intensivo
   de interfaces estandar como lo hacen con las propias. Por ultimo, examinaremos
-  los @e(tipos de aserciones) (@l(#Seccion 7.10<>§7.10)) y @e(switches de tipo)
-  (@l(#Seccion 7.13<>§7.13)) y veremos como permiten un tipo diferente de
+  los @e(tipos de aserciones) @%l(#Seccion 7.10<>§7.10) y @e(switches de tipo)
+  @%l(#Seccion 7.13<>§7.13) y veremos como permiten un tipo diferente de
   generalidad.
 
 # ** Section 7.1 <> Interfaces as Contracts
@@ -19497,10 +19514,10 @@
    < src..
 
 #    @b(Exercise 7.3): Write a @c(String) method for the @c(*tree) type in
-#    @c(gopl.io/ch4/treesort) (@l(#Section 4.4<>§4.4)) that reveals the sequence
+#    @c(gopl.io/ch4/treesort) @%l(#Section 4.4<>§4.4) that reveals the sequence
 #    of values in the tree.
    @b(Ejercicio 7.3): Escribir un metodo @c(String) para el tipo @c(*tree) de
-   @c(gopl.io/ch4/treesort) (@l(#Seccion 4.4<>§4.4)) que revele la secuencia de
+   @c(gopl.io/ch4/treesort) @%l(#Seccion 4.4<>§4.4) que revele la secuencia de
    valores en el arbol.
 
 # ** Section 7.2 <> Interface Types
@@ -19628,13 +19645,13 @@
 #    @b(Exercise 7.4): The @c(strings.NewReader) function returns a value that
 #    satisfies the @c(io.Reader) interface (and others) by reading from its
 #    argument, a string. Implement a simple version of @c(NewReader) yourself, and
-#    use it to make the HTML parser (@l(#Section 5.2<>§5.2)) take input from a
+#    use it to make the HTML parser @%l(#Section 5.2<>§5.2) take input from a
 #    string.
    @b(Ejercicio 7.4): La funcion @c(strings.NewReader) devuelve un valor que
    satisface la interfaz @c(io.Reader) (y otras) mediante la lectura de su
    argumento, una cadena. Implementa tu mismo una version simple de
-   @c(NewReader), y utilizala para hacer que el analizador de HTML (@l(#Seccion
-   5.2<>§5.2)) tome la entrada de una cadena.
+   @c(NewReader), y utilizala para hacer que el analizador de HTML @%l(#Seccion
+   5.2<>§5.2) tome la entrada de una cadena.
 
 #    @b(Exercise 7.5): The @c(LimitReader) function in the @c(io) package accepts
 #    an @c(io.Reader) @c(r) and a number of bytes @c(n), and returns another
@@ -19672,10 +19689,10 @@
    significa que satisface la interfaz. Por ejemplo, un @c(*bytes.Buffer) es un
    @c(io.Writer); un @c(*os.File) es un @c(io.ReadWriter).
 
-#    The assignability rule (@l(#Section 2.4.2<>§2.4.2)) for interfaces is very
+#    The assignability rule @%l(#Section 2.4.2<>§2.4.2) for interfaces is very
 #    simple: an expression may be assigned to an interface only if its type
 #    satisfies the interface. So:
-   La regla de asignabilidad (@l(#Seccion 2.4.2<>§2.4.2)) para interfaces es muy
+   La regla de asignabilidad @%l(#Seccion 2.4.2<>§2.4.2) para interfaces es muy
    simple: una expresion puede ser asignada a una interfaz solo si su tipo se
    ajusta a la interfaz. Asi que:
 
@@ -19785,12 +19802,12 @@
    < src..
 
 #    @l(#Section 12.8) includes a program that prints the methods of an arbitrary
-#    value, and the @$(godoc -analysis=type) tool (@l(#Section 10.7.4<>§10.7.4))
+#    value, and the @$(godoc -analysis=type) tool @%l(#Section 10.7.4<>§10.7.4)
 #    displays the methods of each type and the relationship between interfaces and
 #    concrete types.
    La @l(#Seccion 12.8) incluye un programa que imprime los metodos de un valor
-   arbitrario, y la herramienta @$(godoc -analysis=type) (@l(#Seccion
-   10.7.4<>§10.7.4)) muestra los metodos de cada tipo y la relacion entre las
+   arbitrario, y la herramienta @$(godoc -analysis=type) @%l(#Seccion
+   10.7.4<>§10.7.4) muestra los metodos de cada tipo y la relacion entre las
    interfaces y tipos concretos.
 
 #    Like an envelope that wraps and conceals the letter it holds, an interface
@@ -20221,13 +20238,13 @@
 
 #    Let’s define a @c(celsiusFlag) type that allows a temperature to be specified
 #    in Celsius, or in Fahrenheit with an appropriate conversion. Notice that
-#    @c(celsiusFlag) embeds a @c(Celsius) (@l(#Section 2.5<>§2.5)), thereby
+#    @c(celsiusFlag) embeds a @c(Celsius) @%l(#Section 2.5<>§2.5), thereby
 #    getting a @c(String) method for free. To satisfy @c(flag.Value), we need only
 #    declare the @c(Set) method:
    Vamos a definir un tipo @c(celsiusFlag) que permite una temperatura que se
    especifica en @c(Celsius) o en @c(Fahrenheit) con una conversion
-   apropiada. Observe que @c(celsiusFlag) incorpora un @c(Celsius) (@l(#Seccion
-   2.5<>§2.5)), consiguiendo asi un metodo @c(String) de forma gratuita. Para
+   apropiada. Observe que @c(celsiusFlag) incorpora un @c(Celsius) @%l(#Seccion
+   2.5<>§2.5), consiguiendo asi un metodo @c(String) de forma gratuita. Para
    satisfacer @c(flag.Value), solo tenemos que declarar el metodo @c(Set):
 
 #    ..figure > @l(gopl.io/ch7/tempconv/tempconv.go<>gopl.io/ch7/tempconv)
@@ -20840,12 +20857,12 @@
 #     As before, the dynamic dispatch mechanism determines that
 #     @c[(*bytes.Buffer).Write] must be called but this time with a receiver value
 #     that is nil. For some types, such as @c(*os.File), @c(nil) is a valid
-#     receiver (@l(#Section 6.2.1<>§6.2.1)), but @c(*bytes.Buffer) is not among
+#     receiver @%l(#Section 6.2.1<>§6.2.1), but @c(*bytes.Buffer) is not among
 #     them. The method is called, but it panics as it tries to access the buffer.
     Como antes, el mecanismo de envio dinamico determina que
     @c[(*bytes.Buffer).Write] debe ser llamado pero esta vez con un valor
     receptor que es nil. Para algunos tipos, como @c(*os.File), nil es un
-    receptor valido (@l(#Seccion 6.2.1<>§6.2.1)), pero @c(*bytes.Buffer) no esta
+    receptor valido @%l(#Seccion 6.2.1<>§6.2.1), pero @c(*bytes.Buffer) no esta
     entre ellos. El metodo se llama, pero entra en panico al intentar acceder al
     bufer.
 
@@ -21233,13 +21250,13 @@
 
 
 #    The @c(sort.Reverse) function deserves a closer look since it uses
-#    composition (@l(#Section 6.3<>§6.3)), which is an important idea. The
+#    composition @%l(#Section 6.3<>§6.3), which is an important idea. The
 #    @c(sort) package defines an unexported type @c(reverse), which is a struct
 #    that embeds a @c(sort.Interface). The @c(Less) method for @c(reverse) calls
 #    the @c(Less) method of the embedded @c(sort.Interface) value, but with the
 #    indices flipped, reversing the order of the sort results.
    La funcion @c(sort.Reverse) merece un vistazo mas de cerca, ya que utiliza la
-   composicion (@l(#Seccion 6.3<>§6.3)), que es una idea importante. El paquete
+   composicion @%l(#Seccion 6.3<>§6.3), que es una idea importante. El paquete
    @c(sort) define un tipo no exportado @c(reverse), que es una estructura que
    enbebe un @c(sort.Interface). El metodo @c(Less) de @c(reverse) llama al
    @c(Less) del valor enbebido @c(sort.Interface), pero con los indices
@@ -21469,12 +21486,12 @@
    para utilizar con dicha tabla. Compare este enfoque con repetidos
    ordenamientos utilizando @c(sort.Stable).
 
-#    @b(Exercise 7.9): Use the @c(html/template) package (@l(#Section 4.6<>§4.6))
+#    @b(Exercise 7.9): Use the @c(html/template) package @%l(#Section 4.6<>§4.6)
 #    to replace @c(printTracks) with a function that displays the tracks as an
 #    HTML table. Use the solution to the previous exercise to arrange that each
 #    click on a column head makes an HTTP request to sort the table.
-   @b(Ejercicio 7.9): Utilice el paquete @c(html/template) (@l(#Seccion
-   4.6<>§4.6)) para reemplazar @c(printTracks) con una funcion que muestre los
+   @b(Ejercicio 7.9): Utilice el paquete @c(html/template) @%l(#Seccion
+   4.6<>§4.6) para reemplazar @c(printTracks) con una funcion que muestre los
    tracks como una tabla HTML. Utilice la solucion del ejercicio anterior para
    organizar que cada clic en un encabezado de columna haga una solicitud HTTP
    para ordenar la tabla.
@@ -21494,12 +21511,12 @@
 ** Seccion 7.7 <> La Interfaz @c(http.Handler)
 
 #    In @l(#Chapter 1), we saw a glimpse of how to use the @c(net/http) package to
-#    implement web clients (@l(#Section 1.5<>§1.5)) and servers (@l(#Section
-#    1.7<>§1.7)). In this section, we’ll look more closely at the server API,
+#    implement web clients @%l(#Section 1.5<>§1.5) and servers @%l(#Section
+#    1.7<>§1.7). In this section, we’ll look more closely at the server API,
 #    whose foundation is the @c(http.Handler) interface:
    En el @l(#Capitulo 1), vimos una idea de como utilizar el paquete
-   @c(net/http) para implementar clientes web (@l(#Seccion 1.5<>§1.5)) y
-   servidores (@l(#Seccion 1.7<>§1.7)). En esta seccion, vamos a ver mas de
+   @c(net/http) para implementar clientes web @%l(#Seccion 1.5<>§1.5) y
+   servidores @%l(#Seccion 1.7<>§1.7). En esta seccion, vamos a ver mas de
    cerca la API del servidor, cuyo fundamento es la interfaz @c(http.Handler):
 
 #    ..figure > @c(net/http)
@@ -21705,12 +21722,12 @@
 
 #    The case for @c(/price) calls the URL’s @c(Query) method to parse the HTTP
 #    request parameters as a map, or more precisely, a multimap of type
-#    @c(url.Values) (@l(#Section 6.2.1<>§6.2.1)) from the @c(net/url) package. It
+#    @c(url.Values) @%l(#Section 6.2.1<>§6.2.1) from the @c(net/url) package. It
 #    then finds the first @c(item) parameter and looks up its price. If the item
 #    wasn’t found, it reports an error.
    El argumento @c(/price) llama al metodo @c(Query) de la URL para analizar los
    parametros de la peticion HTTP como un mapa, o mas precisamente, un mapa
-   multiple de tipo @c(url.Values) (@l(#Seccion 6.2.1<>§6.2.1)) del paquete
+   multiple de tipo @c(url.Values) @%l(#Seccion 6.2.1<>§6.2.1) del paquete
    @c(net/url). A continuacion, busca el primer parametro @c(item) y mira su
    precio. Si no se encontro el elemento, informa de un error.
 
@@ -21861,11 +21878,11 @@
 
 
 #    Let’s focus on the two calls to @c(mux.Handle) that register the handlers. In
-#    the first one, @c(db.list) is a method value (@l(#Section 6.4<>§6.4)), that
+#    the first one, @c(db.list) is a method value @%l(#Section 6.4<>§6.4), that
 #    is, a value of type
    Centremonos en las dos llamadas a @c(mux.Handle) que registran los
-   manejadores. En la primera, @c(db.list) es un valor de metodo (@l(#Seccion
-   6.4<>§6.4)), es decir, un valor de tipo
+   manejadores. En la primera, @c(db.list) es un valor de metodo @%l(#Seccion
+   6.4<>§6.4), es decir, un valor de tipo
 
 #    ..src > go
 #      func(w http.ResponseWriter, req *http.Request)
@@ -22029,10 +22046,10 @@
 
 #    @b(Exercise 7.12): Change the handler for @c(/list) to print its output as an
 #    HTML table, not text.  You may find the @c(html/template) package
-#    (@l(#Section 4.6<>§4.6)) useful.
+#    @%l(#Section 4.6<>§4.6) useful.
    @b(Ejercicio 7.12): Cambiar el manejador de @c(/list) para imprimir su salida
    como una tabla HTML, no como texto. Puede que el paquete @c(html/template)
-   (@l(#Seccion 4.6<>§4.6)) sea util.
+   @%l(#Seccion 4.6<>§4.6) sea util.
 
 # ** Section 7.8 <> The @c(error) Interface
 ** Seccion 7.8 <> La Interfaz @c(error)
@@ -22613,8 +22630,8 @@
    @c(Parse) aqui, pero lo encontrara si se descarga el paquete usando @$(go
    get).
 
-#    The @$(go test) command (@l(#Section 11.1<>§11.1)) runs a package’s tests:
-   El comando @$(go test) (@l(#Seccion 11.1<>§11.1)) ejecuta las pruebas de un
+#    The @$(go test) command @%l(#Section 11.1<>§11.1) runs a package’s tests:
+   El comando @$(go test) @%l(#Seccion 11.1<>§11.1) ejecuta las pruebas de un
    paquete:
 
 #    ..srci > sh
@@ -23327,12 +23344,12 @@
 
 #    That’s how the three helper functions work. For example, @c(IsNotExist),
 #    shown below, reports whether an error is equal to @c(syscall.ENOENT)
-#    (@l(#Section 7.8<>§7.8)) or to the distinguished error @c(os.ErrNotExist)
+#    @%l(#Section 7.8<>§7.8) or to the distinguished error @c(os.ErrNotExist)
 #    (see @c(io.EOF) in @l(#Section 5.4.2<>§5.4.2)), or is a @c(*PathError) whose
 #    underlying error is one of those two.
    Asi funcionan las tres funciones auxiliares. Por ejemplo, @c(IsNotExist), que
    se muestra a continuacion, informa si un error es igual a @c(syscall.ENOENT)
-   (@l(#Seccion 7.8<>§7.8)) o al error distinguido @c(os.ErrNotExist) (vea
+   @%l(#Seccion 7.8<>§7.8) o al error distinguido @c(os.ErrNotExist) (vea
    @c(io.EOF) en la @l(#Seccion 5.4.2<>§5.4.2)), o es un @c(*PathError) cuyo
    error subyacente es uno de esos dos.
 
@@ -23400,8 +23417,8 @@
 
 #    The logic below is similar to the part of the @c(net/http) web server
 #    responsible for writing HTTP header fields such as @c("Content-type:
-#    text/html"). The @c(io.Writer) @c(w) represents the HTTP response; the
-#    bytes written to it are ultimately sent to someone’s web browser.
+#    text/html"). The @c(io.Writer) @c(w) represents the HTTP response; the bytes
+#    written to it are ultimately sent to someone’s web browser.
    La siguiente logica es similar a la parte del servidor web @c(net/http)
    responsable de escribir campos de cabecera HTTP como @c("Content-type:
    text/html"). El @c(io.Writer) @c(w) representa la respuesta HTTP; Los bytes
@@ -23802,13 +23819,13 @@
      }
    < src..
 
-#    As with an ordinary switch statement (@l(#Section 1.8<>§1.8)), cases are
+#    As with an ordinary switch statement @%l(#Section 1.8<>§1.8), cases are
 #    considered in order and, when a match is found, the case’s body is
 #    executed. Case order becomes significant when one or more case types are
 #    interfaces, since then there is a possibility of two cases matching. The
 #    position of the @c(default) case relative to the others is immaterial. No
 #    @c(fallthrough) is allowed.
-   Al igual que con una sentencia @c(switch) ordinaria (@l(#Seccion 1.8<>§1.8)),
+   Al igual que con una sentencia @c(switch) ordinaria @%l(#Seccion 1.8<>§1.8),
    los casos se consideran en orden y, cuando se encuentra una coincidencia, se
    ejecuta el cuerpo del caso. El orden de los casos se vuelve significativo
    cuando uno o mas tipos de casos son interfaces, ya que entonces existe la
@@ -24021,7 +24038,7 @@
    las funciones que actuan sobre ellas se expresan como un conjunto de casos
    utilizando un switch de tipo, con logica diferente en cada caso.
 
-#    The @c(xmlselect) program below extracts and prints the text found beneath
+#    The @$(xmlselect) program below extracts and prints the text found beneath
 #    certain elements in an XML document tree. Using the API above, it can do its
 #    job in a single pass over the input without ever materializing the tree.
    El programa @$(xmlselect) a continuacion, extrae e imprime el texto encontrado
@@ -24246,7 +24263,7 @@
 #    single implementation. Don’t do that. Such interfaces are unnecessary
 #    abstractions; they also have a run-time cost. You can restrict which methods
 #    of a type or fields of a struct are visible outside a package using the
-#    export mechanism (@l(#Section 6.6<>§6.6)).  Interfaces are only needed when
+#    export mechanism @%l(#Section 6.6<>§6.6).  Interfaces are only needed when
 #    there are two or more concrete types that must be dealt with in a uniform
 #    way.
    Al diseñar un nuevo paquete, los programadores novatos en Go a menudo
@@ -24256,7 +24273,7 @@
    hagas. Tales interfaces son abstracciones innecesarias; Tambien tienen un
    costo de tiempo de ejecucion. Puede restringir que metodos de un tipo o
    campos de una estructura son visibles fuera de un paquete utilizando el
-   mecanismo de exportacion (@l(#Seccion 6.6<>§6.6)). Las interfaces solo son
+   mecanismo de exportacion @%l(#Seccion 6.6<>§6.6). Las interfaces solo son
    necesarias cuando hay dos o mas tipos concretos que deben tratarse de manera
    uniforme.
 
@@ -24383,10 +24400,10 @@
 
 #    When a program starts, its only goroutine is the one that calls the @c(main)
 #    function, so we call it the @e(main goroutine). New goroutines are created by
-#    the @c(go) statement. Syntactically, a @c(go) statement is an ordinary function
-#    or method call prefixed by the keyword @c(go). A @c(go) statement causes the
-#    function to be called in a newly created goroutine. The @c(go) statement
-#    itself completes immediately:
+#    the @c(go) statement. Syntactically, a @c(go) statement is an ordinary
+#    function or method call prefixed by the keyword @c(go). A @c(go) statement
+#    causes the function to be called in a newly created goroutine. The @c(go)
+#    statement itself completes immediately:
    Cuando un programa inicia, su única gorutina es la que llama a la función
    @c(main), así que la llamamos la @e(gorutina principal). Las nuevos gorutinas
    son creadas por la declaración @c(go). Sintácticamente, una sentencia @c(go)
@@ -24949,9 +24966,9 @@
 
 
 #    @b(Exercise 8.2): Implement a concurrent File Transfer Protocol (FTP)
-#    server. The server should interpret commands from each client such as @$(cd) to
-#    change directory, @$(ls) to list a directory, @$(get) to send the contents of
-#    a file, and @c(close) to close the connection. You can use the standard
+#    server. The server should interpret commands from each client such as @$(cd)
+#    to change directory, @$(ls) to list a directory, @$(get) to send the contents
+#    of a file, and @c(close) to close the connection. You can use the standard
 #    @$(ftp) command as the client, or write your own.
    @b(Ejercicio 8.2): Implementar un servidor de transferencia de archivos
    simultáneo (FTP). El servidor debe interpretar los comandos de cada cliente
@@ -25492,11 +25509,11 @@
 
 #     @b(Exercise 8.3): In @$(netcat3), the interface value @c(conn) has the
 #     concrete type @c(*net.TCPConn), which represents a TCP connection. A TCP
-#     connection consists of two halves that may be closed independently using
-#     its @c(CloseRead) and @c(CloseWrite) methods. Modify the main goroutine of
+#     connection consists of two halves that may be closed independently using its
+#     @c(CloseRead) and @c(CloseWrite) methods. Modify the main goroutine of
 #     @$(netcat3) to close only the write half of the connection so that the
-#     program will continue to print the final echoes from the @$(reverb1)
-#     server even after the standard input has been closed.  (Doing this for the
+#     program will continue to print the final echoes from the @$(reverb1) server
+#     even after the standard input has been closed.  (Doing this for the
 #     @$(reverb2) server is harder; see Exercise 8.4.)
     @b(Ejercicio 8.3): En @$(netcat3), el valor de interfaz @c(conn) tiene el
     tipo concreto @c(*net.TCPConn), lo que representa una conexion TCP. Una
@@ -26227,11 +26244,11 @@
 
 #     We don’t have space to show it here, but the @c(gopl.io/ch8/cake) package
 #     simulates this cake shop, with several parameters you can vary. It includes
-#     benchmarks (@l(#Section 11.4<>§11.4)) for a few of the scenarios described
+#     benchmarks @%l(#Section 11.4<>§11.4) for a few of the scenarios described
 #     above.
     No tenemos espacio para mostralo aqui, pero el paquete @c(gopl.io/ch8/cake)
     simula esta pasteleria, con varios parametros que se pueden variar. Incluye
-    comparativas (@l(#Seccion 11.4<>§11.4)) para algunos de los escenarios
+    comparativas @%l(#Seccion 11.4<>§11.4) para algunos de los escenarios
     descritos anteriormente.
 
 # ** Section 8.5 <> Looping in Parallel
@@ -26498,13 +26515,13 @@
 #    it returns the error to the caller, leaving no goroutine draining the
 #    @c(errors) channel. Each remaining worker goroutine will block forever when
 #    it tries to send a value on that channel, and will never terminate. This
-#    situation, a goroutine leak (@l(#Section 8.4.4<>§8.4.4)), may cause the whole
+#    situation, a goroutine leak @%l(#Section 8.4.4<>§8.4.4), may cause the whole
 #    program to get stuck or to run out of memory.
    Esta funcion tiene un error sutil. Cuando encuentra el primer error no nil,
    se devuelve el error al llamador, sin dejar drenada la gorutina de canal
    @c(errors). Cada gorutina trabajador restante se bloqueara para siempre
    cuando intente enviar un valor en ese canal, y nunca terminara. Esta
-   situacion, una fuga de gorutina (@l(#Seccion 8.4.4<>§8.4.4)), puede hacer que
+   situacion, una fuga de gorutina @%l(#Seccion 8.4.4<>§8.4.4), puede hacer que
    todo el programa se atasque o se quede sin memoria.
 
 #    The simplest solution is to use a buffered channel with sufficient capacity
@@ -26683,9 +26700,9 @@
 #    not within it; otherwise we would not be sure that the @c(Add) @e(happens
 #    before) the @"(closer) goroutine calls @c(Wait). Also, @c(Add) takes a
 #    parameter, but @c(Done) does not; it’s equivalent to @c[Add(-1)]. We use
-#    @c(defer) to ensure that the counter is decremented even in the error case. The
-#    structure of the code above is a common and idiomatic pattern for looping in
-#    parallel when we don’t know the number of iterations.
+#    @c(defer) to ensure that the counter is decremented even in the error
+#    case. The structure of the code above is a common and idiomatic pattern
+#    for looping in parallel when we don’t know the number of iterations.
    Observe la asimetria en los metodos @c(Add) y @c(Done). @c(Add), que
    incrementa el contador, debe ser llamado antes de que el trabajador empiece
    la gorutina, no dentro de ella; de lo contrario no estariamos seguros de que
@@ -26798,12 +26815,12 @@
      < src..
 
 
-#    The main function resembles @c(breadthFirst) (@l(#Section 5.6<>§5.6)). As
+#    The main function resembles @c(breadthFirst) @%l(#Section 5.6<>§5.6). As
 #    before, a worklist records the queue of items that need processing, each item
 #    being a list of URLs to crawl, but this time, instead of representing the
 #    queue using a slice, we use a channel. Each call to @c(crawl) occurs in its
 #    own goroutine and sends the links it discovers back to the worklist.
-   La funcion principal se asemeja a @c(breadthFirst) (@l(#Seccion 5.6<>§5.6)).
+   La funcion principal se asemeja a @c(breadthFirst) @%l(#Seccion 5.6<>§5.6).
    Como antes, una lista de trabajo registra la cola de elementos que necesitan
    procesamiento, cada elemento es una lista de URLs a rastrear, pero esta vez,
    en lugar de representar la cola utilizando un slice, usamos un canal. Cada
@@ -27186,8 +27203,8 @@
 #    be accessed only by that goroutine. Like other forms of information hiding,
 #    confinement helps us reason about the correctness of a program. For example,
 #    local variables cannot be mentioned by name from outside the function in
-#    which they are declared; variables that do not escape (@l(#Section
-#    2.3.4<>§2.3.4)) from a function cannot be accessed from outside that
+#    which they are declared; variables that do not escape @%l(#Section
+#    2.3.4<>§2.3.4) from a function cannot be accessed from outside that
 #    function; and encapsulated fields of an object cannot be accessed except by
 #    the methods of that object. In all cases, information hiding helps to limit
 #    unintended interactions between parts of the program.
@@ -27196,7 +27213,7 @@
    ocultar la informacion, el confinamiento nos ayuda a razonar sobre la
    correccion de un programa. Por ejemplo, las variables locales no pueden
    mencionarse por su nombre fuera de la funcion en la que se declaran;
-   variables que no escapan (@l(#Seccion 2.3.4<>§2.3.4)) de una funcion no se
+   variables que no escapan @%l(#Seccion 2.3.4<>§2.3.4) de una funcion no se
    puede acceder desde fuera de esa funcion; y los campos encapsulados de un
    objeto no se puede acceder excepto por los metodos de ese objeto. En todos
    los casos, la ocultacion de la informacion ayuda a limitar las interacciones
@@ -27502,14 +27519,14 @@
 #    @c(time.Sleep) in a loop, sending an event each time it wakes up. When the
 #    countdown function above returns, it stops receiving events from @c(tick),
 #    but the ticker goroutine is still there, trying in vain to send on a channel
-#    from which no goroutine is receiving—a @e(goroutine leak) (@l(#Section
-#    8.4.4<>§8.4.4)).
+#    from which no goroutine is receiving—a @e(goroutine leak) @%l(#Section
+#    8.4.4<>§8.4.4).
    la funcion @c(time.Tick) se comporta como si se crea un gorutina que llama a
    @c(time.Sleep) en un bucle, enviando un evento cada vez que se despierta.
    Cuando la funcion de cuenta atras regresa, se detiene la recepcion de eventos
    de @c(tick), pero la gorutina de conteo sigue alli, tratando en vano de
    enviar en un canal donde no hay una gorutina recibiendo–una fuga de gorutina
-   (@l(#Seccion 8.4.4<>§8.4.4)).
+   @%l(#Seccion 8.4.4<>§8.4.4).
 
 #    The @c(Tick) function is convenient, but it’s appropriate only when the ticks
 #    will be needed throughout the lifetime of the application. Otherwise, we
@@ -27870,10 +27887,9 @@
 #    Since the program no longer uses a @c(range) loop, the first @c(select) case
 #    must explicitly test whether the @c(fileSizes) channel has been closed, using
 #    the two-result form of receive operation. If the channel has been closed, the
-#    program breaks out of the loop. The labeled @c(break) statement breaks
-#    out of both the @c(select) and the @c(for) loop; an unlabeled @c(break) would
-#    break out of only the @c(select), causing the loop to begin the next
-#    iteration.
+#    program breaks out of the loop. The labeled @c(break) statement breaks out of
+#    both the @c(select) and the @c(for) loop; an unlabeled @c(break) would break
+#    out of only the @c(select), causing the loop to begin the next iteration.
    Dado que el programa ya no utiliza una bucle @c(range), el primer caso
    @c(select) debe probar explicitamente si el canal @c(fileSizes) se ha
    cerrado, utilizando la forma de dos resultados para recibir la operacion. Si
@@ -27910,7 +27926,7 @@
 #    calls to @c(walkDir) can’t be done concurrently, thereby exploiting
 #    parallelism in the disk system. The third version of @$(du), below, creates a
 #    new goroutine for each call to @c(walkDir). It uses a @c(sync.WaitGroup)
-#    (@l(#Section 8.5<>§8.5)) to count the number of calls to @c(walkDir) that are
+#    @%l(#Section 8.5<>§8.5) to count the number of calls to @c(walkDir) that are
 #    still active, and a closer goroutine to close the @c(fileSizes) channel when
 #    the counter drops to zero.
    Sin embargo, todavia toma demasiado tiempo para terminar. No hay ninguna
@@ -27918,7 +27934,7 @@
    mismo tiempo, explotando de esta manera el paralelismo en el disco del
    sistema. La tercera version de @$(du), a continuacion, crea una nueva
    gorutina para cada llamada a @c(walkDir). Se utiliza un @c(sync.WaitGroup)
-   (@l(#Seccion 8.5<>§8.5)) para contar el numero de llamadas a @c(walkDir) que
+   @%l(#Seccion 8.5<>§8.5) para contar el numero de llamadas a @c(walkDir) que
    aun estan activas, y una gorutina mas para cerrar el canal @c(fileSizes)
    cuando el contador llega a cero.
 
@@ -27990,8 +28006,8 @@
 
 
 #    Since this program creates many thousands of goroutines at its peak, we have
-#    to change @c(dirents) to use a counting semaphore to prevent it from opening too
-#    many files at once, just as we did for the web crawler in @l(#Section 8.6):
+#    to change @c(dirents) to use a counting semaphore to prevent it from opening
+#    too many files at once, just as we did for the web crawler in @l(#Section 8.6):
    Ya que este programa crea miles de gorutinas en su apogeo, tenemos que
    cambiar @c(dirents) para utilizar un semaforo contador para evitar que se
    abran demasiados archivos a la vez, tal como lo hicimos para el rastreador web
@@ -28040,13 +28056,13 @@
 
 #    There is no way for one goroutine to terminate another directly, since that
 #    would leave all its shared variables in undefined states. In the rocket
-#    launch program (@l(#Section 8.7<>§8.7)) we sent a single value on a channel
+#    launch program @%l(#Section 8.7<>§8.7) we sent a single value on a channel
 #    named @c(abort), which the countdown goroutine interpreted as a request to
 #    stop itself. But what if we need to cancel two goroutines, or an arbitrary
 #    number?
    No hay manera de que una gorutina termine directamente a otra, ya que dejaria
    todas sus variables compartidas en estados indefinidos. En el programa de
-   lanzamiento de cohetes (@l(#Seccion 8.7<>§8.7)) enviamos un solo valor en un
+   lanzamiento de cohetes @%l(#Seccion 8.7<>§8.7) enviamos un solo valor en un
    canal llamado @c(abort), que la gorutina de cuenta regresiva interpreto como
    una peticion para detenerse. Pero ¿y si necesitamos cancelar dos gorutinas, o
    un numero arbitrario?
@@ -28058,8 +28074,8 @@
 #    goroutines, our count will be too small, and some goroutines will remain
 #    unaware of the cancellation. In general, it’s hard to know how many
 #    goroutines are working on our behalf at any given moment. Moreover, when a
-#    goroutine receives a value from the @c(abort) channel, it consumes that value so
-#    that other goroutines won’t see it. For cancellation, what we need is a
+#    goroutine receives a value from the @c(abort) channel, it consumes that value
+#    so that other goroutines won’t see it. For cancellation, what we need is a
 #    reliable mechanism to @e(broadcast) an event over a channel so that many
 #    goroutines can see it @e(as) it occurs and can later see that it @e(has)
 #    occurred.
@@ -28555,7 +28571,7 @@
    que recibe los mensajes difundidos al canal de mensaje de salida del cliente
    y los escribe en la conexion de red del cliente. El bucle de escritura del
    criente termina cuando el difusor cierra el canal despues de recibir una
-   notificacion de salida (@c(leaving)).
+   notificacion de salida @c(leaving).
 
 #    The display below shows the server in action with two clients in separate
 #    windows on the same computer, using @c(netcat) to chat:
@@ -28649,7 +28665,7 @@
 
 #    While hosting a chat session for @m(n) clients, this program runs @m(2n+2)
 #    concurrently communicating goroutines, yet it needs no explicit locking
-#    operations (@l(#Section 9.2<>§9.2)). The @c(clients) map is confined to a
+#    operations @%l(#Section 9.2<>§9.2). The @c(clients) map is confined to a
 #    single goroutine, the broadcaster, so it cannot be accessed concurrently. The
 #    only variables that are shared by multiple goroutines are channels and
 #    instances of @c(net.Conn), both of which are @e(concurrency safe). We’ll talk
@@ -28657,7 +28673,7 @@
 #    variables across goroutines in the next chapter.
    Al hospedar una sesion de chat para @m(n) clientes, este programa ejecuta
    @m(2n+2) gorutinas al mismo tiempo que se comunican, sin embargo, no necesita
-   operaciones de bloqueo explicitas (@l(#Seccion 9.2<>§9.2)). El mapa
+   operaciones de bloqueo explicitas @%l(#Seccion 9.2<>§9.2). El mapa
    @c(clients) se limita a solo una gorutina, el emisor, por lo que no se puede
    acceder al mismo tiempo. Las unicas variables que son compartidas por
    gorutinas multiples son canales e instancias de @c(net.Conn), ambos
@@ -28670,7 +28686,7 @@
 #    @c(entering) and leaving channels record the client name too.
    @b(Ejercicio 8.12): Hacer que el emisor anuncia el conjunto actual de
    clientes para cada nueva llegada. Esto requiere que los clientes establecidos
-   (@c(clients)) y los canales de entrada (@c(entering) y salida registren
+   @c(clients) y los canales de entrada @c(entering) y salida registren
    tambien el nombre del cliente.
 
 #    @b(Exercise 8.13): Make the chat server disconnect idle clients, such as
@@ -29131,16 +29147,16 @@
 #    The second way to avoid a data race is to avoid accessing the variable from
 #    multiple goroutines. This is the approach taken by many of the programs in
 #    the previous chapter. For example, the main goroutine in the concurrent web
-#    crawler (@l(#Section 8.6<>§8.6)) is the sole goroutine that accesses the
+#    crawler @%l(#Section 8.6<>§8.6) is the sole goroutine that accesses the
 #    @c(seen) map, and the @c(broadcaster) goroutine in the chat server
-#    (@l(#Section 8.10<>§8.10)) is the only goroutine that accesses the
+#    @%l(#Section 8.10<>§8.10) is the only goroutine that accesses the
 #    @c(clients) map. These variables are @e(confined) to a single goroutine.
    La segunda forma de evitar una carrera de datos es evitar el acceso a la
    variable desde multiples gorutinas. Este es el enfoque adoptado por muchos de
    los programas del capitulo anterior. Por ejemplo, la gorutina principal en el
-   rastreador web concurrente (@l(#Seccion 8.6<>§8.6)) es la unica gorutina que
+   rastreador web concurrente @%l(#Seccion 8.6<>§8.6) es la unica gorutina que
    tiene acceso al mapa @c(seen) y la gorutina @c(broadcaster) en el servidor
-   de chat (@l(#Seccion 8.10<>§8.10)) es la unica gorutina que accede al mapa
+   de chat @%l(#Seccion 8.10<>§8.10) es la unica gorutina que accede al mapa
    @c(clients). Estas variables se limitan a una sola gorutina.
 
 #    Since other goroutines cannot access the variable directly, they must use a
@@ -29507,14 +29523,14 @@
 
 #    Furthermore, a deferred @c(Unlock) will run even if the critical section
 #    panics, which may be important in programs that make use of @c(recover)
-#    (@l(#Section 5.10<>§5.10)). A @c(defer) is marginally more expensive than an
+#    @%l(#Section 5.10<>§5.10). A @c(defer) is marginally more expensive than an
 #    explicit call to @c(Unlock), but not enough to justify less clear code. As
 #    always with concurrent programs, favor clarity and resist premature
 #    optimization. Where possible, use @c(defer) and let critical sections extend
 #    to the end of a function.
    Por otra parte, un @c(Unlock) diferido funcionara incluso si la seccion
    critica entra en panico, lo que puede ser importante en los programas que
-   hacen uso de @c(recover) (@l(#Seccion 5.10<>§5.10)). Un @c(defer) es
+   hacen uso de @c(recover) @%l(#Seccion 5.10<>§5.10). Un @c(defer) es
    ligeramente mas caro que una llamada explicita a @c(Unlock), pero no lo
    suficiente para justificar codigo menos claro. En programas concurrentes,
    siempre favoresca la claridad y resista la optimizacion prematura. Siempre
@@ -29711,12 +29727,12 @@
    funcion @c(Withdraw) realista no se molestaria en llamarla, no obstante,
    ilustra el principio.
 
-#    Encapsulation (@l(#Section 6.6<>§6.6)), by reducing unexpected interactions
+#    Encapsulation @%l(#Section 6.6<>§6.6), by reducing unexpected interactions
 #    in a program, helps us maintain data structure invariants. For the same
 #    reason, encapsulation also helps us maintain concurrency invariants. When you
 #    use a mutex, make sure that both it and the variables it guards are not
 #    exported, whether they are package-level variables or the fields of a struct.
-   La encapsulacion (@l(#Seccion 6.6<>§6.6)), mediante la reduccion de las
+   La encapsulacion @%l(#Seccion 6.6<>§6.6), mediante la reduccion de las
    interacciones inesperadas en un programa, nos ayuda a mantener la estructura
    de datos invariantes. Por la misma razon, la encapsulacion tambien nos ayuda
    a mantener invariantes concurrentes. Cuando utilice un mutex, asegurese de
@@ -29933,7 +29949,7 @@
 #    consistent). But in the absence of explicit synchronization using a channel
 #    or mutex, there is no guarantee that events are seen in the same order by all
 #    goroutines. Although goroutine @c(A) must observe the effect of the write
-#    @c(x= 1) before it reads the value of @c(y), it does not necessarily observe
+#    @c(x = 1) before it reads the value of @c(y), it does not necessarily observe
 #    the write to @c(y) done by goroutine @c(B), so @c(A) may print a @e(stale)
 #    value of @c(y).
    Dentro de una sola gorutina, los efectos de cada declaracion se garantizan
@@ -30618,12 +30634,12 @@
 
 #    Worse, it is likely to work correctly @e(some) of the time, so we may not
 #    even notice that it has a problem. But if we run it with the @c(-race) flag,
-#    the race detector (@l(#Section 9.6<>§9.6)) often prints a report such as this
+#    the race detector @%l(#Section 9.6<>§9.6) often prints a report such as this
 #    one:
    Peor aun, es probable que funcione correctamente @e(algunas) de las veces,
    por lo que ni siquiera se puede notar que tiene un problema. Pero si lo
-   ejecutamos con la bandera @c(-race), el detector de carrera (@l(#Seccion
-   9.6<>§9.6)) a menudo imprime un informe como este:
+   ejecutamos con la bandera @c(-race), el detector de carrera @%l(#Seccion
+   9.6<>§9.6) a menudo imprime un informe como este:
 
 #    ..srci > sh
 #      > go test -run=TestConcurrent -race -v gopl.io/ch9/memo1
@@ -30671,7 +30687,7 @@
    mapa @c(cache) sin ninguna sincronizacion intermedia. @c(Get) no es
    concurrentemente seguro: tiene una carrera de datos.
 
-#    ..src n=28 > go
+#    ..src n(28) > go
 #      func (memo *Memo) Get(key string) (interface{}, error) {
 #        res, ok := memo.cache[key]
 #        if !ok {
@@ -30826,7 +30842,7 @@
 #    memoized result of a call to the function @c(f), as before, but it
 #    additionally contains a channel called @c(ready). Just after the @c(entry)’s
 #    @c(result) has been set, this channel will be closed, to @e(broadcast)
-#    (@l(#Section 8.9<>§8.9)) to any other goroutines that it is now safe for them
+#    @%l(#Section 8.9<>§8.9) to any other goroutines that it is now safe for them
 #    to read the result from the @c(entry).
    Idealmente, nos gustaria evitar este trabajo redundante. Esta caracteristica
    a veces se denomina @e(supresion de duplicados). En la version de @c(Memo) a
@@ -30834,7 +30850,7 @@
    @c(entry). Cada @c(entry) contiene el resultado memorizado de una llamada a
    la funcion @c(f), como antes, pero, ademas, contiene un canal llamado
    @c(ready). Justo despues de establecer @c(result) con @c(entry), este canal
-   se cierra, para a @e(emitir) (@l(#Seccion 8.9<>§8.9)) a cualquier otra gorutina
+   se cierra, para a @e(emitir) @%l(#Seccion 8.9<>§8.9) a cualquier otra gorutina
    que ahora es seguro para ellas leer el resultado desde @c(entry).
 
 #    ..figure > @l(gopl.io/ch9/memo4/memo.go<>gopl.io/ch9/memo4)
@@ -30925,9 +30941,9 @@
 #    allocating and inserting a new @c(entry) if none was found, then releasing
 #    the lock. If there was an existing @c(entry), its value is not necessarily
 #    ready yet—another goroutine could still be calling the slow function @c(f)—so
-#    the calling goroutine must wait for the @c(entry)’s @"(ready) condition before it
-#    reads the @c(entry)’s @c(result). It does this by reading a value from the
-#    @c(ready) channel, since this operation blocks until the channel is closed.
+#    the calling goroutine must wait for the @c(entry)’s @"(ready) condition
+#    before it reads the @c(entry)’s @c(result). It does this by reading a value
+#    from the @c(ready) channel, since this operation blocks until the channel is closed.
    Una llamada a @c(Get) ahora implica la adquisicion del bloqueo mutex que
    custodia el mapa @c(cache), buscando en el mapa un puntero a una @c(entry)
    existente, asignando e insertando una nueva @c(entry) si no se encontro
@@ -31200,12 +31216,12 @@
    otro puede hacer que su codigo sea mas sencillo.
 
 #    @b(Exercise 9.3): Extend the Func type and the @c[(*Memo).Get] method so that
-#    callers may provide an optional @c(done) channel through which they can cancel
-#    the operation (@l(#Section 8.9<>§8.9)). The results of a cancelled @c(Func)
-#    call should not be cached.
+#    callers may provide an optional @c(done) channel through which they can
+#    cancel the operation @%l(#Section 8.9<>§8.9). The results of a cancelled
+#    @c(Func) call should not be cached.
    @b(Ejercicio 9.3): Extender el tipo @c(Func) y el metodo @c[(*Memo).Get] para
    que los llamantes puedan proporcionar un canal @c(done) opcional a traves del
-   cual se puede cancelar la operacion (@l(#Seccion 8.9<>§8.9)). Los resultados
+   cual se puede cancelar la operacion @%l(#Seccion 8.9<>§8.9). Los resultados
    de una @c(Func) cancelada no deben almacenarse en cache.
 
 # ** Section 9.8 <> Goroutines and Threads
@@ -31343,7 +31359,7 @@
     mensajes de ida y vuelta sobre dos canales sin bufer en modo
     ping-pong. ¿Cuantas comunicaciones por segundo puede mantener el programa?
 
-# *** Section 9.8.3 <> GOMAXPROCS
+# *** Section 9.8.3 <> @c(GOMAXPROCS)
 *** Seccion 9.8.3 <> @c(GOMAXPROCS)
 
 #     The Go scheduler uses a parameter called @c(GOMAXPROCS) to determine how
@@ -31728,13 +31744,13 @@
 #    There are three major exceptions to the @"(last segment) convention. The
 #    first is that a package defining a command (an executable Go program) always
 #    has the name @c(main), regardless of the package’s import path. This is a
-#    signal to @$(go build) (@l(#Section 10.7.3<>§10.7.3)) that it must invoke the
+#    signal to @$(go build) @%l(#Section 10.7.3<>§10.7.3) that it must invoke the
 #    linker to make an executable file.
    Hay tres excepciones principales a la convencion del @"(ultimo segmento). La
    primera es que un paquete que define un comando (un programa ejecutable Go)
    siempre tiene el nombre @c(main), independientemente de la ruta de
-   importacion del paquete. Esta es una señal para @$(go build) (@l(#Seccion
-   10.7.3<>§10.7.3)) que debe invocar el enlazador para crear un archivo
+   importacion del paquete. Esta es una señal para @$(go build) @%l(#Seccion
+   10.7.3<>§10.7.3) que debe invocar el enlazador para crear un archivo
    ejecutable.
 
 #    The second exception is that some files in the directory may have the suffix
@@ -31891,7 +31907,7 @@
 #    defines within that file.  However, on occasion we must import a package
 #    merely for the side effects of doing so: evaluation of the initializer
 #    expressions of its package-level variables and execution of its @c(init)
-#    functions (@l(#Section 2.6.2<>§2.6.2)). To suppress the @"(unused import)
+#    functions @%l(#Section 2.6.2<>§2.6.2). To suppress the @"(unused import)
 #    error we would otherwise encounter, we must use a renaming import in which
 #    the alternative name is @c(_), the blank identifier. As usual, the blank
 #    identifier can never be referenced.
@@ -31899,7 +31915,7 @@
    nombre que define, dentro de ese archivo. Sin embargo, en ocasiones hay que
    importar un paquete solo por los efectos secundarios de hacerlo: evaluacion
    de las expresiones de inicializador de sus variables y ejecucion de sus
-   funciones @c(init) a nivel de paquete (@l(#Seccion 2.6.2<>§2.6.2)). Para
+   funciones @c(init) a nivel de paquete @%l(#Seccion 2.6.2<>§2.6.2). Para
    suprimir el error de @"(importacion no utilizada) que encontrariamos de otra
    manera, debemos utilizar una importacion de cambio de nombre en la que el
    nombre alternativo sea @c(_), el identificador en blanco. Como de costumbre,
@@ -31999,11 +32015,11 @@
      < src..
 
 
-#    If we feed the output of @c(gopl.io/ch3/mandelbrot) (@l(#Section 3.3<>§3.3))
+#    If we feed the output of @c(gopl.io/ch3/mandelbrot) @%l(#Section 3.3<>§3.3)
 #    to the converter program, it detects the PNG input format and writes a JPEG
 #    version of Figure 3.3.
-   Si lo alimentamos con la salida de @c(gopl.io/ch3/mandelbrot) (@l(#Seccion
-   3.3<>§3.3)) al programa convertidor, detecta el formato de entrada PNG y
+   Si lo alimentamos con la salida de @c(gopl.io/ch3/mandelbrot) @%l(#Seccion
+   3.3<>§3.3) al programa convertidor, detecta el formato de entrada PNG y
    escribe una version JPEG de la Figura 3.3.
 
 #    ..srci > sh
@@ -32294,11 +32310,11 @@
    codigo Go.
 
 #    The @$(go) tool combines the features of a diverse set of tools into one
-#    command set. It is a package manager (analogous to @$(apt) or @$(rpm)) that answers
-#    queries about its inventory of packages, computes their dependencies, and
-#    downloads them from remote version-control systems. It is a build system that
-#    computes file dependencies and invokes compilers, assemblers, and linkers,
-#    although it is intentionally less complete than the standard Unix
+#    command set. It is a package manager (analogous to @$(apt) or @$(rpm)) that
+#    answers queries about its inventory of packages, computes their dependencies,
+#    and downloads them from remote version-control systems. It is a build system
+#    that computes file dependencies and invokes compilers, assemblers, and
+#    linkers, although it is intentionally less complete than the standard Unix
 #    @$(make). And it is a test driver, as we will see in @l(#Chapter 11).
    La herramienta @$(go) combina las caracteristicas de un conjunto diverso de
    herramientas en un conjunto de comandos. Es un gestor de paquetes (analogo a
@@ -32458,7 +32474,7 @@
                 ...
     < pre..
 
-#     @c(GOPATH) has three subdirectories. The src subdirectory holds source
+#     @c(GOPATH) has three subdirectories. The @f(src) subdirectory holds source
 #     code. Each package resides in a directory whose name relative to
 #     @c($GOPATH/src) is the package’s import path, such as
 #     @c(gopl.io/ch1/helloworld). Observe that a single @c(GOPATH) workspace
@@ -32673,8 +32689,8 @@
 
 #     @b(Exercise 10.3): Using @$(fetch http://gopl.io/ch1/helloworld?go-get=1),
 #     find out which service hosts the code samples for this book. (HTTP requests
-#     from @$(go get) include the @c(go-get) parameter so that servers can distinguish
-#     them from ordinary browser requests.)
+#     from @$(go get) include the @c(go-get) parameter so that servers can
+#     distinguish them from ordinary browser requests.)
     @b(Ejercicio 10.3): Utilizando @$(fetch http://gopl.io/ch1/helloworld?go-get=1),
     averigüe que servicio alberga los ejemplos de codigo para este libro.  (Las
     peticiones HTTP de @$(go get) incluyen el parametro @c(go-get) para que los
@@ -32700,12 +32716,12 @@
 #     @e(command) in Unix terminology, requires its own directory. These
 #     directories are sometimes children of a directory named @c(cmd), such as the
 #     @c(golang.org/x/tools/cmd/godoc) command which serves Go package
-#     documentation through a web interface (@l(#Section 10.7.4<>§10.7.4)).
+#     documentation through a web interface @%l(#Section 10.7.4<>§10.7.4).
     Dado que cada directorio contiene un solo paquete, cada programa ejecutable,
     o @e(comando) en la terminologia Unix, requiere su propio directorio. Estos
     directorios son a veces los hijos de un directorio denominado @c(cmd), como
     el comando @c(golang.org/x/tools/cmd/godoc) que sirve la documentacion del
-    paquete Go a traves de una interfaz web (@l(#Seccion 10.7.4<>§10.7.4)).
+    paquete Go a traves de una interfaz web @%l(#Seccion 10.7.4<>§10.7.4).
 
 #     Packages may be specified by their import paths, as we saw above, or by a
 #     relative directory name, which must start with a @c(.) or @c(..) segment
@@ -33254,10 +33270,10 @@
       github.com/go-sql-driver/mysql
     < srci..
 
-#     An argument to @$(go list) may contain the @"(@c(...)) wildcard, which
+#     An argument to @$(go list) may contain the @"c(...) wildcard, which
 #     matches any substring of a package’s import path. We can use it to enumerate
 #     all the packages within a Go workspace:
-    Un argumento para @$(go list) puede contener el comodin @"(@c(...)), que
+    Un argumento para @$(go list) puede contener el comodin @"c(...), que
     coincide con cualquier subcadena de ruta de importacion de un paquete.
     Podemos usarlo para enumerar todos los paquetes dentro de un espacio de
     trabajo Go:
@@ -33387,12 +33403,12 @@
     < srci..
 
 #     The @c(-f) flag lets users customize the output format using the template
-#     language of package @c(text/template) (@l(#Section 4.6<>§4.6)). This command
+#     language of package @c(text/template) @%l(#Section 4.6<>§4.6). This command
 #     prints the transitive dependencies of the @c(strconv) package, separated by
 #     spaces:
     La bandera @c(-f) permite a los usuarios personalizar el formato de salida
     utilizando el lenguaje de la plantilla del paquete @c(text/template)
-    (@l(#Seccion 4.6<>§4.6)). Este comando imprime las dependencias transitivas
+    @%l(#Seccion 4.6<>§4.6). Este comando imprime las dependencias transitivas
     del paquete @c(strconv), separados por espacios:
 
 #     ..srci > sh
@@ -33447,13 +33463,13 @@
 #     the workspace that transitively depend on the packages specified by the
 #     arguments. Hint: you will need to run @$(go list) twice, once for the
 #     initial packages and once for all packages. You may want to parse its JSON
-#     output using the @$(encoding/json) package (@l(#Section 4.5<>§4.5)).
+#     output using the @$(encoding/json) package @%l(#Section 4.5<>§4.5).
     @b(Ejercicio 10.4): Construir una herramienta que reporte el conjunto de
     todos los paquetes en el espacio de trabajo que dependen de forma transitiva
     de los paquetes especificados por los argumentos. Sugerencia: tendra que ejecutar
     @$(go list) dos veces, una para los paquetes iniciales y una vez para todos los
     paquetes. Es posible que desee analizar su salida JSON utilizando el paquete
-    @c(encoding/json) (@l(#Seccion 4.5<>§4.5)).
+    @c(encoding/json) @%l(#Seccion 4.5<>§4.5).
 
 # * Chapter 11 <> Testing
 * Capitulo 11 <> Pruebas
@@ -33464,7 +33480,7 @@
 #   with full force that a good part of the remainder of my life was going to be
 #   spent in finding errors in my own programs.) Surely every programmer of a
 #   stored-program computer since then can sympathize with Wilkes, though perhaps
-#   not without some bemusement at his naïvete about the difficulties of software
+#   not without some bemusement at his naïveté about the difficulties of software
 #   construction.
   Maurice Wilkes, el desarrollador de EDSAC, el primer computador con programa
   almacenado, tevo una vision sorprendente mientras subia las escaleras de su
@@ -33836,7 +33852,7 @@
 #      --- PASS: TestNonPalindrome (0.00s)
 #      === RUN TestFrenchPalindrome
 #      --- FAIL: TestFrenchPalindrome (0.00s)
-#      word_test.go:28: IsPalindrome("ete") = false
+#      word_test.go:28: IsPalindrome("été") = false
 #      === RUN TestCanalPalindrome
 #      --- FAIL: TestCanalPalindrome (0.00s)
 #      word_test.go:35: IsPalindrome("A man, a plan, a canal: Panama") = false
@@ -33852,7 +33868,7 @@
      --- PASS: TestNonPalindrome (0.00s)
      === RUN TestFrenchPalindrome
      --- FAIL: TestFrenchPalindrome (0.00s)
-     word_test.go:28: IsPalindrome("ete") = false
+     word_test.go:28: IsPalindrome("été") = false
      === RUN TestCanalPalindrome
      --- FAIL: TestCanalPalindrome (0.00s)
      word_test.go:35: IsPalindrome("A man, a plan, a canal: Panama") = false
@@ -33871,7 +33887,7 @@
 #      > go test -v -run="French|Canal"
 #      === RUN TestFrenchPalindrome
 #      --- FAIL: TestFrenchPalindrome (0.00s)
-#      word_test.go:28: IsPalindrome("ete") = false
+#      word_test.go:28: IsPalindrome("été") = false
 #      === RUN TestCanalPalindrome
 #      --- FAIL: TestCanalPalindrome (0.00s)
 #      word_test.go:35: IsPalindrome("A man, a plan, a canal: Panama") = false
@@ -33883,7 +33899,7 @@
      > go test -v -run="French|Canal"
      === RUN TestFrenchPalindrome
      --- FAIL: TestFrenchPalindrome (0.00s)
-     word_test.go:28: IsPalindrome("ete") = false
+     word_test.go:28: IsPalindrome("été") = false
      === RUN TestCanalPalindrome
      --- FAIL: TestCanalPalindrome (0.00s)
      word_test.go:35: IsPalindrome("A man, a plan, a canal: Panama") = false
@@ -33984,7 +34000,7 @@
 #          {"A man, a plan, a canal: Panama", true},
 #          {"Evil I did dwell; lewd did I live.", true},
 #          {"Able was I ere I saw Elba", true},
-#          {"ete", true},
+#          {"été", true},
 #          {"Et se resservir, ivresse reste.", true},
 #          {"palindrome", false}, // non-palindrome
 #          {"desserts", false},   // semi-palindrome
@@ -34011,7 +34027,7 @@
          {"A man, a plan, a canal: Panama", true},
          {"Evil I did dwell; lewd did I live.", true},
          {"Able was I ere I saw Elba", true},
-         {"ete", true},
+         {"été", true},
          {"Et se resservir, ivresse reste.", true},
          {"palindrome", false}, // no-palindromo
          {"desserts", false},   // semi-palindromo
@@ -34099,12 +34115,12 @@
    @b(Ejercicio 11.1): escribir pruebas para el programa @$(charcount) en la
    @l(#Seccion 4.3).
 
-#    @b(Exercise 11.2): Write a set of tests for @c(IntSet) (@l(#Section
-#    6.5<>§6.5)) that checks that its behavior after each operation is equivalent
+#    @b(Exercise 11.2): Write a set of tests for @c(IntSet) @%l(#Section
+#    6.5<>§6.5) that checks that its behavior after each operation is equivalent
 #    to a set based on built-in maps. Save your implementation for benchmarking in
 #    Exercise 11.7.
    @b(Ejercicio 11.2): Escribir una serie de pruebas para @c(IntSet)
-   (@l(#Seccion 6.5<>§6.5)) que comprueba que su comportamiento despues de cada
+   @%l(#Seccion 6.5<>§6.5) que comprueba que su comportamiento despues de cada
    operacion es equivalente a un conjunto basado en los mapas nativos. Guarde su
    implementacion para el benchmar del Ejercicio 11.7.
 
@@ -34249,9 +34265,9 @@
     tambien puede ser importado como una libreria.
 
 #     Let’s write a test for the @$(echo) program of @l(#Section 2.3.2). We’ve
-#     split the program into two functions: @$(echo) does the real work, while
+#     split the program into two functions: @c(echo) does the real work, while
 #     @c(main) parses and reads the flag values and reports any errors returned by
-#     @$(echo).
+#     @c(echo).
     Vamos a escribir una prueba para el programa @$(echo) de la @l(#Seccion
     2.3.2). Hemos dividido el programa en dos funciones: @c(echo) hace el
     trabajo real, mientras que @c(main) analiza y lee los valores bandera y los
@@ -34332,7 +34348,7 @@
       < src..
 
 
-#     From the test, we will call @$(echo) with a variety of arguments and flag
+#     From the test, we will call @c(echo) with a variety of arguments and flag
 #     settings and check that it prints the correct output in each case, so we’ve
 #     added parameters to @c(echo) to reduce its dependence on global
 #     variables. That said, we’ve also introduced another global variable,
@@ -34340,7 +34356,7 @@
 #     @c(echo) write through this variable, not directly to @c(os.Stdout), the
 #     tests can substitute a different @c(Writer) implementation that records what
 #     was written for later inspection. Here’s the test, in file @f(echo_test.go):
-    A partir de la prueba, llamaremos a @$(echo) con una variedad de argumentos
+    A partir de la prueba, llamaremos a @c(echo) con una variedad de argumentos
     y configuraciones de parametros bandera y comprobaremos que imprime la salida
     correcta en cada caso, por lo que hemos añadido parametros a @c(echo) para
     reducir su dependencia de las variables globales. Dicho esto, tambien hemos
@@ -34535,8 +34551,8 @@
     detallada de las partes mas dificiles de la implementacion.
 
 #     We’ve already seen examples of both kinds. @c(TestIsPalindrome) calls only
-#     the exported function @c(IsPalindrome) and is thus a black-box
-#     test. @c(TestEcho) calls the @c(echo) function and updates the global variable
+#     the exported function @c(IsPalindrome) and is thus a black-box test.
+#     @c(TestEcho) calls the @c(echo) function and updates the global variable
 #     @c(out), both of which are unexported, making it a white-box test.
     Ya hemos visto ejemplos de ambos tipos. @c(TestIsPalindrome) llama solo a la
     funcion exportada @c(IsPalindrome) y es por lo tanto una prueba de caja
@@ -35299,8 +35315,8 @@
 #    @e(Statement coverage) is the simplest and most widely used of these
 #    heuristics. The statement coverage of a test suite is the fraction of source
 #    statements that are executed at least once during the test. In this section,
-#    we’ll use Go’s @$(cover) tool, which is integrated into @c(go test), to measure
-#    statement coverage and help identify obvious gaps in the tests.
+#    we’ll use Go’s @$(cover) tool, which is integrated into @c(go test), to
+#    measure statement coverage and help identify obvious gaps in the tests.
    La @e(cobertura de sentencias) es la mas simple y mas utilizada de estas
    heuristicas. La cobertura de sentencias de una suite de pruebas es la
    fraccion de sentencias de origen que se ejecutan al menos una vez durante la
@@ -35589,14 +35605,14 @@
 #    We run it with the command below. Unlike tests, by default no benchmarks are
 #    run. The argument to the @c(-bench) flag selects which benchmarks to run. It
 #    is a regular expression matching the names of @c(Benchmark) functions, with a
-#    default value that matches none of them.  The @"(@c(.)) pattern causes it to
+#    default value that matches none of them.  The @"c(.) pattern causes it to
 #    match all benchmarks in the @c(word) package, but since there’s only one,
 #    @c(-bench=IsPalindrome) would have been equivalent.
    Lo ejecutamos con el siguiente comando. A diferencia de las pruebas, los
    benchmarks por defecto no se ejecutan. El argumento @c(-bench) selecciona que
    deben ejecutarso los benchmark. Es una expresion regular que coincide con los
    nombres de las funciones @c(Benchmark), con un valor predeterminado que no
-   coincide con ninguno de ellos. El patron @"(@c(.)) hace que coincida con
+   coincide con ninguno de ellos. El patron @"c(.) hace que coincida con
    todos los benchmark en el paquete @c(word), pero ya que solo hay uno,
    @c(-bench=IsPalindrome) habria sido equivalente.
 
@@ -35853,12 +35869,12 @@
    Ejercicio 2.5. ¿En que punto el enfoque basado en tablas se equilibra?
 
 #    @b(Exercise 11.7): Write benchmarks for @c(Add), @c(UnionWith), and other
-#    methods of @c(*IntSet) (@l(#Section 6.5<>§6.5)) using large pseudo-random
+#    methods of @c(*IntSet) @%l(#Section 6.5<>§6.5) using large pseudo-random
 #    inputs. How fast can you make these methods run? How does the choice of word
 #    size affect performance? How fast is @c(IntSet) compared to a set
 #    implementation based on the built-in map type?
    @b(Ejercicio 11.7): Escribir benchmark para @c(Add), @c(UnionWith), y otros
-   metodos de @c(*IntSet) (@l(#Seccion 6.5)) utilizando grandes entradas
+   metodos de @c(*IntSet) @%l(#Seccion 6.5<>§6.5) utilizando grandes entradas
    pseudoaleatorias. ¿Que tan rapido puede hacer que estos metodos se ejecuten?
    ¿Como afecta la eleccion del tamaño de la palabra al rendimiento? ¿Que tan
    rapido es @c(IntSet) en comparacion con una implementacion de conjunto basado
@@ -36124,17 +36140,17 @@
    de colores para indicar las funciones mas calientes.
 
 #    We’ve only scratched the surface of Go’s profiling tools here. To find out
-#    more, read the @"(@l(https://blog.golang.org/profiling-go-programs<>Profiling Go Programs)) article on the Go Blog.
+#    more, read the @"l(https://blog.golang.org/profiling-go-programs<>Profiling Go Programs) article on the Go Blog.
    Solo hemos arañado la superficie de las herramientas de perfilado de Go. Para
-   obtener mas informacion, lea el articulo @"(@l(https://blog.golang.org/profiling-go-programs<>Profiling Go Programs)) en el Blog
+   obtener mas informacion, lea el articulo @"l(https://blog.golang.org/profiling-go-programs<>Profiling Go Programs) en el Blog
    de Go.
 
 # ** Section 11.6 <> @c(Example) Functions
 ** Seccion 11.6 <> Funciones @c(Example)
 
 #    The third kind of function treated specially by @$(go test) is an example
-#    function, one whose name starts with @c(Example). It has neither parameters nor
-#    results. Here’s an example function for @$(IsPalindrome):
+#    function, one whose name starts with @c(Example). It has neither parameters
+#    nor results. Here’s an example function for @$(IsPalindrome):
    El tercer tipo de funcion tratada especialmente por @$(go test) es una
    funcion de ejemplo, cuyo nombre empieza con @c(Example). No tiene parametros
    ni resultados. Aqui un ejemplo para la funcion @c(IsPalindrome):
@@ -36379,14 +36395,14 @@
 #    interface with many methods for discriminating among types and inspecting
 #    their components, like the fields of a struct or the parameters of a
 #    function. The sole implementation of @c(reflect.Type) is the type descriptor
-#    (@l(#Section 7.5<>§7.5)), the same entity that identifies the dynamic type of
+#    @%l(#Section 7.5<>§7.5), the same entity that identifies the dynamic type of
 #    an interface value.
    La reflexion es proporcionada por el paquete @c(reflect). Este define dos
    tipos importantes, @c(Type) y @c(Value). @c(Type) representa un tipo Go. Es
    una interfaz con muchos metodos para discriminar entre tipos e inspeccionar
    sus componentes, como los campos de una estructura o los parametros de una
    funcion. La unica aplicacion de @c(reflect.Type) es el descriptor de tipo
-   (@l(#Seccion 7.5<>§7.5)), la misma entidad que identifica el tipo dinamico de
+   @%l(#Seccion 7.5<>§7.5), la misma entidad que identifica el tipo dinamico de
    un valor interfaz.
 
 #    The @c(reflect.TypeOf) function accepts any @c(interface{}) and returns its
@@ -36409,22 +36425,22 @@
 #    parameter. Recall from @l(#Section 7.5) that an assignment from a concrete
 #    value to an interface type performs an implicit interface conversion, which
 #    creates an interface value consisting of two components: its @e(dynamic type)
-#    is the operand’s type (@c(int)) and its @e(dynamic value) is the operand’s
+#    is the operand’s type @%c(int) and its @e(dynamic value) is the operand’s
 #    value (3).
    La llamada @c[TypeOf(3)] anterior asigna el valor 3 al parametro
    @c(interface{}). Recuerde de la @l(#Seccion 7.5) que una asignacion de un
    valor concreto a un tipo de interfaz lleva a cabo una conversion de la
    interfaz implicita, que crea un valor interfaz que consta de dos componentes:
-   su @e(tipo dinamico) es el tipo del operando (@c(int)) y su @e(valor
+   su @e(tipo dinamico) es el tipo del operando @%c(int) y su @e(valor
    dinamico) es el valor del operando (3).
 
 #    Because @c(reflect.TypeOf) returns an interface value’s dynamic type, it
 #    always returns a concrete type. So, for example, the code below prints
-#    @"(@c(*os.File)), not @"(@c(*io.Writer))". Later, we will see that @c(reflect.Type)
+#    @"c(*os.File), not @"c(*io.Writer). Later, we will see that @c(reflect.Type)
 #    is capable of representing interface types too.
    Ya que @c(reflect.TypeOf) regresa el tipo dinamico de un valor de interfaz,
    siempre devuelve un tipo concreto. Asi, por ejemplo, el codigo que aparce a
-   continuacion imprime @"(@c(*os.File)), no @"(@c(*io.Writer)). Mas tarde,
+   continuacion imprime @"c(*os.File), no @"c(*io.Writer). Mas tarde,
    veremos que @c(reflect.Type) es capaz de representar tipos de interfaz
    tambien.
 
@@ -36752,16 +36768,16 @@
 #    print elementary values—basic types, functions, and channels—but we’ll use
 #    the methods of @c(reflect.Value) to recursively display each component of a
 #    more complex type. As the recursion descends, the path string, which
-#    initially describes the starting value (for instance, @"(@c(e))), will be
+#    initially describes the starting value (for instance, @"c(e)), will be
 #    augmented to indicate how we reached the current value (for instance,
-#    @"(@c(e.args[0].value))).
+#    @"c(e.args[0].value)).
    En @c(display), usaremos la funcion @c(formatAtom) que definimos anteriormente
    para imprimir valores elementales–tipos basicos, funciones y canales–pero
    vamos a utilizar los metodos de @c(reflect.Value) para mostrar repetidamente cada
    componente de un tipo mas complejo. A medida que la recursion desciende, la cadena de
-   ruta que describe inicialmente el valor de partida (por ejemplo, @"(@c(e))),
+   ruta que describe inicialmente el valor de partida (por ejemplo, @"c(e)),
    se incrementara para indicar como alcanzamos el valor actual (por
-   ejemplo, @"(@c(e.args[0].value))).
+   ejemplo, @"c(e.args[0].value)).
 
 #    Since we’re no longer pretending to implement @c(fmt.Sprint), we will use the
 #    @c(fmt) package to keep our example short.
@@ -36850,7 +36866,7 @@
 #      the element at index @c(i), also as a @c(reflect.Value); it panics if @c(i) is
 #      out of bounds. These are analogous to the built-in @c[len(a)] and @c(a[i])
 #      operations on sequences. The @c(display) function recursively invokes itself
-#      on each element of the sequence, appending the subscript notation @"(@c([i]))
+#      on each element of the sequence, appending the subscript notation @"c([i])
 #      to the path.
    - Slices y arreglos :: La logica es la misma para ambos. El metodo @c(Len)
      devuelve el numero de elementos de un valor slice o arreglo, e @c[Index(i)]
@@ -36858,7 +36874,7 @@
      entra en panico si @c(i) esta fuera de limites. Esto es analogo al
      @c[len(a)] nativo y a la operacion en secuencias @c(a[i]). La funcion
      @c(display) se invoca a si misma recursivamente en cada elemento de la
-     secuencia, añadiendo la notacion subindice @"(@c([i])) a la trayectoria.
+     secuencia, añadiendo la notacion subindice @"c([i]) a la trayectoria.
 
 #      Although @c(reflect.Value) has many methods, only a few are safe to call on
 #      any given value.  For example, the Index method may be called on values of
@@ -36871,20 +36887,20 @@
 #    - Structs :: The @c(NumField) method reports the number of fields in the
 #      struct, and @c[Field(i)] returns the value of the @m(i)-th field as a
 #      @c(reflect.Value). The list of fields includes ones promoted from anonymous
-#      fields. To append the field selector notation @"(@c(.f)) to the path, we must
+#      fields. To append the field selector notation @"c(.f) to the path, we must
 #      obtain the @c(reflect.Type) of the struct and access the name of its @m(i)-th
 #      field.
    - Estructuras :: El metodo @c(NumField) informa el numero de campos en la
      estructura, y @c[Field(i)] devuelve el valor del campo @c(i) como un
      @c(reflect.Value). La lista de campos incluye los promocionados desde
-     campos anonimos. Para añadir la notacion de selector de campo @"(@c(.f)) a
+     campos anonimos. Para añadir la notacion de selector de campo @"c(.f) a
      la ruta, debemos obtener el @c(reflect.Type) de la estructura y tener
      acceso al nombre de su campo @c(i).
 
 #    - Maps :: The @c(MapKeys) method returns a slice of @c(reflect.Values), one
 #      per map key. As usual when iterating over a map, the order is
 #      undefined. @c[MapIndex(key)] returns the value corresponding to @c(key). We
-#      append the subscript notation @"(@c([key])) to the path. (We’re cutting a
+#      append the subscript notation @"c([key]) to the path. (We’re cutting a
 #      corner here. The type of a map key isn’t restricted to the types
 #      @c(formatAtom) handles best; arrays, structs, and interfaces can also be
 #      valid map keys. Extending this case to print the key in full is Exercise
@@ -36892,7 +36908,7 @@
    - Mapas :: El metodo @c(MapKeys) devuelve un slice de @c(reflect.Values), uno
      por cada clave del mapa. Como de costumbre cuando se itera sobre un mapa,
      el orden no esta definido. @c[MapIndex(key)] devuelve el valor
-     correspondiente a @c(key). Añadimos la notacion de subindice @"(@c([key]))
+     correspondiente a @c(key). Añadimos la notacion de subindice @"c([key])
      a la ruta. (Estamos cortando una esquina aqui el tipo de una clave del mapa
      no se limita a los tipos que @c(formatAtom) maneja mejor; arreglos,
      estructuras e interfaces tambien pueden ser claves validas de mapa.
@@ -36903,14 +36919,14 @@
 #      pointer, again as a @c(reflect.Value). This operation would be safe even if
 #      the pointer value is @c(nil), in which case the result would have kind
 #      @c(Invalid), but we use IsNil to detect nil pointers explicitly so we can
-#      print a more appropriate message. We prefix the path with a @"(@c(*)) and
+#      print a more appropriate message. We prefix the path with a @"c(*) and
 #      parenthesize it to avoid ambiguity.
    - Punteros :: El metodo @c(Elem) devuelve la variable a la que apunta un
      puntero, de nuevo como un @c(reflect.Value). Esta operacion seria segura
      incluso si el valor del puntero es @c(nil), en cuyo caso el resultado
      tendria tipo @c(Invalid), pero utilizamos @c(IsNil) para detectar punteros
      nulos de manera explicita por lo que podemos imprimir un mensaje mas
-     apropiado. Prefijamos el camino con un @"(@c(*)) y un parentesis para
+     apropiado. Prefijamos el camino con un @"c(*) y un parentesis para
      evitar la ambigüedad.
 
 #    - Interfaces :: Again, we use @c(IsNil) to test whether the interface is
@@ -37285,7 +37301,7 @@
    +-------------+-----------------------------------------------------+
 
 #    Booleans are traditionally encoded using the symbol @c(t) for true, and the
-#    empty list @c[( )] or the symbol @c(nil) for false, but for simplicity, our
+#    empty list @c[()] or the symbol @c(nil) for false, but for simplicity, our
 #    implementation ignores them. It also ignores channels and functions, since
 #    their state is opaque to reflection. And it ignores real and complex
 #    floating-point numbers and interfaces. Adding support for them is Exercise
@@ -37601,10 +37617,10 @@
    codifique un campo cuyo valor es el valor cero de su tipo.
 
 #    @b(Exercise 12.7): Create a streaming API for the S-expression encoder,
-#    following the style of @c(json.Encoder) (@l(#Section 4.5<>§4.5)).
+#    following the style of @c(json.Encoder) @%l(#Section 4.5<>§4.5).
    @b(Ejercicio 12.7): Crear un API de streaming para la codificacion de
-   expresiones-S, siguiendo el estilo de @c(json.Encoder) (@l(#Seccion
-   4.5<>§4.5)).
+   expresiones-S, siguiendo el estilo de @c(json.Encoder) @%l(#Seccion
+   4.5<>§4.5).
 
 # ** Section 12.5 <> Setting Variables with @c(reflect.Value)
 ** Seccion 12.5 <> Configurar Variables con @c(reflect.Value)
@@ -37888,13 +37904,13 @@
 #    For each @c(Marshal) function provided by the standard library’s
 #    @c(encoding/...) packages, there is a corresponding @c(Unmarshal) function
 #    that does decoding. For example, as we saw in @l(#Section 4.5), given a byte
-#    slice containing JSON-encoded data for our @c(Movie) type (@l(#Section
-#    12.3<>§12.3)), we can decode it like this:
+#    slice containing JSON-encoded data for our @c(Movie) type @%l(#Section
+#    12.3<>§12.3), we can decode it like this:
    Por cada funcion @c(Marshal) proporcionada por los paquetes @c(encoding/...)
    de la libreria estandar, hay una funcion correspondiente @c(Unmarshal) que
    realiza la decodificacion. Por ejemplo, como vimos en la @l(#Seccion 4.5),
    dado un slice de bytes que contiene datos codificados JSON para nuestro tipo
-   @c(Movie) (@l(#Seccion 12.3<>§12.3)), podemos decodificarlo asi:
+   @c(Movie) @%l(#Seccion 12.3<>§12.3), podemos decodificarlo asi:
 
 #    ..src > go
 #      data := []byte{/* ... */}
@@ -38069,14 +38085,14 @@
 
 #    Our S-expressions use identifiers for two distinct purposes, struct field
 #    names and the @c(nil) value for a pointer. The @c(read) function only handles
-#    the latter case. When it encounters the @c(scanner.Ident) @"(@c(nil)), it sets
+#    the latter case. When it encounters the @c(scanner.Ident) @"c(nil), it sets
 #    @c(v) to the zero value of its type using the @c(reflect.Zero) function.  For
 #    any other identifier, it reports an error. The @c(readList) function, which
 #    we’ll see in a moment, handles identifiers used as struct field names.
    Nuestras expresiones-S utilizan identificadores para dos propositos
    distintos, nombres de campo en estructuras y el valor de un puntero
    @c(nil). La funcion @c(read) solo se ocupa de este ultimo caso. Cuando
-   @c(scanner.Ident) se encuentra con @"(@c(nil)), establece @c(v) a el valor
+   @c(scanner.Ident) se encuentra con @"c(nil), establece @c(v) a el valor
    cero de su tipo usando la funcion @c(reflect.Zero). Para cualquier otro
    identificador, informa de un error. la funcion @c(readList), que veremos en
    un momento, maneja identificadores utilizados como nombres de campo
@@ -38239,13 +38255,13 @@
 #    Finally, we wrap up the parser in an exported function @c(Unmarshal), shown
 #    below, that hides some of the rough edges of the implementation. Errors
 #    encountered during parsing result in a panic, so @c(Unmarshal) uses a
-#    deferred call to recover from the panic (@l(#Section 5.10<>§5.10)) and return
+#    deferred call to recover from the panic @%l(#Section 5.10<>§5.10) and return
 #    an error message instead.
    Finalmente, terminamos el analizador en una funcion exportada @c(Unmarshal),
    que se muestra a continuacion, que esconde algunas de las asperezas de la
    aplicacion. Los errores encontrados durante el analisis dan lugar a un
    panico, por lo que @c(Unmarshal) utiliza una llamada diferida para
-   recuperarse del panico (@l(#Seccion 5.10<>§5.10)) y devolvera un mensaje de
+   recuperarse del panico @%l(#Seccion 5.10<>§5.10) y devolvera un mensaje de
    error.
 
 #    ..src > go
@@ -38307,12 +38323,12 @@
    Cambie @c(sexpr.Unmarshal) para utilizar este nuevo tipo.
 
 #    @b(Exercise 12.9): Write a token-based API for decoding S-expressions,
-#    following the style of @c(xml.Decoder) (@l(#Section 7.14<>§7.14)). You will
+#    following the style of @c(xml.Decoder) @%l(#Section 7.14<>§7.14). You will
 #    need five types of tokens: @c(Symbol), @c(String), @c(Int), @c(StartList),
 #    and @c(EndList).
    @b(Ejercicio 12.9): Escriba una API basada en tokens para decodificar
-   expresiones-S, siguiendo el estilo de @c(xml.Decoder) (@l(#Seccion
-   7.14<>§7.14)). Necesitara cinco tipos de tokens: @c(Symbol), @c(String),
+   expresiones-S, siguiendo el estilo de @c(xml.Decoder) @%l(#Seccion
+   7.14<>§7.14). Necesitara cinco tipos de tokens: @c(Symbol), @c(String),
    @c(Int), @c(StartList) y @c(EndList).
 
 #    @b(Exercise 12.10): Extend @c(sexpr.Unmarshal) to handle the booleans,
@@ -38340,12 +38356,12 @@
 #    In a web server, the first thing most HTTP handler functions do is extract
 #    the request parameters into local variables. We’ll define a utility function,
 #    @c(params.Unpack), that uses struct field tags to make writing HTTP handlers
-#    (@l(#Section 7.7<>§7.7)) more convenient.
+#    @%l(#Section 7.7<>§7.7) more convenient.
    En un servidor web, lo primero que hace la mayoria de las funciones del
    controlador HTTP es extraer los parametros de la peticion en variables
    locales. Vamos a definir una funcion de utilidad, @c(params.Unpack), que
    utiliza etiquetas de campos de estructura para que los manipuladores de la
-   escritura HTTP (@l(#Seccion 7.7<>§7.7)) sean mas convenientes.
+   escritura HTTP @%l(#Seccion 7.7<>§7.7) sean mas convenientes.
 
 #    First, we’ll show how it’s used. The @c(search) function below is an HTTP
 #    handler. It defines a variable called @c(data) of an anonymous struct type
@@ -38658,14 +38674,14 @@
    valido de los Estados Unidos. Modifique @c(Unpack) para comprobar estos
    requisitos.
 
-#    @b(Exercise 12.13): Modify the S-expression encoder (@l(#Section
-#    12.4<>§12.4)) and decoder (@l(#Section 12.6<>§12.6)) so that they honor the
+#    @b(Exercise 12.13): Modify the S-expression encoder @%l(#Section
+#    12.4<>§12.4) and decoder @%l(#Section 12.6<>§12.6) so that they honor the
 #    @c(sexpr:"...") field tag in a similar manner to @c(encoding/json)
-#    (@l(#Section 4.5<>§4.5)).
-   @b(Ejercicio 12.13): Modificar el codificador (@l(#Seccion 12.4<>§12.4)) y
-   decodificador (@l(#Seccion 12.6<>§12.6)) de expresiones-S para que cumplan la
+#    @%l(#Section 4.5<>§4.5).
+   @b(Ejercicio 12.13): Modificar el codificador @%l(#Seccion 12.4<>§12.4) y
+   decodificador @%l(#Seccion 12.6<>§12.6) de expresiones-S para que cumplan la
    etiqueta de campo @c(sexpr:"...") de una manera similar a @c(encoding/json)
-   (@l(#Seccion 4.5<>§4.5)).
+   @%l(#Seccion 4.5<>§4.5).
 
 # ** Section 12.8 <> Displaying the Methods of a Type
 ** Seccion 12.8 <> Visualizando los Metodos de Type
@@ -38712,7 +38728,7 @@
 #    @c(Method). Each @c[t.Method(i)] call returns an instance of
 #    @c(reflect.Method), a struct type that describes the name and type of a
 #    single method. Each @c[v.Method(i)] call returns a @c(reflect.Value)
-#    representing a method value (@l(#Section 6.4<>§6.4)), that is, a method bound
+#    representing a method value @%l(#Section 6.4<>§6.4), that is, a method bound
 #    to its receiver. Using the @c(reflect.Value.Call) method (which we don’t have
 #    space to show here), it’s possible to call @c(Values) of kind @c(Func) like
 #    this one, but this program needs only its @c(Type).
@@ -38720,7 +38736,7 @@
    @c(Method). Cada llamada @c[t.Method(i)] devuelve una instancia de
    @c(reflect.Method), una estructura que describe el nombre y tipo de un unico
    metodo. Cada llamada @c[v.Method(i)] devuelve un @c(reflect.Value) que
-   representa un valor metodo (@l(#Seccion 6.4<>§6.4)), es decir, un metodo
+   representa un valor metodo @%l(#Seccion 6.4<>§6.4), es decir, un metodo
    vinculado a su receptor. Utilizando el metodo @c(reflect.Value.Call) (que no
    tenemos espacio para mostrar aqui), es posible llamar a @c(Values) de tipo
    @c(Func) como este, pero este programa solo necesita su @c(Type).
@@ -38788,12 +38804,12 @@
    despues de haber escrito el programa o incluso mucho despues de que ha
    comenzado su ejecucion.
 
-#    If the @c(readList) function (@l(#Section 12.6<>§12.6)), for example, should
+#    If the @c(readList) function @%l(#Section 12.6<>§12.6), for example, should
 #    read a string from the input while populating a variable of type @c(int), the
 #    call to @c(reflect.Value.SetString) will panic. Most programs that use
 #    reflection have similar hazards, and considerable care is required to keep
 #    track of the type, addressability, and settability of each @c(reflect.Value).
-   Si la funcion @c(readList) (@l(#Seccion 12.6<>§12.6)), por ejemplo, debe leer
+   Si la funcion @c(readList) @%l(#Seccion 12.6<>§12.6), por ejemplo, debe leer
    una cadena de la entrada al rellenar una variable de tipo @c(int), la llamada
    a @c(reflect.Value.SetString) entrara en panico. La mayoria de los programas
    que utilizan la reflexion tienen riesgos similares, y se requiere mucho
@@ -39805,11 +39821,11 @@
 
 #    The @c(compress/...) subtree of the standard library provides compressors and
 #    decompressors for popular compression algorithms, including LZW (used by the
-#    Unix @$(compress) command) and DEFLATE (used by the GNU @$(gzip)
-#    command). The APIs of these packages vary slightly in details, but they all
-#    provide a wrapper for an @c(io.Writer) that compresses the data written to
-#    it, and a wrapper for an @c(io.Reader) that decompresses the data read from
-#    it. For example:
+#    Unix @$(compress) command) and DEFLATE (used by the GNU @$(gzip) command).
+#    The APIs of these packages vary slightly in details, but they all provide a
+#    wrapper for an @c(io.Writer) that compresses the data written to it, and a
+#    wrapper for an @c(io.Reader) that decompresses the data read from it. For
+#    example:
    El subarbol @c(compress/...) de la libreria estandar proporciona compresores
    y descompresores de los algoritmos de compresion mas populares, incluyendo
    LZW (usado por el comando Unix @$(compress)) y DEFLATE (usado por el comando
@@ -40033,8 +40049,8 @@
    eliminar estos indicadores para su instalacion.
 
 #    @c(NewWriter) makes a call to the C function BZ2_bzCompressInit to initialize
-#    the buffers for the stream. The @c(writer) type includes another buffer
-#    that will be used to drain the decompressor’s output buffer.
+#    the buffers for the stream. The @c(writer) type includes another buffer that
+#    will be used to drain the decompressor’s output buffer.
    @c(NewWriter) realiza una llamada a la funcion C @c(BZ2_bzCompressInit) para
    inicializar los buferes de la secuencia. El tipo @c(writer) incluye otro
    bufer que se utilizara para drenar el bufer de salida del descompresor.
@@ -40181,8 +40197,8 @@
    entra en panico si el usuario llama por error un metodo despues de @c(Close).
 
 #    Not only is @c(writer) not concurrency-safe, but concurrent calls to
-#    @c(Close) and @c(Write) could cause the program to crash in C code. Fixing this
-#    is Exercise 13.3.
+#    @c(Close) and @c(Write) could cause the program to crash in C code. Fixing
+#    this is Exercise 13.3.
    No solo @c(writer) no es concurrentemente seguro, sino que las concurrentes a
    @c(Close) y @c(Write) podria hacer que el programa se bloquee en el codigo
    C. Correjir esto es el Ejercicio 13.3.

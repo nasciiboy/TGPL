@@ -2077,8 +2077,8 @@
     variable @e(indirectly), without using or even knowing the name of the
     variable, if indeed it has a name.
 
-    If a variable is declared @c(var x int), the expression @c(&x) (@"(address of
-    @c(x))) yields a pointer to an integer variable, that is, a value of type
+    If a variable is declared @c(var x int), the expression @c(&x) @%"(address of
+    @c(x)) yields a pointer to an integer variable, that is, a value of type
     @c(*int), which is pronounced @"(pointer to int.) If this value is called
     @c(p), we say @"(@c(p) points to @c(x),) or equivalently @"(@c(p) contains
     the address of @c(x).) The variable to which @c(p) points is written
@@ -2190,8 +2190,8 @@
       < src..
 
     The function @c(flag.Bool) creates a new flag variable of type @c(bool). It
-    takes three arguments: the name of the flag (@c("n")), the variable’s
-    default value (@c(false)), and a message that will be printed if the user
+    takes three arguments: the name of the flag @%c("n"), the variable’s
+    default value @%c(false), and a message that will be printed if the user
     provides an invalid argument, an invalid flag, or @c(-h) or
     @c(-help). Similarly, @c(flag.String) takes a name, a default value, and a
     message, and creates a @c(string) variable. The variables @c(sep) and @c(n)
@@ -5010,7 +5010,7 @@
      fmt.Println(r[2]) // "0"
    < src..
 
-   In an array literal, if an ellipsis @"(@c(...)) appears in place of the
+   In an array literal, if an ellipsis @"c(...) appears in place of the
    length, the array length is determined by the number of initializers. The
    definition of @c(q) can be simplified to
 
@@ -5519,7 +5519,7 @@
     < src..
 
     With the small modification shown below, we can match the behavior of the
-    built-in @c(append).  The ellipsis @"(@c(...)) in the declaration of
+    built-in @c(append).  The ellipsis @"c(...) in the declaration of
     @c(appendInt) makes the function @e(variadic): it accepts any number of
     final arguments. The corresponding ellipsis in the call above to @c(append)
     shows how to supply a list of arguments from a slice. We’ll explain this
@@ -8072,7 +8072,7 @@
    < src..
 
    @b(Exercise 5.9): Write a function @c[expand(s string, f func(string) string)
-   string] that replaces each substring @"(@c($foo)) within s by the text
+   string] that replaces each substring @"c($foo) within @c(s) by the text
    returned by @c[f("foo")].
 
 ** Section 5.6 <> Anonymous Functions
@@ -8505,7 +8505,7 @@
    accepts any number of subsequent arguments.
 
    To declare a variadic function, the type of the final parameter is preceded
-   by an ellipsis, @"(@c(...)), which indicates that the function may be called with
+   by an ellipsis, @"c(...), which indicates that the function may be called with
    any number of arguments of this type.
 
    ..figure > @l(gopl.io/ch5/sum/main.go<>gopl.io/ch5/sum)
@@ -9387,7 +9387,7 @@
    pointer receiver, even ones that don’t strictly need it.  We’ve broken this
    rule for @c(Point) so that we can show both kinds of method.
 
-   Named types (@c(Point)) and pointers to them @c[(*Point)] are the only types
+   Named types @%c(Point) and pointers to them @c[(*Point)] are the only types
    that may appear in a receiver declaration. Furthermore, to avoid ambiguities,
    method declarations are not permitted on named types that are themselves
    pointer types:
@@ -17559,7 +17559,7 @@
       github.com/go-sql-driver/mysql
     < srci..
 
-    An argument to @$(go list) may contain the @"(@c(...)) wildcard, which
+    An argument to @$(go list) may contain the @"c(...) wildcard, which
     matches any substring of a package’s import path. We can use it to enumerate
     all the packages within a Go workspace:
 
@@ -18781,7 +18781,7 @@
    We run it with the command below. Unlike tests, by default no benchmarks are
    run. The argument to the @c(-bench) flag selects which benchmarks to run. It
    is a regular expression matching the names of @c(Benchmark) functions, with a
-   default value that matches none of them.  The @"(@c(.)) pattern causes it to
+   default value that matches none of them.  The @"c(.) pattern causes it to
    match all benchmarks in the @c(word) package, but since there’s only one,
    @c(-bench=IsPalindrome) would have been equivalent.
 
@@ -19059,7 +19059,7 @@
    to indicate the hottest functions.
 
    We’ve only scratched the surface of Go’s profiling tools here. To find out
-   more, read the @"(@l(https://blog.golang.org/profiling-go-programs<>Profiling Go Programs)) article on the Go Blog.
+   more, read the @"l(https://blog.golang.org/profiling-go-programs<>Profiling Go Programs) article on the Go Blog.
 
 ** Section 11.6 <> @c(Example) Functions
 
@@ -19211,7 +19211,7 @@
    parameter. Recall from @l(#Section 7.5) that an assignment from a concrete
    value to an interface type performs an implicit interface conversion, which
    creates an interface value consisting of two components: its @e(dynamic type)
-   is the operand’s type (@c(int)) and its @e(dynamic value) is the operand’s
+   is the operand’s type @%c(int) and its @e(dynamic value) is the operand’s
    value (3).
 
    Because @c(reflect.TypeOf) returns an interface value’s dynamic type, it
@@ -19393,9 +19393,9 @@
    print elementary values—basic types, functions, and channels—but we’ll use
    the methods of @c(reflect.Value) to recursively display each component of a
    more complex type. As the recursion descends, the path string, which
-   initially describes the starting value (for instance, @"(@c(e))), will be
+   initially describes the starting value (for instance, @"c(e)), will be
    augmented to indicate how we reached the current value (for instance,
-   @"(@c(e.args[0].value))).
+   @"c(e.args[0].value)).
 
    Since we’re no longer pretending to implement @c(fmt.Sprint), we will use the
    @c(fmt) package to keep our example short.
@@ -19444,7 +19444,7 @@
      the element at index @c(i), also as a @c(reflect.Value); it panics if @c(i) is
      out of bounds. These are analogous to the built-in @c[len(a)] and @c(a[i])
      operations on sequences. The @c(display) function recursively invokes itself
-     on each element of the sequence, appending the subscript notation @"(@c([i]))
+     on each element of the sequence, appending the subscript notation @"c([i])
      to the path.
 
      Although @c(reflect.Value) has many methods, only a few are safe to call on
@@ -19454,14 +19454,14 @@
    - Structs :: The @c(NumField) method reports the number of fields in the
      struct, and @c[Field(i)] returns the value of the @m(i)-th field as a
      @c(reflect.Value). The list of fields includes ones promoted from anonymous
-     fields. To append the field selector notation @"(@c(.f)) to the path, we must
+     fields. To append the field selector notation @"c(.f) to the path, we must
      obtain the @c(reflect.Type) of the struct and access the name of its @m(i)-th
      field.
 
    - Maps :: The @c(MapKeys) method returns a slice of @c(reflect.Values), one
      per map key. As usual when iterating over a map, the order is
      undefined. @c[MapIndex(key)] returns the value corresponding to @c(key). We
-     append the subscript notation @"(@c([key])) to the path. (We’re cutting a
+     append the subscript notation @"c([key]) to the path. (We’re cutting a
      corner here. The type of a map key isn’t restricted to the types
      @c(formatAtom) handles best; arrays, structs, and interfaces can also be
      valid map keys. Extending this case to print the key in full is Exercise
@@ -19471,7 +19471,7 @@
      pointer, again as a @c(reflect.Value). This operation would be safe even if
      the pointer value is @c(nil), in which case the result would have kind
      @c(Invalid), but we use IsNil to detect nil pointers explicitly so we can
-     print a more appropriate message. We prefix the path with a @"(@c(*)) and
+     print a more appropriate message. We prefix the path with a @"c(*) and
      parenthesize it to avoid ambiguity.
 
    - Interfaces :: Again, we use @c(IsNil) to test whether the interface is
@@ -20084,7 +20084,7 @@
 
    Our S-expressions use identifiers for two distinct purposes, struct field
    names and the @c(nil) value for a pointer. The @c(read) function only handles
-   the latter case. When it encounters the @c(scanner.Ident) @"(@c(nil)), it sets
+   the latter case. When it encounters the @c(scanner.Ident) @"c(nil), it sets
    @c(v) to the zero value of its type using the @c(reflect.Zero) function.  For
    any other identifier, it reports an error. The @c(readList) function, which
    we’ll see in a moment, handles identifiers used as struct field names.
