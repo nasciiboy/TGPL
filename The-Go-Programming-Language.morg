@@ -2762,7 +2762,7 @@
 *** Section 2.6.1 <> Imports
 
     Within a Go program, every package is identified by a unique string called
-    its @e(import path).  These are the strings that appear in an @c(import)
+    its @e(import path). These are the strings that appear in an @c(import)
     declaration like @c("gopl.io/ch2/tempconv"). The language specification
     doesn’t define where these strings come from or what they mean; it’s up to
     the tools to interpret them. When using the @$(go) tool (@l(#Chapter 10)),
@@ -3038,7 +3038,7 @@
    loop above creates two lexical blocks: the explicit block for the loop body,
    and an implicit block that additionally encloses the variables declared by
    the initialization clause, such as @c(i). The scope of a variable declared in
-   the implicit block is the condition, post-statement (@c(i++)), and body of
+   the implicit block is the condition, post-statement @%c(i++), and body of
    the @c(for) statement.
 
    The example below also has three variables named @c(x), each declared in a

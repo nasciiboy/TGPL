@@ -1573,7 +1573,7 @@ panic  recover
 </div>
 <h4 id="section-2.6.1" >Imports</h4>
 <div class="hBody-4" >
-<p>Within a Go program, every package is identified by a unique string called its <em>import path</em>.  These are the strings that appear in an <code>import</code> declaration like <code>&#34;gopl.io/ch2/tempconv&#34;</code>. The language specification doesn’t define where these strings come from or what they mean; it’s up to the tools to interpret them. When using the <code class="command" >go</code> tool (<a href="#chapter-10" >Chapter 10</a>), an import path denotes a directory containing one or more Go source files that together make up the package.</p>
+<p>Within a Go program, every package is identified by a unique string called its <em>import path</em>. These are the strings that appear in an <code>import</code> declaration like <code>&#34;gopl.io/ch2/tempconv&#34;</code>. The language specification doesn’t define where these strings come from or what they mean; it’s up to the tools to interpret them. When using the <code class="command" >go</code> tool (<a href="#chapter-10" >Chapter 10</a>), an import path denotes a directory containing one or more Go source files that together make up the package.</p>
 <p>In addition to its import path, each package has a <em>package name</em>, which is the short (and not necessarily unique) name that appears in its <code>package</code> declaration. By convention, a package’s name matches the last segment of its import path, making it easy to predict that the package name of <code>gopl.io/ch2/tempconv</code> is <code>tempconv</code>.</p>
 <p>To use <code>gopl.io/ch2/tempconv</code>, we must import it:</p>
 <div class="figure" >
