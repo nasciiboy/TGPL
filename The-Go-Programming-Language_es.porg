@@ -5225,7 +5225,7 @@
 #     its @e(import path). These are the strings that appear in an @c(import)
 #     declaration like @c("gopl.io/ch2/tempconv"). The language specification
 #     doesn’t define where these strings come from or what they mean; it’s up to
-#     the tools to interpret them. When using the @$(go) tool (@l(#Chapter 10)),
+#     the tools to interpret them. When using the @$(go) tool @%l(#Chapter 10),
 #     an import path denotes a directory containing one or more Go source files
 #     that together make up the package.
     Dentro de un programa Go, cada paquete se identifica por una cadena unica
@@ -5233,7 +5233,7 @@
     una declaracion @c(import) como @c("gopl.io/ch2/tempconv"). La
     especificacion del lenguaje no define de donde provienen estas cadenas o lo
     que significan; depende de las herramientas para interpretarlas. Cuando se
-    utiliza la herramienta @$(go) (@l(#Capitulo 10)), una ruta de importacion
+    utiliza la herramienta @$(go) @%l(#Capitulo 10), una ruta de importacion
     denota un directorio que contiene uno o mas archivos de codigo fuente Go que
     juntos componen el paquete.
 
@@ -5554,8 +5554,8 @@
 #     shows how to compare the performance of different implementations
 #     systematically.)
     @b(Ejercicio 2.3): Vuelve a escribir @c(PopCount) para utilizar un bucle en
-    lugar de una sola expresion. Compare el rendimiento de las dos versiones. La
-    (@l(#Seccion 11.4) muestra como comparar el rendimiento de diferentes
+    lugar de una sola expresion. Compare el rendimiento de las dos versiones. (La
+    @l(#Seccion 11.4) muestra como comparar el rendimiento de diferentes
     implementaciones de forma sistematica.)
 
 #     @b(Exercise 2.4): Write a version of @c(PopCount) that counts bits by shifting
@@ -6048,7 +6048,7 @@
 #   other end provide what programmers need to conveniently represent complicated
 #   data structures.
   En el fondo todo son solo bits, por supuesto, pero las computadoras operan
-  fundamentalmente en numeros de tamaño fijo llamados palabras, que se
+  fundamentalmente en numeros de tamaño fijo llamados @e(palabras), que se
   interpretan como numeros enteros, numeros de punto flotante, conjuntos de
   bits, o direcciones de memoria, que luego se combinan en agregados mas grandes
   que representan paquetes, pixeles, carteras, poesia y todo lo demas. Go ofrece
@@ -6064,7 +6064,7 @@
 #   complicated data types by combining values of several simpler ones. Reference
 #   types are a diverse group that includes pointers @%l(#Section 2.3.2<>§2.3.2),
 #   slices @%l(#Section 4.2<>§4.2), maps @%l(#Section 4.3<>§4.3), functions
-#   (@l(#Chapter 5)), and channels (@l(#Chapter 8)), but what they have in common
+#   @%l(#Chapter 5), and channels @%l(#Chapter 8), but what they have in common
 #   is that they all refer to program variables or state @e(indirectly), so that
 #   the effect of an operation applied to one reference is observed by all copies
 #   of that reference. Finally, we’ll talk about interface types in @l(#Chapter
@@ -6077,9 +6077,9 @@
   combinacion de otros valores mas simples. Los tipos de referencia son un grupo
   diverso, que incluye punteros @%l(#Seccion 2.3.2<>§2.3.2), slices
   @%l(#Seccion 4.2<>§4.2), mapas @%l(#Seccion 4.3<>§4.3), funciones
-  (@l(#Capitulo 5)), y canales (@l(#Capitulo 8)), pero lo que tienen en comun es
-  que se todos ellos se refieren a variables del programa o estados
-  indirectamente, por lo que el efecto de una operacion que se aplica a una
+  @%l(#Capitulo 5), y canales @%l(#Capitulo 8), pero lo que tienen en comun es
+  que todos ellos se refieren a variables del programa o estados
+  @e(indirectamente), por lo que el efecto de una operacion que se aplica a una
   referencia es observado por todas las copias de esa referencia. Por ultimo,
   hablaremos de los tipos de interfaz en el @l(#Capitulo 7).
 
@@ -6091,16 +6091,16 @@
 #    signedness of its values. Let’s begin with integers.
    Los tipos de datos numericos de Go incluyen varios tamaños de enteros,
    numeros de coma flotante y numeros complejos. Cada tipo numerico determina el
-   tamaño y la firma de sus valores. Comencemos con numeros enteros.
+   tamaño y la firma de sus valores. Comencemos con los numeros enteros.
 
 #    Go provides both signed and unsigned integer arithmetic. There are four
 #    distinct sizes of signed integers—8, 16, 32, and 64 bits—represented by the
 #    types @c(int8), @c(int16), @c(int32), and @c(int64), and corresponding
 #    unsigned versions @c(uint8), @c(uint16), @c(uint32), and @c(uint64).
-   Go proporciona tanto aritmetica con y sin signo. Hay cuatro tamaños distintos
-   de numeros enteros–8, 16, 32 y 64 bits–representados por los tipos @c(int8),
-   @c(int16), @c(int32), y @c(int64), y las correspondientes versiones sin signo
-   @c(uint8), @c(uint16), @c(uint32), y @c(uint64).
+   Go proporciona aritmetica de numeros enteros con y sin signo. Hay cuatro
+   tamaños distintos de numeros enteros–8, 16, 32 y 64 bits–representados por
+   los tipos @c(int8), @c(int16), @c(int32), y @c(int64), y las correspondientes
+   versiones sin signo @c(uint8), @c(uint16), @c(uint32), y @c(uint64).
 
 #    There are also two types called just @c(int) and @c(uint) that are the
 #    natural or most efficient size for signed and unsigned integers on a
@@ -6110,7 +6110,7 @@
 #    choices even on identical hardware.
    Tambien hay dos tipos llamados simplemente @c(int) y @c(uint) que son del
    tamaño natural o mas eficiente para los numeros enteros con y sin signo en
-   una plataforma en particular; @c(int) es de lejos el tipo numerico mas
+   una plataforma en particular; @c(int) es con mucho, el tipo numerico mas
    utilizado. Ambos tipos tienen el mismo tamaño, 32 o 64 bits, pero uno no debe
    hacer suposiciones sobre cual es; diferentes compiladores pueden tomar
    diferentes opciones incluso en hardware identico.
@@ -6122,7 +6122,7 @@
 #    numeric quantity.
    El tipo @c(rune) es un sinonimo de @c(int32) y convencionalmente indica que
    un valor es un punto de codigo Unicode. Los dos nombres pueden utilizarse
-   indistintamente. Del mismo modo, el tipo de @c(byte) es un sinonimo de
+   indistintamente. Del mismo modo, el tipo @c(byte) es un sinonimo de
    @c(uint8), y hace hincapie en que el valor es una pieza de datos en bruto mas
    que una pequeña cantidad numerica.
 
@@ -6146,8 +6146,8 @@
    Independientemente de su tamaño, @c(int), @c(uint) y @c(uintptr) son
    diferentes tipos de sus hermanos de tamaño de forma explicita. Por lo tanto
    @c(int) no es el mismo tipo que @c(int32), incluso si el tamaño natural de
-   enteros es de 32 bits, y requiere una conversion explicita utilizar un valor
-   @c(int) donde se necesita un @c(int32), y viceversa.
+   enteros es de 32 bits, y se requiere una conversion explicita para utilizar
+   un valor @c(int) donde se necesita un @c(int32), y viceversa.
 
 #    Signed numbers are represented in 2’s-complement form, in which the
 #    high-order bit is reserved for the sign of the number and the range of values
@@ -6155,7 +6155,7 @@
 #    full range of bits for non-negative values and thus have the range 0 to
 #    2ⁿ-1. For instance, the range of @c(int8) is -128 to 127, whereas the range
 #    of @c(uint8) is 0 to 255.
-   Numeros con signo se representan en forma de complemento a 2, en el que el
+   Los numeros con signo se representan en forma de complemento a 2, en el que el
    bit de orden superior esta reservado para el signo del numero y la gama de
    valores de un numero de @m(n) bits es de -2ⁿ⁻¹ a 2ⁿ⁻¹-1. Los numeros enteros
    sin signo usan el rango completo de bits para valores no negativos y por lo
@@ -6164,8 +6164,8 @@
 
 #    Go’s binary operators for arithmetic, logic, and comparison are listed here
 #    in order of decreasing precedence:
-   En Go Los operadores binarios de aritmetica, logica y comparacion se enumeran
-   aqui en orden decreciente de precedencia:
+   Aqui se enumeran en orden decreciente de precedencia los operadores binarios
+   de Go para aritmetica, logica y comparacion:
 
 #    ..pre >
 #      *   /   %  <<  >>  &   &^
@@ -6189,14 +6189,14 @@
    Solo hay cinco niveles de precedencia para los operadores binarios. Los
    operadores en el mismo nivel se asocian a la izquierda, por lo que pueden ser
    necesarios parentesis, para mayor claridad, o para hacer que los operadores
-   evaluan en el orden deseado en una expresion como @c[mask & (1 << 28)].
+   se evaluen en el orden deseado en una expresion como @c[mask & (1 << 28)].
 
 #    Each operator in the first two lines of the table above, for instance @c(+),
 #    has a corresponding @c(assignment operator) like @c(+=) that may be used to
 #    abbreviate an assignment statement.
    Cada operador en las dos primeras lineas de la tabla anterior, por ejemplo
    @c(+), tiene un operador de asignacion correspondiente, como @c(+=) que pueden
-   utilizarse para abreviar una instruccion de asignacion.
+   utilizarse para abreviar una declaracion de asignacion.
 
 #    The arithmetic operators @c(+), @c(-), @c(*), and @c(/) may be applied to
 #    integer, floating-point, and complex numbers, but the remainder operator
@@ -6209,7 +6209,7 @@
    Los operadores aritmeticos @c(+), @c(-), @c(*), y @c(/) pueden aplicarse a
    numeros enteros, de coma flotante, y numeros complejos, pero el operador
    @c(%) solo se aplica a numeros enteros. El comportamiento de @c(%) para los
-   numeros negativos varia a traves de los lenguajes de programacion.  En Go, el
+   numeros negativos varia en los distintos lenguajes de programacion. En Go, el
    signo del resto es siempre el mismo que el signo del dividendo, por lo que
    @c(-5%3) y @c(-5%-3) son ambos @c(-2). El comportamiento de @c(/) depende de
    si sus operandos son numeros enteros, por lo que @c(5.0/4.0) es @c(1.25),
@@ -6245,8 +6245,8 @@
 
 #    Two integers of the same type may be compared using the binary comparison
 #    operators below; the type of a comparison expression is a boolean.
-   Dos numeros enteros del mismo tipo pueden compararse usando los operadores de
-   comparacion binarios siguientes; el tipo de una expresion de comparacion es
+   Dos numeros enteros del mismo tipo pueden compararse usando los siguientes
+   operadores de comparacion binarios; el tipo de una expresion de comparacion es
    un booleano.
 
 #    +--------+--------------------------+
@@ -6269,11 +6269,11 @@
    +--------+---------------------+
    | @c(<)  | menor que           |
    +--------+---------------------+
-   | @c(<=) | Menor que o igual a |
+   | @c(<=) | menor que o igual a |
    +--------+---------------------+
    | @c(>)  | mayor que           |
    +--------+---------------------+
-   | @c(>=) | Mayor que o igual a |
+   | @c(>=) | mayor que o igual a |
    +--------+---------------------+
 
 #    In fact, all values of basic type—booleans, numbers, and strings—are
@@ -6288,8 +6288,8 @@
    comparados con los operadores @c(==) y @c(!=). Por otra parte, los numeros
    enteros, numeros de punto flotante y cadenas son @e(ordenados) por los
    operadores de comparacion. Los valores de muchos otros tipos no son
-   comparables y no se ordenan otros tipos. A medida que nos encontramos cada
-   tipo, vamos a presentar las normas que rigen la comparacion de sus valores.
+   comparables y no se ordenan otros tipos. A medida que nos encontremos cada
+   tipo, presentaremos las reglas que rigen la comparacion de sus valores.
 
 #    There are also unary addition and subtraction operators:
    Tambien hay operadores unarios de suma y resta:
@@ -6300,15 +6300,15 @@
 #    | @c(-) | unary negation             |
 #    +-------+----------------------------+
    +-------+------------------------------+
-   | @c(+) | Unario positivo (sin efecto) |
+   | @c(+) | unario positivo (sin efecto) |
    +-------+------------------------------+
-   | @c(-) | Negacion unaria              |
+   | @c(-) | negacion unaria              |
    +-------+------------------------------+
 
 #    For integers, @c(+x) is a shorthand for @c(0+x) and @c(-x) is a shorthand for
 #    @c(0-x); for floating-point and complex numbers, @c(+x) is just @c(x) and
 #    @c(-x) is the negation of @c(x).
-   Para enteros, @c(+x) es una abreviatura de @c(0+x) y @c(-x) es una
+   Para enteros, @c(+x) es una abreviatura de @c(0+x) y @c(-x) es la
    abreviatura de @c(0-x); para los numeros de punto flotante y complejos,
    @c(+x) es @c(x) y @c(-x) es la negacion de @c(x).
 
@@ -6316,8 +6316,8 @@
 #    which treat their operands as bit patterns with no concept of arithmetic
 #    carry or sign:
    Go tambien proporciona los siguientes operadores binarios a nivel de bits,
-   cuyos cuatro primeros tratan a sus operandos como patrones de bits sin ningun
-   concepto aritmetico o signo:
+   cuyos cuatro primeros tratan sus operandos como patrones de bits sin ningun
+   concepto de arrastre o signo:
 
 #    +--------+---------------------+
 #    | @c(&)  | bitwise AND         |
@@ -6369,7 +6369,7 @@
    de bit para interpretar un valor @c(uint8) como un conjunto compacto y
    eficiente de 8 bits independientes. Se utiliza el verbo @c(%b) de @c(Printf)
    para imprimir los digitos binarios de un numero; @c(08) modifica @c(%b) (un
-   adverbio!)  para rellenar el resultado con ceros a exactamente 8 digitos.
+   adverbio!)  para rellenar el resultado con ceros hasta exactamente 8 digitos.
 
 #    ..src > go
 #      package main
@@ -6427,7 +6427,7 @@
 #    (@l(#Section 6.5) shows an implementation of integer sets that can be much
 #    bigger than a byte.)
    (La @l(#Seccion 6.5) muestra una implementacion de conjuntos de numeros
-   enteros que pueden ser mucho mas grande que un byte).
+   enteros que pueden ser mucho mas grandes que un byte).
 
 #    In the shift operations @c(x<<n) and @c(x>>n), the @c(n) operand determines
 #    the number of bit positions to shift and must be unsigned; the @c(x) operand
@@ -6447,7 +6447,7 @@
    Los desplazamientos a la izquierda o derecha en enteros sin singno llenan los
    bits desocupados con ceros, pero los desplazamientos a la derecha de numeros
    con signo llenan los bits desocupados con copias del bit de signo. Por esta
-   razon, es importante utilizar aritmetica sin signo cuando se esta tratando un
+   razon, es importante utilizar aritmetica sin signo cuando se trata un
    entero como un patron de bits.
 
 #    Although Go provides unsigned numbers and arithmetic, we tend to use the
@@ -6459,7 +6459,7 @@
    @c(int) con signo incluso para cantidades que no pueden ser negativas, como
    la longitud de un arreglo, aunque @c(uint) puede parecer una eleccion mas
    obvia. De hecho, la funcion nativa @c(len) devuelve un @c(int) con signo,
-   como en este bucle que anuncia medallas de premio en el orden inverso:
+   como en este bucle que anuncia las medallas de premio en el orden inverso:
 
 #    ..src > go
 #      medals := []string{"gold", "silver", "bronze"}
@@ -6506,13 +6506,13 @@
 #    results in longer expressions, it also eliminates a whole class of problems
 #    and makes programs easier to understand.
    En general, se requiere una conversion explicita para convertir un valor de
-   un tipo a otro, y los operadores binarios para aritmetica y logica (excepto
+   un tipo a otro, y los operadores binarios de aritmetica y logica (excepto
    los desplazamientos) deben tener operandos del mismo tipo. Aunque esto
    resulta ocasionalmente en expresiones mas largas, tambien elimina toda una
-   clase de problemas y hace que los programas sean mas faciles de entender.
+   clase de problemas y facilita la comprension de los programas.
 
 #    As an example familiar from other contexts, consider this sequence:
-   Como ejemplo familiar de otros contextos, considere esta secuencia:
+   Como un ejemplo familiar de otros contextos, considere esta secuencia:
 
 #    ..src > go
 #      var apples int32 = 1
@@ -6526,7 +6526,7 @@
    < src..
 
 #    Attempting to compile these three declarations produces an error message:
-   Al intentar compilar estas tres declaraciones se genera un mensaje de error:
+   Intentar compilar estas tres declaraciones genera un mensaje de error:
 
 #    ..pre >
 #      invalid operation: apples + oranges (mismatched types int32 and int16)
@@ -6669,7 +6669,7 @@
      ascii := 'a'
      unicode := '𢉩'
      newline := '\n'
-     fmt.Printf("%d %[1]c %[1]q\n", ascii)   // "97 una 'a'"
+     fmt.Printf("%d %[1]c %[1]q\n", ascii)   // "97 a 'a'"
      fmt.Printf("%d %[1]c %[1]q\n", unicode) // "22269 𢉩 '𢉩'"
      fmt.Printf("%d %[1]q\n", newline)       // "10 '\n'"
    < src..
@@ -6690,7 +6690,7 @@
 #    @c(math.MaxFloat64) is about @c(1.8e308). The smallest positive values are
 #    near @c(1.4e-45) and @c(4.9e-324), respectively.
    Los valores de estos tipos numericos varian de pequeño a enorme. Los limites
-   de valores de coma flotante se pueden encontrar en el paquete @c(math). La
+   de los valores de coma flotante se pueden encontrar en el paquete @c(math). La
    constante @c(math.MaxFloat32), el mayor valor de @c(float32), es cerca de
    @c(3.4e38) y @c(math.MaxFloat64) es @c(1.8e308). Los valores positivos mas
    pequeños son @c(1.4e-45) y @c(4.9e-324), respectivamente.
@@ -6727,12 +6727,12 @@
      const e = 2.71828 // (aproximadamente)
    < src..
 
-#    Digits may be omitted before the decimal point (@c(.707)) or after it
-#    (@c(1.)). Very small or very large numbers are better written in scientific
+#    Digits may be omitted before the decimal point @%c(.707) or after it
+#    @%c(1.). Very small or very large numbers are better written in scientific
 #    notation, with the letter @c(e) or @c(E) preceding the decimal exponent:
-   Pueden omitirse los digitos antes del punto decimal (@c(.707)) o despues de
-   el (@c(1.)). Es mejor escribir numeros muy pequeños o muy grandes en notacion
-   cientifica, con la letra @c(e) o @c(E) precediendo el exponente decimal:
+   Pueden omitirse los digitos antes del punto decimal @%c(.707) o despues de
+   el @%c(1.). Es mejor escribir numeros muy pequeños o muy grandes en notacion
+   cientifica, con la letra @c(e) o @c(E) precediendo al exponente decimal:
 
 #    ..src > go
 #      const Avogadro = 6.02214129e23
@@ -6793,14 +6793,14 @@
 #    @c(math) package has functions for creating and detecting the special values
 #    defined by IEEE 754: the positive and negative infinities, which represent
 #    numbers of excessive magnitude and the result of division by zero; and NaN
-#    (@"(not a number)), the result of such mathematically dubious operations as
+#    @%"(not a number), the result of such mathematically dubious operations as
 #    @c(0/0) or @c[Sqrt(-1)].
    Ademas de una gran coleccion de las funciones matematicas comunes, el paquete
    @c(math) tiene funciones para crear y detectar los valores especiales
-   definidas por IEEE 754: los infinitos positivo y negativo, que representan
+   definidos por IEEE 754: los infinitos positivo y negativo, que representan
    los numeros de magnitud excesiva y el resultado de la division por cero; y
-   NaN (@"(not a number)), el resultado de operaciones matematicamente dudosas
-   como @c(0/0) o @[Sqrt(-1)].
+   NaN @%"(not a number), el resultado de operaciones matematicamente dudosas
+   como @c(0/0) o @c[Sqrt(-1)].
 
 #    ..src > go
 #      var z float64
@@ -6820,9 +6820,9 @@
    La funcion @c(math.IsNaN) prueba si su argumento es un valor no-numerico, y
    @c(math.NaN) devuelve ese valor. Es tentador utilizar NaN como un valor
    centinela en un calculo numerico, pero probar si el resultado de un calculo
-   especifico es igual NaN esta lleno de peligros, ya que cualquier comparacion
+   especifico es igual a NaN esta lleno de peligros, ya que cualquier comparacion
    con NaN @e(siempre) produce @c(false) (exepto @c(!=), que es siempre la
-   negacion de @c(==):
+   negacion de @c(==)):
 
 #    ..src > go
 #      nan := math.NaN()
@@ -6873,7 +6873,6 @@
 
 #      ..img > img/Figure-3.1.jpg
      ..img > img/Figure-3.1.jpg
-
 
 #    ..figure > @l(gopl.io/ch3/surface/main.go<>gopl.io/ch3/surface)
    ..figure > @l(gopl.io/ch3/surface/main.go<>gopl.io/ch3/surface)
@@ -7005,19 +7004,18 @@
 #    the far back corner. We plot from the back to the front so that background
 #    polygons may be obscured by foreground ones.
    La explicacion de como funciona el programa requiere solo geometria basica,
-   pero esta bien pasarla por alto, ya que el punto es ilustrar la computacion
-   de punto flotante. La esencia del programa es el mapeo entre tres sistemas de
+   pero esta bien pasarla por alto, ya que el punto es ilustrar el calculo
+   de coma flotante. La esencia del programa es el mapeo entre tres sistemas de
    coordenadas diferentes, como se muestra en la Figura 3.2. La primera es una
-   red de 2D de 100 y 100 celdas identificadas por coordenadas enteras @m[(i,
-   j)], a partir de @m[(0, 0)] en la esquina mas lejanas. Trazamos desde la
-   parte posterior al frente de modo que los poligonos del fondo puedan ser
-   oscurecidos por los primeros.
+   red en 2D de 100 y 100 celdas identificadas por coordenadas enteras @m[(i,
+   j)], a partir de @m[(0, 0)] en la esquina posterior. Trazamos de atras hacia
+   adelante para que los poligonos del fondo puedan ser oscurecidos por los
+   de primeros plano.
 
 #    The second coordinate system is a mesh of 3-D floating-point coordinates
 #    @m[(x, y, z)], where @m(x) and @m(y) are linear functions of @m(i) and @m(j),
 #    translated so that the origin is in the center, and scaled by the constant
-#    @c(xyrange). The height @m(z) is the value of the surface function @m[ƒ(x,
-#    y)].
+#    @c(xyrange). The height @m(z) is the value of the surface function @m[ƒ(x, y)].
    El segundo sistema de coordenadas es una malla de coordenadas 3-D de punto
    flotante @m[(x, y, z)], donde @m(x) e @m(y) son funciones lineales de @m(i) y
    @m(j), traducido de manera que el origen esta en el centro, y escalado por la
@@ -7029,8 +7027,8 @@
 #    isometric projection to map each 3-D point
    El tercer sistema de coordenadas es la superficie 2-D de la imagen, con
    @m[(0, 0)] en la esquina superior izquierda. Los puntos en este plano se
-   denotan @m[(sx, sy)]. Utilizamos una proyeccion isometrica para correlacionar
-   cada punto 3D
+   denotan @m[(sx, sy)]. Utilizamos una proyeccion isometrica para mapear
+   cada punto en 3D
 
 #    ..figure > Figure 3.2. Three different coordinate systems.
    ..figure > Figura 3.2. Tres sistemas de coordenadas diferentes.
@@ -7047,10 +7045,10 @@
 #    cosine of a 30° angle. The scale factor for @m(z), 0.4, is an arbitrary
 #    parameter.
    @m[(x, y, z)] sobre la superficie 2-D. Un punto aparece mas a la derecha en
-   la superficie cuanto mayor sera su valor @m(x) o menor sea su valor @m(y). Y
+   la superficie cuanto mayor sea su valor @m(x) o menor sea su valor @m(y). Y
    un punto aparece mas abajo en la superficie cuanto mayor sera su valor @m(x)
    o el valor @m(y), y cuanto menor sea su valor @m(z). Los factores de escala
-   horizontal o vertical para @m(x) e @m(y) se derivan del seno y coseno de un
+   horizontal o vertical para @m(x) y @m(y) se derivan del seno y coseno de un
    angulo de 30°. El factor de escala para @m(z), 0.4, es un parametro
    arbitrario.
 
@@ -7061,7 +7059,7 @@
    Para cada celda de la cuadricula 2-D, la funcion principal calcula las
    coordenadas en la superficie de imagen de las cuatro esquinas del poligono
    ABCD, donde B corresponde a @m[(i, j)] y A, C, y D son sus vecinos, entonces
-   imprime una instruccion SVG para dibujarla.
+   imprime una instruccion SVG para dibujarlo.
 
 #    @b(Exercise 3.1): If the function @c(f) returns a non-finite @c(float64)
 #    value, the SVG file will contain invalid @c(<polygon>) elements (although
@@ -7089,8 +7087,8 @@
 #    this:
    @b(Ejercicio 3.4): Siguiendo el enfoque del ejemplo Lissajous en la
    @l(#Seccion 1.7), construya un servidor web que calcule superficies y escriba
-   los datos SVG al cliente. El servidor debe establecer el manejador
-   @c(Content-Type) asi:
+   los datos SVG al cliente. El servidor debe establecer el encabezado
+   @c(Content-Type) de esta manera:
 
 #    ..src > go
 #      w.Header().Set("Content-Type", "image/svg+xml")
@@ -7103,11 +7101,11 @@
 #    standard heuristics to recognize common formats like PNG from the first 512
 #    bytes of the response and generates the proper header.) Allow the client to
 #    specify values like height, width, and color as HTTP request parameters.
-   (Este paso no era necesario en el ejemplo de Lissajous porque el servidor
+   (Este paso no era necesario en el ejemplo Lissajous porque el servidor
    utiliza la heuristica estandar para reconocer formatos comunes como PNG de
    los primeros 512 bytes de la respuesta y generar el encabezado
-   adecuado). Permitir al cliente especificar valores como altura, ancho y color
-   como parametros de peticion HTTP.
+   adecuado.) Permitir al cliente especificar valores como altura, ancho y color
+   como parametros de la peticion HTTP.
 
 # ** Section 3.3 <> Complex Numbers
 ** Seccion 3.3 <> Numeros complejos
@@ -8633,12 +8631,12 @@
 #     The @c(bytes.Buffer) type is extremely versatile, and when we discuss
 #     interfaces in @l(#Chapter 7), we’ll see how it may be used as a replacement
 #     for a file whenever an I/O function requires a sink for bytes
-#     (@c(io.Writer)) as @c(Fprintf) does above, or a source of bytes
-#     (@c(io.Reader)).
+#     @%c(io.Writer) as @c(Fprintf) does above, or a source of bytes
+#     @%c(io.Reader).
     El tipo @c(bytes.Buffer) es extremadamente versatil, y cuando hablemos de
     interfaces en el @l(#Capitulo 7), vamos a ver como se puede utilizar como un
     sustituto de un archivo cada vez que una funcion de E/S requiere un poso de
-    bytes (@c(io.Writer)) como @c(Fprintf), o una fuente de bytes (@c(io.Reader)).
+    bytes @%c(io.Writer) como @c(Fprintf), o una fuente de bytes @%c(io.Reader).
 
 #     @b(Exercise 3.10): Write a non-recursive version of @c(comma), using
 #     @c(bytes.Buffer) instead of string concatenation.
@@ -8668,9 +8666,9 @@
     cadena. Esto se realiza con las funciones del paquete @c(strconv).
 
 #     To convert an integer to a string, one option is to use @c(fmt.Sprintf);
-#     another is to use the function @c(strconv.Itoa) (@"(integer to ASCII)):
+#     another is to use the function @c(strconv.Itoa) @%"(integer to ASCII):
     Para convertir un entero a una cadena, una opcion es utilizar @c(fmt.Sprintf);
-    otra es utilizar la funcion @c(strconv.Itoa) (@"(entero a ASCII)):
+    otra es utilizar la funcion @c(strconv.Itoa) @%"(entero a ASCII):
 
 #     ..src > go
 #       x := 123
@@ -16033,12 +16031,12 @@
     < src..
 
 #     The problem of iteration variable capture is most often encountered when
-#     using the @c(go) statement (@l(#Chapter 8)) or with @c(defer) (which we will
+#     using the @c(go) statement @%l(#Chapter 8) or with @c(defer) (which we will
 #     see in a moment) since both may delay the execution of a function value
 #     until after the loop has finished. But the problem is not inherent to @c(go)
 #     or @c(defer).
     El problema de la iteracion de captura variable se encuentran mas a menudo
-    cuando se utiliza la sentencia @c(go) (@l(#Capitulo 8)) o con @c(defer) (que
+    cuando se utiliza la sentencia @c(go) @%l(#Capitulo 8) o con @c(defer) (que
     veremos en un momento), ya que ambos pueden retrasar la ejecucion de un
     valor de funcion hasta despues de que el bucle ha finalizado. Pero el
     problema no es inherente a @c(go) o @c(defer).
@@ -24665,10 +24663,10 @@
    utiliza a la inversa al analizar un tiempo usando @c(time.Parse).
 
 #    To connect to the server, we’ll need a client program such as @$(nc)
-#    (@"(netcat)), a standard utility program for manipulating network
+#    @%"(netcat), a standard utility program for manipulating network
 #    connections:
    Para conectarse al servidor, necesitaremos un programa cliente como @$(nc)
-   (@"(netcat)), un programa de utilidad estándar para manipular conexiones de
+   @%"(netcat), un programa de utilidad estándar para manipular conexiones de
    red:
 
 #    ..srci > sh

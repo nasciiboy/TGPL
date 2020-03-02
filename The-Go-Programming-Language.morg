@@ -2765,7 +2765,7 @@
     its @e(import path). These are the strings that appear in an @c(import)
     declaration like @c("gopl.io/ch2/tempconv"). The language specification
     doesn’t define where these strings come from or what they mean; it’s up to
-    the tools to interpret them. When using the @$(go) tool (@l(#Chapter 10)),
+    the tools to interpret them. When using the @$(go) tool @%l(#Chapter 10),
     an import path denotes a directory containing one or more Go source files
     that together make up the package.
 
@@ -3206,7 +3206,7 @@
   complicated data types by combining values of several simpler ones. Reference
   types are a diverse group that includes pointers @%l(#Section 2.3.2<>§2.3.2),
   slices @%l(#Section 4.2<>§4.2), maps @%l(#Section 4.3<>§4.3), functions
-  (@l(#Chapter 5)), and channels (@l(#Chapter 8)), but what they have in common
+  @%l(#Chapter 5), and channels @%l(#Chapter 8), but what they have in common
   is that they all refer to program variables or state @e(indirectly), so that
   the effect of an operation applied to one reference is observed by all copies
   of that reference. Finally, we’ll talk about interface types in @l(#Chapter
@@ -3555,8 +3555,8 @@
      const e = 2.71828 // (approximately)
    < src..
 
-   Digits may be omitted before the decimal point (@c(.707)) or after it
-   (@c(1.)). Very small or very large numbers are better written in scientific
+   Digits may be omitted before the decimal point @%c(.707) or after it
+   @%c(1.). Very small or very large numbers are better written in scientific
    notation, with the letter @c(e) or @c(E) preceding the decimal exponent:
 
    ..src > go
@@ -3593,7 +3593,7 @@
    @c(math) package has functions for creating and detecting the special values
    defined by IEEE 754: the positive and negative infinities, which represent
    numbers of excessive magnitude and the result of division by zero; and NaN
-   (@"(not a number)), the result of such mathematically dubious operations as
+   @%"(not a number), the result of such mathematically dubious operations as
    @c(0/0) or @c[Sqrt(-1)].
 
    ..src > go
@@ -3709,8 +3709,7 @@
    The second coordinate system is a mesh of 3-D floating-point coordinates
    @m[(x, y, z)], where @m(x) and @m(y) are linear functions of @m(i) and @m(j),
    translated so that the origin is in the center, and scaled by the constant
-   @c(xyrange). The height @m(z) is the value of the surface function @m[ƒ(x,
-   y)].
+   @c(xyrange). The height @m(z) is the value of the surface function @m[ƒ(x, y)].
 
    The third coordinate system is the 2-D image canvas, with @m[(0, 0)] in the
    top left corner. Points in this plane are denoted @m[(sx, sy)]. We use an
@@ -4575,8 +4574,8 @@
     The @c(bytes.Buffer) type is extremely versatile, and when we discuss
     interfaces in @l(#Chapter 7), we’ll see how it may be used as a replacement
     for a file whenever an I/O function requires a sink for bytes
-    (@c(io.Writer)) as @c(Fprintf) does above, or a source of bytes
-    (@c(io.Reader)).
+    @%c(io.Writer) as @c(Fprintf) does above, or a source of bytes
+    @%c(io.Reader).
 
     @b(Exercise 3.10): Write a non-recursive version of @c(comma), using
     @c(bytes.Buffer) instead of string concatenation.
@@ -4595,7 +4594,7 @@
     representations. This is done with functions from the @c(strconv) package.
 
     To convert an integer to a string, one option is to use @c(fmt.Sprintf);
-    another is to use the function @c(strconv.Itoa) (@"(integer to ASCII)):
+    another is to use the function @c(strconv.Itoa) @%"(integer to ASCII):
 
     ..src > go
       x := 123
@@ -8492,7 +8491,7 @@
     < src..
 
     The problem of iteration variable capture is most often encountered when
-    using the @c(go) statement (@l(#Chapter 8)) or with @c(defer) (which we will
+    using the @c(go) statement @%l(#Chapter 8) or with @c(defer) (which we will
     see in a moment) since both may delay the execution of a function value
     until after the loop has finished. But the problem is not inherent to @c(go)
     or @c(defer).
@@ -13053,7 +13052,7 @@
    mechanism is used in reverse when parsing a time using @c(time.Parse).
 
    To connect to the server, we’ll need a client program such as @$(nc)
-   (@"(netcat)), a standard utility program for manipulating network
+   @%"(netcat), a standard utility program for manipulating network
    connections:
 
    ..srci > sh

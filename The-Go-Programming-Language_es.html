@@ -1664,7 +1664,7 @@ panic  recover
 <pre class="code" ><code class="chroma" ><span class="nx">i</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">pc</span> <span class="p">{</span>
 </code></pre>
 <p>Veremos otros usos de funciones <code>init</code> en la siguiente seccion y en la <a href="#seccion-10.5" >Seccion 10.5</a>.</p>
-<p><b>Ejercicio 2.3</b>: Vuelve a escribir <code>PopCount</code> para utilizar un bucle en lugar de una sola expresion. Compare el rendimiento de las dos versiones. La (<a href="#seccion-11.4" >Seccion 11.4</a> muestra como comparar el rendimiento de diferentes implementaciones de forma sistematica.)</p>
+<p><b>Ejercicio 2.3</b>: Vuelve a escribir <code>PopCount</code> para utilizar un bucle en lugar de una sola expresion. Compare el rendimiento de las dos versiones. (La <a href="#seccion-11.4" >Seccion 11.4</a> muestra como comparar el rendimiento de diferentes implementaciones de forma sistematica.)</p>
 <p><b>Ejercicio 2.4</b>: Escribe una version de <code>PopCount</code> que cuente los bits desplazando su argumento a traves de posiciones de 64 bits, poniendo a prueba el bit mas a la derecha cada vez. Compare su rendimiento con la version de buesqueda por tabla.</p>
 <p><b>Ejercicio 2.5</b>: La expresion <code>x&amp;(x-1)</code> despeja el bit mas a la derecha no-cero de <code>x</code>. Escribe una version de <code>PopCount</code> que cuente bits mediante este hecho, y evalua su rendimiento.</p>
 </div>
@@ -1785,19 +1785,19 @@ panic  recover
 </div>
 <h2 id="capitulo-3" >Tipos de Datos Basicos</h2>
 <div class="hBody-2" >
-<p>En el fondo todo son solo bits, por supuesto, pero las computadoras operan fundamentalmente en numeros de tamaño fijo llamados palabras, que se interpretan como numeros enteros, numeros de punto flotante, conjuntos de bits, o direcciones de memoria, que luego se combinan en agregados mas grandes que representan paquetes, pixeles, carteras, poesia y todo lo demas. Go ofrece una variedad de formas de organizar los datos, con un espectro de tipos de datos que en un extremo coinciden con las caracteristicas del hardware y en el otro proporcionan lo que los programadores necesitan para representar convenientemente estructuras de datos complicadas.</p>
-<p>Los tipos de datos de Go se dividen en cuatro categorias: <em>tipos basicos</em>, <em>tipos de agregados</em>, <em>tipos de referencia</em>, y <em>tipos de interfaz</em>. Los tipos basicos, el tema de este capitulo, incluyen numeros, cadenas y booleanos. Los tipos agregados–arreglos (<a href="#seccion-4.1" >§4.1</a>) y estructuras (<a href="#seccion-4.4" >§4.4</a>)–forma tipos de datos mas complejos mediante la combinacion de otros valores mas simples. Los tipos de referencia son un grupo diverso, que incluye punteros (<a href="#seccion-2.3.2" >§2.3.2</a>), slices (<a href="#seccion-4.2" >§4.2</a>), mapas (<a href="#seccion-4.3" >§4.3</a>), funciones (<a href="#capitulo-5" >Capitulo 5</a>), y canales (<a href="#capitulo-8" >Capitulo 8</a>), pero lo que tienen en comun es que se todos ellos se refieren a variables del programa o estados indirectamente, por lo que el efecto de una operacion que se aplica a una referencia es observado por todas las copias de esa referencia. Por ultimo, hablaremos de los tipos de interfaz en el <a href="#capitulo-7" >Capitulo 7</a>.</p>
+<p>En el fondo todo son solo bits, por supuesto, pero las computadoras operan fundamentalmente en numeros de tamaño fijo llamados <em>palabras</em>, que se interpretan como numeros enteros, numeros de punto flotante, conjuntos de bits, o direcciones de memoria, que luego se combinan en agregados mas grandes que representan paquetes, pixeles, carteras, poesia y todo lo demas. Go ofrece una variedad de formas de organizar los datos, con un espectro de tipos de datos que en un extremo coinciden con las caracteristicas del hardware y en el otro proporcionan lo que los programadores necesitan para representar convenientemente estructuras de datos complicadas.</p>
+<p>Los tipos de datos de Go se dividen en cuatro categorias: <em>tipos basicos</em>, <em>tipos de agregados</em>, <em>tipos de referencia</em>, y <em>tipos de interfaz</em>. Los tipos basicos, el tema de este capitulo, incluyen numeros, cadenas y booleanos. Los tipos agregados–arreglos (<a href="#seccion-4.1" >§4.1</a>) y estructuras (<a href="#seccion-4.4" >§4.4</a>)–forma tipos de datos mas complejos mediante la combinacion de otros valores mas simples. Los tipos de referencia son un grupo diverso, que incluye punteros (<a href="#seccion-2.3.2" >§2.3.2</a>), slices (<a href="#seccion-4.2" >§4.2</a>), mapas (<a href="#seccion-4.3" >§4.3</a>), funciones (<a href="#capitulo-5" >Capitulo 5</a>), y canales (<a href="#capitulo-8" >Capitulo 8</a>), pero lo que tienen en comun es que todos ellos se refieren a variables del programa o estados <em>indirectamente</em>, por lo que el efecto de una operacion que se aplica a una referencia es observado por todas las copias de esa referencia. Por ultimo, hablaremos de los tipos de interfaz en el <a href="#capitulo-7" >Capitulo 7</a>.</p>
 </div>
 <h3 id="seccion-3.1" >Enteros</h3>
 <div class="hBody-3" >
-<p>Los tipos de datos numericos de Go incluyen varios tamaños de enteros, numeros de coma flotante y numeros complejos. Cada tipo numerico determina el tamaño y la firma de sus valores. Comencemos con numeros enteros.</p>
-<p>Go proporciona tanto aritmetica con y sin signo. Hay cuatro tamaños distintos de numeros enteros–8, 16, 32 y 64 bits–representados por los tipos <code>int8</code>, <code>int16</code>, <code>int32</code>, y <code>int64</code>, y las correspondientes versiones sin signo <code>uint8</code>, <code>uint16</code>, <code>uint32</code>, y <code>uint64</code>.</p>
-<p>Tambien hay dos tipos llamados simplemente <code>int</code> y <code>uint</code> que son del tamaño natural o mas eficiente para los numeros enteros con y sin signo en una plataforma en particular; <code>int</code> es de lejos el tipo numerico mas utilizado. Ambos tipos tienen el mismo tamaño, 32 o 64 bits, pero uno no debe hacer suposiciones sobre cual es; diferentes compiladores pueden tomar diferentes opciones incluso en hardware identico.</p>
-<p>El tipo <code>rune</code> es un sinonimo de <code>int32</code> y convencionalmente indica que un valor es un punto de codigo Unicode. Los dos nombres pueden utilizarse indistintamente. Del mismo modo, el tipo de <code>byte</code> es un sinonimo de <code>uint8</code>, y hace hincapie en que el valor es una pieza de datos en bruto mas que una pequeña cantidad numerica.</p>
+<p>Los tipos de datos numericos de Go incluyen varios tamaños de enteros, numeros de coma flotante y numeros complejos. Cada tipo numerico determina el tamaño y la firma de sus valores. Comencemos con los numeros enteros.</p>
+<p>Go proporciona aritmetica de numeros enteros con y sin signo. Hay cuatro tamaños distintos de numeros enteros–8, 16, 32 y 64 bits–representados por los tipos <code>int8</code>, <code>int16</code>, <code>int32</code>, y <code>int64</code>, y las correspondientes versiones sin signo <code>uint8</code>, <code>uint16</code>, <code>uint32</code>, y <code>uint64</code>.</p>
+<p>Tambien hay dos tipos llamados simplemente <code>int</code> y <code>uint</code> que son del tamaño natural o mas eficiente para los numeros enteros con y sin signo en una plataforma en particular; <code>int</code> es con mucho, el tipo numerico mas utilizado. Ambos tipos tienen el mismo tamaño, 32 o 64 bits, pero uno no debe hacer suposiciones sobre cual es; diferentes compiladores pueden tomar diferentes opciones incluso en hardware identico.</p>
+<p>El tipo <code>rune</code> es un sinonimo de <code>int32</code> y convencionalmente indica que un valor es un punto de codigo Unicode. Los dos nombres pueden utilizarse indistintamente. Del mismo modo, el tipo <code>byte</code> es un sinonimo de <code>uint8</code>, y hace hincapie en que el valor es una pieza de datos en bruto mas que una pequeña cantidad numerica.</p>
 <p>Por ultimo, existe un tipo entero sin signo <code>uintptr</code>, cuya anchura no se especifica, pero es suficiente para contener todos los bits de un valor de puntero. El tipo <code>uintptr</code> solo se utiliza para la programacion a bajo nivel, por ejemplo, en el limite de un programa Go con una libreria C o un sistema operativo. Veremos ejemplos de esto cuando nos ocupemos del paquete <code>unsafe</code> en el <a href="#capitulo-13" >Capitulo 13</a>.</p>
-<p>Independientemente de su tamaño, <code>int</code>, <code>uint</code> y <code>uintptr</code> son diferentes tipos de sus hermanos de tamaño de forma explicita. Por lo tanto <code>int</code> no es el mismo tipo que <code>int32</code>, incluso si el tamaño natural de enteros es de 32 bits, y requiere una conversion explicita utilizar un valor <code>int</code> donde se necesita un <code>int32</code>, y viceversa.</p>
-<p>Numeros con signo se representan en forma de complemento a 2, en el que el bit de orden superior esta reservado para el signo del numero y la gama de valores de un numero de <span class="math" >n</span> bits es de -2ⁿ⁻¹ a 2ⁿ⁻¹-1. Los numeros enteros sin signo usan el rango completo de bits para valores no negativos y por lo tanto tienen el rango de 0 a 2ⁿ-1. Por ejemplo, la gama de <code>int8</code> es de -128 a 127, mientras que la gama de <code>uint8</code> es de 0 a 255.</p>
-<p>En Go Los operadores binarios de aritmetica, logica y comparacion se enumeran aqui en orden decreciente de precedencia:</p>
+<p>Independientemente de su tamaño, <code>int</code>, <code>uint</code> y <code>uintptr</code> son diferentes tipos de sus hermanos de tamaño de forma explicita. Por lo tanto <code>int</code> no es el mismo tipo que <code>int32</code>, incluso si el tamaño natural de enteros es de 32 bits, y se requiere una conversion explicita para utilizar un valor <code>int</code> donde se necesita un <code>int32</code>, y viceversa.</p>
+<p>Los numeros con signo se representan en forma de complemento a 2, en el que el bit de orden superior esta reservado para el signo del numero y la gama de valores de un numero de <span class="math" >n</span> bits es de -2ⁿ⁻¹ a 2ⁿ⁻¹-1. Los numeros enteros sin signo usan el rango completo de bits para valores no negativos y por lo tanto tienen el rango de 0 a 2ⁿ-1. Por ejemplo, la gama de <code>int8</code> es de -128 a 127, mientras que la gama de <code>uint8</code> es de 0 a 255.</p>
+<p>Aqui se enumeran en orden decreciente de precedencia los operadores binarios de Go para aritmetica, logica y comparacion:</p>
 <div class="pre-block" >
 <pre class="pre" >*   /   %  &lt;&lt;  &gt;&gt;  &amp;   &amp;^
 +   -   |  ^
@@ -1806,9 +1806,9 @@ panic  recover
 ||
 </pre>
 </div>
-<p>Solo hay cinco niveles de precedencia para los operadores binarios. Los operadores en el mismo nivel se asocian a la izquierda, por lo que pueden ser necesarios parentesis, para mayor claridad, o para hacer que los operadores evaluan en el orden deseado en una expresion como <code>mask &amp; (1 &lt;&lt; 28)</code>.</p>
-<p>Cada operador en las dos primeras lineas de la tabla anterior, por ejemplo <code>+</code>, tiene un operador de asignacion correspondiente, como <code>+=</code> que pueden utilizarse para abreviar una instruccion de asignacion.</p>
-<p>Los operadores aritmeticos <code>+</code>, <code>-</code>, <code>*</code>, y <code>/</code> pueden aplicarse a numeros enteros, de coma flotante, y numeros complejos, pero el operador <code>%</code> solo se aplica a numeros enteros. El comportamiento de <code>%</code> para los numeros negativos varia a traves de los lenguajes de programacion.  En Go, el signo del resto es siempre el mismo que el signo del dividendo, por lo que <code>-5%3</code> y <code>-5%-3</code> son ambos <code>-2</code>. El comportamiento de <code>/</code> depende de si sus operandos son numeros enteros, por lo que <code>5.0/4.0</code> es <code>1.25</code>, pero <code>5/4</code> es <code>1</code> porque la division entera trunca el resultado hacia cero.</p>
+<p>Solo hay cinco niveles de precedencia para los operadores binarios. Los operadores en el mismo nivel se asocian a la izquierda, por lo que pueden ser necesarios parentesis, para mayor claridad, o para hacer que los operadores se evaluen en el orden deseado en una expresion como <code>mask &amp; (1 &lt;&lt; 28)</code>.</p>
+<p>Cada operador en las dos primeras lineas de la tabla anterior, por ejemplo <code>+</code>, tiene un operador de asignacion correspondiente, como <code>+=</code> que pueden utilizarse para abreviar una declaracion de asignacion.</p>
+<p>Los operadores aritmeticos <code>+</code>, <code>-</code>, <code>*</code>, y <code>/</code> pueden aplicarse a numeros enteros, de coma flotante, y numeros complejos, pero el operador <code>%</code> solo se aplica a numeros enteros. El comportamiento de <code>%</code> para los numeros negativos varia en los distintos lenguajes de programacion. En Go, el signo del resto es siempre el mismo que el signo del dividendo, por lo que <code>-5%3</code> y <code>-5%-3</code> son ambos <code>-2</code>. El comportamiento de <code>/</code> depende de si sus operandos son numeros enteros, por lo que <code>5.0/4.0</code> es <code>1.25</code>, pero <code>5/4</code> es <code>1</code> porque la division entera trunca el resultado hacia cero.</p>
 <p>Si el resultado de una operacion aritmetica, ya sea con o sin signo, tiene mas bits de los que pueden ser representados en el tipo del resultado, se dice que se <em>desborda</em>. Los bits de orden superior que no encajan se descartan silenciosamente. Si el numero original es un tipo con signo, el resultado podria ser negativo si el bit mas a la izquierda es un 1, como en el siguiente ejemplo:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">u</span> <span class="kt">uint8</span> <span class="p">=</span> <span class="mi">255</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">u</span><span class="p">,</span> <span class="nx">u</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nx">u</span><span class="o">*</span><span class="nx">u</span><span class="p">)</span> <span class="c1">// &#34;255 0 1&#34;
@@ -1816,7 +1816,7 @@ panic  recover
 <span class="kd">var</span> <span class="nx">i</span> <span class="kt">int8</span> <span class="p">=</span> <span class="mi">127</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nx">i</span><span class="o">*</span><span class="nx">i</span><span class="p">)</span> <span class="c1">// &#34;127 -128 1&#34;
 </span><span class="c1"></span></code></pre>
-<p>Dos numeros enteros del mismo tipo pueden compararse usando los operadores de comparacion binarios siguientes; el tipo de una expresion de comparacion es un booleano.</p>
+<p>Dos numeros enteros del mismo tipo pueden compararse usando los siguientes operadores de comparacion binarios; el tipo de una expresion de comparacion es un booleano.</p>
 <table border="1">
 <tbody>
 <tr><td><p><code>==</code></p>
@@ -1829,30 +1829,30 @@ panic  recover
 </td><td><p>menor que</p>
 </td></tr>
 <tr><td><p><code>&lt;=</code></p>
-</td><td><p>Menor que o igual a</p>
+</td><td><p>menor que o igual a</p>
 </td></tr>
 <tr><td><p><code>&gt;</code></p>
 </td><td><p>mayor que</p>
 </td></tr>
 <tr><td><p><code>&gt;=</code></p>
-</td><td><p>Mayor que o igual a</p>
+</td><td><p>mayor que o igual a</p>
 </td></tr>
 </tbody>
 </table>
-<p>De hecho, todos los valores de tipo basico–booleanos, numeros y cadenas–son comparables, lo que significa que dos valores del mismo tipo pueden ser comparados con los operadores <code>==</code> y <code>!=</code>. Por otra parte, los numeros enteros, numeros de punto flotante y cadenas son <em>ordenados</em> por los operadores de comparacion. Los valores de muchos otros tipos no son comparables y no se ordenan otros tipos. A medida que nos encontramos cada tipo, vamos a presentar las normas que rigen la comparacion de sus valores.</p>
+<p>De hecho, todos los valores de tipo basico–booleanos, numeros y cadenas–son comparables, lo que significa que dos valores del mismo tipo pueden ser comparados con los operadores <code>==</code> y <code>!=</code>. Por otra parte, los numeros enteros, numeros de punto flotante y cadenas son <em>ordenados</em> por los operadores de comparacion. Los valores de muchos otros tipos no son comparables y no se ordenan otros tipos. A medida que nos encontremos cada tipo, presentaremos las reglas que rigen la comparacion de sus valores.</p>
 <p>Tambien hay operadores unarios de suma y resta:</p>
 <table border="1">
 <tbody>
 <tr><td><p><code>+</code></p>
-</td><td><p>Unario positivo (sin efecto)</p>
+</td><td><p>unario positivo (sin efecto)</p>
 </td></tr>
 <tr><td><p><code>-</code></p>
-</td><td><p>Negacion unaria</p>
+</td><td><p>negacion unaria</p>
 </td></tr>
 </tbody>
 </table>
-<p>Para enteros, <code>+x</code> es una abreviatura de <code>0+x</code> y <code>-x</code> es una abreviatura de <code>0-x</code>; para los numeros de punto flotante y complejos, <code>+x</code> es <code>x</code> y <code>-x</code> es la negacion de <code>x</code>.</p>
-<p>Go tambien proporciona los siguientes operadores binarios a nivel de bits, cuyos cuatro primeros tratan a sus operandos como patrones de bits sin ningun concepto aritmetico o signo:</p>
+<p>Para enteros, <code>+x</code> es una abreviatura de <code>0+x</code> y <code>-x</code> es la abreviatura de <code>0-x</code>; para los numeros de punto flotante y complejos, <code>+x</code> es <code>x</code> y <code>-x</code> es la negacion de <code>x</code>.</p>
+<p>Go tambien proporciona los siguientes operadores binarios a nivel de bits, cuyos cuatro primeros tratan sus operandos como patrones de bits sin ningun concepto de arrastre o signo:</p>
 <table border="1">
 <tbody>
 <tr><td><p><code>&amp;</code></p>
@@ -1876,7 +1876,7 @@ panic  recover
 </tbody>
 </table>
 <p>El operador bit a bit <code>^</code> es un OR exclusivo (XOR) cuando se utiliza como un operador binario (coloca un uno en cada posicion en donde sus operandos tienen bits distintos, y un cero en donde son iguales), pero cuando se utiliza como un operador de prefijo unario es el complemento a uno; es decir, devuelve un valor con cada bit en su operando invertido. El operador <code>&amp;^</code> es para lipiar bits (AND NOT): en la expresion <code>z = x &amp;^ y</code>, cada bit de <code>z</code> es 0 si el bit correspondiente de <code>y</code> es 1; de lo contrario es igual al bit correspondiente de <code>x</code>.</p>
-<p>El siguiente codigo muestra como se pueden utilizar las operaciones a nivel de bit para interpretar un valor <code>uint8</code> como un conjunto compacto y eficiente de 8 bits independientes. Se utiliza el verbo <code>%b</code> de <code>Printf</code> para imprimir los digitos binarios de un numero; <code>08</code> modifica <code>%b</code> (un adverbio!)  para rellenar el resultado con ceros a exactamente 8 digitos.</p>
+<p>El siguiente codigo muestra como se pueden utilizar las operaciones a nivel de bit para interpretar un valor <code>uint8</code> como un conjunto compacto y eficiente de 8 bits independientes. Se utiliza el verbo <code>%b</code> de <code>Printf</code> para imprimir los digitos binarios de un numero; <code>08</code> modifica <code>%b</code> (un adverbio!)  para rellenar el resultado con ceros hasta exactamente 8 digitos.</p>
 <pre class="code" ><code class="chroma" ><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
@@ -1902,10 +1902,10 @@ panic  recover
 </span><span class="c1"></span>  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%08b\n&#34;</span><span class="p">,</span> <span class="nx">x</span><span class="o">&gt;&gt;</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// &#34;00010001&#34;, el conjunto {0, 4}
 </span><span class="c1"></span><span class="p">}</span>
 </code></pre>
-<p>(La <a href="#seccion-6.5" >Seccion 6.5</a> muestra una implementacion de conjuntos de numeros enteros que pueden ser mucho mas grande que un byte).</p>
+<p>(La <a href="#seccion-6.5" >Seccion 6.5</a> muestra una implementacion de conjuntos de numeros enteros que pueden ser mucho mas grandes que un byte).</p>
 <p>En las operaciones de desplazamiento <code>x&lt;&lt;n</code> y <code>x&gt;&gt;n</code>, el operando <code>n</code> determina el numero de posiciones de bits a cambiar y debe ser sin signo; el operando <code>x</code> puede tener o no signo. Aritmeticamente, el desplazamiento a la izquierda <code>x&lt;&lt;n</code> es equivalente a la multiplicacion por 2ⁿ y un desplazamiento a la derecha <code>x&gt;&gt;n</code> es equivalente a dividir por 2ⁿ.</p>
-<p>Los desplazamientos a la izquierda o derecha en enteros sin singno llenan los bits desocupados con ceros, pero los desplazamientos a la derecha de numeros con signo llenan los bits desocupados con copias del bit de signo. Por esta razon, es importante utilizar aritmetica sin signo cuando se esta tratando un entero como un patron de bits.</p>
-<p>Aunque Go proporciona aritmetica y numeros sin signo, se tiende a utilizar un <code>int</code> con signo incluso para cantidades que no pueden ser negativas, como la longitud de un arreglo, aunque <code>uint</code> puede parecer una eleccion mas obvia. De hecho, la funcion nativa <code>len</code> devuelve un <code>int</code> con signo, como en este bucle que anuncia medallas de premio en el orden inverso:</p>
+<p>Los desplazamientos a la izquierda o derecha en enteros sin singno llenan los bits desocupados con ceros, pero los desplazamientos a la derecha de numeros con signo llenan los bits desocupados con copias del bit de signo. Por esta razon, es importante utilizar aritmetica sin signo cuando se trata un entero como un patron de bits.</p>
+<p>Aunque Go proporciona aritmetica y numeros sin signo, se tiende a utilizar un <code>int</code> con signo incluso para cantidades que no pueden ser negativas, como la longitud de un arreglo, aunque <code>uint</code> puede parecer una eleccion mas obvia. De hecho, la funcion nativa <code>len</code> devuelve un <code>int</code> con signo, como en este bucle que anuncia las medallas de premio en el orden inverso:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">medallas</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;oro&#34;</span><span class="p">,</span> <span class="s">&#34;plata&#34;</span><span class="p">,</span> <span class="s">&#34;bronce&#34;</span><span class="p">}</span>
 <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">medallas</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span> <span class="p">{</span>
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">medallas</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="c1">// &#34;bornce&#34;, &#34;plata&#34;, &#34;oro&#34;
@@ -1913,13 +1913,13 @@ panic  recover
 </code></pre>
 <p>La alternativa seria calamitosa. Si <code>len</code> devuelve un numero sin signo, entonces <code>i</code> tambien seria un <code>uint</code>, y la condicion <code>i &gt;= 0</code> siempre seria verdadera por definicion. Despues de la tercera iteracion, en la cual <code>i == 0</code>, la instruccion <code>i--</code> no haria que <code>i</code> se volviera -1, en cambio seria el valor maximo de <code>uint</code> (es decir, 2⁶⁴-1), y la evaluacion de <code>medallas[i]</code> fallaria en tiempo de ejecucion, o entraria en <em>panico</em> (<a href="#seccion-5.9" >§5.9</a>), al tratar de acceder a un elemento fuera de los limites del slice.</p>
 <p>Por esta razon, los numeros sin signo tienden a utilizarse solo cuando se requieren sus operadores bit a bit u operadores aritmeticos peculiares, como cuando se implementan conjuntos de bits, se analizan formatos binarios de archivos o se usan hash y criptografia. Normalmente no se usan para cantidades meramente no negativas.</p>
-<p>En general, se requiere una conversion explicita para convertir un valor de un tipo a otro, y los operadores binarios para aritmetica y logica (excepto los desplazamientos) deben tener operandos del mismo tipo. Aunque esto resulta ocasionalmente en expresiones mas largas, tambien elimina toda una clase de problemas y hace que los programas sean mas faciles de entender.</p>
-<p>Como ejemplo familiar de otros contextos, considere esta secuencia:</p>
+<p>En general, se requiere una conversion explicita para convertir un valor de un tipo a otro, y los operadores binarios de aritmetica y logica (excepto los desplazamientos) deben tener operandos del mismo tipo. Aunque esto resulta ocasionalmente en expresiones mas largas, tambien elimina toda una clase de problemas y facilita la comprension de los programas.</p>
+<p>Como un ejemplo familiar de otros contextos, considere esta secuencia:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">manzanas</span> <span class="kt">int32</span> <span class="p">=</span> <span class="mi">1</span>
 <span class="kd">var</span> <span class="nx">naranjas</span> <span class="kt">int16</span> <span class="p">=</span> <span class="mi">2</span>
 <span class="kd">var</span> <span class="nx">compota</span> <span class="kt">int</span> <span class="p">=</span> <span class="nx">manzanas</span> <span class="o">+</span> <span class="nx">naranjas</span> <span class="c1">// Error de compiacion
 </span><span class="c1"></span></code></pre>
-<p>Al intentar compilar estas tres declaraciones se genera un mensaje de error:</p>
+<p>Intentar compilar estas tres declaraciones genera un mensaje de error:</p>
 <div class="pre-block" >
 <pre class="pre" >invalid operation: manzanas + naranjas (mismatched types int32 and int16)
 </pre>
@@ -1953,7 +1953,7 @@ panic  recover
 <pre class="code" ><code class="chroma" ><span class="nx">ascii</span> <span class="o">:=</span> <span class="sc">&#39;a&#39;</span>
 <span class="nx">unicode</span> <span class="o">:=</span> <span class="sc">&#39;𢉩&#39;</span>
 <span class="nx">newline</span> <span class="o">:=</span> <span class="sc">&#39;\n&#39;</span>
-<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%d %[1]c %[1]q\n&#34;</span><span class="p">,</span> <span class="nx">ascii</span><span class="p">)</span>   <span class="c1">// &#34;97 una &#39;a&#39;&#34;
+<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%d %[1]c %[1]q\n&#34;</span><span class="p">,</span> <span class="nx">ascii</span><span class="p">)</span>   <span class="c1">// &#34;97 a &#39;a&#39;&#34;
 </span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%d %[1]c %[1]q\n&#34;</span><span class="p">,</span> <span class="nx">unicode</span><span class="p">)</span> <span class="c1">// &#34;22269 𢉩 &#39;𢉩&#39;&#34;
 </span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%d %[1]q\n&#34;</span><span class="p">,</span> <span class="nx">newline</span><span class="p">)</span>       <span class="c1">// &#34;10 &#39;\n&#39;&#34;
 </span><span class="c1"></span></code></pre>
@@ -1961,7 +1961,7 @@ panic  recover
 <h3 id="seccion-3.2" >Numeros de punto flotante</h3>
 <div class="hBody-3" >
 <p>Go ofrece dos tamaños de numeros de punto flotante, <code>float32</code> y <code>float64</code>. Sus propiedades aritmeticas se rigen por el estandar IEEE 754 implementado por todas las CPUs modernas.</p>
-<p>Los valores de estos tipos numericos varian de pequeño a enorme. Los limites de valores de coma flotante se pueden encontrar en el paquete <code>math</code>. La constante <code>math.MaxFloat32</code>, el mayor valor de <code>float32</code>, es cerca de <code>3.4e38</code> y <code>math.MaxFloat64</code> es <code>1.8e308</code>. Los valores positivos mas pequeños son <code>1.4e-45</code> y <code>4.9e-324</code>, respectivamente.</p>
+<p>Los valores de estos tipos numericos varian de pequeño a enorme. Los limites de los valores de coma flotante se pueden encontrar en el paquete <code>math</code>. La constante <code>math.MaxFloat32</code>, el mayor valor de <code>float32</code>, es cerca de <code>3.4e38</code> y <code>math.MaxFloat64</code> es <code>1.8e308</code>. Los valores positivos mas pequeños son <code>1.4e-45</code> y <code>4.9e-324</code>, respectivamente.</p>
 <p>Un <code>float32</code> proporciona aproximadamente seis digitos decimales de precision, mientras que un <code>float64</code> proporciona alrededor de 15 digitos; <code>float64</code> debe ser preferido para la mayoria de los propositos porque los calculos sobre <code>float32</code> acumulan errores rapidamente a menos que sea bastante cuidadoso, y el numero entero positivo mas pequeño que no se puede representar exactamente como <code>float32</code> no es grande:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">f</span> <span class="kt">float32</span> <span class="p">=</span> <span class="mi">16777216</span> <span class="c1">// 1 &lt;&lt; 24
 </span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">f</span> <span class="o">==</span> <span class="nx">f</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>    <span class="c1">// &#34;true&#34;!
@@ -1969,7 +1969,7 @@ panic  recover
 <p>Los numeros de punto flotante se pueden escribir literalmente usando decimales, asi:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">const</span> <span class="nx">e</span> <span class="p">=</span> <span class="mf">2.71828</span> <span class="c1">// (aproximadamente)
 </span><span class="c1"></span></code></pre>
-<p>Pueden omitirse los digitos antes del punto decimal (<code>.707</code>) o despues de el (<code>1.</code>). Es mejor escribir numeros muy pequeños o muy grandes en notacion cientifica, con la letra <code>e</code> o <code>E</code> precediendo el exponente decimal:</p>
+<p>Pueden omitirse los digitos antes del punto decimal (<code>.707</code>) o despues de el (<code>1.</code>). Es mejor escribir numeros muy pequeños o muy grandes en notacion cientifica, con la letra <code>e</code> o <code>E</code> precediendo al exponente decimal:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">const</span> <span class="nx">Avogadro</span> <span class="p">=</span> <span class="mf">6.02214129e23</span>
 <span class="kd">const</span> <span class="nx">Planck</span>   <span class="p">=</span> <span class="mf">6.62606957e-34</span>
 </code></pre>
@@ -1990,11 +1990,11 @@ x = 6 eˣ =  403.429
 x = 7 eˣ = 1096.633
 </pre>
 </div>
-<p>Ademas de una gran coleccion de las funciones matematicas comunes, el paquete <code>math</code> tiene funciones para crear y detectar los valores especiales definidas por IEEE 754: los infinitos positivo y negativo, que representan los numeros de magnitud excesiva y el resultado de la division por cero; y NaN (<q>not a number</q>), el resultado de operaciones matematicamente dudosas como <code>0/0</code> o [Sqrt(-1)].</p>
+<p>Ademas de una gran coleccion de las funciones matematicas comunes, el paquete <code>math</code> tiene funciones para crear y detectar los valores especiales definidos por IEEE 754: los infinitos positivo y negativo, que representan los numeros de magnitud excesiva y el resultado de la division por cero; y NaN (<q>not a number</q>), el resultado de operaciones matematicamente dudosas como <code>0/0</code> o <code>Sqrt(-1)</code>.</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">z</span> <span class="kt">float64</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">z</span><span class="p">,</span> <span class="o">-</span><span class="nx">z</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="nx">z</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="nx">z</span><span class="p">,</span> <span class="nx">z</span><span class="o">/</span><span class="nx">z</span><span class="p">)</span> <span class="c1">// &#34;0 -0 +Inf -Inf NaN&#34;
 </span><span class="c1"></span></code></pre>
-<p>La funcion <code>math.IsNaN</code> prueba si su argumento es un valor no-numerico, y <code>math.NaN</code> devuelve ese valor. Es tentador utilizar NaN como un valor centinela en un calculo numerico, pero probar si el resultado de un calculo especifico es igual NaN esta lleno de peligros, ya que cualquier comparacion con NaN <em>siempre</em> produce <code>false</code> (exepto <code>!=</code>, que es siempre la negacion de <code>==</code>:</p>
+<p>La funcion <code>math.IsNaN</code> prueba si su argumento es un valor no-numerico, y <code>math.NaN</code> devuelve ese valor. Es tentador utilizar NaN como un valor centinela en un calculo numerico, pero probar si el resultado de un calculo especifico es igual a NaN esta lleno de peligros, ya que cualquier comparacion con NaN <em>siempre</em> produce <code>false</code> (exepto <code>!=</code>, que es siempre la negacion de <code>==</code>):</p>
 <pre class="code" ><code class="chroma" ><span class="nx">nan</span> <span class="o">:=</span> <span class="nx">math</span><span class="p">.</span><span class="nx">NaN</span><span class="p">()</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">nan</span> <span class="o">==</span> <span class="nx">nan</span><span class="p">,</span> <span class="nx">nan</span> <span class="p">&lt;</span> <span class="nx">nan</span><span class="p">,</span> <span class="nx">nan</span> <span class="p">&gt;</span> <span class="nx">nan</span><span class="p">)</span> <span class="c1">// &#34;false false false&#34;
 </span><span class="c1"></span></code></pre>
@@ -2073,24 +2073,24 @@ x = 7 eˣ = 1096.633
 </code></pre>
 </div>
 <p>Observe que la funcion <code>corner</code> devuelve dos valores, las coordenadas de la esquina de la celda.</p>
-<p>La explicacion de como funciona el programa requiere solo geometria basica, pero esta bien pasarla por alto, ya que el punto es ilustrar la computacion de punto flotante. La esencia del programa es el mapeo entre tres sistemas de coordenadas diferentes, como se muestra en la Figura 3.2. La primera es una red de 2D de 100 y 100 celdas identificadas por coordenadas enteras <span class="math" >(i, j)</span>, a partir de <span class="math" >(0, 0)</span> en la esquina mas lejanas. Trazamos desde la parte posterior al frente de modo que los poligonos del fondo puedan ser oscurecidos por los primeros.</p>
+<p>La explicacion de como funciona el programa requiere solo geometria basica, pero esta bien pasarla por alto, ya que el punto es ilustrar el calculo de coma flotante. La esencia del programa es el mapeo entre tres sistemas de coordenadas diferentes, como se muestra en la Figura 3.2. La primera es una red en 2D de 100 y 100 celdas identificadas por coordenadas enteras <span class="math" >(i, j)</span>, a partir de <span class="math" >(0, 0)</span> en la esquina posterior. Trazamos de atras hacia adelante para que los poligonos del fondo puedan ser oscurecidos por los de primeros plano.</p>
 <p>El segundo sistema de coordenadas es una malla de coordenadas 3-D de punto flotante <span class="math" >(x, y, z)</span>, donde <span class="math" >x</span> e <span class="math" >y</span> son funciones lineales de <span class="math" >i</span> y <span class="math" >j</span>, traducido de manera que el origen esta en el centro, y escalado por la constante <code>xyrange</code>. La altura <span class="math" >z</span> es el valor de la funcion de superficie <span class="math" >ƒ(x, y)</span>.</p>
-<p>El tercer sistema de coordenadas es la superficie 2-D de la imagen, con <span class="math" >(0, 0)</span> en la esquina superior izquierda. Los puntos en este plano se denotan <span class="math" >(sx, sy)</span>. Utilizamos una proyeccion isometrica para correlacionar cada punto 3D</p>
+<p>El tercer sistema de coordenadas es la superficie 2-D de la imagen, con <span class="math" >(0, 0)</span> en la esquina superior izquierda. Los puntos en este plano se denotan <span class="math" >(sx, sy)</span>. Utilizamos una proyeccion isometrica para mapear cada punto en 3D</p>
 <div class="figure" >
 <h1 class="figure">Figura 3.2. Tres sistemas de coordenadas diferentes.</h1>
 <figure>
 <img src="img/Figure-3.2.jpg" />
 </figure>
 </div>
-<p><span class="math" >(x, y, z)</span> sobre la superficie 2-D. Un punto aparece mas a la derecha en la superficie cuanto mayor sera su valor <span class="math" >x</span> o menor sea su valor <span class="math" >y</span>. Y un punto aparece mas abajo en la superficie cuanto mayor sera su valor <span class="math" >x</span> o el valor <span class="math" >y</span>, y cuanto menor sea su valor <span class="math" >z</span>. Los factores de escala horizontal o vertical para <span class="math" >x</span> e <span class="math" >y</span> se derivan del seno y coseno de un angulo de 30°. El factor de escala para <span class="math" >z</span>, 0.4, es un parametro arbitrario.</p>
-<p>Para cada celda de la cuadricula 2-D, la funcion principal calcula las coordenadas en la superficie de imagen de las cuatro esquinas del poligono ABCD, donde B corresponde a <span class="math" >(i, j)</span> y A, C, y D son sus vecinos, entonces imprime una instruccion SVG para dibujarla.</p>
+<p><span class="math" >(x, y, z)</span> sobre la superficie 2-D. Un punto aparece mas a la derecha en la superficie cuanto mayor sea su valor <span class="math" >x</span> o menor sea su valor <span class="math" >y</span>. Y un punto aparece mas abajo en la superficie cuanto mayor sera su valor <span class="math" >x</span> o el valor <span class="math" >y</span>, y cuanto menor sea su valor <span class="math" >z</span>. Los factores de escala horizontal o vertical para <span class="math" >x</span> y <span class="math" >y</span> se derivan del seno y coseno de un angulo de 30°. El factor de escala para <span class="math" >z</span>, 0.4, es un parametro arbitrario.</p>
+<p>Para cada celda de la cuadricula 2-D, la funcion principal calcula las coordenadas en la superficie de imagen de las cuatro esquinas del poligono ABCD, donde B corresponde a <span class="math" >(i, j)</span> y A, C, y D son sus vecinos, entonces imprime una instruccion SVG para dibujarlo.</p>
 <p><b>Ejercicio 3.1</b>: Si la funcion <code>f</code> devuelve un valor <code>float64</code> no-finito, el archivo SVG contendra elementos <code>&lt;polygon&gt;</code> no validos (aunque muchos procesadores SVG manejan esto con gracia). Modifique el programa para omitir poligonos no validos.</p>
 <p><b>Ejercicio 3.2</b>: Experimente con visualizaciones de otras funciones del paquete <code>math</code>. ¿Puede usted producir una caja de huevos, moguls, o una montura?</p>
 <p><b>Ejercicio 3.3</b>: Coloree cada poligono en funcion de su altura, por lo que los picos son de color rojo (<code>#ff0000</code>) y los valles azul (<code>#0000ff</code>).</p>
-<p><b>Ejercicio 3.4</b>: Siguiendo el enfoque del ejemplo Lissajous en la <a href="#seccion-1.7" >Seccion 1.7</a>, construya un servidor web que calcule superficies y escriba los datos SVG al cliente. El servidor debe establecer el manejador <code>Content-Type</code> asi:</p>
+<p><b>Ejercicio 3.4</b>: Siguiendo el enfoque del ejemplo Lissajous en la <a href="#seccion-1.7" >Seccion 1.7</a>, construya un servidor web que calcule superficies y escriba los datos SVG al cliente. El servidor debe establecer el encabezado <code>Content-Type</code> de esta manera:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">w</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&#34;Content-Type&#34;</span><span class="p">,</span> <span class="s">&#34;image/svg+xml&#34;</span><span class="p">)</span>
 </code></pre>
-<p>(Este paso no era necesario en el ejemplo de Lissajous porque el servidor utiliza la heuristica estandar para reconocer formatos comunes como PNG de los primeros 512 bytes de la respuesta y generar el encabezado adecuado). Permitir al cliente especificar valores como altura, ancho y color como parametros de peticion HTTP.</p>
+<p>(Este paso no era necesario en el ejemplo Lissajous porque el servidor utiliza la heuristica estandar para reconocer formatos comunes como PNG de los primeros 512 bytes de la respuesta y generar el encabezado adecuado.) Permitir al cliente especificar valores como altura, ancho y color como parametros de la peticion HTTP.</p>
 </div>
 <h3 id="seccion-3.3" >Numeros complejos</h3>
 <div class="hBody-3" >
