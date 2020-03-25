@@ -9354,14 +9354,14 @@
   basicos de diversas maneras. Hablaremos de cuatro de estos tipos–arreglos,
   slices, mapas y estructuras–y al final del capitulo mostraremos como los datos
   estructurados que utilizan estos tipos pueden ser codificados y analizados a
-  partir de datos JSON y usados para generar HTML desde plantillas.
+  partir de datos JSON y usados para generar HTML a partir de plantillas.
 
 #   Arrays and structs are @e(aggregate) types; their values are concatenations of
 #   other values in memory. Arrays are homogeneous—their elements all have the
 #   same type—whereas structs are heterogeneous. Both arrays and structs are fixed
 #   size. In contrast, slices and maps are dynamic data structures that grow as
 #   values are added.
-  Arreglos y estructuras son tipos de @e(agregados); sus valores son
+  Los arreglos y estructuras son tipos de @e(agregados); sus valores son
   concatenaciones de otros valores en la memoria. Los arreglos son homogeneos,
   sus elementos tienen el mismo tipo, mientras que las estructuras son
   heterogeneas. Los arreglos y las estructuras son de tamaño fijo. Por el
@@ -9470,7 +9470,7 @@
 #    < src..
    ..src > go
      q := [3]int{1, 2, 3}
-     q = [4]int{1, 2, 3, 4} // error de compilacion: no puede asignar [4]int a [3]int
+     q  = [4]int{1, 2, 3, 4} // error de compilacion: no puede asignar [4]int a [3]int
    < src..
 
 #    As we’ll see, the literal syntax is similar for arrays, slices, maps, and
@@ -9479,7 +9479,7 @@
    Como veremos, la sintaxis literal es similar para arreglos, slices, mapas y
    estructuras. El formato especifico anterior es una lista de valores en
    orden, pero tambien es posible especificar una lista de pares de indice y
-   valor, como aqui:
+   valor, como esta:
 
 #    ..src > go
 #      type Currency int
@@ -9561,7 +9561,7 @@
 #    different. This program prints and compares the SHA256 digests of @c("x") and
 #    @c("X"):
    Como un ejemplo mas plausible, la funcion @c(Sum256) en el paquete
-   @c(crypto/sha256) produce el hash criptografico SHA256 o @e(digest) de un
+   @c(crypto/sha256) produce el hash criptografico SHA256 o @e(digerido) de un
    mensaje almacenado en un slice arbitrario de bytes. El hash tiene 256 bits,
    por lo que su tipo es @c([32]byte) . Si dos hash son los mismos, es muy
    probable que los dos mensajes sean iguales; si los hash difieren, los dos
@@ -9621,16 +9621,16 @@
    Cuando se llama a una funcion, se asigna una copia de cada valor de argumento
    a la variable de parametro correspondiente, por lo que la funcion recibe una
    copia, no el original. Pasar grandes arreglos de esta manera puede ser
-   ineficiente, y cualquier cambio que la funcion hace a elementos de arreglo
-   afectan solo a la copia, no al original. En este sentido, Go trata a los
+   ineficiente, y cualquier cambio que la funcion haga en los elementos del arreglo
+   afecta solo a la copia, no al original. En este sentido, Go trata a los
    arreglos como a cualquier otro tipo, pero este comportamiento es diferente de
-   otros lenguajes que implicitamente pasan arreglos por referencia.
+   otros lenguajes que implicitamente pasan los arreglos por referencia.
 
 #    Of course, we can explicitly pass a pointer to an array so that any
 #    modifications the function makes to array elements will be visible to the
 #    caller. This function zeroes the contents of a @c([32]byte) array:
    Por supuesto, podemos pasar explicitamente un puntero a un arreglo para que
-   cualquier modificacion que la funcion hace a los elementos del arreglo sean
+   cualquier modificacion que la funcion haga a los elementos del arreglo sea
    visibles para quien llama a la funcion. Esta funcion pone a cero el contenido
    de un arreglo @c([32]byte):
 
@@ -9652,7 +9652,7 @@
 #    The array literal @c([32]byte{}) yields an array of 32 bytes. Each element of
 #    the array has the zero value for @c(byte), which is zero. We can use that
 #    fact to write a different version of @c(zero):
-   El arreglo literal @c([32]byte{}) produce una serie de 32 bytes. Cada
+   El arreglo literal @c([32]byte{}) produce un arreglo de 32 bytes. Cada
    elemento del arreglo tiene el valor cero para @c(byte), que es cero. Podemos
    utilizar este hecho para escribir una version diferente de zero:
 
@@ -9680,12 +9680,12 @@
    aceptara un puntero a una variable @c([16]byte), por ejemplo, ni hay ninguna
    manera de añadir o eliminar elementos del arreglo. Por estas razones, aparte
    de casos especiales como el hash SHA256 de tamaño fijo, rara vez se usan
-   arreglos como parametros de funcion o resultados; en su lugar, utilizamos slices.
+   arreglos como parametros o resultados de funcion; en su lugar, utilizamos slices.
 
 #    @b(Exercise 4.1): Write a function that counts the number of bits that are
 #    different in two SHA256 hashes. (See @c(PopCount) from @l(#Section 2.6.2).)
    @b(Ejercicio 4.1): Escribir una funcion que cuente el numero de bits que son
-   diferentes en dos hash SHA256. (Ver @c(PopCount) en la @l(#Seccion 2.6.2).)
+   diferentes en dos hash SHA256. (Ver @c(PopCount) en la @l(#Seccion o2.6.2).)
 
 #    @b(Exercise 4.2): Write a program that prints the SHA256 hash of its standard
 #    input by default but supports a command-line flag to print the SHA384 or
@@ -9702,7 +9702,7 @@
 #    looks like an array type without a size.
    Los slices representan secuencias de longitud variable cuyos elementos tienen
    todos el mismo tipo. Un tipo slice se escribe @c([]T), donde los elementos
-   tienen el tipo @c(T); es como un tipo arreglo pero sin un tamaño.
+   tienen el tipo @c(T); es como un tipo arreglo pero sin tamaño.
 
 #    Arrays and slices are intimately connected. A slice is a lightweight data
 #    structure that gives access to a subsequence (or perhaps all) of the elements
@@ -9716,13 +9716,13 @@
    Arreglos y slices estan intimamente conectados. Un slice es una estructura de
    datos ligera que da acceso a una subsecuencia de (o tal vez a todos) los
    elementos de un arreglo, que se conoce como @e(arreglo subyacente) del
-   slice. Una slice tiene tres componentes: un puntero, una longitud y una
+   slice. Un slice tiene tres componentes: un puntero, una longitud y una
    capacidad. El puntero apunta al primer elemento del arreglo que se puede
    acceder a traves del slice, que no es necesariamente el primer elemento del
    arreglo. La longitud es el numero de elementos del slice; no puede exceder la
-   capacidad, que suele ser el numero de elementos entre el inicio de la
-   division y el final del arreglo subyacente. Las funciones nativas @c(len) y
-   @c(cap) regresan esos valores.
+   capacidad, que suele ser el numero de elementos entre el inicio del slice
+   y el final del arreglo subyacente. Las funciones nativas @c(len) y
+   @c(cap) devuelven esos valores.
 
 #    Multiple slices can share the same underlying array and may refer to
 #    overlapping parts of that array. Figure 4.1 shows an array of strings for the
@@ -9755,7 +9755,6 @@
 #      ..img > img/Figure-4.1.jpg
      ..img > img/Figure-4.1.jpg
 
-
 #    The @e(slice operator) @c(s[i:j]), where @c(0) ≤ @c(i) ≤ @c(j) ≤ @c[cap(s)],
 #    creates a new slice that refers to elements @c(i) through @c(j-1) of the
 #    sequence @c(s), which may be an array variable, a pointer to an array, or
@@ -9769,7 +9768,7 @@
    @c(j-1) de la secuencia @c(s), que puede ser una variable del arreglo, un
    puntero a un arreglo u otro slice. El slice resultante tiene @c(j-i)
    elementos. Si @c(i) se omite, es 0, y si @c(j) se omite, es @c[len(s)]. Asi,
-   el slice @c(meses[1:13]) se refiere a toda la gama de meses validos, como lo
+   el slice @c(meses[1:13]) se refiere a todo el rango de meses validos, como lo
    hace el slice @c(meses[1:]); el slice @c(meses[:]) se refiere a todo el
    arreglo. Vamos a definir slices superpuestos para el segundo trimestre y el
    verano boreal:
@@ -9790,7 +9789,7 @@
 #    June is included in each and is the sole output of this (inefficient) test
 #    for common elements:
    Junio se incluye en ambos y es la unica salida de esta (ineficiente) prueba
-   para elementos comunes:
+   para los elementos comunes:
 
 #    ..src > go
 #      for _, s := range summer {
@@ -9836,9 +9835,9 @@
 #    representation so that both operations take constant time. The expression
 #    @c(x[m:n]) yields a string if @c(x) is a string, or a @c([]byte) if @c(x) is
 #    a @c([]byte).
-   Como anotacion, tenga en cuenta la similitud de la operacion de subcadena en
+   Como anotacion, observe la similitud de la operacion de subcadena en las
    cadenas con el operador slice en slices de @c([]byte). Ambos se escriben
-   @c(x[m:n]), y ambos vuelven una subsecuencia de los bytes originales,
+   @c(x[m:n]), y ambos devuelven una subsecuencia de los bytes originales,
    compartiendo la representacion subyacente de modo que ambas operaciones toman
    tiempo constante. La expresion @c(x[m:n]) produce una cadena si @c(x) es una
    cadena, o un @c([]byte) si @c(x) es un @c([]byte).
@@ -9876,9 +9875,8 @@
        }
      < src..
 
-
-#    Here we reverse the whole array a:
-   Aqui invertimos todo el conjunto:
+#    Here we reverse the whole array @c(a):
+   Aqui invertimos todo el arreglo @c(a):
 
 #    ..src > go
 #      a := [...]int{0, 1, 2, 3, 4, 5}
@@ -9939,7 +9937,7 @@
 #    bytes (@c([]byte)), but for other types of slice, we must do the comparison
 #    ourselves:
    A diferencia de los arreglos, los slices no son comparables, por lo que no
-   pueden usar @c(==) para probar si dos slices contienen los mismos elementos.
+   podemos usar @c(==) para probar si dos slices contienen los mismos elementos.
    La libreria estandar proporciona la funcion @c(bytes.Equal) altamente
    optimizada para comparar dos slices de bytes (@c([]byte)), pero para otros
    tipos de slice, tenemos que hacer la comparacion nosotros mismos:
@@ -9978,11 +9976,11 @@
 #    the elements of a slice are indirect, making it possible for a slice to
 #    contain itself.  Although there are ways to deal with such cases, none is
 #    simple, efficient, and most importantly, obvious.
-   En vista de lo natural, que es esta prueba de igualdad de la @"(profundidad),
+   Dado lo natural que es esta prueba de igualdad @"(profundida),
    y que no es mas costosa en tiempo de ejecucion que el operador @c(==) para
-   arreglos de cadenas, puede ser desconcertante que la comparacion de slice no
+   arreglos de cadenas, puede ser desconcertante que la comparacion de slices no
    funcionen tambien de esta manera. Hay dos razones por las cuales la
-   equivalencia de profunda es problematica. En primer lugar, a diferencia de
+   equivalencia profunda es problematica. En primer lugar, a diferencia de
    los elementos del arreglo, los elementos de un slice son indirectos, lo que
    hace posible que un slice se contenga a si mismo. Aunque hay maneras de
    tratar con tales casos, ninguno es simple, eficiente, y lo mas importante,
@@ -10007,12 +10005,12 @@
    copias poco profundas de sus claves, requiere que la igualdad para cada clave
    permanezca igual durante toda la vida de la tabla hash. La equivalencia
    profunda haria asi que los slices no fueran adecuados para ser utilizados
-   como mapas de claves. Para los tipos de referencia como punteros y canales,
+   como claves de mapas. Para los tipos de referencia como punteros y canales,
    el operador @c(==) prueba la @e(identidad de la referencia), es decir, si las
    dos entidades se refieren a la misma cosa. Una prueba de igualdad
    @"(superficial) similar para slices podria ser util, y resolveria el problema
    con los mapas, pero el tratamiento inconsistente de slices y arreglos por el
-   operador @c(==) seria confuso. La opcion mas segura es no permitir
+   operador @c(==) seria confuso. La opcion mas segura es no permitir las
    comparaciones de slices por completo.
 
 #    The only legal slice comparison is against @c(nil), as in
@@ -10022,7 +10020,7 @@
 #      if summer == nil { /* ... */ }
 #    < src..
    ..src > go
-     if summer == nil { /* ... */ }
+     if verano == nil { /* ... */ }
    < src..
 
 #    The zero value of a slice type is @c(nil). A nil slice has no underlying
@@ -10031,7 +10029,7 @@
 #    3)[3:]}. As with any type that can have nil values, the nil value of a
 #    particular slice type can be written using a conversion expression such as
 #    @c{[]int(nil)}.
-   El valor cero de un tipo slice es @c(nil). Un slice nil no tiene arreglo
+   El valor cero de un tipo slice es @c(nil). Un slice nil no tiene un arreglo
    subyacente. El slice nil tiene longitud y capacidad cero, pero tambien hay
    slices no nulos de longitud y capacidad cero, como @c([]int{}) o
    @c{make([]int, 3)[3:]}. Como con cualquier tipo que puede tener valores
@@ -10061,12 +10059,12 @@
    una slice nil se comporta como cualquier otro slice de longitud cero; por
    ejemplo, @c[reverse(nil)] es perfectamente seguro. A menos que se demuestre
    claramente lo contrario, las funciones de Go deben tratar todos los slices de
-   longitud cero de la misma manera, sea o no nulo.
+   longitud cero de la misma manera, sea o no nil.
 
 #    The built-in function @c(make) creates a slice of a specified element type,
 #    length, and capacity. The capacity argument may be omitted, in which case the
 #    capacity equals the length.
-   La funcion nativa @c(make) crea un slice de un tipo de elemento, con longitud
+   La funcion nativa @c(make) crea un slice de un tipo de elemento con longitud
    y capacidad especifico. Se puede omitir el argumento capacidad, en cuyo caso
    la capacidad es igual a la longitud.
 
@@ -10087,9 +10085,9 @@
 #    growth.
    Bajo el capo, @c(make) crea una variable de arreglo sin nombre y devuelve un
    slice de este; el arreglo es accesible solo a traves del slice devuelto. En
-   la primer forma, el slice es una vista de todo el arreglo. En el segundo, el
+   la primer forma, el slice es una vista de todo el arreglo. En la segunda, el
    slice es una vista de solo los primeros @c(len) elementos, pero su capacidad
-   incluye toda el arreglo. Los elementos adicionales se reservan para el futuro
+   incluye todo el arreglo. Los elementos adicionales se reservan para el futuro
    crecimiento.
 
 # *** Section 4.2.1 <> The @c(append) Function

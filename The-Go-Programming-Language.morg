@@ -5243,7 +5243,7 @@
        }
      < src..
 
-   Here we reverse the whole array a:
+   Here we reverse the whole array @c(a):
 
    ..src > go
      a := [...]int{0, 1, 2, 3, 4, 5}
