@@ -2182,9 +2182,9 @@ x = 7 eˣ = 1096.633
 <p>where <code>s[0]</code> would panic if applied to an empty string.</p>
 <p>Since <code>&amp;&amp;</code> has higher precedence than <code>||</code> (mnemonic: <code>&amp;&amp;</code> is boolean multiplication, <code>||</code> is boolean addition), no parentheses are required for conditions of this form:</p>
 <pre class="code" ><code class="chroma" ><span class="k">if</span> <span class="sc">&#39;a&#39;</span> <span class="o">&lt;=</span> <span class="nx">c</span> <span class="o">&amp;&amp;</span> <span class="nx">c</span> <span class="o">&lt;=</span> <span class="sc">&#39;z&#39;</span> <span class="o">||</span>
-  <span class="sc">&#39;A&#39;</span> <span class="o">&lt;=</span> <span class="nx">c</span> <span class="o">&amp;&amp;</span> <span class="nx">c</span> <span class="o">&lt;=</span> <span class="sc">&#39;Z&#39;</span> <span class="o">||</span>
-  <span class="sc">&#39;0&#39;</span> <span class="o">&lt;=</span> <span class="nx">c</span> <span class="o">&amp;&amp;</span> <span class="nx">c</span> <span class="o">&lt;=</span> <span class="sc">&#39;9&#39;</span> <span class="p">{</span>
-  <span class="c1">// ...ASCII letter or digit...
+   <span class="sc">&#39;A&#39;</span> <span class="o">&lt;=</span> <span class="nx">c</span> <span class="o">&amp;&amp;</span> <span class="nx">c</span> <span class="o">&lt;=</span> <span class="sc">&#39;Z&#39;</span> <span class="o">||</span>
+   <span class="sc">&#39;0&#39;</span> <span class="o">&lt;=</span> <span class="nx">c</span> <span class="o">&amp;&amp;</span> <span class="nx">c</span> <span class="o">&lt;=</span> <span class="sc">&#39;9&#39;</span> <span class="p">{</span>
+   <span class="c1">// ...ASCII letter or digit...
 </span><span class="c1"></span><span class="p">}</span>
 </code></pre>
 <p>There is no implicit conversion from a boolean value to a numeric value like 0 or 1, or vice versa. It’s necessary to use an explicit <code>if</code>, as in</p>

@@ -3919,9 +3919,9 @@
 
    ..src > go
      if 'a' <= c && c <= 'z' ||
-       'A' <= c && c <= 'Z' ||
-       '0' <= c && c <= '9' {
-       // ...ASCII letter or digit...
+        'A' <= c && c <= 'Z' ||
+        '0' <= c && c <= '9' {
+        // ...ASCII letter or digit...
      }
    < src..
 
@@ -4133,7 +4133,7 @@
     become much more common. How can this rich variety be dealt with at all and,
     if possible, efficiently?
 
-    The answer is Unicode (@l(http://unicode.org/<>unicode.org)), which collects
+    The answer is Unicode @%l(http://unicode.org/<>unicode.org), which collects
     all of the characters in all of the world’s writing systems, plus accents
     and other diacritical marks, control codes like tab and carriage return, and
     plenty of esoterica, and assigns each one a standard number called a
