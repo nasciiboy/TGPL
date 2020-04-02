@@ -10101,14 +10101,14 @@
 #       for _, r := range "Hello, 世界" {
 #         runes = append(runes, r)
 #       }
-#       fmt.Printf("%q\n", runes) // "['H' 'e' 'l' 'l' 'o' ',' ' ' 'B' 'F']"
+#       fmt.Printf("%q\n", runes) // "['H' 'e' 'l' 'l' 'o' ',' ' ' '世' '界']"
 #     < src..
     ..src > go
       var runes []rune
       for _, r := range "Hello, 世界" {
         runes = append(runes, r)
       }
-      fmt.Printf("%q\n", runes) // "['H' 'e' 'l' 'l' 'o' ',' ' ' 'B' 'F']"
+      fmt.Printf("%q\n", runes) // "['H' 'e' 'l' 'l' 'o' ',' ' ' '世' '界']"
     < src..
 
 #     The loop uses @c(append) to build the slice of nine runes encoded by the
@@ -10122,7 +10122,7 @@
 #     The @c(append) function is crucial to understanding how slices work, so
 #     let’s take a look at what is going on. Here’s a version called @c(appendInt)
 #     that is specialized for @c([]int) slices:
-    La funcion @c(append) es crucial para la comprension de como trabajan los
+    La funcion @c(append) es crucial para entender como trabajan los
     slices, asi que vamos a echar un vistazo a lo que esta pasando. Aqui hay una
     version llamada @c(appendInt) que se especializa en slices @c([]int):
 
@@ -10189,8 +10189,8 @@
 #     array big enough to hold the result, copy the values from @c(x) into it,
 #     then append the new element @c(y). The result @c(z) now refers to a
 #     different underlying array than the array that @c(x) refers to.
-    Si no hay suficiente espacio para el crecimiento, @c(appendInt) debe asignar
-    un nuevo arreglo lo suficientemente grande para contener el resultado,
+    Si no hay espacio suficiente para el crecimiento, @c(appendInt) debe asignar
+    un nuevo arreglo lo bastente grande para contener el resultado,
     copiar los valores de @c(x) en el, y a continuacion, añadir el nuevo
     elemento @c(y). Ahora el resultado @c(z) hace referencia a un arreglo
     subyacente diferente al que referia el arreglo @c(x).
@@ -10282,8 +10282,8 @@
 #     shows.
     Echemos un vistazo mas cercano a la iteracion @c(i=3). El slice @c(x)
     contiene tres elementos @c([0 1 2]), pero tiene la capacidad de 4, por lo
-    que hay un solo elemento de holgura en el extremo, y agrerar el elemento 3
-    procede sin reasignacion en @c(appendInt). El slice @c(y) resultante tiene
+    que hay un solo elemento de holgura al final, y agrerar el elemento 3 con
+    @c(appendInt) procede sin reasignacion. El slice @c(y) resultante tiene
     longitud y capacidad 4, y tiene el mismo arreglo subyacente que el slice
     @c(x) original, como lo muestra la Figura 4.2.
 
@@ -10293,27 +10293,25 @@
 #       ..img > img/Figure-4.2.jpg
       ..img > img/Figure-4.2.jpg
 
-
 #     On the next iteration, @c(i=4), there is no slack at all, so @c(appendInt)
 #     allocates a new array of size 8, copies the four elements @c([0 1 2 3]) of
 #     @c(x), and appends 4, the value of @c(i). The resulting slice @c(y) has a
 #     length of 5 but a capacity of 8; the slack of 3 will save the next three
 #     iterations from the need to reallocate. The slices @c(y) and @c(x) are views
 #     of different arrays. This operation is depicted in Figure 4.3.
-    En la siguiente iteracion, @c(i=4), no hay holgura en absoluto, por lo que
+    En la siguiente iteracion, @c(i=4), no hay ninguna holgura, por lo que
     @c(appendInt) asigna un nueva arreglo de tamaño 8, copia los cuatro
     elementos de @c(x) (@c([0 1 2 3])), y agrega 4, el valor de @c(i). El slice
     resultante @c(y) tiene una longitud de 5, pero una capacidad de 8; la
-    holgura de 3 guardara las siguientes tres iteraciones. Las slices @c(y) y
-    @c(x) son vistas de diferentes arreglos. Esta operacion se muestra en la
-    Figura 4.3.
+    holgura de 3 ahorrara la necesidad de reasignar en las tres siguientes
+    iteraciones. Las slices @c(y) y @c(x) son vistas de diferentes arreglos.
+    Esta operacion se muestra en la Figura 4.3.
 
 #     ..figure > Figure 4.3. Appending without room to grow.
     ..figure > Figura 4.3. Adicion sin crear espacio.
 
 #       ..img > img/Figure-4.3.jpg
       ..img > img/Figure-4.3.jpg
-
 
 #     The built-in @c(append) function may use a more sophisticated growth
 #     strategy than @c(appendInt)’s simplistic one. Usually we don’t know whether
@@ -10348,7 +10346,7 @@
 #     them requires an assignment like the one above. In this respect, slices are
 #     not @"(pure) reference types but resemble an aggregate type such as this
 #     struct:
-    La actualizacion de la variable slice se requiere no solo al llamar a
+    La actualizacion de la variable slice es necesaria no solo al llamar a
     @c(append), sino tambien a cualquier funcion que pueda cambiar la longitud o
     la capacidad de un slice o hacer que se refiera a un arreglo subyacente
     diferente. Para usar los slices correctamente, es importante tener en cuenta
@@ -10466,7 +10464,7 @@
 #         }
 #       < src..
       ..src > go
-        // Nonempty es un ejemplo de algoritmo in situ.
+        // Nonempty es un ejemplo de algoritmo para slices in situ.
         package main
 
         import "fmt"
@@ -10493,7 +10491,7 @@
     La parte sutil es que el slice de entrada y el slice de salida comparten el
     mismo arreglo subyacente. Esto evita la necesidad de asignar otro arreglo,
     aunque por supuesto los contenidos de datos se sobrescriben en parte, como
-    se evidencia por la segunda instruccion de impresion:
+    lo demuestra la segunda instruccion de impresion:
 
 #     ..src > go
 #       data := []string{"one", "", "three"}
@@ -10507,7 +10505,7 @@
     < src..
 
 #     Thus we would usually write: @c[data = nonempty(data)].
-    Por lo tanto normalmente escribe: @c[data = nonempty(data)].
+    Por lo tanto normalmente escribiriamos: @c[data = nonempty(data)].
 
 #     The @c(nonempty) function can also be written using @c(append):
     La funcion @c(nonempty) tambien se puede escribir utilizando @c(append):
@@ -10692,12 +10690,12 @@
    escribe como @c(map[K]V), en donde @c(K) y @c(V) son los tipos de sus claves
    y valores. Todas las claves en un mapa son del mismo tipo, y todos los
    valores son del mismo tipo, pero las claves no necesitan ser del mismo tipo
-   que los valores. El tipo de clave @c(K) debe ser comparable usando @c(==), de
+   que los valores. El tipo de la clave @c(K) debe ser comparable usando @c(==), de
    modo que el mapa puede probar si una clave dada es igual a una que ya esta
-   dentro de ell. Aunque los numeros de punto flotante son comparables, es una
+   dentro de el. Aunque los numeros de punto flotante son comparables, es una
    mala idea comparar floats por igualdad y, como mencionamos en el @l(#Capitulo
    3), es especialmente malo si NaN es un valor posible. No hay restricciones
-   sobre el tipo de valor @c(V).
+   en el tipo de valor @c(V).
 
 #    The built-in function @c(make) can be used to create a map:
    Se puede utilizar la funcion nativa @c(make) para crear un mapa:
@@ -10712,7 +10710,7 @@
 #    We can also use a @e(map literal) to create a new map populated with some
 #    initial key/value pairs:
    Tambien podemos usar un @e(mapa literal) para crear un nuevo mapa poblado con
-   algunos pares iniciales clave/valor:
+   algunos pares clave/valor iniciales:
 
 #    ..src > go
 #      ages := map[string]int{
@@ -10758,7 +10756,7 @@
    < src..
 
 #    and removed with the built-in function @c(delete):
-   y se remueve con la funcion nativa @c(delete):
+   y se eliminan con la funcion nativa @c(delete):
 
 #    ..src > go
 #      delete(ages, "alice") // remove element ages["alice"]
@@ -10892,7 +10890,7 @@
 #    efficient to allocate an array of the required size up front. The statement
 #    below creates a slice that is initially empty but has sufficient capacity to
 #    hold all the keys of the @c(ages) map:
-   Dado que sabemos el tamaño final de nombres desde el principio, es mas
+   Dado que sabemos el tamaño final de @c(nombres) desde el principio, es mas
    eficiente asignar un arreglo del tamaño requerido por adelantado. La
    siguiente declaracion crea un slice que esta inicialmente vacio, pero tiene
    la capacidad suficiente para contener todas las llaves del mapa @e(edades):
@@ -10934,8 +10932,8 @@
 #    loops, are safe to perform on a nil map reference, since it behaves like an
 #    empty map. But storing to a nil map causes a panic:
    La mayoria de las operaciones en los mapas, incluyendo las operaciones de
-   busqueda, @c(delete), @c(len) y bucles @c(range), son seguros para llevar a
-   cabo en un mapa de referencia a @c(nil), ya que se comporta como un mapa
+   busqueda, @c(delete), @c(len) y bucles @c(range), son seguras de llevar a
+   cabo en un mapa que referencia a @c(nil), ya que se comporta como un mapa
    vacio. Pero almacenar en un mapa nil provoca un panico:
 
 #    ..src > go
@@ -10946,7 +10944,7 @@
    < src..
 
 #    You must allocate the map before you can store into it.
-   Debe asignar el mapa antes de poder almacenar en el.
+   Se debe asignar el mapa antes de poder almacenar en el.
 
 #    Accessing a map element by subscripting always yields a value. If the key is
 #    present in the map, you get the corresponding value; if not, you get the zero
@@ -10955,12 +10953,12 @@
 #    there or not. For example, if the element type is numeric, you might have to
 #    distinguish between a nonexistent element and an element that happens to have
 #    the value zero, using a test like this:
-   El acceso a un elemento de un mapa mediante subindice siempre produce un
+   Acceder a un elemento del mapa mediante subindice siempre produce un
    valor. Si la clave esta presente en el mapa, se obtiene el valor
    correspondiente; si no, se obtiene el valor cero para el tipo de elemento,
    como hemos visto con @c(edades["bob"]). Para muchos propositos eso esta bien,
    pero a veces necesitas saber si el elemento estaba realmente ahi o no. Por
-   ejemplo, si el tipo de elemento es numerico, es posible que tenga que
+   ejemplo, si el tipo de elemento es numerico, puede que tengas que
    distinguir entre un elemento inexistente y un elemento que tiene el valor
    cero, mediante una prueba como esta:
 
@@ -10974,7 +10972,7 @@
    < src..
 
 #    You’ll often see these two statements combined, like this:
-   A menudo vera estas dos afirmaciones combinadas, como aqui:
+   Es frecuente ver estas dos declaraciones combinadas, como aqui:
 
 #    ..src > go
 #      if age, ok := ages["bob"]; !ok { /* ... */ }
@@ -10988,7 +10986,7 @@
 #    called @c(ok), especially if it is immediately used in an @c(if) condition.
    El subindice de un mapa en este contexto produce dos valores; el segundo es
    un booleano que informa si el elemento estaba presente. La variable booleana
-   a menudo se denomina @c(ok), especialmente si se utiliza inmediatamente en
+   a menudo se nombra @c(ok), especialmente si se usa inmediatamente en
    una condicion @c(if).
 
 #    As with slices, maps cannot be compared to each other; the only legal
@@ -11083,7 +11081,7 @@
          consulta := make(map[string]bool) // un conjunto de cadenas
          entrada  := bufio.NewScanner(os.Stdin)
          for entrada.Scan() {
-           linea := input.Text()
+           linea := entrada.Text()
            if !consulta[linea] {
              consulta[linea] = true
              fmt.Println(linea)
@@ -11102,7 +11100,7 @@
 #    strings) without further ado, but beware, not all @c(map[string]bool) values
 #    are simple sets; some may contain both @c(true) and @c(false) values.
    Los programadores de Go a menudo describen un mapa de esta manera
-   utilizandolo como un @"(conjunto de cadenas) sin mas preambulos, pero
+   utilizandolo como un @"(conjunto de cadenas) sin mas, pero
    cuidado, no todos los valores @c(map[string]bool) son conjuntos simples;
    algunos pueden contener valores tanto @c(true) y @c(false).
 
@@ -11112,11 +11110,11 @@
 #    key to a string, with the property that @c[k(x) == k(y)] if and only if we
 #    consider @c(x) and @c(y) equivalent. Then we create a map whose keys are
 #    strings, applying the helper function to each key before we access the map.
-   A veces necesitamos un mapa o conjunto cuyas claves sean slices, pero ya que
+   A veces necesitamos un mapa o un conjunto cuyas claves sean slices, pero ya que
    las claves de un mapa deben ser comparables, esto se no puede expresar
    directamente. Sin embargo, se puede hacer en dos pasos. Primero definimos una
    funcion auxiliar @c(k) que mapea cada clave en una cadena, con la
-   caracteristica que @c[k(x) == k(y)] si y solo si consideramos @c(x) e @c(y)
+   caracteristica que @c[k(x) == k(y)] si y solo si consideramos @c(x) y @c(y)
    equivalentes. Luego creamos un mapa cuyas claves son cadenas, aplicando la
    funcion auxiliar a cada clave antes de acceder al mapa.
 
@@ -11125,10 +11123,10 @@
 #    slice of strings into a single string that is a suitable map key, quoting
 #    each slice element with @c(%q) to record string boundaries faithfully:
    El siguiente ejemplo utiliza un mapa para registrar el numero de veces que se
-   ha llamado a @c(Add) con una lista dada de cadenas. Utiliza @c(fmt.Sprintf)
-   para convertir un slice de cadenas en una sola cadena que es una clave de
-   mapa adecuada, citando cada elemento del slice con @c(%q) para registrar los
-   limites de las cadena fielmente:
+   ha llamado a @c(Add) con una lista determinada de cadenas. Utiliza @c(fmt.Sprintf)
+   para convertir un slice de cadenas en una unica cadena que es una clave de
+   mapa adecuada, citando cada elemento del slice con @c(%q) para registrar fielmente
+   los limites de las cadena:
 
 #    ..src > go
 #      var m = make(map[string]int)
@@ -11156,10 +11154,10 @@
    El mismo enfoque se puede utilizar para cualquier tipo de clave no
    comparable, no solo para slices. Incluso es util para este tipo de claves
    comparables cuando se desea una definicion de igualdad distinta de @c(==),
-   como comparaciones entre mayusculas y minusculas para cadenas. Y el tipo de
-   @c[k(x)] no necesita ser una cadena; cualquier tipo comparable con la
-   propiedad de equivalencia deseada lo hara, como enteros, arreglos o
-   estructuras.
+   como en el caso de comparacion de cadenas que no tienen en cuenta las
+   mayusculas y minusculas. Y el tipo de @c[k(x)] no necesita ser una cadena;
+   cualquier tipo comparable con la propiedad de equivalencia deseada servira,
+   como enteros, arreglos o estructuras.
 
 #    Here’s another example of maps in action, a program that counts the
 #    occurrences of each distinct Unicode code point in its input. Since there are
@@ -11277,7 +11275,6 @@
        }
      < src..
 
-
 #    The @c(ReadRune) method performs UTF-8 decoding and returns three values: the
 #    decoded rune, the length in bytes of its UTF-8 encoding, and an error
 #    value. The only error we expect is end-of-file. If the input was not a legal
@@ -11286,7 +11283,7 @@
    El metodo @c(ReadRune) realiza la decodificacion UTF-8 y devuelve tres
    valores: la runa decodificada, la longitud en bytes de su codificacion UTF-8,
    y un valor de error. El unico error que esperamos es el fin de archivo. Si la
-   entrada no era la codificacion UTF-8 legal de una runa, la runa devuelta es
+   entrada no fue una codificacion UTF-8 legal de una runa, la runa devuelta es
    @c(unicode.ReplacementChar) y la su longitud es 1.
 
 #    The @$(charcount) program also prints a count of the lengths of the UTF-8
@@ -11302,7 +11299,7 @@
 #    As an experiment, we ran @$(charcount) on this book itself at one
 #    point. Although it’s mostly in English, of course, it does have a fair number
 #    of non-ASCII characters. Here are the top ten:
-   Como un experimento, en un momento ejecutamos @$(charcount). Aunque
+   Como experimento, en un momento ejecutamos @$(charcount) en este libro. Aunque
    (originalmente) esta principalmente en Ingles, por supuesto, tiene un buen
    numero de caracteres no ASCII. Aqui estan los diez primeros:
 
@@ -11414,7 +11411,7 @@
 #    date of birth, position, salary, manager, and the like. All of these fields
 #    are collected into a single entity that can be copied as a unit, passed to
 #    functions and returned by them, stored in arrays, and so on.
-   Una @e(estructura) es un tipo de datos agregada que agrupa de cero a mas
+   Una @e(estructura) es un tipo de datos agregados que agrupa de cero a mas
    valores con nombre de tipos arbitrarios como una entidad unica. Cada valor se
    denomina @e(campo). El ejemplo clasico de una estructura de procesamiento de
    datos es el registro de un empleado, cuyos campos son un identificador unico,
@@ -11459,8 +11456,8 @@
 #    @c(dilbert.Name) and @c(dilbert.DoB). Because dilbert is a variable, its
 #    fields are variables too, so we may assign to a field:
    Los campos individuales de @c(dilbert) se accede usando la notacion de punto
-   como @c(dilbert.Nombre) y @c(dilbert.DoB). Puesto que @c(dilbert) es una
-   variable, sus campos son variables tambien, por lo que podemos establecer un
+   como @c(dilbert.Nombre) y @c(dilbert.DoB). Debido a que @c(dilbert) es una
+   variable, sus campos son variables tambien, por lo que podemos asignarlos a un
    campo:
 
 #    ..src > go
@@ -11471,7 +11468,7 @@
    < src..
 
 #    or take its address and access it through a pointer:
-   O tomar su direccion y acceder a ella a traves de un puntero:
+   o tomar su direccion y acceder a ella a traves de un puntero:
 
 #    ..src > go
 #      position := &dilbert.Position
@@ -11479,7 +11476,7 @@
 #    < src..
    ..src > go
      posicion := &dilbert.Posicion
-     *posicion = "Senior " + *posicion // promovido, para subcontrata a Elbonia
+     *posicion = "Senior " + *posicion // promovido, por la subcontrata a Elbonia
    < src..
 
 #    The dot notation also works with a pointer to a struct:
@@ -11588,7 +11585,7 @@
 #    field. Although we could write out the whole type each time it is needed, the
 #    repetition would get tiresome. Instead, struct types usually appear within
 #    the declaration of a named type like @c(Employee).
-   Los tipos estructura tienden a ser detallados porque a menudo implican una
+   Los tipos de estructura tienden a ser detallados porque a menudo implican una
    linea para cada campo. Aunque podriamos escribir todo el tipo cada vez que
    sea necesario, la repeticion cansaria. En cambio, los tipos estructura suelen
    aparecer dentro de la declaracion de un tipo con nombre como @c(Empleado).
@@ -11666,7 +11663,7 @@
          appendValues(values[:0], root)
        }
 
-       // appendValues agrega los alementos de t a los valores en orden
+       // appendValues agrega los elementos de t a los valores en orden
        // y devuelve el slice resultante.
        func appendValues(values []int, t *tree) []int {
          if t != nil {
@@ -11702,11 +11699,11 @@
 #    sensible initial behavior happens for free, but sometimes the type designer
 #    has to work at it.
    El valor cero de una estructura se compone de los valores cero de cada uno de
-   sus campos. Por lo general, es deseable que el valor cero sea un defecto
+   sus campos. Por lo general, es deseable que el valor cero sea un valor predeterminado
    natural o razonable. Por ejemplo, en @c(bytes.Buffer), el valor inicial de la
    estructura es un buffer vacio listo para su uso, y el valor cero de
    @c(sync.Mutex), que veremos en el @l(#Capitulo 9), es un mutex desbloqueado
-   listo para usas. A veces este comportamiento inicial razonable ocurre de
+   listo para usar. A veces este comportamiento inicial razonable ocurre de
    forma gratuita, pero a veces el diseñador de tipo tiene que trabajar en ello.
 
 #    The struct type with no fields is called the @e(empty struct), written
@@ -11718,8 +11715,8 @@
    El tipo de una estructura sin campos se denomina @e(estructura vacia), se
    escribe @c(struct{}). Tiene un tamaño cero y no lleva ninguna informacion,
    sin embargo puede ser util. Algunos programadores lo utilizan en lugar de
-   @c(bool) como el tipo de valor de un mapa que representa un conjunto, hacer
-   hincapie en que solo las claves son significativas, pero el ahorro de espacio
+   @c(bool) como el tipo de valor de un mapa que representa un conjunto, para
+   enfatizar que solo las claves son significativas, pero el ahorro de espacio
    es marginal y la sintaxis es mas engorrosa, por lo que generalmente lo
    evitamos.
 
@@ -11811,6 +11808,10 @@
 #       package p
 #       type T struct{ a, b int } // a and b are not exported
 #     < src..
+    ..src > go
+      package p
+      type T struct{ a, b int } // no se exportan a y b
+    < src..
 
 #     ..src > go
 #       package q
@@ -11818,11 +11819,6 @@
 #       var _ = p.T{a: 1, b: 2} // compile error: can't reference a, b
 #       var _ = p.T{1, 2}       // compile error: can't reference a, b
 #     < src..
-    ..src > go
-      package p
-      type T struct{ a, b int } // no se exportan a y b
-    < src..
-
     ..src > go
       package q
       import "p"
@@ -11833,14 +11829,14 @@
 #     Although the last line above doesn’t mention the unexported field
 #     identifiers, it’s really using them implicitly, so it’s not allowed.
     Aunque la ultima linea no menciona los identificadores de campo no
-    exportados, realmente los esta usando implicitamente, por lo que no es
+    exportados, realmente los esta usando implicitamente, asi que no esta
     permitido.
 
 #     Struct values can be passed as arguments to functions and returned from
 #     them. For instance, this function scales a @c(Point) by a specified factor:
     Los valores de una estructura se pueden pasar como argumentos a funciones y
-    ser devueltos. Por ejemplo, esta funcion escala un @c(Point) por un factor
-    especifico:
+    ser devueltos de ellas. Por ejemplo, esta funcion escala un @c(Point) por un factor
+    especificado:
 
 #     ..src > go
 #       func Scale(p Point, factor int) Point {
@@ -11894,7 +11890,7 @@
 #     Because structs are so commonly dealt with through pointers, it’s possible
 #     to use this shorthand notation to create and initialize a struct variable
 #     and obtain its address:
-    Debido a que las estructuras se manejan tan comunmente mediante punteros, es
+    Debido a que las estructuras se manejan tan comunmente a traves de punteros, es
     posible utilizar esta notacion compacta para crear e inicializar una
     estructura y obtener su direccion:
 
@@ -11923,14 +11919,14 @@
     expresion, como una llamada de funcion.
 
 # *** Section 4.4.2 <> Comparing Structs
-*** Seccion 4.4.2 <> Comparacion de estructuras
+*** Seccion 4.4.2 <> Comparacion de Estructuras
 
 #     If all the fields of a struct are comparable, the struct itself is
 #     comparable, so two expressions of that type may be compared using @c(==) or
 #     @c(!=). The @c(==) operation compares the corresponding fields of the two
 #     structs in order, so the two printed expressions below are equivalent:
     Si todos los campos de una estructura son comparables, la estructura en si
-    es comparable, por lo que se puede comparar dos expresiones de ese tipo
+    es comparable, por lo que dos expresiones de ese tipo pueden ser comparadas
     usando @c(==) o @c(!=). La operacion @c(==) compara los campos
     correspondientes de las dos estructuras en orden, por lo que las dos
     expresiones a continuacion son equivalentes:
@@ -12029,11 +12025,11 @@
 #       w.Spokes = 20
 #     < src..
     ..src > go
-      var w Rueda
-      w.X = 8
-      w.Y = 8
-      w.Radio = 5
-      w.Rayos = 20
+      var r Rueda
+      r.X = 8
+      r.Y = 8
+      r.Radio = 5
+      r.Rayos = 20
     < src..
 
 #     As the set of shapes grows, we’re bound to notice similarities and
@@ -12076,7 +12072,7 @@
 
 #     The application may be clearer for it, but this change makes accessing the
 #     fields of a @c(Wheel) more verbose:
-    La aplicacion puede ser mas clara para ello, pero este cambio hace que el
+    Con esto la aplicacion puede ser mas clara, pero este cambio hace que el
     acceso a los campos de una Rueda sea mas detallado:
 
 #     ..src > go
@@ -12087,11 +12083,11 @@
 #       w.Spokes = 20
 #     < src..
     ..src > go
-      var w Rueda
-      w.Circulo.Centro.X = 8
-      w.Circulo.Centro.Y = 8
-      w.Circulo.Radio = 5
-      w.Rayos = 20
+      var r Rueda
+      r.Circulo.Centro.X = 8
+      r.Circulo.Centro.Y = 8
+      r.Circulo.Radio = 5
+      r.Rayos = 20
     < src..
 
 #     Go lets us declare a field with a type but no name; such fields are called
@@ -12131,7 +12127,7 @@
 #     Thanks to embedding, we can refer to the names at the leaves of the implicit
 #     tree without giving the intervening names:
     Gracias al embebido, podemos referirnos a los nombres en las hojas
-    del arbol implicitamente sin dar los nombres participantes:
+    del arbol implicitamente sin dar los nombres intermedios:
 
 #     ..src > go
 #       var w Wheel
@@ -12141,11 +12137,11 @@
 #       w.Spokes = 20
 #     < src..
     ..src > go
-      var w Rueda
-      w.X = 8        // equivalente a w.Circulo.Punto.X = 8
-      w.Y = 8        // equivalente a w.Circulo.Punto.Y = 8
-      w.Radio = 5    // equivalente a w.Circulo.Radio = 5
-      w.Rayos = 20
+      var r Rueda
+      r.X = 8        // equivalente a r.Circulo.Punto.X = 8
+      r.Y = 8        // equivalente a r.Circulo.Punto.Y = 8
+      r.Radio = 5    // equivalente a r.Circulo.Radio = 5
+      r.Rayos = 20
     < src..
 
 #     The explicit forms shown in the comments above are still valid, however,
@@ -12170,8 +12166,8 @@
 #       w = Wheel{X: 8, Y: 8, Radius: 5, Spokes: 20} // compile error: unknown fields
 #     < src..
     ..src > go
-      w = Wheel{8, 8, 5, 20}                       // error de compilacion: campos desconocidos
-      w = Wheel{X: 8, Y: 8, Radius: 5, Spokes: 20} // error de compilacion: campos desconocidos
+      r = Rueda{8, 8, 5, 20}                       // error de compilacion: campos desconocidos
+      r = Rueda{X: 8, Y: 8, Radius: 5, Spokes: 20} // error de compilacion: campos desconocidos
     < src..
 
 #     The struct literal must follow the shape of the type declaration, so we must
@@ -12205,9 +12201,9 @@
 #           // Wheel{Circle:Circle{Point:Point{X:42, Y:8}, Radius:5}, Spokes:20}
 #       < src..
       ..src > go
-          w = Rueda{Circulo{Punto{8, 8}, 5}, 20}
+          r = Rueda{Circulo{Punto{8, 8}, 5}, 20}
 
-          w = Rueda{
+          r = Rueda{
             Circulo: Circulo{
               Punto: Punto{X: 8, Y: 8},
               Radio: 5,
@@ -12215,17 +12211,16 @@
             Rayos: 20, // NOTA: comma necesaria aqui (y en Radio)
           }
 
-          fmt.Printf("%#v\n", w)
+          fmt.Printf("%#v\n", r)
           // Salida:
           // Rueda{Circulo:Circulo{Punto:Punto{X:8, Y:8}, Radio:5}, Rayos:20}
 
-          w.X = 42
+          r.X = 42
 
-          fmt.Printf("%#v\n", w)
+          fmt.Printf("%#v\n", r)
           // Salida:
           // Rueda{Circulo:Circulo{Punto:Punto{X:42, Y:8}, Radio:5}, Rayos:20}
       < src..
-
 
 #     Notice how the @c(#) adverb causes @c(Printf)’s @c(%v) verb to display
 #     values in a form similar to Go syntax. For struct values, this form includes
@@ -12244,15 +12239,15 @@
     tener dos campos anonimos del mismo tipo, ya que sus nombres entran en
     conflicto. Y debido a que el nombre del campo esta implicitamente
     determinado por su tipo, tambien lo es la visibilidad del campo. En los
-    ejemplos anteriores, se exportan campos anonimos @c(Punto) y
-    @c(Circulo). Si no hubieran sido exportados (@c(punto) y @c(circulo)),
-    podriamos utilizar la forma compacta
+    ejemplos anteriores, se exportan los campos anonimos @c(Punto) y
+    @c(Circulo). Si no se hubieran exportado (@c(punto) y @c(circulo)),
+    tadavia podriamos utilizar la forma compacta
 
 #     ..src > go
 #       w.X = 8 // equivalent to w.circle.point.X = 8
 #     < src..
     ..src > go
-      w.X = 8 // equivalente a w.circulo.punto.X = 8
+      r.X = 8 // equivalente a r.circulo.punto.X = 8
     < src..
 
 #     but the explicit long form shown in the comment would be forbidden outside
@@ -12266,7 +12261,7 @@
 #     that anonymous fields need not be struct types; any named type or pointer to
 #     a named type will do. But why would you want to embed a type that has no
 #     subfields?
-    Lo que hemos visto hasta ahora sobre estructuras enbebidas es solo una pisca
+    Lo que hemos visto hasta ahora sobre las estructuras enbebidas es solo una pisca
     de azucar sintactico en la notacion de punto utilizada para seleccionar los
     campos de la estructura. Mas adelante, veremos que los campos anonimos no
     necesitan ser de tipo estructura; puede ser cualquier tipo con nombre o
@@ -12281,8 +12276,8 @@
 #     object-oriented programming in Go, and we’ll explore it further in
 #     @l(#Section 6.3).
     La respuesta tiene que ver con los metodos. La notacion compacta utilizada
-    para seleccionar los campos de un tipo enbebido funciona para seleccionar
-    tambien sus metodos. En efecto, el tipo de estructura externa gana no solo
+    para seleccionar los campos de un tipo enbebido funciona tambien para seleccionar
+    sus metodos. En efecto, el tipo de estructura externa gana no solo
     los campos del tipo enbebido sino tambien sus metodos. Este mecanismo es la
     forma principal en que los comportamientos de objetos complejos se componen
     de los mas simples. La composicion es fundamental para la programacion
@@ -12310,7 +12305,7 @@
 #    @c(encoding/json) package.
    Go tiene un excelente soporte para la codificacion y decodificacion de estos
    formatos, proporcionado por los paquetes de las librerias estandar
-   @c(encoding/json), @c(encoding/xml), @c(encoding/asn1), y demas, y todos
+   @c(encoding/json), @c(encoding/xml), @c(encoding/asn1), etc., y todos
    estos paquetes tienen APIs similares. En esta seccion se presenta una breve
    descripcion de las partes mas importantes del paquete @c(encoding/json).
 
@@ -12328,7 +12323,7 @@
 #    code points enclosed in double quotes, with backslash escapes using a similar
 #    notation to Go, though JSON’s @c(\u)@e(hhhh) numeric escapes denote UTF-16
 #    codes, not runes.
-   Los tipos JSON basicos son numeros (en notacion decimal o cientifica),
+   Los tipos basicos de JSON son numeros (en notacion decimal o cientifica),
    booleanos (@c(true) o @c(false)), y cadenas, que son secuencias de puntos de
    codigo Unicode entre comillas dobles, con escapes mediante la barra invertida
    utilizando una notacion similar a Go, aunque los escapes JSON @c(\u)@e(hhhh)
@@ -12342,7 +12337,7 @@
 #    surrounded by braces; JSON objects are used to encode Go maps (with string
 #    keys) and structs.  For example:
    Estos tipos basicos se pueden combinar recursivamente utilizando arreglos
-   JSON y objetos. Un arreglo JSON es una secuencia ordenada de valores, escrita
+   y objetos JSON. Un arreglo JSON es una secuencia ordenada de valores, escrita
    como una lista separada por comas entre corchetes; los arreglos JSON se
    utilizan para codificar arreglos Go y slices. Un objeto JSON es un mapeo de
    cadenas a valores, escrito como una secuencia de pares @c(nombre:valor)
@@ -12381,7 +12376,7 @@
 #    recommendations. Its @c(Movie) data type and a typical list of values are
 #    declared below. (The string literals after the @c(Year) and @c(Color) field
 #    declarations are @e(field tags); we’ll explain them in a moment.)
-   Considere una aplicacion que reune reseñas de peliculas y ofrece
+   Considere una aplicacion que reuna reseñas de peliculas y ofrezca
    recomendaciones. A continuacion se declara un tipo de datos @c(Movie) y luego
    una lista de estos valores. (Los literales de cadena despues de las
    declaraciones @c(Year) y @c(Color) son etiquetas de campo; las explicaremos
@@ -12471,7 +12466,7 @@
    leer. Para el consumo humano, una variante llamada @c(json.MarshalIndent)
    produce una salida perfectamente indentada. Dos argumentos adicionales
    definen un prefijo para cada linea de salida y una cadena para cada nivel de
-   sangria:
+   indentacion:
 
 #    ..src > go
 #      data, err := json.MarshalIndent(movies, "", "    ")
@@ -12489,7 +12484,7 @@
    < src..
 
 #    The code above prints
-   El codigo anterior
+   El codigo anterior imprime
 
 #    ..src > go
 #      [
@@ -12564,7 +12559,7 @@
 #    because of the @e(field tags). A field tag is a string of metadata associated
 #    at compile time with the field of a struct:
    Habra notado que el nombre del campo @c(Year) cambia a @c(released) en la
-   salida, y @c(Color) cambia a @c(color) . Eso es debido a las etiquetas de los
+   salida, y @c(Color) cambia a @c(color). Eso es debido a las etiquetas de los
    campos. Una etiqueta de campo es una cadena de metadatos asociados en tiempo
    de compilacion con el campo de una estructura:
 
@@ -12611,10 +12606,10 @@
 #    we can select which parts of the JSON input to decode and which to
 #    discard. When @c(Unmarshal) returns, it has filled in the slice with the
 #    @c(Title) information; other names in the JSON are ignored.
-   La operacion inversa para marshaling, la decodificacion de JSON y rellenar
-   una estructura de datos Go, se denomina @e(unmarshaling), y se realiza por
+   La operacion inversa de marshaling, decodificar JSON y poblar
+   una estructura de datos Go, se denomina @e(unmarshaling), y se realiza con
    @c(json.Unmarshal). El codigo de abajo aplica unmarshaling sobre los datos de
-   las peliculas JSON en un slice de estructuras cuyo unico campo es Title. De
+   las peliculas JSON en un slice de estructuras cuyo unico campo es @c(Title). De
    esta manera, al definir estructuras de datos Go adecuadas, podemos
    seleccionar que partes de la entrada JSON se deben descifrar y cuales
    descartar. Cuando @c(Unmarshal) regresa, se ha llenado el slice con la
@@ -12719,7 +12714,7 @@
    coincidencia que asocia los nombres de JSON con los nombres de una estructura
    de Go durante el unmarshaling no distingue entre mayusculas y minusculas, por
    lo que solo es necesario utilizar una etiqueta de campo cuando hay un
-   subrayado en el nombre JSON pero no en el nombre Go. Una vez mas, estamos
+   guion bajo en el nombre JSON pero no en el nombre Go. Una vez mas, estamos
    siendo selectivos acerca de que campos decodificar; la respuesta de busqueda
    de GitHub contiene considerablemente mas informacion de la que mostramos
    aqui.
@@ -12731,8 +12726,8 @@
    La funcion @c(SearchIssues) realiza una peticion HTTP y decodifica el
    resultado como JSON. Puesto que los terminos de consulta presentados por un
    usuario pueden contener caracteres como @c(?) y @c(&) que tienen un
-   significado especial en una URL, usamos @c(url.QueryEscape) para asegurar de
-   que se tomen literalmente.
+   significado especial en una URL, usamos @c(url.QueryEscape) para asegurarnos de
+   que se toman literalmente.
 
 #    ..figure > @l(gopl.io/ch4/github/search.go<>gopl.io/ch4/github)
    ..figure > @l(gopl.io/ch4/github/search.go<>gopl.io/ch4/github)
@@ -12969,7 +12964,7 @@
 #    movie named on the command line.
    @b(Ejercicio 4.13): El servicio web basado en JSON de Open Movie Database le
    permite buscar en @l(https://omdbapi.com/) una pelicula por su nombre y
-   descargar la su imagen del poster. Escriba una herramienta @$(poster) que
+   descargar su imagen de poster. Escriba una herramienta @$(poster) que
    descargue la imagen del poster de la pelicula que se nombre en la linea de
    comandos.
 
@@ -12983,10 +12978,10 @@
 #    packages, which provide a mechanism for substituting the values of variables
 #    into a text or HTML template.
    El ejemplo anterior muestra como hacer el formato lo mas simple posible, para
-   lo cual @c(Printf) es completamente adecuado. Pero a veces el formato debe
+   lo cual @c(Printf) es totalmente adecuado. Pero a veces el formato debe
    ser mas elaborado, y es deseable separar el formato del codigo completamente.
    Esto se puede hacer con los paquetes @c(text/template) y @c(html/template),
-   que proporcionan un mecanismo para la sustitucion de los valores de las
+   que proporcionan un mecanismo para sustituir los valores de las
    variables en una plantilla de texto o HTML.
 
 #    A template is a string or file containing one or more portions enclosed in
@@ -13003,8 +12998,8 @@
    otros comportamientos. Cada accion contiene una expresion en el lenguaje de
    la plantilla, una notacion sencilla pero poderosa para imprimir valores,
    seleccionar campos de la estructura, llamar a funciones y metodos, expresar
-   el flujo de control, como sentencias @c(if)-@c(else) y bucles @c(range), y
-   crear instancias de otras plantillas. A continuacion se muestra una cadena de
+   el flujo de control, como las sentencias @c(if)-@c(else) y bucles @c(range),
+   e instanciar otras plantillas. A continuacion se muestra una cadena de
    plantilla simple:
 
 #    ..figure > @l(gopl.io/ch4/issuesreport/main.go<>gopl.io/ch4/issuesreport)
@@ -13032,7 +13027,7 @@
 
 #    This template first prints the number of matching issues, then prints the
 #    number, user, title, and age in days of each one. Within an action, there is
-#    a notion of the current value, referred to as @"(dot) and written as @"(.), a
+#    a notion of the current value, referred to as @"(dot) and written as @"c(.), a
 #    period. The dot initially refers to the template’s parameter, which will be a
 #    @c(github.IssuesSearchResult) in this example. The @c({{.TotalCount}}) action
 #    expands to the value of the @c(TotalCount) field, printed in the usual
@@ -13042,7 +13037,7 @@
    Esta plantilla primero imprime el numero de problemas encontrados, luego
    imprime el numero, usuario, titulo y edad en dias de cada uno. Dentro de una
    accion, hay una nocion del valor actual, denominado como @"(punto) y escrita
-   como @"(.), un punto. El punto se refiere inicialmente al parametro de la
+   como @"c(.), un punto. El punto se refiere inicialmente al parametro de la
    plantilla, que sera en este ejemplo @c(github.IssuesSearchResult). La accion
    @c({{.TotalCount}}) expande al valor del campo @c(TotalCount), que se imprime
    en la forma habitual. Las acciones @c({{range .Items}}) y @c({{end}}) crean
@@ -13056,11 +13051,11 @@
 #    second operation is the following function, @c(daysAgo), which converts the
 #    @c(CreatedAt) field into an elapsed time, using @c(time.Since):
    Dentro de una accion, la notacion @c(|) hace que el resultado de una
-   operacion sea el argumento de otra, analoga a una tuberia del shell de
+   operacion sea el argumento de otra, analoga a una tuberia del shell
    Unix. En el caso de @c(Title), la segunda operacion es la funcion @c(printf),
    que es un sinonimo nativo para @c(fmt.Sprintf) en todas las plantillas. Para
    @c(Age), la segunda operacion es la funcion, @c(daysAgo), que convierte el
-   campo @c(CreatedAt) en el tiempo transcurrido, usando @c(time.Since):
+   campo @c(CreatedAt) en el tiempo transcurrido, utilizando @c(time.Since):
 
 #    ..src > go
 #      func daysAgo(t time.Time) int {
@@ -13094,12 +13089,12 @@
 #    returns that template; finally, @c(Parse) is called on the result.
    Producir la salida con una plantilla es un proceso de dos pasos. Primero
    debemos analizar la plantilla en una representacion interna adecuada, y luego
-   ejecutarla en entradas especificas. El analisis se debe hacer solo una
+   ejecutarla con entradas especificas. El analisis se debe hacer solo una
    vez. El siguiente codigo crea y analiza la plantilla @c(templ) definida
    anteriormente. Observe el encadenamiento de llamadas a metodos:
    @c(template.New) crea y devuelve una plantilla; @c(Funcs) añade @c(daysAgo)
    al conjunto de funciones accesibles dentro de esta plantilla, luego, devuelve
-   esa plantilla; por ultimo, se llama a @c(Parse) en el resultado.
+   esa plantilla; por ultimo, se llama a @c(Parse) sobre el resultado.
 
 #    ..src > go
 #      report, err := template.New("report").
@@ -13135,7 +13130,7 @@
 #    source and @c(os.Stdout) as the destination:
    Una vez la plantilla ha sido creada, aumentada con @c(daysAgo), analizada y
    comprobada, podemos ejecutarla utilizando como fuente de datos
-   @c(github.IssuesSearchResult) y @c(os.Stdout) como el destino:
+   @c(github.IssuesSearchResult) y @c(os.Stdout) como destino:
 
 #    ..src > go
 #      var report = template.Must(template.New("issuelist").
@@ -13220,11 +13215,11 @@
    problema de seguridad perenne de la generacion de HTML, un @e(ataque de
    inyeccion), en el que un adversario crea un valor de cadena como el titulo de
    un tema, para incluir codigo malicioso, que cuando se escapa indebidamente
-   por una plantilla, les da control sobre la pagina.
+   por una plantilla, le da control sobre la pagina.
 
 #    The template below prints the list of issues as an HTML table. Note the
 #    different import:
-   La plantilla siguiente muestra la lista de temas como una tabla HTML.
+   La plantilla siguiente imprime la lista de problemas como una tabla HTML.
    Observe la diferente importacion:
 
 #    ..figure > @l(gopl.io/ch4/issueshtml/main.go<>gopl.io/ch4/issueshtml)
@@ -13280,7 +13275,7 @@
 
 #    The command below executes the new template on the results of a slightly
 #    different query:
-   El siguiente comando ejecuta la nueva plantilla en los resultados de una
+   El siguiente comando ejecuta la nueva plantilla sobre los resultados de una
    consulta ligeramente diferente:
 
 #    ..srci > sh
@@ -13304,7 +13299,6 @@
 
 #      ..img > img/Figure-4.4.jpg
      ..img > img/Figure-4.4.jpg
-
 
 #    None of the issues in Figure 4.4 pose a challenge for HTML, but we can see
 #    the effect more clearly with issues whose titles contain HTML metacharacters
@@ -13344,10 +13338,10 @@
 #    @c(template.HTML).
    Podemos suprimir este comportamiento de auto-escape para los campos que
    contienen datos HTML confiables mediante el uso de un  tipo de cadena
-   denominada @c(template.HTML) en lugar de @c(string) . Existen tipos con nombres
+   denominada @c(template.HTML) en lugar de @c(string). Existen tipos con nombres
    similares para JavaScript, CSS y URLs de confianza. El siguiente programa
-   demuestra el principio usando  campos con el mismo valor, pero
-   con diferentes tipos: c(A) es un @c(string) y @c(B) es un @c(template.HTML).
+   demuestra el principio usando campos con el mismo valor, pero
+   con diferentes tipos: @c(A) es un @c(string) y @c(B) es un @c(template.HTML).
 
 #    ..figure > Figure 4.5. HTML metacharacters in issue titles are correctly
 #      displayed.
@@ -13399,12 +13393,11 @@
 
 #    ..figure > Figure 4.6. String values are HTML-escaped but @c(template.HTML)
 #      values are not.
-   ..figure > Figura 4.6. Los valores de cadena tinen escapado HTML escapado,
+   ..figure > Figura 4.6. Los valores de cadena tinen escapes HTML,
      pero los valores @c(template.HTML) no.
 
 #      ..img > img/Figure-4.6.jpg
      ..img > img/Figure-4.6.jpg
-
 
 #    We have space here to show only the most basic features of the template
 #    system. As always, for more information, consult the package documentation:

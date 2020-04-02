@@ -5365,7 +5365,7 @@
       for _, r := range "Hello, 世界" {
         runes = append(runes, r)
       }
-      fmt.Printf("%q\n", runes) // "['H' 'e' 'l' 'l' 'o' ',' ' ' 'B' 'F']"
+      fmt.Printf("%q\n", runes) // "['H' 'e' 'l' 'l' 'o' ',' ' ' '世' '界']"
     < src..
 
     The loop uses @c(append) to build the slice of nine runes encoded by the
@@ -6911,7 +6911,7 @@
 
    This template first prints the number of matching issues, then prints the
    number, user, title, and age in days of each one. Within an action, there is
-   a notion of the current value, referred to as @"(dot) and written as @"(.), a
+   a notion of the current value, referred to as @"(dot) and written as @"c(.), a
    period. The dot initially refers to the template’s parameter, which will be a
    @c(github.IssuesSearchResult) in this example. The @c({{.TotalCount}}) action
    expands to the value of the @c(TotalCount) field, printed in the usual

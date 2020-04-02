@@ -91,7 +91,7 @@
     <li><a class="h3" href="#seccion-4.4" >Estructuras</a></li>
       <ul>
       <li><a class="h4" href="#seccion-4.4.1" >Estructuras Literales</a></li>
-      <li><a class="h4" href="#seccion-4.4.2" >Comparacion de estructuras</a></li>
+      <li><a class="h4" href="#seccion-4.4.2" >Comparacion de Estructuras</a></li>
       <li><a class="h4" href="#seccion-4.4.3" >Estructura Enbebida y Campos Anonimos</a></li>
       </ul>
     <li><a class="h3" href="#seccion-4.5" >JSON</a></li>
@@ -2932,10 +2932,10 @@ x = 7 eˣ = 1096.633
 <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">r</span> <span class="o">:=</span> <span class="k">range</span> <span class="s">&#34;Hello, 世界&#34;</span> <span class="p">{</span>
   <span class="nx">runes</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">runes</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%q\n&#34;</span><span class="p">,</span> <span class="nx">runes</span><span class="p">)</span> <span class="c1">// &#34;[&#39;H&#39; &#39;e&#39; &#39;l&#39; &#39;l&#39; &#39;o&#39; &#39;,&#39; &#39; &#39; &#39;B&#39; &#39;F&#39;]&#34;
+<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%q\n&#34;</span><span class="p">,</span> <span class="nx">runes</span><span class="p">)</span> <span class="c1">// &#34;[&#39;H&#39; &#39;e&#39; &#39;l&#39; &#39;l&#39; &#39;o&#39; &#39;,&#39; &#39; &#39; &#39;世&#39; &#39;界&#39;]&#34;
 </span><span class="c1"></span></code></pre>
 <p>El bucle utiliza <code>append</code> para construir el slice codificado de nueve runas literales, aunque este problema especifico se resuelve mas convenientemente mediante el uso de la conversion nativa <code>[]rune(&#34;Hello, 世界&#34;)</code>.</p>
-<p>La funcion <code>append</code> es crucial para la comprension de como trabajan los slices, asi que vamos a echar un vistazo a lo que esta pasando. Aqui hay una version llamada <code>appendInt</code> que se especializa en slices <code>[]int</code>:</p>
+<p>La funcion <code>append</code> es crucial para entender como trabajan los slices, asi que vamos a echar un vistazo a lo que esta pasando. Aqui hay una version llamada <code>appendInt</code> que se especializa en slices <code>[]int</code>:</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch4/append/main.go" >gopl.io/ch4/append</a></h1>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span> <span class="nx">appendInt</span><span class="p">(</span><span class="nx">x</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span><span class="p">)</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
@@ -2960,7 +2960,7 @@ x = 7 eˣ = 1096.633
 </code></pre>
 </div>
 <p>Cada llamada a <code>appendInt</code> debe comprobar si el slice tiene capacidad suficiente para contener los nuevos elementos en el arreglo existente. Si es asi, se extiende el slice mediante la definicion de un slice mas grande (todavia dentro de la arreglo original), copia el elemento <code>y</code> en el nuevo espacio, y devuelve el slice. La entrada <code>x</code> y el resultado <code>z</code> comparten el misma arreglo subyacente.</p>
-<p>Si no hay suficiente espacio para el crecimiento, <code>appendInt</code> debe asignar un nuevo arreglo lo suficientemente grande para contener el resultado, copiar los valores de <code>x</code> en el, y a continuacion, añadir el nuevo elemento <code>y</code>. Ahora el resultado <code>z</code> hace referencia a un arreglo subyacente diferente al que referia el arreglo <code>x</code>.</p>
+<p>Si no hay espacio suficiente para el crecimiento, <code>appendInt</code> debe asignar un nuevo arreglo lo bastente grande para contener el resultado, copiar los valores de <code>x</code> en el, y a continuacion, añadir el nuevo elemento <code>y</code>. Ahora el resultado <code>z</code> hace referencia a un arreglo subyacente diferente al que referia el arreglo <code>x</code>.</p>
 <p>Seria facil copiar los elementos con bucles explicitos, pero es mas facil utilizar la funcion nativa <code>copy</code>, que copia los elementos de un slice a otro del mismo tipo. Su primer argumento es el destino y el segundo es la fuente, parecido al orden de los operandos de una asignacion como <code>dst = src</code>. Los slices pueden referirse al mismo arreglo subyacente; incluso pueden superponerse. Aunque no lo usamos aqui, <code>copy</code> devuelve el numero de elementos copiados realmente, que es la longitud del menor de los slices, por lo que no hay peligro de se acabe o sobreescriba algo fuera del rango.</p>
 <p>Por eficiencia, el nueva arreglo es generalmente algo mayor que el minimo necesario para almacenar <code>x</code> y <code>y</code>. Expandir el arreglo duplicando su tamaño en cada expansion evita un numero excesivo de asignaciones y asegura que anexar un solo elemento tome un tiempo constante en promedio. Este programa demuestra el efecto:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
@@ -2986,14 +2986,14 @@ x = 7 eˣ = 1096.633
 9  cap=16    [0 1 2 3 4 5 6 7 8 9]
 </pre>
 </div>
-<p>Echemos un vistazo mas cercano a la iteracion <code>i=3</code>. El slice <code>x</code> contiene tres elementos <code>[0 1 2]</code>, pero tiene la capacidad de 4, por lo que hay un solo elemento de holgura en el extremo, y agrerar el elemento 3 procede sin reasignacion en <code>appendInt</code>. El slice <code>y</code> resultante tiene longitud y capacidad 4, y tiene el mismo arreglo subyacente que el slice <code>x</code> original, como lo muestra la Figura 4.2.</p>
+<p>Echemos un vistazo mas cercano a la iteracion <code>i=3</code>. El slice <code>x</code> contiene tres elementos <code>[0 1 2]</code>, pero tiene la capacidad de 4, por lo que hay un solo elemento de holgura al final, y agrerar el elemento 3 con <code>appendInt</code> procede sin reasignacion. El slice <code>y</code> resultante tiene longitud y capacidad 4, y tiene el mismo arreglo subyacente que el slice <code>x</code> original, como lo muestra la Figura 4.2.</p>
 <div class="figure" >
 <h1 class="figure">Figura 4.2. Adicion con espacio para crecer.</h1>
 <figure>
 <img src="img/Figure-4.2.jpg" />
 </figure>
 </div>
-<p>En la siguiente iteracion, <code>i=4</code>, no hay holgura en absoluto, por lo que <code>appendInt</code> asigna un nueva arreglo de tamaño 8, copia los cuatro elementos de <code>x</code> (<code>[0 1 2 3]</code>), y agrega 4, el valor de <code>i</code>. El slice resultante <code>y</code> tiene una longitud de 5, pero una capacidad de 8; la holgura de 3 guardara las siguientes tres iteraciones. Las slices <code>y</code> y <code>x</code> son vistas de diferentes arreglos. Esta operacion se muestra en la Figura 4.3.</p>
+<p>En la siguiente iteracion, <code>i=4</code>, no hay ninguna holgura, por lo que <code>appendInt</code> asigna un nueva arreglo de tamaño 8, copia los cuatro elementos de <code>x</code> (<code>[0 1 2 3]</code>), y agrega 4, el valor de <code>i</code>. El slice resultante <code>y</code> tiene una longitud de 5, pero una capacidad de 8; la holgura de 3 ahorrara la necesidad de reasignar en las tres siguientes iteraciones. Las slices <code>y</code> y <code>x</code> son vistas de diferentes arreglos. Esta operacion se muestra en la Figura 4.3.</p>
 <div class="figure" >
 <h1 class="figure">Figura 4.3. Adicion sin crear espacio.</h1>
 <figure>
@@ -3003,7 +3003,7 @@ x = 7 eˣ = 1096.633
 <p>La funcion nativa <code>append</code> puede utilizar una estrategia de crecimiento mas sofisticado que la simplista <code>appendInt</code>. Por lo general, no sabemos si una llamada a <code>append</code> provocara una reasignacion, asi que no podemos asumir que el slice original se refiere al mismo arreglo que el slice resultante, ni que este se refiere a uno diferente. Del mismo modo, no debemos suponer que las operaciones sobre los elementos del antiguo slice se reflejaran (o no) en la nuevo slice. Como resultado de ello, es habitual asignar el resultado de una llamada a <code>append</code> al mismo slice cuyo valor pasamos a <code>append</code>:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">runes</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">runes</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
 </code></pre>
-<p>La actualizacion de la variable slice se requiere no solo al llamar a <code>append</code>, sino tambien a cualquier funcion que pueda cambiar la longitud o la capacidad de un slice o hacer que se refiera a un arreglo subyacente diferente. Para usar los slices correctamente, es importante tener en cuenta que aunque los elementos del arreglo subyacente son indirectos, el puntero, la longitud y la capacidad del slice no lo son. Para actualizarlos se requiere una asignacion como la anterior. En este sentido, los slices no son tipos de referencia <q>puros</q>, sino que se asemejan a un tipo de agregado como esta estructura:</p>
+<p>La actualizacion de la variable slice es necesaria no solo al llamar a <code>append</code>, sino tambien a cualquier funcion que pueda cambiar la longitud o la capacidad de un slice o hacer que se refiera a un arreglo subyacente diferente. Para usar los slices correctamente, es importante tener en cuenta que aunque los elementos del arreglo subyacente son indirectos, el puntero, la longitud y la capacidad del slice no lo son. Para actualizarlos se requiere una asignacion como la anterior. En este sentido, los slices no son tipos de referencia <q>puros</q>, sino que se asemejan a un tipo de agregado como esta estructura:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">type</span> <span class="nx">IntSlice</span> <span class="kd">struct</span> <span class="p">{</span>
   <span class="nx">ptr</span>      <span class="o">*</span><span class="kt">int</span>
   <span class="nx">len</span><span class="p">,</span> <span class="nx">cap</span> <span class="kt">int</span>
@@ -3033,7 +3033,7 @@ x = 7 eˣ = 1096.633
 <p>Veamos mas ejemplos de funciones que, como <code>rotate</code> y <code>reverse</code>, modifican los elementos de un slice en su lugar. Dada una lista de cadenas, la funcion <code>nonempty</code> devuelve las que no estan vacias:</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch4/nonempty/main.go" >gopl.io/ch4/nonempty</a></h1>
-<pre class="code" ><code class="chroma" ><span class="c1">// Nonempty es un ejemplo de algoritmo in situ.
+<pre class="code" ><code class="chroma" ><span class="c1">// Nonempty es un ejemplo de algoritmo para slices in situ.
 </span><span class="c1"></span><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
@@ -3052,12 +3052,12 @@ x = 7 eˣ = 1096.633
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>La parte sutil es que el slice de entrada y el slice de salida comparten el mismo arreglo subyacente. Esto evita la necesidad de asignar otro arreglo, aunque por supuesto los contenidos de datos se sobrescriben en parte, como se evidencia por la segunda instruccion de impresion:</p>
+<p>La parte sutil es que el slice de entrada y el slice de salida comparten el mismo arreglo subyacente. Esto evita la necesidad de asignar otro arreglo, aunque por supuesto los contenidos de datos se sobrescriben en parte, como lo demuestra la segunda instruccion de impresion:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">data</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;uno&#34;</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="s">&#34;tres&#34;</span><span class="p">}</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%q\n&#34;</span><span class="p">,</span> <span class="nx">nonempty</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span> <span class="c1">// `[&#34;uno&#34; &#34;tres&#34;]`
 </span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%q\n&#34;</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span>           <span class="c1">// `[&#34;uno&#34; &#34;tres&#34; &#34;tres&#34;]`
 </span><span class="c1"></span></code></pre>
-<p>Por lo tanto normalmente escribe: <code>data = nonempty(data)</code>.</p>
+<p>Por lo tanto normalmente escribiriamos: <code>data = nonempty(data)</code>.</p>
 <p>La funcion <code>nonempty</code> tambien se puede escribir utilizando <code>append</code>:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span> <span class="nx">nonempty2</span><span class="p">(</span><span class="nx">strings</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="kt">string</span> <span class="p">{</span>
   <span class="nx">out</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">[:</span><span class="mi">0</span><span class="p">]</span> <span class="c1">// slice del original con longitud cero
@@ -3108,11 +3108,11 @@ x = 7 eˣ = 1096.633
 <h3 id="seccion-4.3" >Mapas</h3>
 <div class="hBody-3" >
 <p>La tabla hash es una de las mas ingeniosas y versatiles de todas las estructuras de datos. Es una coleccion desordenada de pares clave/valor en la que todas las claves son distintas, y el valor asociado con una clave dada puede ser recuperado, actualizado o eliminado, usando un numero constante de comparaciones clave en promedio, no importa cuan grande sea el tamaño de la tabla hash.</p>
-<p>En Go, un <em>mapa</em> es una referencia a una tabla hash, y un tipo de mapa se escribe como <code>map[K]V</code>, en donde <code>K</code> y <code>V</code> son los tipos de sus claves y valores. Todas las claves en un mapa son del mismo tipo, y todos los valores son del mismo tipo, pero las claves no necesitan ser del mismo tipo que los valores. El tipo de clave <code>K</code> debe ser comparable usando <code>==</code>, de modo que el mapa puede probar si una clave dada es igual a una que ya esta dentro de ell. Aunque los numeros de punto flotante son comparables, es una mala idea comparar floats por igualdad y, como mencionamos en el <a href="#capitulo-3" >Capitulo 3</a>, es especialmente malo si NaN es un valor posible. No hay restricciones sobre el tipo de valor <code>V</code>.</p>
+<p>En Go, un <em>mapa</em> es una referencia a una tabla hash, y un tipo de mapa se escribe como <code>map[K]V</code>, en donde <code>K</code> y <code>V</code> son los tipos de sus claves y valores. Todas las claves en un mapa son del mismo tipo, y todos los valores son del mismo tipo, pero las claves no necesitan ser del mismo tipo que los valores. El tipo de la clave <code>K</code> debe ser comparable usando <code>==</code>, de modo que el mapa puede probar si una clave dada es igual a una que ya esta dentro de el. Aunque los numeros de punto flotante son comparables, es una mala idea comparar floats por igualdad y, como mencionamos en el <a href="#capitulo-3" >Capitulo 3</a>, es especialmente malo si NaN es un valor posible. No hay restricciones en el tipo de valor <code>V</code>.</p>
 <p>Se puede utilizar la funcion nativa <code>make</code> para crear un mapa:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">edades</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span> <span class="c1">// mapeo de cadenas a ints
 </span><span class="c1"></span></code></pre>
-<p>Tambien podemos usar un <em>mapa literal</em> para crear un nuevo mapa poblado con algunos pares iniciales clave/valor:</p>
+<p>Tambien podemos usar un <em>mapa literal</em> para crear un nuevo mapa poblado con algunos pares clave/valor iniciales:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">edades</span> <span class="o">:=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span>
   <span class="s">&#34;alice&#34;</span><span class="p">:</span>   <span class="mi">31</span><span class="p">,</span>
   <span class="s">&#34;charlie&#34;</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span>
@@ -3128,7 +3128,7 @@ x = 7 eˣ = 1096.633
 <pre class="code" ><code class="chroma" ><span class="nx">edades</span><span class="p">[</span><span class="s">&#34;alice&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="mi">32</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">edades</span><span class="p">[</span><span class="s">&#34;alice&#34;</span><span class="p">])</span> <span class="c1">// &#34;32&#34;
 </span><span class="c1"></span></code></pre>
-<p>y se remueve con la funcion nativa <code>delete</code>:</p>
+<p>y se eliminan con la funcion nativa <code>delete</code>:</p>
 <pre class="code" ><code class="chroma" ><span class="nb">delete</span><span class="p">(</span><span class="nx">edades</span><span class="p">,</span> <span class="s">&#34;alice&#34;</span><span class="p">)</span> <span class="c1">// remover elemento ages[&#34;alice&#34;]
 </span><span class="c1"></span></code></pre>
 <p>Todas estas operaciones son seguras incluso si el elemento no esta en el mapa; una busqueda en el mapa utulizando una clave que no esta presente devuelve el valor cero para su tipo, por ejemplo, lo siguiente funciona incluso cuando <code>&#34;bob&#34;</code> aun no es una clave en el mapa, por lo que el valor de <code>edades[&#34;bob&#34;]</code> sera 0.</p>
@@ -3162,7 +3162,7 @@ x = 7 eˣ = 1096.633
   <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%s\t%d\n&#34;</span><span class="p">,</span> <span class="nx">nombre</span><span class="p">,</span> <span class="nx">edades</span><span class="p">[</span><span class="nx">nombre</span><span class="p">])</span>
 <span class="p">}</span>
 </code></pre>
-<p>Dado que sabemos el tamaño final de nombres desde el principio, es mas eficiente asignar un arreglo del tamaño requerido por adelantado. La siguiente declaracion crea un slice que esta inicialmente vacio, pero tiene la capacidad suficiente para contener todas las llaves del mapa <em>edades</em>:</p>
+<p>Dado que sabemos el tamaño final de <code>nombres</code> desde el principio, es mas eficiente asignar un arreglo del tamaño requerido por adelantado. La siguiente declaracion crea un slice que esta inicialmente vacio, pero tiene la capacidad suficiente para contener todas las llaves del mapa <em>edades</em>:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">nombres</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">edades</span><span class="p">))</span>
 </code></pre>
 <p>En el primer <code>range</code> del bucle anterior, solo necesitamos las llaves claves del mapa <code>edades</code>, por lo que se omite la segunda variable de bucle. En el segundo bucle, se requieren solo los elementos del slice <code>nombres</code>, por lo que se utiliza el identificador en blanco <code>_</code> para ignorar la primer variable, el indice.</p>
@@ -3171,18 +3171,18 @@ x = 7 eˣ = 1096.633
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">edades</span> <span class="o">==</span> <span class="kc">nil</span><span class="p">)</span>    <span class="c1">// &#34;true&#34;
 </span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">edades</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// &#34;true&#34;
 </span><span class="c1"></span></code></pre>
-<p>La mayoria de las operaciones en los mapas, incluyendo las operaciones de busqueda, <code>delete</code>, <code>len</code> y bucles <code>range</code>, son seguros para llevar a cabo en un mapa de referencia a <code>nil</code>, ya que se comporta como un mapa vacio. Pero almacenar en un mapa nil provoca un panico:</p>
+<p>La mayoria de las operaciones en los mapas, incluyendo las operaciones de busqueda, <code>delete</code>, <code>len</code> y bucles <code>range</code>, son seguras de llevar a cabo en un mapa que referencia a <code>nil</code>, ya que se comporta como un mapa vacio. Pero almacenar en un mapa nil provoca un panico:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">ages</span><span class="p">[</span><span class="s">&#34;carol&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="mi">21</span> <span class="c1">// panic: assignment to entry in nil map
 </span><span class="c1"></span></code></pre>
-<p>Debe asignar el mapa antes de poder almacenar en el.</p>
-<p>El acceso a un elemento de un mapa mediante subindice siempre produce un valor. Si la clave esta presente en el mapa, se obtiene el valor correspondiente; si no, se obtiene el valor cero para el tipo de elemento, como hemos visto con <code>edades[&#34;bob&#34;]</code>. Para muchos propositos eso esta bien, pero a veces necesitas saber si el elemento estaba realmente ahi o no. Por ejemplo, si el tipo de elemento es numerico, es posible que tenga que distinguir entre un elemento inexistente y un elemento que tiene el valor cero, mediante una prueba como esta:</p>
+<p>Se debe asignar el mapa antes de poder almacenar en el.</p>
+<p>Acceder a un elemento del mapa mediante subindice siempre produce un valor. Si la clave esta presente en el mapa, se obtiene el valor correspondiente; si no, se obtiene el valor cero para el tipo de elemento, como hemos visto con <code>edades[&#34;bob&#34;]</code>. Para muchos propositos eso esta bien, pero a veces necesitas saber si el elemento estaba realmente ahi o no. Por ejemplo, si el tipo de elemento es numerico, puede que tengas que distinguir entre un elemento inexistente y un elemento que tiene el valor cero, mediante una prueba como esta:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">edad</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">edades</span><span class="p">[</span><span class="s">&#34;bob&#34;</span><span class="p">]</span>
 <span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span> <span class="cm">/* &#34;bob&#34; no es una clave en este mapa; edad == 0. */</span> <span class="p">}</span>
 </code></pre>
-<p>A menudo vera estas dos afirmaciones combinadas, como aqui:</p>
+<p>Es frecuente ver estas dos declaraciones combinadas, como aqui:</p>
 <pre class="code" ><code class="chroma" ><span class="k">if</span> <span class="nx">age</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">ages</span><span class="p">[</span><span class="s">&#34;bob&#34;</span><span class="p">];</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span>
 </code></pre>
-<p>El subindice de un mapa en este contexto produce dos valores; el segundo es un booleano que informa si el elemento estaba presente. La variable booleana a menudo se denomina <code>ok</code>, especialmente si se utiliza inmediatamente en una condicion <code>if</code>.</p>
+<p>El subindice de un mapa en este contexto produce dos valores; el segundo es un booleano que informa si el elemento estaba presente. La variable booleana a menudo se nombra <code>ok</code>, especialmente si se usa inmediatamente en una condicion <code>if</code>.</p>
 <p>Como con los slices, los mapas no pueden compararse uno con otro; la unica comparacion legal es con <code>nil</code>. Para probar si dos mapas contienen las mismas claves y los mismos valores asociados, debemos escribir un bucle:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span> <span class="nx">equal</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
@@ -3207,7 +3207,7 @@ x = 7 eˣ = 1096.633
   <span class="nx">consulta</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">bool</span><span class="p">)</span> <span class="c1">// un conjunto de cadenas
 </span><span class="c1"></span>  <span class="nx">entrada</span>  <span class="o">:=</span> <span class="nx">bufio</span><span class="p">.</span><span class="nx">NewScanner</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">)</span>
   <span class="k">for</span> <span class="nx">entrada</span><span class="p">.</span><span class="nx">Scan</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">linea</span> <span class="o">:=</span> <span class="nx">input</span><span class="p">.</span><span class="nx">Text</span><span class="p">()</span>
+    <span class="nx">linea</span> <span class="o">:=</span> <span class="nx">entrada</span><span class="p">.</span><span class="nx">Text</span><span class="p">()</span>
     <span class="k">if</span> <span class="p">!</span><span class="nx">consulta</span><span class="p">[</span><span class="nx">linea</span><span class="p">]</span> <span class="p">{</span>
       <span class="nx">consulta</span><span class="p">[</span><span class="nx">linea</span><span class="p">]</span> <span class="p">=</span> <span class="kc">true</span>
       <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">linea</span><span class="p">)</span>
@@ -3221,9 +3221,9 @@ x = 7 eˣ = 1096.633
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>Los programadores de Go a menudo describen un mapa de esta manera utilizandolo como un <q>conjunto de cadenas</q> sin mas preambulos, pero cuidado, no todos los valores <code>map[string]bool</code> son conjuntos simples; algunos pueden contener valores tanto <code>true</code> y <code>false</code>.</p>
-<p>A veces necesitamos un mapa o conjunto cuyas claves sean slices, pero ya que las claves de un mapa deben ser comparables, esto se no puede expresar directamente. Sin embargo, se puede hacer en dos pasos. Primero definimos una funcion auxiliar <code>k</code> que mapea cada clave en una cadena, con la caracteristica que <code>k(x) == k(y)</code> si y solo si consideramos <code>x</code> e <code>y</code> equivalentes. Luego creamos un mapa cuyas claves son cadenas, aplicando la funcion auxiliar a cada clave antes de acceder al mapa.</p>
-<p>El siguiente ejemplo utiliza un mapa para registrar el numero de veces que se ha llamado a <code>Add</code> con una lista dada de cadenas. Utiliza <code>fmt.Sprintf</code> para convertir un slice de cadenas en una sola cadena que es una clave de mapa adecuada, citando cada elemento del slice con <code>%q</code> para registrar los limites de las cadena fielmente:</p>
+<p>Los programadores de Go a menudo describen un mapa de esta manera utilizandolo como un <q>conjunto de cadenas</q> sin mas, pero cuidado, no todos los valores <code>map[string]bool</code> son conjuntos simples; algunos pueden contener valores tanto <code>true</code> y <code>false</code>.</p>
+<p>A veces necesitamos un mapa o un conjunto cuyas claves sean slices, pero ya que las claves de un mapa deben ser comparables, esto se no puede expresar directamente. Sin embargo, se puede hacer en dos pasos. Primero definimos una funcion auxiliar <code>k</code> que mapea cada clave en una cadena, con la caracteristica que <code>k(x) == k(y)</code> si y solo si consideramos <code>x</code> y <code>y</code> equivalentes. Luego creamos un mapa cuyas claves son cadenas, aplicando la funcion auxiliar a cada clave antes de acceder al mapa.</p>
+<p>El siguiente ejemplo utiliza un mapa para registrar el numero de veces que se ha llamado a <code>Add</code> con una lista determinada de cadenas. Utiliza <code>fmt.Sprintf</code> para convertir un slice de cadenas en una unica cadena que es una clave de mapa adecuada, citando cada elemento del slice con <code>%q</code> para registrar fielmente los limites de las cadena:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">m</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
 
 <span class="kd">func</span> <span class="nx">k</span><span class="p">(</span><span class="nx">list</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="kt">string</span>  <span class="p">{</span> <span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&#34;%q&#34;</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">}</span>
@@ -3231,7 +3231,7 @@ x = 7 eˣ = 1096.633
 <span class="kd">func</span> <span class="nx">Add</span><span class="p">(</span><span class="nx">list</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span>       <span class="p">{</span> <span class="nx">m</span><span class="p">[</span><span class="nx">k</span><span class="p">(</span><span class="nx">list</span><span class="p">)]</span><span class="o">++</span> <span class="p">}</span>
 <span class="kd">func</span> <span class="nx">Count</span><span class="p">(</span><span class="nx">list</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">m</span><span class="p">[</span><span class="nx">k</span><span class="p">(</span><span class="nx">list</span><span class="p">)]</span> <span class="p">}</span>
 </code></pre>
-<p>El mismo enfoque se puede utilizar para cualquier tipo de clave no comparable, no solo para slices. Incluso es util para este tipo de claves comparables cuando se desea una definicion de igualdad distinta de <code>==</code>, como comparaciones entre mayusculas y minusculas para cadenas. Y el tipo de <code>k(x)</code> no necesita ser una cadena; cualquier tipo comparable con la propiedad de equivalencia deseada lo hara, como enteros, arreglos o estructuras.</p>
+<p>El mismo enfoque se puede utilizar para cualquier tipo de clave no comparable, no solo para slices. Incluso es util para este tipo de claves comparables cuando se desea una definicion de igualdad distinta de <code>==</code>, como en el caso de comparacion de cadenas que no tienen en cuenta las mayusculas y minusculas. Y el tipo de <code>k(x)</code> no necesita ser una cadena; cualquier tipo comparable con la propiedad de equivalencia deseada servira, como enteros, arreglos o estructuras.</p>
 <p>Aqui hay otro ejemplo de mapas en accion, un programa que cuenta las apariciones de cada punto de codigo Unicode distinto en su entrada. Puesto que hay un gran numero de caracteres posibles, solo una pequeña fraccion de ellos aparecera en cualquier documento en particular, un mapa es una manera natural de hacer un seguimiento de solo los que se han visto y su conteo correspondiente.</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch4/charcount/main.go" >gopl.io/ch4/charcount</a></h1>
@@ -3285,9 +3285,9 @@ x = 7 eˣ = 1096.633
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>El metodo <code>ReadRune</code> realiza la decodificacion UTF-8 y devuelve tres valores: la runa decodificada, la longitud en bytes de su codificacion UTF-8, y un valor de error. El unico error que esperamos es el fin de archivo. Si la entrada no era la codificacion UTF-8 legal de una runa, la runa devuelta es <code>unicode.ReplacementChar</code> y la su longitud es 1.</p>
+<p>El metodo <code>ReadRune</code> realiza la decodificacion UTF-8 y devuelve tres valores: la runa decodificada, la longitud en bytes de su codificacion UTF-8, y un valor de error. El unico error que esperamos es el fin de archivo. Si la entrada no fue una codificacion UTF-8 legal de una runa, la runa devuelta es <code>unicode.ReplacementChar</code> y la su longitud es 1.</p>
 <p>El programa <code class="command" >charcount</code> tambien imprime un recuento de las longitudes de las codificaciones UTF-8 de las runas que aparecieron en la entrada. Un mapa no es la mejor estructura de datos para eso; ya que las longitudes de codificacion varian solo de 1 a utf8.UTFMax (que tiene el valor 4), un arreglo es mas compacto.</p>
-<p>Como un experimento, en un momento ejecutamos <code class="command" >charcount</code>. Aunque (originalmente) esta principalmente en Ingles, por supuesto, tiene un buen numero de caracteres no ASCII. Aqui estan los diez primeros:</p>
+<p>Como experimento, en un momento ejecutamos <code class="command" >charcount</code> en este libro. Aunque (originalmente) esta principalmente en Ingles, por supuesto, tiene un buen numero de caracteres no ASCII. Aqui estan los diez primeros:</p>
 <div class="pre-block" >
 <pre class="pre" >° 27 世 15 界 14 é 13 ˣ 10 ≤ 5 × 5 𢉩 4 � 4 □ 3
 </pre>
@@ -3326,7 +3326,7 @@ x = 7 eˣ = 1096.633
 </div>
 <h3 id="seccion-4.4" >Estructuras</h3>
 <div class="hBody-3" >
-<p>Una <em>estructura</em> es un tipo de datos agregada que agrupa de cero a mas valores con nombre de tipos arbitrarios como una entidad unica. Cada valor se denomina <em>campo</em>. El ejemplo clasico de una estructura de procesamiento de datos es el registro de un empleado, cuyos campos son un identificador unico, el nombre del empleado, direccion, fecha de nacimiento, posicion, salario, gerente y similares. Todos estos campos se recopilan en una sola entidad que puede ser copiada como una unidad, pasada a funciones y devuelta por ellas, almacenada en arreglos, y demas.</p>
+<p>Una <em>estructura</em> es un tipo de datos agregados que agrupa de cero a mas valores con nombre de tipos arbitrarios como una entidad unica. Cada valor se denomina <em>campo</em>. El ejemplo clasico de una estructura de procesamiento de datos es el registro de un empleado, cuyos campos son un identificador unico, el nombre del empleado, direccion, fecha de nacimiento, posicion, salario, gerente y similares. Todos estos campos se recopilan en una sola entidad que puede ser copiada como una unidad, pasada a funciones y devuelta por ellas, almacenada en arreglos, y demas.</p>
 <p>Estas dos declaraciones declaran un tipo de estructura llamada <code>Empleado</code> y una variable llamada <code>dilbert</code> que es una instancia de un <code>Empleado</code>:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">type</span> <span class="nx">Empleado</span> <span class="kd">struct</span> <span class="p">{</span>
   <span class="nx">ID</span>        <span class="kt">int</span>
@@ -3340,12 +3340,12 @@ x = 7 eˣ = 1096.633
 
 <span class="kd">var</span> <span class="nx">dilbert</span> <span class="nx">Empleado</span>
 </code></pre>
-<p>Los campos individuales de <code>dilbert</code> se accede usando la notacion de punto como <code>dilbert.Nombre</code> y <code>dilbert.DoB</code>. Puesto que <code>dilbert</code> es una variable, sus campos son variables tambien, por lo que podemos establecer un campo:</p>
+<p>Los campos individuales de <code>dilbert</code> se accede usando la notacion de punto como <code>dilbert.Nombre</code> y <code>dilbert.DoB</code>. Debido a que <code>dilbert</code> es una variable, sus campos son variables tambien, por lo que podemos asignarlos a un campo:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">dilbert</span><span class="p">.</span><span class="nx">Salario</span> <span class="o">-=</span> <span class="mi">5000</span> <span class="c1">// Rebajado, por escribir muy pocas lineas de codigo
 </span><span class="c1"></span></code></pre>
-<p>O tomar su direccion y acceder a ella a traves de un puntero:</p>
+<p>o tomar su direccion y acceder a ella a traves de un puntero:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">posicion</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">dilbert</span><span class="p">.</span><span class="nx">Posicion</span>
-<span class="o">*</span><span class="nx">posicion</span> <span class="p">=</span> <span class="s">&#34;Senior &#34;</span> <span class="o">+</span> <span class="o">*</span><span class="nx">posicion</span> <span class="c1">// promovido, para subcontrata a Elbonia
+<span class="o">*</span><span class="nx">posicion</span> <span class="p">=</span> <span class="s">&#34;Senior &#34;</span> <span class="o">+</span> <span class="o">*</span><span class="nx">posicion</span> <span class="c1">// promovido, por la subcontrata a Elbonia
 </span><span class="c1"></span></code></pre>
 <p>La notacion de punto tambien funciona con un puntero a una estructura:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">empleadoDelMes</span> <span class="o">*</span><span class="nx">Empleado</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">dilbert</span>
@@ -3375,7 +3375,7 @@ x = 7 eˣ = 1096.633
 </code></pre>
 <p>El orden del campo es significativo para identificar el tipo. Si hubieramos combinado tambien la declaracion del campo <code>Posicion</code> (tambien una cadena), o intercambiado <code>Nombre</code> y <code>Direccion</code>, estariamos definiendo un tipo de estructura diferente. Normalmente solo combinamos la declaracion de campos relacionados.</p>
 <p>El nombre de un campo en la estructura se exporta si comienza con una letra mayuscula; este es el mecanismo principal de control de acceso en Go. Una estructura puede contener una mezcla de campos exportados y no exportados.</p>
-<p>Los tipos estructura tienden a ser detallados porque a menudo implican una linea para cada campo. Aunque podriamos escribir todo el tipo cada vez que sea necesario, la repeticion cansaria. En cambio, los tipos estructura suelen aparecer dentro de la declaracion de un tipo con nombre como <code>Empleado</code>.</p>
+<p>Los tipos de estructura tienden a ser detallados porque a menudo implican una linea para cada campo. Aunque podriamos escribir todo el tipo cada vez que sea necesario, la repeticion cansaria. En cambio, los tipos estructura suelen aparecer dentro de la declaracion de un tipo con nombre como <code>Empleado</code>.</p>
 <p>Un tipo de estructura con nombre <code>S</code> no puede declarar un campo del mismo tipo <code>S</code>: un valor agregado no puede contenerse a si mismo. (Una restriccion analoga se aplica a los arreglos.) Pero <code>S</code> puede declarar un campo del tipo puntero <code>*S</code>, lo que nos permite crear estructuras de datos recursivas como listas enlazadas y arboles. Esto se ilustra en el siguiente codigo, que utiliza un arbol binario para implementar un tipo de insercion ordenada:</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch4/treesort/sort.go" >gopl.io/ch4/treesort</a></h1>
@@ -3393,7 +3393,7 @@ x = 7 eˣ = 1096.633
   <span class="nx">appendValues</span><span class="p">(</span><span class="nx">values</span><span class="p">[:</span><span class="mi">0</span><span class="p">],</span> <span class="nx">root</span><span class="p">)</span>
 <span class="p">}</span>
 
-<span class="c1">// appendValues agrega los alementos de t a los valores en orden
+<span class="c1">// appendValues agrega los elementos de t a los valores en orden
 </span><span class="c1">// y devuelve el slice resultante.
 </span><span class="c1"></span><span class="kd">func</span> <span class="nx">appendValues</span><span class="p">(</span><span class="nx">values</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">t</span> <span class="o">*</span><span class="nx">tree</span><span class="p">)</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
   <span class="k">if</span> <span class="nx">t</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
@@ -3420,8 +3420,8 @@ x = 7 eˣ = 1096.633
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>El valor cero de una estructura se compone de los valores cero de cada uno de sus campos. Por lo general, es deseable que el valor cero sea un defecto natural o razonable. Por ejemplo, en <code>bytes.Buffer</code>, el valor inicial de la estructura es un buffer vacio listo para su uso, y el valor cero de <code>sync.Mutex</code>, que veremos en el <a href="#capitulo-9" >Capitulo 9</a>, es un mutex desbloqueado listo para usas. A veces este comportamiento inicial razonable ocurre de forma gratuita, pero a veces el diseñador de tipo tiene que trabajar en ello.</p>
-<p>El tipo de una estructura sin campos se denomina <em>estructura vacia</em>, se escribe <code>struct{}</code>. Tiene un tamaño cero y no lleva ninguna informacion, sin embargo puede ser util. Algunos programadores lo utilizan en lugar de <code>bool</code> como el tipo de valor de un mapa que representa un conjunto, hacer hincapie en que solo las claves son significativas, pero el ahorro de espacio es marginal y la sintaxis es mas engorrosa, por lo que generalmente lo evitamos.</p>
+<p>El valor cero de una estructura se compone de los valores cero de cada uno de sus campos. Por lo general, es deseable que el valor cero sea un valor predeterminado natural o razonable. Por ejemplo, en <code>bytes.Buffer</code>, el valor inicial de la estructura es un buffer vacio listo para su uso, y el valor cero de <code>sync.Mutex</code>, que veremos en el <a href="#capitulo-9" >Capitulo 9</a>, es un mutex desbloqueado listo para usar. A veces este comportamiento inicial razonable ocurre de forma gratuita, pero a veces el diseñador de tipo tiene que trabajar en ello.</p>
+<p>El tipo de una estructura sin campos se denomina <em>estructura vacia</em>, se escribe <code>struct{}</code>. Tiene un tamaño cero y no lleva ninguna informacion, sin embargo puede ser util. Algunos programadores lo utilizan en lugar de <code>bool</code> como el tipo de valor de un mapa que representa un conjunto, para enfatizar que solo las claves son significativas, pero el ahorro de espacio es marginal y la sintaxis es mas engorrosa, por lo que generalmente lo evitamos.</p>
 <pre class="code" ><code class="chroma" ><span class="nx">seen</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">struct</span><span class="p">{})</span> <span class="c1">// conjunto de strings
 </span><span class="c1">// ...
 </span><span class="c1"></span><span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">seen</span><span class="p">[</span><span class="nx">s</span><span class="p">];</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
@@ -3451,8 +3451,8 @@ x = 7 eˣ = 1096.633
 <span class="kd">var</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">T</span><span class="p">{</span><span class="nx">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span> <span class="c1">// error de compilacion: no se puede referenciar a, b
 </span><span class="c1"></span><span class="kd">var</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">T</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span>       <span class="c1">// error de compilacion: no se puede referenciar a, b
 </span><span class="c1"></span></code></pre>
-<p>Aunque la ultima linea no menciona los identificadores de campo no exportados, realmente los esta usando implicitamente, por lo que no es permitido.</p>
-<p>Los valores de una estructura se pueden pasar como argumentos a funciones y ser devueltos. Por ejemplo, esta funcion escala un <code>Point</code> por un factor especifico:</p>
+<p>Aunque la ultima linea no menciona los identificadores de campo no exportados, realmente los esta usando implicitamente, asi que no esta permitido.</p>
+<p>Los valores de una estructura se pueden pasar como argumentos a funciones y ser devueltos de ellas. Por ejemplo, esta funcion escala un <code>Point</code> por un factor especificado:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span> <span class="nx">Scale</span><span class="p">(</span><span class="nx">p</span> <span class="nx">Point</span><span class="p">,</span> <span class="nx">factor</span> <span class="kt">int</span><span class="p">)</span> <span class="nx">Point</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">Point</span><span class="p">{</span><span class="nx">p</span><span class="p">.</span><span class="nx">X</span> <span class="o">*</span> <span class="nx">factor</span><span class="p">,</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Y</span> <span class="o">*</span> <span class="nx">factor</span><span class="p">}</span>
 <span class="p">}</span>
@@ -3469,7 +3469,7 @@ x = 7 eˣ = 1096.633
   <span class="nx">e</span><span class="p">.</span><span class="nx">Salario</span> <span class="p">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">Salario</span> <span class="o">*</span> <span class="mi">105</span> <span class="o">/</span> <span class="mi">100</span>
 <span class="p">}</span>
 </code></pre>
-<p>Debido a que las estructuras se manejan tan comunmente mediante punteros, es posible utilizar esta notacion compacta para crear e inicializar una estructura y obtener su direccion:</p>
+<p>Debido a que las estructuras se manejan tan comunmente a traves de punteros, es posible utilizar esta notacion compacta para crear e inicializar una estructura y obtener su direccion:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">pp</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">Point</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span>
 </code></pre>
 <p>Es exactamente equivalente a</p>
@@ -3478,9 +3478,9 @@ x = 7 eˣ = 1096.633
 </code></pre>
 <p>pero <code>&amp;Point{1, 2}</code> se puede utilizar directamente dentro de una expresion, como una llamada de funcion.</p>
 </div>
-<h4 id="seccion-4.4.2" >Comparacion de estructuras</h4>
+<h4 id="seccion-4.4.2" >Comparacion de Estructuras</h4>
 <div class="hBody-4" >
-<p>Si todos los campos de una estructura son comparables, la estructura en si es comparable, por lo que se puede comparar dos expresiones de ese tipo usando <code>==</code> o <code>!=</code>. La operacion <code>==</code> compara los campos correspondientes de las dos estructuras en orden, por lo que las dos expresiones a continuacion son equivalentes:</p>
+<p>Si todos los campos de una estructura son comparables, la estructura en si es comparable, por lo que dos expresiones de ese tipo pueden ser comparadas usando <code>==</code> o <code>!=</code>. La operacion <code>==</code> compara los campos correspondientes de las dos estructuras en orden, por lo que las dos expresiones a continuacion son equivalentes:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">type</span> <span class="nx">Point</span> <span class="kd">struct</span><span class="p">{</span> <span class="nx">X</span><span class="p">,</span> <span class="nx">Y</span> <span class="kt">int</span> <span class="p">}</span>
 
 <span class="nx">p</span> <span class="o">:=</span> <span class="nx">Point</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span>
@@ -3510,11 +3510,11 @@ x = 7 eˣ = 1096.633
 <span class="p">}</span>
 </code></pre>
 <p>Un <code>Circulo</code> tiene campos para las coordenadas de su centro <code>X</code> y <code>Y</code>, y un <code>Radio</code>. Una <code>Rueda</code> tiene todas las caracteristicas de un <code>Circulo</code>, ademas de <code>Rayos</code>, el numero de radios radiales inscritos. Vamos a crear una rueda:</p>
-<pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">w</span> <span class="nx">Rueda</span>
-<span class="nx">w</span><span class="p">.</span><span class="nx">X</span> <span class="p">=</span> <span class="mi">8</span>
-<span class="nx">w</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="mi">8</span>
-<span class="nx">w</span><span class="p">.</span><span class="nx">Radio</span> <span class="p">=</span> <span class="mi">5</span>
-<span class="nx">w</span><span class="p">.</span><span class="nx">Rayos</span> <span class="p">=</span> <span class="mi">20</span>
+<pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">r</span> <span class="nx">Rueda</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">X</span> <span class="p">=</span> <span class="mi">8</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="mi">8</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">Radio</span> <span class="p">=</span> <span class="mi">5</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">Rayos</span> <span class="p">=</span> <span class="mi">20</span>
 </code></pre>
 <p>A medida que el conjunto de formas crece, estamos obligados a notar semejanzas y repeticiones entre ellos, por lo que puede ser conveniente factorizar sus partes comunes:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">type</span> <span class="nx">Punto</span> <span class="kd">struct</span> <span class="p">{</span>
@@ -3531,12 +3531,12 @@ x = 7 eˣ = 1096.633
   <span class="nx">Rayos</span>   <span class="kt">int</span>
 <span class="p">}</span>
 </code></pre>
-<p>La aplicacion puede ser mas clara para ello, pero este cambio hace que el acceso a los campos de una Rueda sea mas detallado:</p>
-<pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">w</span> <span class="nx">Rueda</span>
-<span class="nx">w</span><span class="p">.</span><span class="nx">Circulo</span><span class="p">.</span><span class="nx">Centro</span><span class="p">.</span><span class="nx">X</span> <span class="p">=</span> <span class="mi">8</span>
-<span class="nx">w</span><span class="p">.</span><span class="nx">Circulo</span><span class="p">.</span><span class="nx">Centro</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="mi">8</span>
-<span class="nx">w</span><span class="p">.</span><span class="nx">Circulo</span><span class="p">.</span><span class="nx">Radio</span> <span class="p">=</span> <span class="mi">5</span>
-<span class="nx">w</span><span class="p">.</span><span class="nx">Rayos</span> <span class="p">=</span> <span class="mi">20</span>
+<p>Con esto la aplicacion puede ser mas clara, pero este cambio hace que el acceso a los campos de una Rueda sea mas detallado:</p>
+<pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">r</span> <span class="nx">Rueda</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">Circulo</span><span class="p">.</span><span class="nx">Centro</span><span class="p">.</span><span class="nx">X</span> <span class="p">=</span> <span class="mi">8</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">Circulo</span><span class="p">.</span><span class="nx">Centro</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="mi">8</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">Circulo</span><span class="p">.</span><span class="nx">Radio</span> <span class="p">=</span> <span class="mi">5</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">Rayos</span> <span class="p">=</span> <span class="mi">20</span>
 </code></pre>
 <p>Go nos permite declarar un campo con un tipo pero sin nombre; estos campos se denominan campos anonimos. El tipo del campo debe ser un tipo con nombre o un puntero a un tipo con nombre. Debajo, <code>Circulo</code> y <code>Rueda</code> tienen un campo anonimo cada uno. Se dice que un <code>Punto</code> esta enbebido dentro del <code>Circulo</code>, y un <code>Circulo</code> esta enbebido dentro de la <code>Rueda</code>.</p>
 <pre class="code" ><code class="chroma" ><span class="kd">type</span> <span class="nx">Circulo</span> <span class="kd">struct</span> <span class="p">{</span>
@@ -3549,24 +3549,24 @@ x = 7 eˣ = 1096.633
   <span class="nx">Rayos</span>   <span class="kt">int</span>
 <span class="p">}</span>
 </code></pre>
-<p>Gracias al embebido, podemos referirnos a los nombres en las hojas del arbol implicitamente sin dar los nombres participantes:</p>
-<pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">w</span> <span class="nx">Rueda</span>
-<span class="nx">w</span><span class="p">.</span><span class="nx">X</span> <span class="p">=</span> <span class="mi">8</span>        <span class="c1">// equivalente a w.Circulo.Punto.X = 8
-</span><span class="c1"></span><span class="nx">w</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="mi">8</span>        <span class="c1">// equivalente a w.Circulo.Punto.Y = 8
-</span><span class="c1"></span><span class="nx">w</span><span class="p">.</span><span class="nx">Radio</span> <span class="p">=</span> <span class="mi">5</span>    <span class="c1">// equivalente a w.Circulo.Radio = 5
-</span><span class="c1"></span><span class="nx">w</span><span class="p">.</span><span class="nx">Rayos</span> <span class="p">=</span> <span class="mi">20</span>
+<p>Gracias al embebido, podemos referirnos a los nombres en las hojas del arbol implicitamente sin dar los nombres intermedios:</p>
+<pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">r</span> <span class="nx">Rueda</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">X</span> <span class="p">=</span> <span class="mi">8</span>        <span class="c1">// equivalente a r.Circulo.Punto.X = 8
+</span><span class="c1"></span><span class="nx">r</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="mi">8</span>        <span class="c1">// equivalente a r.Circulo.Punto.Y = 8
+</span><span class="c1"></span><span class="nx">r</span><span class="p">.</span><span class="nx">Radio</span> <span class="p">=</span> <span class="mi">5</span>    <span class="c1">// equivalente a r.Circulo.Radio = 5
+</span><span class="c1"></span><span class="nx">r</span><span class="p">.</span><span class="nx">Rayos</span> <span class="p">=</span> <span class="mi">20</span>
 </code></pre>
 <p>Las formas explicitas que se muestran en los comentarios anteriores siguen siendo validas, sin embargo, demuestra que <q>campo anonimo</q> es un termino inapropiado. Los campos <code>Circulo</code> y <code>Punto</code> tienen nombres–del tipo nombrado–pero esos nombres son opcionales en las expresiones de punto. Podemos omitir cualquiera o todos los campos anonimos al seleccionar sus subcampos.</p>
 <p>Desafortunadamente, no hay una sintaxis compacta correspondiente para una estructura literal, por lo que ninguna de ellas compilara:</p>
-<pre class="code" ><code class="chroma" ><span class="nx">w</span> <span class="p">=</span> <span class="nx">Wheel</span><span class="p">{</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">}</span>                       <span class="c1">// error de compilacion: campos desconocidos
-</span><span class="c1"></span><span class="nx">w</span> <span class="p">=</span> <span class="nx">Wheel</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="nx">Radius</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nx">Spokes</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span> <span class="c1">// error de compilacion: campos desconocidos
+<pre class="code" ><code class="chroma" ><span class="nx">r</span> <span class="p">=</span> <span class="nx">Rueda</span><span class="p">{</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">}</span>                       <span class="c1">// error de compilacion: campos desconocidos
+</span><span class="c1"></span><span class="nx">r</span> <span class="p">=</span> <span class="nx">Rueda</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="nx">Radius</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nx">Spokes</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span> <span class="c1">// error de compilacion: campos desconocidos
 </span><span class="c1"></span></code></pre>
 <p>La estructura literal debe seguir el formato de la declaracion del tipo, por lo que debemos utilizar una de las siguientes dos formas, que son equivalentes entre si:</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch4/embed/main.go" >gopl.io/ch4/embed</a></h1>
-<pre class="code" ><code class="chroma" >  <span class="nx">w</span> <span class="p">=</span> <span class="nx">Rueda</span><span class="p">{</span><span class="nx">Circulo</span><span class="p">{</span><span class="nx">Punto</span><span class="p">{</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">},</span> <span class="mi">5</span><span class="p">},</span> <span class="mi">20</span><span class="p">}</span>
+<pre class="code" ><code class="chroma" >  <span class="nx">r</span> <span class="p">=</span> <span class="nx">Rueda</span><span class="p">{</span><span class="nx">Circulo</span><span class="p">{</span><span class="nx">Punto</span><span class="p">{</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">},</span> <span class="mi">5</span><span class="p">},</span> <span class="mi">20</span><span class="p">}</span>
 
-  <span class="nx">w</span> <span class="p">=</span> <span class="nx">Rueda</span><span class="p">{</span>
+  <span class="nx">r</span> <span class="p">=</span> <span class="nx">Rueda</span><span class="p">{</span>
     <span class="nx">Circulo</span><span class="p">:</span> <span class="nx">Circulo</span><span class="p">{</span>
       <span class="nx">Punto</span><span class="p">:</span> <span class="nx">Punto</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="mi">8</span><span class="p">},</span>
       <span class="nx">Radio</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
@@ -3574,32 +3574,32 @@ x = 7 eˣ = 1096.633
     <span class="nx">Rayos</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="c1">// NOTA: comma necesaria aqui (y en Radio)
 </span><span class="c1"></span>  <span class="p">}</span>
 
-  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%#v\n&#34;</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%#v\n&#34;</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
   <span class="c1">// Salida:
 </span><span class="c1"></span>  <span class="c1">// Rueda{Circulo:Circulo{Punto:Punto{X:8, Y:8}, Radio:5}, Rayos:20}
 </span><span class="c1"></span>
-  <span class="nx">w</span><span class="p">.</span><span class="nx">X</span> <span class="p">=</span> <span class="mi">42</span>
+  <span class="nx">r</span><span class="p">.</span><span class="nx">X</span> <span class="p">=</span> <span class="mi">42</span>
 
-  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%#v\n&#34;</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%#v\n&#34;</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
   <span class="c1">// Salida:
 </span><span class="c1"></span>  <span class="c1">// Rueda{Circulo:Circulo{Punto:Punto{X:42, Y:8}, Radio:5}, Rayos:20}
 </span><span class="c1"></span></code></pre>
 </div>
 <p>Observe como el adverbio <code>#</code> hace que el verbo <code>%v</code> de <code>Printf</code> muestre los valores en una forma similar a la sintaxis Go. Para los valores de estructura, este formato incluye el nombre de cada campo.</p>
-<p>Dado que los campos <q>anonimos</q> tienen nombres implicitos, no se puede tener dos campos anonimos del mismo tipo, ya que sus nombres entran en conflicto. Y debido a que el nombre del campo esta implicitamente determinado por su tipo, tambien lo es la visibilidad del campo. En los ejemplos anteriores, se exportan campos anonimos <code>Punto</code> y <code>Circulo</code>. Si no hubieran sido exportados (<code>punto</code> y <code>circulo</code>), podriamos utilizar la forma compacta</p>
-<pre class="code" ><code class="chroma" ><span class="nx">w</span><span class="p">.</span><span class="nx">X</span> <span class="p">=</span> <span class="mi">8</span> <span class="c1">// equivalente a w.circulo.punto.X = 8
+<p>Dado que los campos <q>anonimos</q> tienen nombres implicitos, no se puede tener dos campos anonimos del mismo tipo, ya que sus nombres entran en conflicto. Y debido a que el nombre del campo esta implicitamente determinado por su tipo, tambien lo es la visibilidad del campo. En los ejemplos anteriores, se exportan los campos anonimos <code>Punto</code> y <code>Circulo</code>. Si no se hubieran exportado (<code>punto</code> y <code>circulo</code>), tadavia podriamos utilizar la forma compacta</p>
+<pre class="code" ><code class="chroma" ><span class="nx">r</span><span class="p">.</span><span class="nx">X</span> <span class="p">=</span> <span class="mi">8</span> <span class="c1">// equivalente a r.circulo.punto.X = 8
 </span><span class="c1"></span></code></pre>
 <p>pero el fomato explicito que se muestra en el comentario estaria prohibido fuera del paquete porque <code>circulo</code> y <code>punto</code> serian inaccesibles.</p>
-<p>Lo que hemos visto hasta ahora sobre estructuras enbebidas es solo una pisca de azucar sintactico en la notacion de punto utilizada para seleccionar los campos de la estructura. Mas adelante, veremos que los campos anonimos no necesitan ser de tipo estructura; puede ser cualquier tipo con nombre o puntero a un tipo con nombre. Pero, ¿para que querrias incorporar un tipo que no tiene subcampos?</p>
-<p>La respuesta tiene que ver con los metodos. La notacion compacta utilizada para seleccionar los campos de un tipo enbebido funciona para seleccionar tambien sus metodos. En efecto, el tipo de estructura externa gana no solo los campos del tipo enbebido sino tambien sus metodos. Este mecanismo es la forma principal en que los comportamientos de objetos complejos se componen de los mas simples. La composicion es fundamental para la programacion orientada a objetos en Go, y la exploraremos mas adelante en la <a href="#seccion-6.3" >Seccion 6.3</a>.</p>
+<p>Lo que hemos visto hasta ahora sobre las estructuras enbebidas es solo una pisca de azucar sintactico en la notacion de punto utilizada para seleccionar los campos de la estructura. Mas adelante, veremos que los campos anonimos no necesitan ser de tipo estructura; puede ser cualquier tipo con nombre o puntero a un tipo con nombre. Pero, ¿para que querrias incorporar un tipo que no tiene subcampos?</p>
+<p>La respuesta tiene que ver con los metodos. La notacion compacta utilizada para seleccionar los campos de un tipo enbebido funciona tambien para seleccionar sus metodos. En efecto, el tipo de estructura externa gana no solo los campos del tipo enbebido sino tambien sus metodos. Este mecanismo es la forma principal en que los comportamientos de objetos complejos se componen de los mas simples. La composicion es fundamental para la programacion orientada a objetos en Go, y la exploraremos mas adelante en la <a href="#seccion-6.3" >Seccion 6.3</a>.</p>
 </div>
 <h3 id="seccion-4.5" >JSON</h3>
 <div class="hBody-3" >
 <p>JavaScript Object Notation (JSON) es una notacion estandar para enviar y recibir informacion estructurada. JSON no es la unica notacion. XML (<a href="#seccion-7.14" >§7.14</a>), ASN.1, y Google’s Protocol Buffers sirven a propositos similares y cada uno tiene su nicho, pero debido a su simplicidad, facilidad de lectura, y un apoyo universal, JSON es el mas utilizado.</p>
-<p>Go tiene un excelente soporte para la codificacion y decodificacion de estos formatos, proporcionado por los paquetes de las librerias estandar <code>encoding/json</code>, <code>encoding/xml</code>, <code>encoding/asn1</code>, y demas, y todos estos paquetes tienen APIs similares. En esta seccion se presenta una breve descripcion de las partes mas importantes del paquete <code>encoding/json</code>.</p>
+<p>Go tiene un excelente soporte para la codificacion y decodificacion de estos formatos, proporcionado por los paquetes de las librerias estandar <code>encoding/json</code>, <code>encoding/xml</code>, <code>encoding/asn1</code>, etc., y todos estos paquetes tienen APIs similares. En esta seccion se presenta una breve descripcion de las partes mas importantes del paquete <code>encoding/json</code>.</p>
 <p>JSON es una codificacion de valores JavaScript–cadenas, numeros, booleanos, arreglos y objetos–como texto Unicode. Es una representacion eficiente pero legible para los tipos de datos basicos del <a href="#capitulo-3" >Capitulo 3</a> y los tipos compuestos de este capitulo–arreglos, slices, estructuras, y mapas.</p>
-<p>Los tipos JSON basicos son numeros (en notacion decimal o cientifica), booleanos (<code>true</code> o <code>false</code>), y cadenas, que son secuencias de puntos de codigo Unicode entre comillas dobles, con escapes mediante la barra invertida utilizando una notacion similar a Go, aunque los escapes JSON <code>\u</code><em>hhhh</em> denotan codigos UTF-16, no runas.</p>
-<p>Estos tipos basicos se pueden combinar recursivamente utilizando arreglos JSON y objetos. Un arreglo JSON es una secuencia ordenada de valores, escrita como una lista separada por comas entre corchetes; los arreglos JSON se utilizan para codificar arreglos Go y slices. Un objeto JSON es un mapeo de cadenas a valores, escrito como una secuencia de pares <code>nombre:valor</code> separados por comas y rodeados por llaves; los objetos JSON se usan para codificar mapas Go (con claves de tipo cadena) y estructuras. Por ejemplo:</p>
+<p>Los tipos basicos de JSON son numeros (en notacion decimal o cientifica), booleanos (<code>true</code> o <code>false</code>), y cadenas, que son secuencias de puntos de codigo Unicode entre comillas dobles, con escapes mediante la barra invertida utilizando una notacion similar a Go, aunque los escapes JSON <code>\u</code><em>hhhh</em> denotan codigos UTF-16, no runas.</p>
+<p>Estos tipos basicos se pueden combinar recursivamente utilizando arreglos y objetos JSON. Un arreglo JSON es una secuencia ordenada de valores, escrita como una lista separada por comas entre corchetes; los arreglos JSON se utilizan para codificar arreglos Go y slices. Un objeto JSON es un mapeo de cadenas a valores, escrito como una secuencia de pares <code>nombre:valor</code> separados por comas y rodeados por llaves; los objetos JSON se usan para codificar mapas Go (con claves de tipo cadena) y estructuras. Por ejemplo:</p>
 <table border="1">
 <tbody>
 <tr><td><p><code>booleano</code></p>
@@ -3619,7 +3619,7 @@ x = 7 eˣ = 1096.633
 </td></tr>
 </tbody>
 </table>
-<p>Considere una aplicacion que reune reseñas de peliculas y ofrece recomendaciones. A continuacion se declara un tipo de datos <code>Movie</code> y luego una lista de estos valores. (Los literales de cadena despues de las declaraciones <code>Year</code> y <code>Color</code> son etiquetas de campo; las explicaremos en un momento.)</p>
+<p>Considere una aplicacion que reuna reseñas de peliculas y ofrezca recomendaciones. A continuacion se declara un tipo de datos <code>Movie</code> y luego una lista de estos valores. (Los literales de cadena despues de las declaraciones <code>Year</code> y <code>Color</code> son etiquetas de campo; las explicaremos en un momento.)</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch4/movie/main.go" >gopl.io/ch4/movie</a></h1>
 <pre class="code" ><code class="chroma" ><span class="kd">type</span> <span class="nx">Movie</span> <span class="kd">struct</span> <span class="p">{</span>
@@ -3650,14 +3650,14 @@ x = 7 eˣ = 1096.633
 <p><code>Marshal</code> produce un slice de bytes que contiene una cadena muy grande sin ningun espacio en blanco:</p>
 <pre class="code" ><code class="chroma" ><span class="p">[{</span><span class="s">&#34;Title&#34;</span><span class="p">:</span><span class="s">&#34;Casablanca&#34;</span><span class="p">,</span><span class="s">&#34;released&#34;</span><span class="p">:</span><span class="mi">1942</span><span class="p">,</span><span class="s">&#34;Actors&#34;</span><span class="p">:[</span><span class="s">&#34;Humphrey Bogart&#34;</span><span class="p">,</span><span class="s">&#34;Ingrid Bergman&#34;</span><span class="p">]},{</span><span class="s">&#34;Title&#34;</span><span class="p">:</span><span class="s">&#34;Cool Hand Luke&#34;</span><span class="p">,</span><span class="s">&#34;released&#34;</span><span class="p">:</span><span class="mi">1967</span><span class="p">,</span><span class="s">&#34;color&#34;</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="s">&#34;Actors&#34;</span><span class="p">:[</span><span class="s">&#34;Paul Newman&#34;</span><span class="p">]},{</span><span class="s">&#34;Title&#34;</span><span class="p">:</span><span class="s">&#34;Bullitt&#34;</span><span class="p">,</span><span class="s">&#34;released&#34;</span><span class="p">:</span><span class="mi">1968</span><span class="p">,</span><span class="s">&#34;color&#34;</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="s">&#34;Actors&#34;</span><span class="p">:[</span><span class="s">&#34;Steve McQueen&#34;</span><span class="p">,</span><span class="s">&#34;Jacqueline Bisset&#34;</span><span class="p">]}]</span>
 </code></pre>
-<p>Esta representacion compacta contiene toda la informacion, pero es dificil de leer. Para el consumo humano, una variante llamada <code>json.MarshalIndent</code> produce una salida perfectamente indentada. Dos argumentos adicionales definen un prefijo para cada linea de salida y una cadena para cada nivel de sangria:</p>
+<p>Esta representacion compacta contiene toda la informacion, pero es dificil de leer. Para el consumo humano, una variante llamada <code>json.MarshalIndent</code> produce una salida perfectamente indentada. Dos argumentos adicionales definen un prefijo para cada linea de salida y una cadena para cada nivel de indentacion:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">data</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">MarshalIndent</span><span class="p">(</span><span class="nx">movies</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="s">&#34;    &#34;</span><span class="p">)</span>
 <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
   <span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&#34;JSON marshaling failed: %s&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
 <span class="p">}</span>
 <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;%s\n&#34;</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span>
 </code></pre>
-<p>El codigo anterior</p>
+<p>El codigo anterior imprime</p>
 <pre class="code" ><code class="chroma" ><span class="p">[</span>
     <span class="p">{</span>
         <span class="s">&#34;Title&#34;</span><span class="p">:</span> <span class="s">&#34;Casablanca&#34;</span><span class="p">,</span>
@@ -3687,12 +3687,12 @@ x = 7 eˣ = 1096.633
 <span class="p">]</span>
 </code></pre>
 <p>Marshaling utiliza los nombres de los campos en la estructura Go como los nombres de campo de los objetos JSON (mediante <em>reflexion</em>, como veremos en la <a href="#seccion-12.6" >Seccion 12.6</a>). Solo se exportan los campos exportables, por lo que elegimos nombres en mayusculas para todos los nombres de campo.</p>
-<p>Habra notado que el nombre del campo <code>Year</code> cambia a <code>released</code> en la salida, y <code>Color</code> cambia a <code>color</code> . Eso es debido a las etiquetas de los campos. Una etiqueta de campo es una cadena de metadatos asociados en tiempo de compilacion con el campo de una estructura:</p>
+<p>Habra notado que el nombre del campo <code>Year</code> cambia a <code>released</code> en la salida, y <code>Color</code> cambia a <code>color</code>. Eso es debido a las etiquetas de los campos. Una etiqueta de campo es una cadena de metadatos asociados en tiempo de compilacion con el campo de una estructura:</p>
 <pre class="code" ><code class="chroma" ><span class="nx">Year</span>  <span class="kt">int</span>  <span class="s">`json:&#34;released&#34;`</span>
 <span class="nx">Color</span> <span class="kt">bool</span> <span class="s">`json:&#34;color,omitempty&#34;`</span>
 </code></pre>
 <p>Una etiqueta de campo puede ser cualquier cadena literal, pero se interpreta convencionalmente como una lista separada por espacios de pares <code>clave:&#34;valor&#34;</code>; ya que contiene comillas dobles, las etiquetas de campo normalmente se escriben con literales de cadena sin formato. La clave <code>json</code> controla el comportamiento del paquete <code>encoding/json</code>, y otros paquetes <code>encoding/...</code> siguen esta convencion. La primera parte de la etiqueta de campo <code>json</code> especifica un nombre JSON alternativo para el campo Go. Las etiquetas de los campos a menudo se utilizan para especificar un nombre JSON idiomatico como <code>total_count</code> para un campo Go llamado <code>TotalCount</code>. La etiqueta <code>Color</code> tiene una opcion adicional, <code>omitempty</code>, lo que indica que no se debe producir ninguna salida JSON si el campo tiene el valor cero para su tipo (<code>false</code>, aqui) o esta vacia. Efectivamente, la salida JSON para Casablanca, una pelicula en blanco y negro, no tiene el campo <code>color</code>.</p>
-<p>La operacion inversa para marshaling, la decodificacion de JSON y rellenar una estructura de datos Go, se denomina <em>unmarshaling</em>, y se realiza por <code>json.Unmarshal</code>. El codigo de abajo aplica unmarshaling sobre los datos de las peliculas JSON en un slice de estructuras cuyo unico campo es Title. De esta manera, al definir estructuras de datos Go adecuadas, podemos seleccionar que partes de la entrada JSON se deben descifrar y cuales descartar. Cuando <code>Unmarshal</code> regresa, se ha llenado el slice con la informacion de <code>Title</code>; otros nombres en el JSON se ignoran.</p>
+<p>La operacion inversa de marshaling, decodificar JSON y poblar una estructura de datos Go, se denomina <em>unmarshaling</em>, y se realiza con <code>json.Unmarshal</code>. El codigo de abajo aplica unmarshaling sobre los datos de las peliculas JSON en un slice de estructuras cuyo unico campo es <code>Title</code>. De esta manera, al definir estructuras de datos Go adecuadas, podemos seleccionar que partes de la entrada JSON se deben descifrar y cuales descartar. Cuando <code>Unmarshal</code> regresa, se ha llenado el slice con la informacion de <code>Title</code>; otros nombres en el JSON se ignoran.</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">titles</span> <span class="p">[]</span><span class="kd">struct</span><span class="p">{</span> <span class="nx">Title</span> <span class="kt">string</span> <span class="p">}</span>
 <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">Unmarshal</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">titles</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
   <span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&#34;JSON unmarshaling failed: %s&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
@@ -3731,8 +3731,8 @@ x = 7 eˣ = 1096.633
 <span class="p">}</span>
 </code></pre>
 </div>
-<p>Como antes, los nombres de todos los campos de estructura deben estar en mayuscula incluso si sus nombres JSON no. Sin embargo, el proceso de coincidencia que asocia los nombres de JSON con los nombres de una estructura de Go durante el unmarshaling no distingue entre mayusculas y minusculas, por lo que solo es necesario utilizar una etiqueta de campo cuando hay un subrayado en el nombre JSON pero no en el nombre Go. Una vez mas, estamos siendo selectivos acerca de que campos decodificar; la respuesta de busqueda de GitHub contiene considerablemente mas informacion de la que mostramos aqui.</p>
-<p>La funcion <code>SearchIssues</code> realiza una peticion HTTP y decodifica el resultado como JSON. Puesto que los terminos de consulta presentados por un usuario pueden contener caracteres como <code>?</code> y <code>&amp;</code> que tienen un significado especial en una URL, usamos <code>url.QueryEscape</code> para asegurar de que se tomen literalmente.</p>
+<p>Como antes, los nombres de todos los campos de estructura deben estar en mayuscula incluso si sus nombres JSON no. Sin embargo, el proceso de coincidencia que asocia los nombres de JSON con los nombres de una estructura de Go durante el unmarshaling no distingue entre mayusculas y minusculas, por lo que solo es necesario utilizar una etiqueta de campo cuando hay un guion bajo en el nombre JSON pero no en el nombre Go. Una vez mas, estamos siendo selectivos acerca de que campos decodificar; la respuesta de busqueda de GitHub contiene considerablemente mas informacion de la que mostramos aqui.</p>
+<p>La funcion <code>SearchIssues</code> realiza una peticion HTTP y decodifica el resultado como JSON. Puesto que los terminos de consulta presentados por un usuario pueden contener caracteres como <code>?</code> y <code>&amp;</code> que tienen un significado especial en una URL, usamos <code>url.QueryEscape</code> para asegurarnos de que se toman literalmente.</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch4/github/search.go" >gopl.io/ch4/github</a></h1>
 <pre class="code" ><code class="chroma" ><span class="kn">package</span> <span class="nx">github</span>
@@ -3821,12 +3821,12 @@ x = 7 eˣ = 1096.633
 <p><b>Ejercicio 4.10</b>: Modificar <code>issues</code> para reportar los resultados en categorias de edad, es decir menos de un mes de edad, menos de un año de edad, y mas de un año de edad.</p>
 <p><b>Ejercicio 4.11</b>: Construir una herramienta que permite a los usuarios crear, leer, actualizar y eliminar los problemas de GitHub desde la linea de comandos, invocando su editor de texto preferido cuando se requiera la introduccion de texto sustancial.</p>
 <p><b>Ejercicio 4.12</b>: El popular comic web <em>xkcd</em> tiene una interfaz JSON. Por ejemplo, una solicitud a <a href="https://xkcd.com/571/info.0.json" >https://xkcd.com/571/info.0.json</a> produce una descripcion detallada del comic 571, uno de mis muchos favoritos. Descargue cada URL (una vez) y construya un indice sin conexion. Escriba una herramienta <code class="command" >xkcd</code> que, utilizando este indice, imprima la URL y transcripcion de cada comic que coincida con un termino de busqueda proporcionado en la linea de comandos.</p>
-<p><b>Ejercicio 4.13</b>: El servicio web basado en JSON de Open Movie Database le permite buscar en <a href="https://omdbapi.com/" >https://omdbapi.com/</a> una pelicula por su nombre y descargar la su imagen del poster. Escriba una herramienta <code class="command" >poster</code> que descargue la imagen del poster de la pelicula que se nombre en la linea de comandos.</p>
+<p><b>Ejercicio 4.13</b>: El servicio web basado en JSON de Open Movie Database le permite buscar en <a href="https://omdbapi.com/" >https://omdbapi.com/</a> una pelicula por su nombre y descargar su imagen de poster. Escriba una herramienta <code class="command" >poster</code> que descargue la imagen del poster de la pelicula que se nombre en la linea de comandos.</p>
 </div>
 <h3 id="seccion-4.6" >Plantillas de Texto y HTML</h3>
 <div class="hBody-3" >
-<p>El ejemplo anterior muestra como hacer el formato lo mas simple posible, para lo cual <code>Printf</code> es completamente adecuado. Pero a veces el formato debe ser mas elaborado, y es deseable separar el formato del codigo completamente. Esto se puede hacer con los paquetes <code>text/template</code> y <code>html/template</code>, que proporcionan un mecanismo para la sustitucion de los valores de las variables en una plantilla de texto o HTML.</p>
-<p>Una plantilla es una cadena o un archivo que contiene una o mas partes encerradas entre llaves dobles, <code>{{...}}</code>, llamadas <em>acciones</em>. La mayor parte de la cadena se imprime literalmente, pero las acciones desencadenan otros comportamientos. Cada accion contiene una expresion en el lenguaje de la plantilla, una notacion sencilla pero poderosa para imprimir valores, seleccionar campos de la estructura, llamar a funciones y metodos, expresar el flujo de control, como sentencias <code>if</code>-<code>else</code> y bucles <code>range</code>, y crear instancias de otras plantillas. A continuacion se muestra una cadena de plantilla simple:</p>
+<p>El ejemplo anterior muestra como hacer el formato lo mas simple posible, para lo cual <code>Printf</code> es totalmente adecuado. Pero a veces el formato debe ser mas elaborado, y es deseable separar el formato del codigo completamente. Esto se puede hacer con los paquetes <code>text/template</code> y <code>html/template</code>, que proporcionan un mecanismo para sustituir los valores de las variables en una plantilla de texto o HTML.</p>
+<p>Una plantilla es una cadena o un archivo que contiene una o mas partes encerradas entre llaves dobles, <code>{{...}}</code>, llamadas <em>acciones</em>. La mayor parte de la cadena se imprime literalmente, pero las acciones desencadenan otros comportamientos. Cada accion contiene una expresion en el lenguaje de la plantilla, una notacion sencilla pero poderosa para imprimir valores, seleccionar campos de la estructura, llamar a funciones y metodos, expresar el flujo de control, como las sentencias <code>if</code>-<code>else</code> y bucles <code>range</code>, e instanciar otras plantillas. A continuacion se muestra una cadena de plantilla simple:</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch4/issuesreport/main.go" >gopl.io/ch4/issuesreport</a></h1>
 <pre class="code" ><code class="chroma" ><span class="kd">const</span> <span class="nx">templ</span> <span class="p">=</span> <span class="s">`{{.TotalCount}} issues:
@@ -3838,14 +3838,14 @@ x = 7 eˣ = 1096.633
 </span><span class="s">{{end}}`</span>
 </code></pre>
 </div>
-<p>Esta plantilla primero imprime el numero de problemas encontrados, luego imprime el numero, usuario, titulo y edad en dias de cada uno. Dentro de una accion, hay una nocion del valor actual, denominado como <q>punto</q> y escrita como <q>.</q>, un punto. El punto se refiere inicialmente al parametro de la plantilla, que sera en este ejemplo <code>github.IssuesSearchResult</code>. La accion <code>{{.TotalCount}}</code> expande al valor del campo <code>TotalCount</code>, que se imprime en la forma habitual. Las acciones <code>{{range .Items}}</code> y <code>{{end}}</code> crean un bucle, por lo que el texto entre ellos se expande varias veces, con el punto ligado a elementos sucesivos de <code>Items</code>.</p>
-<p>Dentro de una accion, la notacion <code>|</code> hace que el resultado de una operacion sea el argumento de otra, analoga a una tuberia del shell de Unix. En el caso de <code>Title</code>, la segunda operacion es la funcion <code>printf</code>, que es un sinonimo nativo para <code>fmt.Sprintf</code> en todas las plantillas. Para <code>Age</code>, la segunda operacion es la funcion, <code>daysAgo</code>, que convierte el campo <code>CreatedAt</code> en el tiempo transcurrido, usando <code>time.Since</code>:</p>
+<p>Esta plantilla primero imprime el numero de problemas encontrados, luego imprime el numero, usuario, titulo y edad en dias de cada uno. Dentro de una accion, hay una nocion del valor actual, denominado como <q>punto</q> y escrita como <q><code>.</code></q>, un punto. El punto se refiere inicialmente al parametro de la plantilla, que sera en este ejemplo <code>github.IssuesSearchResult</code>. La accion <code>{{.TotalCount}}</code> expande al valor del campo <code>TotalCount</code>, que se imprime en la forma habitual. Las acciones <code>{{range .Items}}</code> y <code>{{end}}</code> crean un bucle, por lo que el texto entre ellos se expande varias veces, con el punto ligado a elementos sucesivos de <code>Items</code>.</p>
+<p>Dentro de una accion, la notacion <code>|</code> hace que el resultado de una operacion sea el argumento de otra, analoga a una tuberia del shell Unix. En el caso de <code>Title</code>, la segunda operacion es la funcion <code>printf</code>, que es un sinonimo nativo para <code>fmt.Sprintf</code> en todas las plantillas. Para <code>Age</code>, la segunda operacion es la funcion, <code>daysAgo</code>, que convierte el campo <code>CreatedAt</code> en el tiempo transcurrido, utilizando <code>time.Since</code>:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">func</span> <span class="nx">daysAgo</span><span class="p">(</span><span class="nx">t</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Since</span><span class="p">(</span><span class="nx">t</span><span class="p">).</span><span class="nx">Hours</span><span class="p">()</span> <span class="o">/</span> <span class="mi">24</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
 <p>Observe que el tipo de <code>CreatedAt</code> es <code>time.Time</code>, no <code>string</code>. Del mismo modo que un tipo puede controlar su formato de cadena (<a href="#seccion-2.5" >§2.5</a>) mediante la definicion de ciertos metodos, un tipo puede definir tambien metodos para controlar su comportamiento para el marshaling y unmarshaling JSON. El valor marshaling JSON de un <code>time.Time</code> es una cadena en un formato estandar.</p>
-<p>Producir la salida con una plantilla es un proceso de dos pasos. Primero debemos analizar la plantilla en una representacion interna adecuada, y luego ejecutarla en entradas especificas. El analisis se debe hacer solo una vez. El siguiente codigo crea y analiza la plantilla <code>templ</code> definida anteriormente. Observe el encadenamiento de llamadas a metodos: <code>template.New</code> crea y devuelve una plantilla; <code>Funcs</code> añade <code>daysAgo</code> al conjunto de funciones accesibles dentro de esta plantilla, luego, devuelve esa plantilla; por ultimo, se llama a <code>Parse</code> en el resultado.</p>
+<p>Producir la salida con una plantilla es un proceso de dos pasos. Primero debemos analizar la plantilla en una representacion interna adecuada, y luego ejecutarla con entradas especificas. El analisis se debe hacer solo una vez. El siguiente codigo crea y analiza la plantilla <code>templ</code> definida anteriormente. Observe el encadenamiento de llamadas a metodos: <code>template.New</code> crea y devuelve una plantilla; <code>Funcs</code> añade <code>daysAgo</code> al conjunto de funciones accesibles dentro de esta plantilla, luego, devuelve esa plantilla; por ultimo, se llama a <code>Parse</code> sobre el resultado.</p>
 <pre class="code" ><code class="chroma" ><span class="nx">report</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">template</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&#34;report&#34;</span><span class="p">).</span>
   <span class="nx">Funcs</span><span class="p">(</span><span class="nx">template</span><span class="p">.</span><span class="nx">FuncMap</span><span class="p">{</span><span class="s">&#34;daysAgo&#34;</span><span class="p">:</span> <span class="nx">daysAgo</span><span class="p">}).</span>
   <span class="nx">Parse</span><span class="p">(</span><span class="nx">templ</span><span class="p">)</span>
@@ -3854,7 +3854,7 @@ x = 7 eˣ = 1096.633
 <span class="p">}</span>
 </code></pre>
 <p>Dado que las plantillas suelen fijarse en tiempo de compilacion, la falta de analisis de una plantilla indica un error fatal en el programa. La funcion auxiliar <code>template.Must</code> hace que el manejo de errores sea mas conveniente: acepta una plantilla y un error, comprueba que el error es nil (y entra en panico de lo contrario) y, luego devuelve la plantilla. Volveremos a esta idea en la <a href="#seccion-5.9" >Seccion 5.9</a>.</p>
-<p>Una vez la plantilla ha sido creada, aumentada con <code>daysAgo</code>, analizada y comprobada, podemos ejecutarla utilizando como fuente de datos <code>github.IssuesSearchResult</code> y <code>os.Stdout</code> como el destino:</p>
+<p>Una vez la plantilla ha sido creada, aumentada con <code>daysAgo</code>, analizada y comprobada, podemos ejecutarla utilizando como fuente de datos <code>github.IssuesSearchResult</code> y <code>os.Stdout</code> como destino:</p>
 <pre class="code" ><code class="chroma" ><span class="kd">var</span> <span class="nx">report</span> <span class="p">=</span> <span class="nx">template</span><span class="p">.</span><span class="nx">Must</span><span class="p">(</span><span class="nx">template</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&#34;issuelist&#34;</span><span class="p">).</span>
   <span class="nx">Funcs</span><span class="p">(</span><span class="nx">template</span><span class="p">.</span><span class="nx">FuncMap</span><span class="p">{</span><span class="s">&#34;daysAgo&#34;</span><span class="p">:</span> <span class="nx">daysAgo</span><span class="p">}).</span>
   <span class="nx">Parse</span><span class="p">(</span><span class="nx">templ</span><span class="p">))</span>
@@ -3886,8 +3886,8 @@ Age:    695 days
 ---------------------------------------
 ...
 </span></code></pre>
-<p>Ahora pasemos al paquete <code>html/template</code>. Utiliza el mismo API y el mismo lenguaje de expresion que <code>text/template</code> pero añade caracteristicas para el escape automatico y apropiado de cadanes que aparecen dentro de HTML, JavaScript, CSS o URLs. Estas caracteristicas pueden ayudar a evitar un problema de seguridad perenne de la generacion de HTML, un <em>ataque de inyeccion</em>, en el que un adversario crea un valor de cadena como el titulo de un tema, para incluir codigo malicioso, que cuando se escapa indebidamente por una plantilla, les da control sobre la pagina.</p>
-<p>La plantilla siguiente muestra la lista de temas como una tabla HTML. Observe la diferente importacion:</p>
+<p>Ahora pasemos al paquete <code>html/template</code>. Utiliza el mismo API y el mismo lenguaje de expresion que <code>text/template</code> pero añade caracteristicas para el escape automatico y apropiado de cadanes que aparecen dentro de HTML, JavaScript, CSS o URLs. Estas caracteristicas pueden ayudar a evitar un problema de seguridad perenne de la generacion de HTML, un <em>ataque de inyeccion</em>, en el que un adversario crea un valor de cadena como el titulo de un tema, para incluir codigo malicioso, que cuando se escapa indebidamente por una plantilla, le da control sobre la pagina.</p>
+<p>La plantilla siguiente imprime la lista de problemas como una tabla HTML. Observe la diferente importacion:</p>
 <div class="figure" >
 <h1 class="figure"><a href="gopl.io/ch4/issueshtml/main.go" >gopl.io/ch4/issueshtml</a></h1>
 <pre class="code" ><code class="chroma" ><span class="kn">import</span> <span class="s">&#34;html/template&#34;</span>
@@ -3913,7 +3913,7 @@ Age:    695 days
 </span><span class="s">`</span><span class="p">))</span>
 </code></pre>
 </div>
-<p>El siguiente comando ejecuta la nueva plantilla en los resultados de una consulta ligeramente diferente:</p>
+<p>El siguiente comando ejecuta la nueva plantilla sobre los resultados de una consulta ligeramente diferente:</p>
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>go build gopl.io/ch4/issueshtml
 </span><span class="in" ><span class="prompt" >&gt; </span>./issueshtml repo:golang/go commenter:gopherbot json encoder &gt;issues.html
 </span></code></pre>
@@ -3928,7 +3928,7 @@ Age:    695 days
 <pre class="srci" ><code class="sh" ><span class="in" ><span class="prompt" >&gt; </span>./issueshtml repo:golang/go <span class="m">3133</span> <span class="m">10535</span> &gt;issues2.html
 </span></code></pre>
 <p>La Figura 4.5 muestra el resultado de esta consulta. Observe que el paquete <code>html/template</code> de forma automatica escapa los titulos HTML de modo que aparezcan literalmente. Si por error hubieramos usado el paquete <code>text/template</code>, la cadena de cuatro caracteres &#34;&amp;lt;&#34; se habria convertido en el caracter <code>&#39;&lt;&#39;</code> y la cadena <code>&#34;&lt;link&gt;&#34;</code> se habria convertido en un elemento <code>link</code>, cambiando la estructura del documento HTML y tal vez comprometiendo su seguridad.</p>
-<p>Podemos suprimir este comportamiento de auto-escape para los campos que contienen datos HTML confiables mediante el uso de un  tipo de cadena denominada <code>template.HTML</code> en lugar de <code>string</code> . Existen tipos con nombres similares para JavaScript, CSS y URLs de confianza. El siguiente programa demuestra el principio usando  campos con el mismo valor, pero con diferentes tipos: c(A) es un <code>string</code> y <code>B</code> es un <code>template.HTML</code>.</p>
+<p>Podemos suprimir este comportamiento de auto-escape para los campos que contienen datos HTML confiables mediante el uso de un  tipo de cadena denominada <code>template.HTML</code> en lugar de <code>string</code>. Existen tipos con nombres similares para JavaScript, CSS y URLs de confianza. El siguiente programa demuestra el principio usando campos con el mismo valor, pero con diferentes tipos: <code>A</code> es un <code>string</code> y <code>B</code> es un <code>template.HTML</code>.</p>
 <div class="figure" >
 <h1 class="figure">Figura 4.5. Los metacaracteres HTML del titulos de temas se muestran correctamente.</h1>
 <figure>
@@ -3954,7 +3954,7 @@ Age:    695 days
 </div>
 <p>La Figura 4.6 muestra la salida de la plantilla tal como aparece en un navegador. Podemos ver que <code>A</code> es sujeto a escape, pero <code>B</code> no.</p>
 <div class="figure" >
-<h1 class="figure">Figura 4.6. Los valores de cadena tinen escapado HTML escapado, pero los valores <code>template.HTML</code> no.</h1>
+<h1 class="figure">Figura 4.6. Los valores de cadena tinen escapes HTML, pero los valores <code>template.HTML</code> no.</h1>
 <figure>
 <img src="img/Figure-4.6.jpg" />
 </figure>
